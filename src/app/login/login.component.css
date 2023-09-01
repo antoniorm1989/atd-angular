@@ -1,0 +1,132 @@
+.login {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100vh;
+    background-color: #b79200;
+    padding-left: 10%;
+}
+
+.login-container {
+    max-width: 784px;
+    width: 100%;
+    padding: 50px 50px 150px 50px;
+    border-radius: 20px;
+}
+
+mat-card-header {
+    display: flex;
+    padding: 16px 16px 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-image {
+    width: 375px;
+    height: 101px;
+
+}
+
+.mat-mdc-card-content {
+    margin-top: 50px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.label-forgot-password {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.btn-login {
+    background-color: black !important;
+}
+
+.label-forgot-password,
+.btn-login {
+    margin-top: 20px;
+}
+
+.background-image {
+    position: absolute;
+    top: 0;
+    right: 0px;
+    width: 70%;
+    height: 100%;
+    background-image: url('../../assets/images/background-login.svg');
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+}
+
+.poppinsn-24-titulo {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 36px;
+    letter-spacing: 0em;
+    text-align: center;
+}
+
+.text-1 {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.01em;
+    text-align: left;
+}
+
+.form-check label{
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.01em;
+}
+
+@media only screen and (max-width: 1200px) {}
+
+@media only screen and (max-width: 1000px) {
+    .login {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #b79200;
+        padding-left: 0px;
+    }
+
+    .background-image {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+
+    .login-container {
+        margin: 24px;
+    }
+}
+
+@media only screen and (max-width: 576px) {
+    .login-container {
+        padding: 50px 0px 150px 0px;
+    }
+}
+
+@media only screen and (max-width: 404px) {
+    .login {
+        background-color: #fff;
+    }
+    .login-container {
+        box-shadow: none;
+    }
+}
