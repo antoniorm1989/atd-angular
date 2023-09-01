@@ -1,0 +1,39 @@
+# Node.js dependencies
+/node_modules
+
+# Compiled output
+/dist
+/tmp
+/out-tsc
+
+# OS-specific files
+/.DS_Store
+/Thumbs.db
+
+# Logs and crash dumps
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Dependency directories
+/jspm_packages/
+
+# TypeScript configuration
+/tsconfig*.json
+
+# IDE-specific files
+/.idea
+/.vscode
+
+# Environment variables
+.env
+.env.prod
+.env.prod.local
+.env.dev
+.env.dev.local
+
+# Build output
+/dist
