@@ -63,7 +63,7 @@ form {
     right: 0px;
     width: 70%;
     height: 100%;
-    background-image: url('../../assets/images/background-login.svg');
+    background-image: url('../../../assets/images/background-login.png');
     background-size: cover;
     background-position: center;
     z-index: 0;
@@ -91,6 +91,7 @@ form {
     line-height: 22px;
     letter-spacing: 0.01em;
 }
+
 
 @media only screen and (max-width: 1200px) {}
 
