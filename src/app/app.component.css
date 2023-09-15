@@ -1,0 +1,102 @@
+.example-container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  
+  .example-is-mobile .example-toolbar {
+    position: fixed;
+    z-index: 2;
+  }
+  
+  h1.example-app-name {
+    margin-left: 8px;
+  }
+  
+  .example-sidenav-container {
+    flex: 1;
+  }
+  
+  .example-is-mobile .example-sidenav-container {
+    flex: 1 0 auto;
+  }
+  
+  
+  
+  .mat-toolbar {
+    border-bottom: solid 1px rgba(0,0,0,.12);
+  }
+  
+  .mat-toolbar.mat-primary {
+    background: #fff;
+    color: #000;
+  }
+  
+  .logo-image {
+    width: 200px;
+  }
+  
+  .mat-toolbar-single-row {
+    padding: 0px;
+  }
+  
+  .menu-option {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 0px;
+    height: 24px;
+  }
+
+  .menu-option i{
+    margin-left: 12px;
+  }
+
+  .menu-option.active{
+    background-color: #BA940066;
+  }
+  
+  .menu-option .menu-space{
+    width: 12px;
+    height: 40px;
+  }
+
+  .menu-option.active .menu-space{
+    background-color: #BA9400;
+  }
+
+  .toolbar-right{
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .date-label{
+    border-right: 2px solid darkgray;
+    padding: 0px 12px;
+  }
+
+  .btn-notification,
+  .btn-user{
+    margin: 0px 8px;
+  }
+  
+  @media only screen and (max-width: 1200px) {}
+  
+  @media only screen and (max-width: 1000px) {}
+  
+  @media only screen and (max-width: 768px) {}
+  
+  @media only screen and (max-width: 576px) {
+    .logo-image {
+      width: 150px;
+    }
+  
+  }
+  
+  @media only screen and (max-width: 404px) {}
