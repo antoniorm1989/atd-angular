@@ -4,7 +4,7 @@ import { UserService } from '../services/user.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
-    
+
     constructor(
         private router: Router,
         private userService: UserService
@@ -12,12 +12,19 @@ export class AuthGuard implements CanActivate {
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         if (this.userService.isTokenValid()) {
-            return true;
+            if (route.routeConfig!.path == 'login') {
+                this.router.navigate(['/almacen'], { queryParams: { returnUrl: state.url } });
+                return false;
+            } else
+                return true;
         } else {
-            // Token is not valid or not present
-            // Redirect to the login page or handle the situation accordingly
-            this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
-            return false;
+            if (route.routeConfig!.path == 'login') {
+                return true;
+            }
+            else {
+                this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+                return false;
+            }
         }
     }
 

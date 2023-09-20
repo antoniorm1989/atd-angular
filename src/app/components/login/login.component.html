@@ -8,27 +8,44 @@
         <mat-card-content>
             <mat-label class="poppinsn-24-titulo">¡Bienvenido!</mat-label>
 
+            
             <form [formGroup]="form" (ngSubmit)="onSubmit()">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f['email'].errors }" />
+                
+                <div class="form-field">
+                    <mat-label class="text-1 ">Correo electrónico</mat-label>
+                    <mat-form-field>
+                        <input matInput formControlName="email" [ngClass]="{ 'is-invalid': submitted && f['email'].errors }" required>
+                    </mat-form-field>
                     <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
                         <div *ngIf="f['email'].errors['required']">Email is required</div>
+                        <div *ngIf="f['email'].errors['email']">Invalid email format</div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f['password'].errors }" />
+
+                <div class="form-field">
+                    <mat-label class="text-1 ">Contraseña</mat-label>
+                    <mat-form-field>
+                        <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" required [ngClass]="{ 'is-invalid': submitted && f['password'].errors }">
+                        <button type="button" mat-icon-button matSuffix (click)="togglePasswordVisibility()">
+                            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                        </button>
+                    </mat-form-field>
                     <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
                         <div *ngIf="f['password'].errors['required']">Password is required</div>
+                        <div *ngIf="f['password'].hasError('minlength')">Password must been more than 4 characters</div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <button [disabled]="loading" class="btn btn-primary">
-                        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-                        Login
-                    </button>
+
+                <div class="form-check">
+                    <mat-checkbox name="remember" formControlName="remember">Recordar contraseña</mat-checkbox>
                 </div>
+
+                <button [disabled]="loading" class="btn-login" mat-raised-button color="primary">
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                    Iniciar sesión
+                </button>
+
+                <mat-label class="label-forgot-password">¿Olvidaste tu contraseña?</mat-label>
             </form>
 
             <!--<form [formGroup]="form" (ngSubmit)="onSubmit()"></form>

@@ -14,7 +14,6 @@ export class JwtInterceptor implements HttpInterceptor {
   constructor(
     private userService: UserService
   ) {
-    
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
@@ -23,6 +22,7 @@ export class JwtInterceptor implements HttpInterceptor {
     const isLoggedIn = tokenObj && tokenObj.token;
     const isApiUrl = request.url.startsWith('http:://localhost:3000');
     if (isLoggedIn && isApiUrl) {
+      debugger;
       request = request.clone({
         setHeaders: {
           Authorization: `Bearer ${tokenObj.token}`

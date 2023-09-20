@@ -1,5 +1,5 @@
 <div class="example-container" [class.example-is-mobile]="mobileQuery.matches">
-    
+
     <mat-toolbar *ngIf="isTokenValid" color="primary" class="example-toolbar">
         <button mat-icon-button (click)="snav.toggle()">
             <mat-icon>menu</mat-icon>
@@ -22,14 +22,23 @@
     </mat-toolbar>
 
     <mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
-        
-        <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches"
-            fixedTopGap="56">
-            <mat-nav-list>
-                <div routerLinkActive="active" *ngFor="let nav of fillerNav" class="menu-option">
+
+        <mat-sidenav class="mat-sidenav-menu" #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
+            [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
+            <mat-nav-list class="mat-nav-menu">
+                <div routerLinkActive="active" *ngFor="let nav of fillerNav" class="menu-option"
+                    [routerLink]="[nav.href]">
                     <div class="menu-space"></div>
                     <i class="{{nav.icon}}"></i>
-                    <a [routerLink]="[nav.href]">{{nav.text}}</a>
+                    <span class="menu-item-text">{{nav.text}}</span>
+                </div>
+
+                <div class="menu-options-end">
+                    <div class="menu-option" (click)="snav.toggle(); logout();">
+                        <div class="menu-space"></div>
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span class="menu-item-text">Cerrar sesión</span>
+                    </div>
                 </div>
             </mat-nav-list>
         </mat-sidenav>
