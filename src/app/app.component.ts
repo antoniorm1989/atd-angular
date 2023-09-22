@@ -21,6 +21,11 @@ export class AppComponent implements OnDestroy {
       text: 'Sucursales', icon: 'fa-solid fa-clipboard-check', href: 'sucursales'
     }
   ];
+  fillerNavEnd = [
+    {
+      text: 'Catálogos', icon: 'fa-solid fa-book', href: 'catalogos'
+    }
+  ];
   userInitials: string = "";
 
   private _mobileQueryListener: () => void;

@@ -20,6 +20,7 @@ import { SuscursalesComponent } from './components/suscursales/suscursales.compo
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
+import { CatalogosComponent } from './components/catalogos/catalogos.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -30,7 +31,8 @@ export function tokenGetter() {
     AppComponent,
     LoginComponent,
     AlmacenComponent,
-    SuscursalesComponent
+    SuscursalesComponent,
+    CatalogosComponent
   ],
   imports: [
     BrowserModule,

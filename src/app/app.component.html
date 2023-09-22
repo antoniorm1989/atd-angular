@@ -21,7 +21,7 @@
 
     </mat-toolbar>
 
-    <mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
+    <mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 00">
 
         <mat-sidenav class="mat-sidenav-menu" #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
             [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
@@ -34,6 +34,12 @@
                 </div>
 
                 <div class="menu-options-end">
+                    <div routerLinkActive="active" *ngFor="let nav of fillerNavEnd" class="menu-option"
+                        [routerLink]="[nav.href]">
+                        <div class="menu-space"></div>
+                        <i class="{{nav.icon}}"></i>
+                        <span class="menu-item-text">{{nav.text}}</span>
+                    </div>
                     <div class="menu-option" (click)="snav.toggle(); logout();">
                         <div class="menu-space"></div>
                         <i class="fa-solid fa-arrow-right-from-bracket"></i>

@@ -1,0 +1,21 @@
+<div class="catalogos">
+    <div class="toolbar">
+        <div>
+            <i class="icon fa-solid fa-book"></i>
+            <span class="title">Cátalogos</span>
+        </div>
+        <div>
+            <span class="breadcrumb-item">Cátalogos</span>
+        </div>
+    </div>
+    <div class="container">
+        <mat-nav-list class="list">
+            <div class="list-item" mat-list-item *ngFor="let catalogo of catalogos" [style]="catalogo.style">
+                <div class="circle" [style]="catalogo.styleCircle">
+                    <i class="icon {{catalogo.icon}}"></i>
+                </div>
+                <span class="title">{{catalogo.text}}</span>
+            </div>
+        </mat-nav-list>
+    </div>
+</div>
