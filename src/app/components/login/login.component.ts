@@ -61,14 +61,15 @@ export class LoginComponent implements OnInit {
     this.loading = true;
     this.userService.login(this.f['email'].value, this.f['password'].value)
       .pipe(first())
-      .subscribe(
-        data => {
+      .subscribe({
+        next: (data) => {
           localStorage.setItem('user_data', JSON.stringify(data));
           this.router.navigate([this.returnUrl]);
         },
-        error => {
+        error: (e) => {
           this.loading = false;
-        });
+        }
+      });
   }
 
   togglePasswordVisibility() {

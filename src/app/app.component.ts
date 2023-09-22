@@ -1,6 +1,7 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { UserService } from './services/user.service';
+import { Router, NavigationEnd, Event } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -11,9 +12,7 @@ import { UserService } from './services/user.service';
 export class AppComponent implements OnDestroy {
 
   title = 'atd-app';
-
   mobileQuery: MediaQueryList;
-
   fillerNav = [
     {
       text: 'Alamacen', icon: 'fa-brands fa-dropbox', href: 'almacen'
@@ -22,16 +21,24 @@ export class AppComponent implements OnDestroy {
       text: 'Sucursales', icon: 'fa-solid fa-clipboard-check', href: 'sucursales'
     }
   ];
+  userInitials: string = "";
 
   private _mobileQueryListener: () => void;
 
-  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private userService: UserService) {
+  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private userService: UserService, private router: Router) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
+
+    this.router.events.subscribe((event: Event) => {
+      if (event instanceof NavigationEnd) {
+        let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","lastname":""}');
+        this.userInitials = userData.name[0].toUpperCase() + userData.lastname[0].toUpperCase();
+      }
+    });
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.mobileQuery.removeListener(this._mobileQueryListener);
   }
 
@@ -51,7 +58,12 @@ export class AppComponent implements OnDestroy {
     return this.userService.isTokenValid();
   }
 
-  logout(){
+  get userName(): string {
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","lastname":""}');
+    return `${userData.name} ${userData.lastname}`;
+  }
+
+  logout() {
     this.userService.logout();
   }
 
