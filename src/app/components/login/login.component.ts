@@ -35,9 +35,11 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    const rememberedUsername = localStorage.getItem('rememberedUsername');
-    if (rememberedUsername) {
-      this.f['email'].setValue(rememberedUsername);
+    const rememberedCredentials = localStorage.getItem('rememberedCredentials');
+    if (rememberedCredentials) {
+      let rememberedCredentialsJson =  JSON.parse(rememberedCredentials);
+      this.f['email'].setValue(rememberedCredentialsJson.email);
+      this.f['password'].setValue(rememberedCredentialsJson.password);
       this.f['remember'].setValue(true);
     }
 
@@ -50,9 +52,9 @@ export class LoginComponent implements OnInit {
     this.submitted = true;
 
     if (this.f['remember'].value)
-      localStorage.setItem('rememberedUsername', this.f['email'].value);
+      localStorage.setItem('rememberedCredentials', JSON.stringify({ email: this.f['email'].value, password: this.f['password'].value }));
     else
-      localStorage.removeItem('rememberedUsername');
+      localStorage.removeItem('rememberedCredentials');
 
     // stop here if form is invalid
     if (this.form!.invalid)

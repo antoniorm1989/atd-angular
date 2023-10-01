@@ -7,6 +7,12 @@
     font-size: 23px;
 }
 
+.catalogos .toolbar .toolbar-title {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
 .catalogos .toolbar .title {
     font-size: 36px;
     font-weight: 700;
@@ -78,6 +84,7 @@
     .catalogos .container .list {
         grid-template-columns: repeat(1, 1fr);
     }
+
     .catalogos .container .list-item {
         width: 100%;
         margin: 0px 24px;

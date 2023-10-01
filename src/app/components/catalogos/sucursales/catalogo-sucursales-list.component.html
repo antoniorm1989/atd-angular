@@ -1,0 +1,84 @@
+<div class="catalogo-sucursales-list">
+    <div class="toolbar">
+        <div class="toolbar-title">
+            <i class="icon fa-regular fa-building"></i>
+            <span class="title">Catálogo sucursales</span>
+        </div>
+        <div>
+            Catálogos/<span class="breadcrumb-item">Catálogo sucursales</span>
+        </div>
+    </div>
+    <div class="container">
+        <div *ngIf="!hasRecords" class="container-empty">
+            <img src="../../assets/images/empty-list.png" alt="empty logo" class="img">
+            <span class="text">Aún no tienes sucursales en el catálogo, para poder ver información favor de agregar una
+                sucursal.</span>
+            <button mat-flat-button class="btn"><mat-icon>add</mat-icon>Agregar sucursal</button>
+        </div>
+        <div *ngIf="hasRecords" class="container-list">
+            <div class="mat-elevation-z8">
+                <table mat-table [dataSource]="dataSource">
+
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef>Sucursal</th>
+                        <td mat-cell *matCellDef="let element"> {{element.name}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="phone">
+                        <th mat-header-cell *matHeaderCellDef>Teléfono</th>
+                        <td mat-cell *matCellDef="let element"> {{element.phone}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="location">
+                        <th mat-header-cell *matHeaderCellDef>Ubicación</th>
+                        <td mat-cell *matCellDef="let element"> {{element.location}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="created">
+                        <th mat-header-cell *matHeaderCellDef>Registro</th>
+                        <td mat-cell *matCellDef="let element"> {{formatDate(element.created)}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="modified">
+                        <th mat-header-cell *matHeaderCellDef>Edición</th>
+                        <td mat-cell *matCellDef="let element">{{formatDate(element.modified)}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="user">
+                        <th mat-header-cell *matHeaderCellDef>Usuario</th>
+                        <td mat-cell *matCellDef="let element">
+                            <div class="user-wrapper">
+                                <div class="circle-initials" mat-mini-fab color="primary">
+                                    {{getUserName(element.user.name, element.user.lastName)}}</div>
+                                <span class="text">{{element.user.name}} {{element.user.lastName}}</span>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef>Estatus</th>
+                        <td mat-cell *matCellDef="let element">
+                            <mat-slide-toggle [(ngModel)]="element.status"></mat-slide-toggle>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let element">
+                            <button mat-icon-button aria-label="" (click)="onEdit(element.id)" >
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+
+                <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons
+                    aria-label="Select page of periodic elements">
+                </mat-paginator>
+            </div>
+        </div>
+    </div>
+</div>

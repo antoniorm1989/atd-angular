@@ -21,6 +21,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { CatalogosComponent } from './components/catalogos/catalogos.component';
+import { CommonModule } from '@angular/common';
+import { CatalogoSucursalesListComponent } from './components/catalogos/sucursales/catalogo-sucursales-list.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -32,7 +37,8 @@ export function tokenGetter() {
     LoginComponent,
     AlmacenComponent,
     SuscursalesComponent,
-    CatalogosComponent
+    CatalogosComponent,
+    CatalogoSucursalesListComponent
   ],
   imports: [
     BrowserModule,
@@ -50,6 +56,10 @@ export function tokenGetter() {
     MatListModule,
     ReactiveFormsModule,
     HttpClientModule,
+    CommonModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSlideToggleModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,

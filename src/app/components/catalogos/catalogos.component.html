@@ -1,6 +1,6 @@
 <div class="catalogos">
     <div class="toolbar">
-        <div>
+        <div class="toolbar-title">
             <i class="icon fa-solid fa-book"></i>
             <span class="title">Cátalogos</span>
         </div>
@@ -10,7 +10,7 @@
     </div>
     <div class="container">
         <mat-nav-list class="list">
-            <div class="list-item" mat-list-item *ngFor="let catalogo of catalogos" [style]="catalogo.style">
+            <div class="list-item" mat-list-item *ngFor="let catalogo of catalogos" [style]="catalogo.style" [routerLink]="[catalogo.href]">
                 <div class="circle" [style]="catalogo.styleCircle">
                     <i class="icon {{catalogo.icon}}"></i>
                 </div>
