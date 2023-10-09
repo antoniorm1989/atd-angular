@@ -1,0 +1,127 @@
+.catalogo-sucursales {
+    padding: 34px;
+    background-color: #F7F7F7;
+    height: 100%;
+}
+
+.catalogo-sucursales .toolbar .icon {
+    font-size: 23px;
+}
+
+.catalogo-sucursales .toolbar .toolbar-title {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.catalogo-sucursales .toolbar .title {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 54px;
+    letter-spacing: 0.01em;
+    margin-left: 12px;
+}
+
+.catalogo-sucursales .toolbar .breadcrumb-item {
+    font-size: 16px;
+    line-height: 19px;
+    letter-spacing: 0.01em;
+    color: #BA9400;
+}
+
+.catalogo-sucursales .toolbar .link-breadcrumb{
+     cursor: pointer;
+}
+.catalogo-sucursales .toolbar .link-breadcrumb:hover{
+    text-decoration: underline;
+}
+
+/* container */
+.catalogo-sucursales .container .form-container {
+    display: flex;
+    background-color: #fff;
+    border-radius: 4px;
+    margin-top: 24px;
+    padding: 24px;
+    flex-direction: column;
+    margin-bottom: 24px;
+}
+
+.catalogo-sucursales .container .form-container .title {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 36px;
+    letter-spacing: 0em;
+}
+
+.catalogo-sucursales .container .form-row {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 40px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.form-field.name {
+    width: 70%;
+}
+
+.form-field.phone {
+    width: 30%;
+}
+
+.form-field.description {
+    width: 100%;
+}
+
+.form-field.estado,
+.form-field.municipio,
+.form-field.calle,
+.form-field.colonia,
+.form-field.num-ext,
+.form-field.num-int,
+.form-field.cp,
+.form-field.empty {
+    width: 25%;
+}
+
+.accordion-address {
+    margin-bottom: 24px;
+}
+
+
+.toolbar-bottom {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 24px;
+}
+
+.toolbar-bottom{
+    height: 100px;
+}
+
+.toolbar-bottom .btn {
+}
+
+.toolbar-bottom .btn.secundary {
+    margin-right: 24px;
+}
+
+mat-panel-title {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 36px;
+    letter-spacing: 0em;
+}
+
+mat-panel-description {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 36px;
+}

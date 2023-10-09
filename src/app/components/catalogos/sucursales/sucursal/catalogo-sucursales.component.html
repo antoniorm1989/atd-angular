@@ -1,0 +1,149 @@
+<div class="catalogo-sucursales">
+    <div class="toolbar">
+        <div class="toolbar-title">
+            <i class="icon fa-regular fa-building"></i>
+            <span class="title">Catálogo sucursales</span>
+        </div>
+        <div>
+            <span class="link-breadcrumb" (click)="navigate('catalogos')">Catálogos/</span><span class="link-breadcrumb" (click)="navigate('catalogos/sucursales')">Catálogo sucursales/</span><span class="breadcrumb-item">{{title}}</span>
+        </div>
+    </div>
+    <div class="container">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+            <div class="form-container">
+                <span class="title">Datos generales</span>
+                <div class="form-row">
+                    <div class="form-field name">
+                        <mat-label class="text-1">Sucursal*</mat-label>
+                        <mat-form-field>
+                            <input matInput placeholder="Escribir nombre de la sucursal" formControlName="name">
+                        </mat-form-field>
+                    </div>
+                    <div class="form-field phone">
+                        <mat-label class="text-1 ">Teléfono</mat-label>
+                        <mat-form-field>
+                            <input type="tel" matInput placeholder="00-00000" formControlName="phone">
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field description">
+                        <mat-label class="text-1">Descripción</mat-label>
+                        <mat-form-field>
+                            <input matInput placeholder="Escribir la descripción de la sucursal" formControlName="description">
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+
+            <mat-accordion class="accordion-address">
+                <mat-expansion-panel [expanded]="true" >
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Dirección
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            opcional
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+
+                    <div class="form-row">
+                        <div class="form-field estado">
+                            <mat-label class="text-1">Estado</mat-label>
+                            <mat-form-field>
+                                <mat-label>Seleccionar estado</mat-label>
+                                <mat-select [(value)]="selectedState" (selectionChange)="onStateChange($event)" formControlName="state_key">
+                                  <mat-option>None</mat-option>
+                                  <mat-option *ngFor="let estado of states" [value]="estado.key">{{ estado.name }} </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                        </div>
+                        <div class="form-field municipio">
+                            <mat-label class="text-1">Municipio</mat-label>
+                            <mat-form-field>
+                                <mat-label>Seleccionar municipio</mat-label>
+                                <mat-select formControlName="city_key">
+                                  <mat-option>None</mat-option>
+                                  <mat-option *ngFor="let city of cities" [value]="city.key">{{ city.name }} </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                        </div>
+
+                        <div class="form-field calle">
+                            <mat-label class="text-1">Calle</mat-label>
+                            <mat-form-field>
+                                <input matInput placeholder="Escribir calle" formControlName="street">
+                            </mat-form-field>
+                        </div>
+
+                        <div class="form-field colonia">
+                            <mat-label class="text-1">Colonia</mat-label>
+                            <mat-form-field>
+                                <input matInput placeholder="Escribir colonia" formControlName="neighborhood">
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-field num-ext">
+                            <mat-label class="text-1">Núm. exterior</mat-label>
+                            <mat-form-field>
+                                <input matInput placeholder="Número de exterior" formControlName="external_number">
+                            </mat-form-field>
+                        </div>
+
+                        <div class="form-field num-int">
+                            <mat-label class="text-1">Núm. interior </mat-label>
+                            <mat-form-field>
+                                <input matInput placeholder="Número de interior" formControlName="internal_number">
+                            </mat-form-field>
+                        </div>
+
+                        <div class="form-field cp">
+                            <mat-label class="text-1">Cp</mat-label>
+                            <mat-form-field>
+                                <input matInput placeholder="Escribir código postal" formControlName="postal_code">
+                            </mat-form-field>
+                        </div>
+
+                        <div class="form-field empty"></div>
+                    </div>
+
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div style="height: 24px;"></div>
+
+            <mat-accordion>
+                <mat-expansion-panel [expanded]="true" >
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Configuración
+                        </mat-panel-title>
+                        <mat-panel-description>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div class="form-row">
+                        <div class="form-field num-ext">
+                            <mat-slide-toggle formControlName="show_admin_users">Mostrar al gestionar usuarios</mat-slide-toggle>
+                        </div>
+
+                        <div class="form-field num-ext">
+                            <mat-slide-toggle formControlName="status">Activo</mat-slide-toggle>
+                        </div>
+
+                        <div class="form-field empty"></div>
+
+                        <div class="form-field empty"></div>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div class="toolbar-bottom">
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('catalogos/sucursales')">Cancelar</button>
+                <button mat-flat-button class="btn" type="submit">{{title}}</button>
+            </div>
+        </form>
+    </div>
+</div>

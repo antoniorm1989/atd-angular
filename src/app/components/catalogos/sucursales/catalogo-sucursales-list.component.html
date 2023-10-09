@@ -13,35 +13,39 @@
             <img src="../../assets/images/empty-list.png" alt="empty logo" class="img">
             <span class="text">Aún no tienes sucursales en el catálogo, para poder ver información favor de agregar una
                 sucursal.</span>
-            <button mat-flat-button class="btn"><mat-icon>add</mat-icon>Agregar sucursal</button>
+            <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Agregar sucursal</button>
         </div>
         <div *ngIf="hasRecords" class="container-list">
+            <div class="toolbar">
+                <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Agregar sucursal</button>
+            </div>
+
             <div class="mat-elevation-z8">
                 <table mat-table [dataSource]="dataSource">
 
                     <ng-container matColumnDef="name">
                         <th mat-header-cell *matHeaderCellDef>Sucursal</th>
-                        <td mat-cell *matCellDef="let element"> {{element.name}}</td>
+                        <td mat-cell *matCellDef="let element">{{element.name}}</td>
                     </ng-container>
 
                     <ng-container matColumnDef="phone">
                         <th mat-header-cell *matHeaderCellDef>Teléfono</th>
-                        <td mat-cell *matCellDef="let element"> {{element.phone}}</td>
+                        <td mat-cell *matCellDef="let element">{{element.phone}}</td>
                     </ng-container>
 
                     <ng-container matColumnDef="location">
                         <th mat-header-cell *matHeaderCellDef>Ubicación</th>
-                        <td mat-cell *matCellDef="let element"> {{element.location}}</td>
+                        <td mat-cell *matCellDef="let element">{{element.neighborhood}}, {{element.street}} #{{element.internal_number}}</td>
                     </ng-container>
 
                     <ng-container matColumnDef="created">
                         <th mat-header-cell *matHeaderCellDef>Registro</th>
-                        <td mat-cell *matCellDef="let element"> {{formatDate(element.created)}}</td>
+                        <td mat-cell *matCellDef="let element">{{formatDate(element.created_at)}}</td>
                     </ng-container>
 
                     <ng-container matColumnDef="modified">
                         <th mat-header-cell *matHeaderCellDef>Edición</th>
-                        <td mat-cell *matCellDef="let element">{{formatDate(element.modified)}}</td>
+                        <td mat-cell *matCellDef="let element">{{formatDate(element.updated_at)}}</td>
                     </ng-container>
 
                     <ng-container matColumnDef="user">
@@ -65,7 +69,7 @@
                     <ng-container matColumnDef="actions">
                         <th mat-header-cell *matHeaderCellDef></th>
                         <td mat-cell *matCellDef="let element">
-                            <button mat-icon-button aria-label="" (click)="onEdit(element.id)" >
+                            <button mat-icon-button aria-label="" (click)="onEdit(element.id)">
                                 <mat-icon>edit</mat-icon>
                             </button>
                         </td>

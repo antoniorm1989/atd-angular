@@ -21,3 +21,22 @@ body {
 .mat-mdc-checkbox.mat-accent .mdc-checkbox--selected~.mdc-checkbox__ripple {
     background: #b79200;
 }
+
+.text-1 {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.01em;
+    text-align: left;
+}
+
+.btn {
+    background-color: #BA9400 !important;
+    color: #fff !important;
+}
+
+.btn.secundary {
+    background-color: #fff !important;
+    color: #BA9400 !important;
+    border: 1px solid #BA9400 !important;
+}

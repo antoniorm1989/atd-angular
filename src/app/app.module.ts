@@ -25,7 +25,10 @@ import { CommonModule } from '@angular/common';
 import { CatalogoSucursalesListComponent } from './components/catalogos/sucursales/catalogo-sucursales-list.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { CatalogoSucursalesComponent } from './components/catalogos/sucursales/sucursal/catalogo-sucursales.component';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatSelectModule } from '@angular/material/select';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -38,7 +41,8 @@ export function tokenGetter() {
     AlmacenComponent,
     SuscursalesComponent,
     CatalogosComponent,
-    CatalogoSucursalesListComponent
+    CatalogoSucursalesListComponent,
+    CatalogoSucursalesComponent
   ],
   imports: [
     BrowserModule,
@@ -65,6 +69,8 @@ export function tokenGetter() {
         tokenGetter: tokenGetter,
       },
     }),
+    MatExpansionModule,
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -48,7 +48,17 @@ export class CatalogoSucursalesListComponent{
     return name[0].toUpperCase() + lastName[0].toUpperCase();
   }
 
+  onNew(){
+    this.router.navigate(['catalogos/sucursales/detail']);
+  }
+
+  onView(id: string){
+    this.router.navigate(['catalogos/sucursales/detail', id]);
+  }
+
   onEdit(id: string){
-    console.log(id)
+    this.router.navigate(['catalogos/sucursales/detail', id], {
+      queryParams: { action: 'edit' },
+    });
   }
 }
