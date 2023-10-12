@@ -38,7 +38,8 @@ export class AppComponent implements OnDestroy {
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
         let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","lastname":""}');
-        this.userInitials = userData.name[0].toUpperCase() + userData.lastname[0].toUpperCase();
+        if (userData.name != '' && userData.lastname)
+          this.userInitials = userData.name[0].toUpperCase() + userData.lastname[0].toUpperCase();
       }
     });
   }

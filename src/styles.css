@@ -11,9 +11,9 @@ body {
 }
 
 
-.mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background, 
-.mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled:indeterminate~.mdc-checkbox__background, 
-.mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control[data-indeterminate=true]:enabled~.mdc-checkbox__background{
+.mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background,
+.mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled:indeterminate~.mdc-checkbox__background,
+.mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control[data-indeterminate=true]:enabled~.mdc-checkbox__background {
     border-color: #b79200 !important;
     background-color: #b79200 !important;
 }
@@ -39,4 +39,22 @@ body {
     background-color: #fff !important;
     color: #BA9400 !important;
     border: 1px solid #BA9400 !important;
+}
+
+.mat-expansion-indicator::after {
+    color: #b79200;
+}
+
+.mat-mdc-slide-toggle.mat-primary {
+    --mdc-switch-selected-focus-state-layer-color: #b79200;
+    --mdc-switch-selected-handle-color: #b79200;
+    --mdc-switch-selected-hover-state-layer-color: #b79200;
+    --mdc-switch-selected-pressed-state-layer-color: #b79200;
+    --mdc-switch-selected-focus-handle-color: #9a7b02;
+    --mdc-switch-selected-hover-handle-color: #9a7b02;
+    --mdc-switch-selected-pressed-handle-color: #9a7b02;
+    --mdc-switch-selected-focus-track-color: #eadfb2;
+    --mdc-switch-selected-hover-track-color: #eadfb2;
+    --mdc-switch-selected-pressed-track-color: #eadfb2;
+    --mdc-switch-selected-track-color: #eadfb2;
 }

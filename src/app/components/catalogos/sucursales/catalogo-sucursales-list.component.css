@@ -65,22 +65,27 @@
 
 /* list */
 .catalogo-sucursales-list .container .container-list {
+    margin-top: 30px;
 }
 
-.catalogo-sucursales-list .container .container-list .toolbar{
+.catalogo-sucursales-list .container .container-list .table{
+    margin-top: 30px;
+}
+
+.catalogo-sucursales-list .container .container-list .toolbar {
     display: flex;
     justify-content: flex-end;
     align-items: center;
 }
 
-.catalogo-sucursales-list .container .container-list .toolbar{
+.catalogo-sucursales-list .container .container-list .toolbar {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     margin-bottom: 12px;
 }
 
-.catalogo-sucursales-list .container .container-list .toolbar .btn{
+.catalogo-sucursales-list .container .container-list .toolbar .btn {
     width: 170px;
     height: 40px;
     border-radius: 8px;
@@ -105,6 +110,7 @@
     align-items: center;
     font-size: 14px;
     color: #ffffff;
+    min-width: 28px;
 }
 
 .catalogo-sucursales-list .container .container-list .user-wrapper .text {
@@ -113,4 +119,24 @@
     letter-spacing: 0px;
     text-align: center;
     margin-left: 8px;
+}
+
+.catalogo-sucursales-list .container .title-grid {
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: 0px;
+}
+
+.catalogo-sucursales-list .container .title-grid:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    color: #BA9400;
+}
+
+.catalogo-sucursales-list .container .table .mat-icon{
+    color: #ba9400;
+}
+
+.mat-mdc-header-row{
+    background-color: #eadfb2;
 }
