@@ -1,0 +1,187 @@
+.catalogo-almacenes {
+    padding: 34px;
+    background-color: #F7F7F7;
+    height: 100%;
+}
+
+.catalogo-almacenes .toolbar .icon {
+    font-size: 23px;
+}
+
+.catalogo-almacenes .toolbar .toolbar-title {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.catalogo-almacenes .toolbar .form-container-toolbar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.catalogo-almacenes .form-container .form-container-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.catalogo-almacenes .form-container .form-container-toolbar .id {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 22px;
+    letter-spacing: 0em;
+    background-color: #F6FAFF;
+    border-radius: 20px;
+    padding: 8px;
+}
+
+.catalogo-almacenes .toolbar .title {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 54px;
+    letter-spacing: 0.01em;
+    margin-left: 12px;
+}
+
+.catalogo-almacenes .toolbar .breadcrumb-item {
+    font-size: 16px;
+    line-height: 19px;
+    letter-spacing: 0.01em;
+    color: #BA9400;
+}
+
+.catalogo-almacenes .toolbar .toolbar-breadcrumb {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.catalogo-almacenes .toolbar .link-breadcrumb {
+    cursor: pointer;
+}
+
+.catalogo-almacenes .toolbar .btn {
+    margin-left: auto;
+    background-color: transparent !important;
+    color: #BA9400 !important;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: 0.01em;
+    text-align: left;
+}
+
+.catalogo-almacenes .toolbar .link-breadcrumb:hover {
+    text-decoration: underline;
+}
+
+/* container */
+.catalogo-almacenes .container .form-container {
+    display: flex;
+    background-color: #fff;
+    border-radius: 4px;
+    margin-top: 24px;
+    padding: 24px;
+    flex-direction: column;
+    margin-bottom: 24px;
+}
+
+.catalogo-almacenes .container .form-container .title {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 36px;
+    letter-spacing: 0em;
+}
+
+.catalogo-almacenes .container .form-row {
+    justify-content: space-between;
+    display: grid;
+    gap: 40px;
+}
+
+.catalogo-almacenes .container .form-row.one-col {
+    grid-template-columns: repeat(1, 1fr);
+}
+
+.catalogo-almacenes .container .form-row.two-col {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.catalogo-almacenes .container .form-row.four-col {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.form-field.name {
+    grid-column: span 2;
+}
+
+.accordion-address {
+    margin-bottom: 24px;
+}
+
+
+.toolbar-bottom {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 24px;
+}
+
+.toolbar-bottom {
+    height: 100px;
+}
+
+.toolbar-bottom .btn.secundary {
+    margin-right: 24px;
+}
+
+mat-panel-title {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 36px;
+    letter-spacing: 0em;
+}
+
+mat-panel-description {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 36px;
+}
+
+.mat-expansion-panel-header-description{
+    font-size: 20px;
+    flex-grow: unset !important;
+}
+
+.mat-expansion-panel-header-title{
+    flex-grow: 0 !important;
+}
+
+@media only screen and (max-width: 1084px) {
+    .catalogo-almacenes .container .form-row.four-col {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media only screen and (max-width: 835px) {
+    .catalogo-almacenes .container .form-row.four-col {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .form-field.phone {
+        grid-column: span 2;
+    }
+}
+
+@media only screen and (max-width: 587px) {
+    .catalogo-almacenes .container .form-row.two-col,
+    .catalogo-almacenes .container .form-row.four-col {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
