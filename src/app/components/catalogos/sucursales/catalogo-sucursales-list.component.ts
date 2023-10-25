@@ -44,8 +44,8 @@ export class CatalogoSucursalesListComponent{
     return `${month}/${day}/${year}`;
   }
 
-  getUserName(name: string, lastName: string): string {
-    return name[0].toUpperCase() + lastName[0].toUpperCase();
+  getUserName(name: string, lastname: string): string {
+    return name[0].toUpperCase() + lastname[0].toUpperCase();
   }
 
   onNew(){

@@ -1,0 +1,32 @@
+name: Deploy Angular App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Angular App
+        run: npm run build
+
+      - name: Deploy to VPS
+        run: |
+          ssh $HOME/.ssh/atd $SSH_USERNAME@208.109.188.104 "cd /home/$SSH_USERNAME/atd-angular && git pull && npm install && ng build --configuration production --aot"
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_USERNAME: ${{ secrets.USERNAME }}

@@ -17,4 +17,13 @@ export class CatalogoAlmacenModel {
   created_at: Date | undefined;
   updated_at: Date | undefined;
   user: User | undefined;
+  sucursales: Array<CatalogoAlmacenSucursalModel> | undefined;
+}
+
+export class CatalogoAlmacenSucursalModel {
+  id: number | undefined;
+  sucursal_id: number | undefined;
+  name: string | undefined;
+  created_at: Date | undefined;
+  user: User | undefined;
 }

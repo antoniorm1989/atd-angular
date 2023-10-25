@@ -164,6 +164,77 @@ mat-panel-description {
     flex-grow: 0 !important;
 }
 
+.accordion-sucursales .mat-expansion-panel-header-title{
+    flex-grow: 1 !important;
+}
+
+.catalogo-almacenes .table .user-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.catalogo-almacenes .table .user-wrapper .circle-initials {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #BA9400;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    color: #ffffff;
+    min-width: 28px;
+}
+
+.catalogo-almacenes .table .user-wrapper .text {
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: 0px;
+    text-align: center;
+    margin-left: 8px;
+}
+
+.catalogo-almacenes .table .mat-icon{
+    color: #ba9400;
+}
+
+.mat-mdc-header-row{
+    background-color: #eadfb2 !important;
+}
+
+.add-sucursal-container{
+    justify-content: center;
+}
+
+.add-sucursal-container button{
+    --mdc-fab-container-color: #ba9400 !important;
+}
+
+.catalogo-almacenes .container-empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 600px;
+    margin: auto;
+    padding: 50px 0px;
+}
+
+.catalogo-almacenes .container-empty .img {
+    height: 67px;
+    width: 67px;
+}
+
+.catalogo-almacenes .container-empty .text {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 32px;
+    letter-spacing: 0.01em;
+    text-align: center;
+}
+
+
 @media only screen and (max-width: 1084px) {
     .catalogo-almacenes .container .form-row.four-col {
         grid-template-columns: repeat(3, 1fr);

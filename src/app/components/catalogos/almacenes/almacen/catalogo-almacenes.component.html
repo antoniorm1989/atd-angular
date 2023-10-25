@@ -9,7 +9,8 @@
             <span class="link-breadcrumb" (click)="navigate('catalogos/almacenes')"> Catálogo almacenes </span> /
             <span class="breadcrumb-item">{{title}}</span>
 
-            <button *ngIf="isReadOnly" mat-button class="btn" (click)="makeEditMode()"><mat-icon>edit</mat-icon>Editar información</button>
+            <button *ngIf="isReadOnly" mat-button class="btn" (click)="makeEditMode()"><mat-icon>edit</mat-icon>Editar
+                información</button>
         </div>
     </div>
     <div class="container">
@@ -26,7 +27,8 @@
                         <mat-label class="text-1">Almacen*</mat-label>
                         <mat-label class="text-1" *ngIf="isReadOnly">{{this.f['name'].value}}</mat-label>
                         <mat-form-field *ngIf="!isReadOnly">
-                            <input matInput placeholder="Escribir nombre de la almacen" formControlName="name" [ngClass]="{ 'is-invalid': submitted && f['name'].errors }" required>
+                            <input matInput placeholder="Escribir nombre de la almacen" formControlName="name"
+                                [ngClass]="{ 'is-invalid': submitted && f['name'].errors }" required>
                         </mat-form-field>
                     </div>
                     <div class="form-field phone">
@@ -67,11 +69,13 @@
                     <div class="form-row four-col">
                         <div class="form-field estado">
                             <mat-label class="text-1">Estado</mat-label>
-                            <mat-label class="text-1" *ngIf="isReadOnly">{{getStateByKey(this.f['state_key'].value)}}</mat-label>
+                            <mat-label class="text-1"
+                                *ngIf="isReadOnly">{{getStateByKey(this.f['state_key'].value)}}</mat-label>
                             <mat-form-field *ngIf="!isReadOnly">
                                 <mat-label>Seleccionar estado</mat-label>
                                 <mat-label class="text-1" *ngIf="isReadOnly">{{this.f['state_key'].value}} </mat-label>
-                                <mat-select [(value)]="selectedState" (selectionChange)="onStateChange($event)" formControlName="state_key">
+                                <mat-select [(value)]="selectedState" (selectionChange)="onStateChange($event)"
+                                    formControlName="state_key">
                                     <mat-option>None</mat-option>
                                     <mat-option *ngFor="let estado of states" [value]="estado.key">{{ estado.name }}
                                     </mat-option>
@@ -80,7 +84,8 @@
                         </div>
                         <div class="form-field municipio">
                             <mat-label class="text-1">Municipio</mat-label>
-                            <mat-label class="text-1" *ngIf="isReadOnly">{{getCityByKey(this.f['city_key'].value)}}</mat-label>
+                            <mat-label class="text-1"
+                                *ngIf="isReadOnly">{{getCityByKey(this.f['city_key'].value)}}</mat-label>
                             <mat-form-field *ngIf="!isReadOnly">
                                 <mat-label>Seleccionar municipio</mat-label>
                                 <mat-select formControlName="city_key">
@@ -133,6 +138,86 @@
 
             <div style="height: 24px;"></div>
 
+            <mat-accordion class="accordion-sucursales">
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Sucursales a surtir
+                        </mat-panel-title>
+                        <mat-panel-description>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+
+                    <div class="form-row two-col" *ngIf="!isReadOnly">
+                        <div class="form-field">
+                            <mat-label class="text-1">Sucursal</mat-label>
+                            <mat-form-field>
+                                <mat-label>Seleccionar sucursal</mat-label>
+                                <mat-select [(value)]="selectedSucursal">
+                                    <mat-option>None</mat-option>
+                                    <mat-option *ngFor="let sucursal of filteredSucursales" [value]="sucursal">{{ sucursal.name }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="form-field add-sucursal-container">
+                            <button type="button" mat-mini-fab (click)="addSucursal()">
+                                <mat-icon>add</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-row one-col">
+                        <div *ngIf="!hasRecords" class="container-empty">
+                            <img src="../../assets/images/empty-sucursales-alamcen.png" alt="empty logo" class="img">
+                            <span class="text">
+                                Al parecer aún no tienes información para leer, cuando tengas aparecerán en está sección.
+                            </span>
+                        </div>
+                        <table *ngIf="hasRecords" class="table" mat-table [dataSource]="dataSourceSucursales">
+
+                            <ng-container matColumnDef="name">
+                                <th mat-header-cell *matHeaderCellDef>Sucursal</th>
+                                <td mat-cell *matCellDef="let element">{{element.name}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="user">
+                                <th mat-header-cell *matHeaderCellDef>Usuario</th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div class="user-wrapper">
+                                        <div class="circle-initials" mat-mini-fab color="primary">
+                                            {{getUserName(element.user.name, element.user.lastname)}}</div>
+                                        <span class="text">{{element.user.name}} {{element.user.lastname}}</span>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="created_at">
+                                <th mat-header-cell *matHeaderCellDef>Fecha de relación</th>
+                                <td mat-cell *matCellDef="let element">{{formatDate(element.created_at)}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="actions">
+                                <th mat-header-cell *matHeaderCellDef></th>
+                                <td mat-cell *matCellDef="let element">
+                                    <button mat-icon-button aria-label="remove sucursal"
+                                        (click)="removeSucursal(element)">
+                                        <mat-icon *ngIf="!isReadOnly">delete</mat-icon>
+                                    </button>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div style="height: 24px;"></div>
+
             <mat-accordion>
                 <mat-expansion-panel [expanded]="true">
                     <mat-expansion-panel-header>
@@ -144,7 +229,8 @@
                     </mat-expansion-panel-header>
                     <div class="form-row four-col">
                         <div class="form-field num-ext">
-                            <mat-slide-toggle formControlName="show_admin_users" color="primary">Mostrar al gestionar usuarios</mat-slide-toggle>
+                            <mat-slide-toggle formControlName="show_admin_users" color="primary">Mostrar al gestionar
+                                usuarios</mat-slide-toggle>
                         </div>
 
                         <div class="form-field num-ext">

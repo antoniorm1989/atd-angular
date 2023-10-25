@@ -1,10 +1,14 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router, NavigationEnd, Event } from '@angular/router';
-import { CatalogoAlmacenModel } from 'src/app/models/catalogo-almacen.model';
+import { CatalogoAlmacenModel, CatalogoAlmacenSucursalModel } from 'src/app/models/catalogo-almacen.model';
+import { CatalogoSucursalModel } from 'src/app/models/catalogo-sucursal.model';
 import { CatalogoCityModel, CatalogoStateModel } from 'src/app/models/catalogos.model';
 import { User } from 'src/app/models/user';
 import { CatalogoAlmacenesService } from 'src/app/services/catalogo-almacenes.service';
+import { CatalogoSucursalesService } from 'src/app/services/catalogo-sucursales.service';
 import { CatalogosService } from 'src/app/services/catalogos.service';
 
 @Component({
@@ -26,7 +30,15 @@ export class CatalogoAlmacenesComponent {
   selectedState = '';
   id = 0;
 
-  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogosService: CatalogosService, private catalogoAlmacenesService: CatalogoAlmacenesService, private router: Router) {
+  hasRecords = false;
+  displayedColumns: string[] = ['name', 'user', 'created_at', 'actions'];
+  dataSourceSucursales = new MatTableDataSource<CatalogoAlmacenSucursalModel>([]);
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  sucursales!: CatalogoSucursalModel[];
+  filteredSucursales!: CatalogoSucursalModel[];
+  selectedSucursal!: CatalogoSucursalModel | undefined;
+
+  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogosService: CatalogosService, private catalogoAlmacenesService: CatalogoAlmacenesService, private router: Router, private catalogoSucursalesService: CatalogoSucursalesService) {
 
     this.form = this.formBuilder.group({
       name: [''],
@@ -41,7 +53,7 @@ export class CatalogoAlmacenesComponent {
       status: [''],
       city_key: [''],
       state_key: [''],
-      created_at: ['created_at']
+      created_at: ['']
     });
 
     this.router.events.subscribe((event: Event) => {
@@ -78,6 +90,11 @@ export class CatalogoAlmacenesComponent {
                     }
                   });
 
+                if (data.sucursales && data.sucursales.length > 0) {
+                  this.dataSourceSucursales = new MatTableDataSource<CatalogoAlmacenSucursalModel>(data.sucursales);
+                  this.dataSourceSucursales.paginator = this.paginator;
+                }
+
                 this.route.queryParams.subscribe(params => {
                   switch (params['action']) {
                     case undefined:
@@ -94,6 +111,7 @@ export class CatalogoAlmacenesComponent {
               },
               error: (e) => {
               }
+
             });
           } else {
             this.action = 'new';
@@ -101,6 +119,19 @@ export class CatalogoAlmacenesComponent {
           }
         });
 
+        this.catalogoSucursalesService.getAll().subscribe({
+          next: (data) => {
+            if (data.length > 0) {
+              this.sucursales = data;
+              this.filteredSucursales = this.sucursales;
+              setTimeout(() => {
+                this.filterSucursales();
+              }, 1000);
+            }
+          },
+          error: (e) => {
+          }
+        });
 
       }
     });
@@ -158,6 +189,7 @@ export class CatalogoAlmacenesComponent {
     almacen.city_key = this.f['city_key'].value || null;
     almacen.state_key = this.f['state_key'].value || null;
     almacen.user = user;
+    almacen.sucursales = this.dataSourceSucursales.data;
 
     if (this.action == 'new') {
       this.catalogoAlmacenesService.create(almacen).subscribe({
@@ -191,19 +223,68 @@ export class CatalogoAlmacenesComponent {
     return `${month}/${day}/${year}`;
   }
 
-  makeEditMode(){
+  makeEditMode() {
     this.action = 'edit';
     this.title = 'Editar almacen';
     this.form.enable();
   }
 
-  getStateByKey(key: string): string{
+  getStateByKey(key: string): string {
     let state = this.states.filter(s => s.key == key);
     return state.length > 0 ? state[0].name : '';
   }
 
-  getCityByKey(key: string): string{
+  getCityByKey(key: string): string {
     let city = this.cities.filter(s => s.key == key);
     return city.length > 0 ? city[0].name : '';
   }
+
+  getUserName(name: string, lastname: string): string {
+    return name[0].toUpperCase() + lastname[0].toUpperCase();
+  }
+
+  addSucursal() {
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","lastname":""}');
+    let user = new User();
+    user.user_id = userData.user_id;
+    user.name = userData.name;
+    user.lastname = userData.lastname;
+
+    let newSucursal = new CatalogoAlmacenSucursalModel();
+    newSucursal.id = this.selectedSucursal?.id
+    newSucursal.name = this.selectedSucursal!.name;
+    newSucursal.created_at = new Date();
+    newSucursal.sucursal_id = this.selectedSucursal!.id;
+    newSucursal.user = user;
+
+    this.dataSourceSucursales.data.push(newSucursal);
+    this.dataSourceSucursales._updateChangeSubscription();
+
+    this.selectedSucursal = undefined;
+
+    this.filterSucursales();
+  }
+
+  removeSucursal(sucursal: CatalogoAlmacenSucursalModel) {
+    const indexToRemove = this.dataSourceSucursales.data.findIndex(item => item.id === sucursal.id);
+    if (indexToRemove !== -1) {
+      this.dataSourceSucursales.data.splice(indexToRemove, 1);
+      this.dataSourceSucursales._updateChangeSubscription();
+    }
+
+    this.filterSucursales();
+  }
+
+  filterSucursales() {
+    let almacenSucursales = this.dataSourceSucursales.data.map(as => as.sucursal_id);
+    this.filteredSucursales = this.sucursales.filter(function (i) {
+      return !almacenSucursales.includes(i.id);
+    });
+
+    if (almacenSucursales.length == 0)
+      this.hasRecords = false;
+    else
+      this.hasRecords = true;
+  }
+
 }
