@@ -41,7 +41,7 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          ssh $HOME/.ssh/atd $SSH_USERNAME@208.109.188.104 "cd /home/$SSH_USERNAME/atd-angular && npm install && ng build --configuration production --aot"
+          ssh $HOME/.ssh/atd $SSH_USERNAME@208.109.188.104 "cd /home/$SSH_USERNAME/atd-angular &&  /home/$SSH_USERNAME/.nvm/versions/node/v21.0.0/bin/node /home/$SSH_USERNAME/.nvm/versions/node/v21.0.0/bin/npm install && ng build --configuration production --aot"
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_USERNAME: ${{ secrets.USERNAME }}
