@@ -24,9 +24,24 @@ jobs:
       - name: Build Angular App
         run: npm run build
 
+      - name: Set up SSH key
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p $HOME/.ssh
+          echo "$SSH_PRIVATE_KEY" > $HOME/.ssh/atd
+          chmod 600 $HOME/.ssh/atd
+          ssh-keyscan 208.109.188.104 >> $HOME/.ssh/known_hosts
+    
+      - name: Git pull
+        env:
+          SSH_USERNAME: ${{ secrets.USERNAME }}
+        run: |
+          ssh -i $HOME/.ssh/atd $SSH_USERNAME@208.109.188.104 "cd /home/$SSH_USERNAME/atd-angular && git pull"
+
       - name: Deploy to VPS
         run: |
-          ssh $HOME/.ssh/atd $SSH_USERNAME@208.109.188.104 "cd /home/$SSH_USERNAME/atd-angular && git pull && npm install && ng build --configuration production --aot"
+          ssh $HOME/.ssh/atd $SSH_USERNAME@208.109.188.104 "cd /home/$SSH_USERNAME/atd-angular && npm install && ng build --configuration production --aot"
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_USERNAME: ${{ secrets.USERNAME }}
