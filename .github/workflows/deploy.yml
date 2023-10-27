@@ -45,3 +45,10 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_USERNAME: ${{ secrets.USERNAME }}
+
+      - name: Copy dist to /var/www/html/
+        run: |
+          ssh -i $HOME/.ssh/atd $SSH_USERNAME@208.109.188.104 "cd /home/$SSH_USERNAME/atd-angular && export PATH=$PATH:/home/$SSH_USERNAME/.nvm/versions/node/v21.0.0/bin && rm -r /var/www/html/atd-app/* && sudo scp -r /home/atdadmin/atd-angular/dist/atd-app/ /var/www/html/"
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_USERNAME: ${{ secrets.USERNAME }}

@@ -6,12 +6,14 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { User } from '../models/user';
+import { environment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
+  private apiUrl = environment.apiUrl;
   private tokenSubject: BehaviorSubject<User | null>;
   public token: Observable<User | null>;
 
@@ -30,7 +32,7 @@ export class UserService {
 
   login(email: string, password: string) {
 
-    return this.http.post<User>(`http://localhost:3000/auth/login`, { email, password })
+    return this.http.post<User>(`${environment.apiUrl}auth/login`, { email, password })
       .pipe(
         map(token => {
           const userToken: User = token;

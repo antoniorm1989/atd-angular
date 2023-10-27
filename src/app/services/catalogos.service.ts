@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
+import { environment } from 'src/environments/environment';
 import { CatalogoCityModel, CatalogoStateModel } from '../models/catalogos.model';
 
 @Injectable({
@@ -13,10 +13,10 @@ export class CatalogosService {
   }
 
   getStates(): Observable<Array<CatalogoStateModel>> {
-    return this.http.get<Array<CatalogoStateModel>>(`http://localhost:3000/catalogs/getStates`);
+    return this.http.get<Array<CatalogoStateModel>>(`${environment.apiUrl}catalogs/getStates`);
   }
 
   getCitiesByState(state: string): Observable<Array<CatalogoCityModel>> {
-    return this.http.get<Array<CatalogoCityModel>>(`http://localhost:3000/catalogs/getCities/${state}`);
+    return this.http.get<Array<CatalogoCityModel>>(`${environment.apiUrl}catalogs/getCities/${state}`);
   }
 }
