@@ -85,6 +85,9 @@
             "production": {
               "browserTarget": "atd-app:build:production"
             },
+            "staging": {
+              "browserTarget": "atd-app:build:staging"
+            },
             "development": {
               "browserTarget": "atd-app:build:development"
             }
