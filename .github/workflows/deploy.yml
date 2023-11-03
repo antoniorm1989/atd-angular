@@ -53,6 +53,8 @@ jobs:
 
       - name: Regenerate .htaccess
         run: |
-          ssh -i $HOME/.ssh/atd $SSH_USERNAME@208.109.188.104 "cp /$HOME/.htaccess_prod /var/www/html/atd-app/.htaccess"
+          ssh -i $HOME/.ssh/atd $SSH_USERNAME@208.109.188.104 "cp -r /home/$SSH_USERNAME/.htaccess_prod /var/www/html/atd-app/.htaccess"
+        env:
+          SSH_USERNAME: ${{ secrets.USERNAME }}
 
 
