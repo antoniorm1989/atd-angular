@@ -15,7 +15,7 @@ export class AppComponent implements OnDestroy {
   mobileQuery: MediaQueryList;
   fillerNav = [
     {
-      text: 'Alamacen', icon: 'fa-brands fa-dropbox', href: 'almacen'
+      text: 'Almacen', icon: 'fa-brands fa-dropbox', href: 'almacen'
     },
     {
       text: 'Sucursales', icon: 'fa-solid fa-clipboard-check', href: 'sucursales'
