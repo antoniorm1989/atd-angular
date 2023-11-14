@@ -1,0 +1,208 @@
+<div class="catalogo-roles">
+    <div class="toolbar">
+        <div class="toolbar-title">
+            <i class="icon fa-regular fa-building"></i>
+            <span class="title">Catálogo roles</span>
+        </div>
+        <div class="toolbar-breadcrumb">
+            <span class="link-breadcrumb" (click)="navigate('catalogos')"> Catálogos </span> /
+            <span class="link-breadcrumb" (click)="navigate('catalogos/roles')"> Catálogo roles </span> /
+            <span class="breadcrumb-item">{{title}}</span>
+
+            <button *ngIf="isReadOnly" mat-button class="btn" (click)="makeEditMode()"><mat-icon>edit</mat-icon>Editar
+                información</button>
+        </div>
+    </div>
+    <div class="container">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+            <div class="form-container">
+                <div class="form-container-toolbar">
+                    <span class="title">Datos generales</span>
+                    <span *ngIf="action != 'new'" class="id"><b>ID</b> {{id}}</span>
+                </div>
+
+                <div class="form-row one-col">
+                    <div class="form-field name">
+                        <mat-label class="text-1">Rol*</mat-label>
+                        <mat-label class="text-1" *ngIf="isReadOnly">{{this.f['name'].value}}</mat-label>
+                        <mat-form-field *ngIf="!isReadOnly">
+                            <input matInput placeholder="Escribir nombre de la rol" formControlName="name"
+                                [ngClass]="{ 'is-invalid': submitted && f['name'].errors }" required>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="form-row one-col">
+                    <div class="form-field description">
+                        <mat-label class="text-1">Descripción</mat-label>
+                        <mat-label class="text-1" *ngIf="isReadOnly">{{this.f['description'].value}}</mat-label>
+                        <mat-form-field *ngIf="!isReadOnly">
+                            <input matInput placeholder="Escribir la descripción de la rol"
+                                formControlName="description">
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+
+            <mat-accordion class="accordion-roles">
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Derechos y permisos
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <div class="form-row one-col rights">
+                        <mat-tab-group>
+                            <mat-tab label="Catálogos">
+                                <mat-accordion class="accordion-roles">
+
+                                    <mat-expansion-panel [expanded]="true">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                Catálogo sucursal
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <mat-grid-list cols="2" rowHeight="30px">
+                                            <mat-grid-tile class="gray">Creación y edición</mat-grid-tile>
+                                            <mat-grid-tile class="gray">
+                                                <mat-checkbox
+                                                    [formControl]="rights.catalogos.sucursal.crearEditar"></mat-checkbox>
+                                            </mat-grid-tile>
+                                            <mat-grid-tile>Consultar</mat-grid-tile>
+                                            <mat-grid-tile>
+                                                <mat-checkbox
+                                                    [formControl]="rights.catalogos.sucursal.consultar"></mat-checkbox>
+                                            </mat-grid-tile>
+                                            <mat-grid-tile class="gray">Inactivar</mat-grid-tile>
+                                            <mat-grid-tile class="gray">
+                                                <mat-checkbox
+                                                    [formControl]="rights.catalogos.sucursal.inactivar"></mat-checkbox>
+                                            </mat-grid-tile>
+                                        </mat-grid-list>
+                                    </mat-expansion-panel>
+
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                Catálogo Almacen
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <mat-grid-list cols="2" rowHeight="30px">
+                                            <mat-grid-tile class="gray">Creación y edición</mat-grid-tile>
+                                            <mat-grid-tile class="gray">
+                                                <mat-checkbox
+                                                    [formControl]="rights.catalogos.almacen.crearEditar"></mat-checkbox>
+                                            </mat-grid-tile>
+                                            <mat-grid-tile>Consultar</mat-grid-tile>
+                                            <mat-grid-tile>
+                                                <mat-checkbox
+                                                    [formControl]="rights.catalogos.almacen.consultar"></mat-checkbox>
+                                            </mat-grid-tile>
+                                            <mat-grid-tile class="gray">Inactivar</mat-grid-tile>
+                                            <mat-grid-tile class="gray">
+                                                <mat-checkbox
+                                                    [formControl]="rights.catalogos.almacen.inactivar"></mat-checkbox>
+                                            </mat-grid-tile>
+                                        </mat-grid-list>
+                                    </mat-expansion-panel>
+
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                Catálogo Rol
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <mat-grid-list cols="2" rowHeight="30px">
+                                            <mat-grid-tile class="gray">Creación y edición</mat-grid-tile>
+                                            <mat-grid-tile class="gray">
+                                                <mat-checkbox
+                                                    [formControl]="rights.catalogos.rol.crearEditar"></mat-checkbox>
+                                            </mat-grid-tile>
+                                            <mat-grid-tile>Consultar</mat-grid-tile>
+                                            <mat-grid-tile>
+                                                <mat-checkbox
+                                                    [formControl]="rights.catalogos.rol.consultar"></mat-checkbox>
+                                            </mat-grid-tile>
+                                            <mat-grid-tile class="gray">Inactivar</mat-grid-tile>
+                                            <mat-grid-tile class="gray">
+                                                <mat-checkbox
+                                                    [formControl]="rights.catalogos.rol.inactivar"></mat-checkbox>
+                                            </mat-grid-tile>
+                                        </mat-grid-list>
+                                    </mat-expansion-panel>
+
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                Catálogo Usuario
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <mat-grid-list cols="2" rowHeight="30px">
+                                            <mat-grid-tile class="gray">Creación y edición</mat-grid-tile>
+                                            <mat-grid-tile class="gray">
+                                                <mat-checkbox
+                                                    [formControl]="rights.catalogos.usuario.crearEditar"></mat-checkbox>
+                                            </mat-grid-tile>
+                                            <mat-grid-tile>Consultar</mat-grid-tile>
+                                            <mat-grid-tile>
+                                                <mat-checkbox
+                                                    [formControl]="rights.catalogos.usuario.consultar"></mat-checkbox>
+                                            </mat-grid-tile>
+                                            <mat-grid-tile class="gray">Inactivar</mat-grid-tile>
+                                            <mat-grid-tile class="gray">
+                                                <mat-checkbox
+                                                    [formControl]="rights.catalogos.usuario.inactivar"></mat-checkbox>
+                                            </mat-grid-tile>
+                                        </mat-grid-list>
+                                    </mat-expansion-panel>
+
+
+                                </mat-accordion>
+                            </mat-tab>
+                            <mat-tab label="Almacenes">Almacenes</mat-tab>
+                            <mat-tab label="Sucursales">Sucursales</mat-tab>
+                            <mat-tab label="Reportes">Reportes</mat-tab>
+                        </mat-tab-group>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div style="height: 24px;"></div>
+
+            <mat-accordion>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Configuración
+                        </mat-panel-title>
+                        <mat-panel-description>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div class="form-row four-col">
+                        <div class="form-field num-ext">
+                            <mat-slide-toggle formControlName="show_admin_users" color="primary">Mostrar al gestionar
+                                usuarios</mat-slide-toggle>
+                        </div>
+
+                        <div class="form-field num-ext">
+                            <mat-slide-toggle formControlName="status" color="primary">Activo</mat-slide-toggle>
+                        </div>
+
+                        <div class="form-field empty"></div>
+
+                        <div class="form-field empty"></div>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div class="toolbar-bottom">
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('catalogos/roles')"
+                    *ngIf="isReadOnly">Regresar</button>
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('catalogos/roles')"
+                    *ngIf="!isReadOnly">Cancelar</button>
+                <button mat-flat-button class="btn" type="submit" *ngIf="!isReadOnly">{{title}}</button>
+            </div>
+        </form>
+    </div>
+</div>

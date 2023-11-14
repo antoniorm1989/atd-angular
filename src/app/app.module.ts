@@ -29,8 +29,12 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CatalogoSucursalesComponent } from './components/catalogos/sucursales/sucursal/catalogo-sucursales.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTabsModule } from '@angular/material/tabs';
 import { CatalogoAlmacenesListComponent } from './components/catalogos/almacenes/catalogo-almacenes-list.component';
 import { CatalogoAlmacenesComponent } from './components/catalogos/almacenes/almacen/catalogo-almacenes.component';
+import { CatalogoRolesListComponent } from './components/catalogos/roles/catalogo-roles-list.component';
+import { CatalogoRolesComponent } from './components/catalogos/roles/rol/catalogo-roles.component';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -46,7 +50,9 @@ export function tokenGetter() {
     CatalogoSucursalesListComponent,
     CatalogoSucursalesComponent,
     CatalogoAlmacenesListComponent,
-    CatalogoAlmacenesComponent
+    CatalogoAlmacenesComponent,
+    CatalogoRolesListComponent,
+    CatalogoRolesComponent
   ],
   imports: [
     BrowserModule,
@@ -74,7 +80,9 @@ export function tokenGetter() {
       },
     }),
     MatExpansionModule,
-    MatSelectModule
+    MatSelectModule,
+    MatTabsModule,
+    MatGridListModule
   ],
   providers: [],
   bootstrap: [AppComponent]
