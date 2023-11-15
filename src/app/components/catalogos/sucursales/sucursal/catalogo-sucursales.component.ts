@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Component, ViewEncapsulation } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router, NavigationEnd, Event } from '@angular/router';
 import { CatalogoSucursalModel } from 'src/app/models/catalogo-sucursal.model';
 import { CatalogoCityModel, CatalogoStateModel } from 'src/app/models/catalogos.model';

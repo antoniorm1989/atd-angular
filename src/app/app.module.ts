@@ -35,6 +35,8 @@ import { CatalogoAlmacenesComponent } from './components/catalogos/almacenes/alm
 import { CatalogoRolesListComponent } from './components/catalogos/roles/catalogo-roles-list.component';
 import { CatalogoRolesComponent } from './components/catalogos/roles/rol/catalogo-roles.component';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { CatalogoArticulosListComponent } from './components/catalogos/articulos/catalogo-articulo-list.component';
+import { CatalogoArticulosComponent } from './components/catalogos/articulos/articulo/catalogo-articulo.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -52,7 +54,9 @@ export function tokenGetter() {
     CatalogoAlmacenesListComponent,
     CatalogoAlmacenesComponent,
     CatalogoRolesListComponent,
-    CatalogoRolesComponent
+    CatalogoRolesComponent,
+    CatalogoArticulosListComponent,
+    CatalogoArticulosComponent
   ],
   imports: [
     BrowserModule,
