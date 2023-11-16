@@ -38,7 +38,7 @@ export class CatalogoRolesComponent {
       usuario: {
         crearEditar: new FormControl(false),
         consultar: new FormControl(false),
-        inactivar:new FormControl(false)
+        inactivar: new FormControl(false)
       }
     }
   };
@@ -196,23 +196,25 @@ export class CatalogoRolesComponent {
   }
 
   setRights(dataString: string | undefined) {
-    var data = JSON.parse(dataString || '{}');
+    if (dataString) {
+      var data = JSON.parse(dataString);
 
-    this.rights.catalogos.sucursal.crearEditar.setValue(data.catalogos.sucursal.crearEditar);
-    this.rights.catalogos.sucursal.consultar.setValue(data.catalogos.sucursal.consultar);
-    this.rights.catalogos.sucursal.inactivar.setValue(data.catalogos.sucursal.inactivar);
+      this.rights.catalogos.sucursal.crearEditar.setValue(data.catalogos.sucursal.crearEditar);
+      this.rights.catalogos.sucursal.consultar.setValue(data.catalogos.sucursal.consultar);
+      this.rights.catalogos.sucursal.inactivar.setValue(data.catalogos.sucursal.inactivar);
 
-    this.rights.catalogos.almacen.crearEditar.setValue(data.catalogos.almacen.crearEditar);
-    this.rights.catalogos.almacen.consultar.setValue(data.catalogos.almacen.consultar);
-    this.rights.catalogos.almacen.inactivar.setValue(data.catalogos.almacen.inactivar);
+      this.rights.catalogos.almacen.crearEditar.setValue(data.catalogos.almacen.crearEditar);
+      this.rights.catalogos.almacen.consultar.setValue(data.catalogos.almacen.consultar);
+      this.rights.catalogos.almacen.inactivar.setValue(data.catalogos.almacen.inactivar);
 
-    this.rights.catalogos.rol.crearEditar.setValue(data.catalogos.rol.crearEditar);
-    this.rights.catalogos.rol.consultar.setValue(data.catalogos.rol.consultar);
-    this.rights.catalogos.rol.inactivar.setValue(data.catalogos.rol.inactivar);
+      this.rights.catalogos.rol.crearEditar.setValue(data.catalogos.rol.crearEditar);
+      this.rights.catalogos.rol.consultar.setValue(data.catalogos.rol.consultar);
+      this.rights.catalogos.rol.inactivar.setValue(data.catalogos.rol.inactivar);
 
-    this.rights.catalogos.usuario.crearEditar.setValue(data.catalogos.usuario.crearEditar);
-    this.rights.catalogos.usuario.consultar.setValue(data.catalogos.usuario.consultar);
-    this.rights.catalogos.usuario.inactivar.setValue(data.catalogos.usuario.inactivar);
+      this.rights.catalogos.usuario.crearEditar.setValue(data.catalogos.usuario.crearEditar);
+      this.rights.catalogos.usuario.consultar.setValue(data.catalogos.usuario.consultar);
+      this.rights.catalogos.usuario.inactivar.setValue(data.catalogos.usuario.inactivar);
+    }
   }
 
   makeDisabledRights(disabled: boolean) {
