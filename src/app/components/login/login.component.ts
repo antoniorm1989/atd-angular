@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { UserService } from 'src/app/services/user.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
@@ -23,9 +24,9 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private _snackBar: MatSnackBar
   ) {
-
     this.form = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(4)]],
@@ -65,6 +66,7 @@ export class LoginComponent implements OnInit {
       .pipe(first())
       .subscribe({
         next: (data) => {
+          this.openMessageSnack();
           localStorage.setItem('user_data', JSON.stringify(data));
           this.router.navigate([this.returnUrl]);
         },
@@ -76,5 +78,24 @@ export class LoginComponent implements OnInit {
 
   togglePasswordVisibility() {
     this.hidePassword = !this.hidePassword;
+  }
+
+  openMessageSnack() {
+    const snackBarRef = this._snackBar.open(
+      '✅ La acción se realizó con exíto <br/> se ha iniciado sesion correctamente',   // Pass your string content here
+      '✅',               // Action button label
+      {
+        duration: 5000,   // Set the duration in milliseconds
+      }
+    );
+
+    snackBarRef.afterDismissed().subscribe(() => {
+      console.log('Snackbar dismissed');
+    });
+
+    snackBarRef.onAction().subscribe(() => {
+      console.log('Snackbar action button clicked');
+      // Add any action you want to perform here
+    });
   }
 }

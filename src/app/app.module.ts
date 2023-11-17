@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { MatSnackBar, MatSnackBarAction, MatSnackBarActions, MatSnackBarLabel, MatSnackBarRef } from '@angular/material/snack-bar';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -56,7 +57,7 @@ export function tokenGetter() {
     CatalogoRolesListComponent,
     CatalogoRolesComponent,
     CatalogoArticulosListComponent,
-    CatalogoArticulosComponent
+    CatalogoArticulosComponent,
   ],
   imports: [
     BrowserModule,
@@ -86,7 +87,12 @@ export function tokenGetter() {
     MatExpansionModule,
     MatSelectModule,
     MatTabsModule,
-    MatGridListModule
+    MatGridListModule,
+    MatSnackBar,
+    MatSnackBarAction,
+    MatSnackBarActions,
+    MatSnackBarLabel,
+    MatSnackBarRef
   ],
   providers: [],
   bootstrap: [AppComponent]
