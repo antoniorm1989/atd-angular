@@ -11,8 +11,10 @@ import { LoginComponent } from './components/login/login.component';
 import { SuscursalesComponent } from './components/suscursales/suscursales.component';
 import { AuthGuard } from './guards/auth.guard';
 import { CatalogoRolesComponent } from './components/catalogos/roles/rol/catalogo-roles.component';
-import { CatalogoArticulosListComponent } from './components/catalogos/articulos/catalogo-articulo-list.component';
-import { CatalogoArticulosComponent } from './components/catalogos/articulos/articulo/catalogo-articulo.component';
+import { CatalogoCategoriaArticuloListComponent } from './components/catalogos/categoria_articulos/catalogo-categoria-articulo-list.component';
+import { CatalogoCategoriaArticuloComponent } from './components/catalogos/categoria_articulos/categoria_articulo/catalogo-categoria-articulo.component';
+import { CatalogoArticuloListComponent } from './components/catalogos/articulos/catalogo-articulo-list.component';
+import { CatalogoArticuloComponent } from './components/catalogos/articulos/articulo/catalogo-articulo.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/almacen', pathMatch: 'full' }, // Redirect to login by default
@@ -29,9 +31,12 @@ const routes: Routes = [
   { path: 'catalogos/roles', component: CatalogoRolesListComponent, canActivate: [AuthGuard] },
   { path: 'catalogos/roles/detail', component: CatalogoRolesComponent, canActivate: [AuthGuard] },
   { path: 'catalogos/roles/detail/:id', component: CatalogoRolesComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/articulos', component: CatalogoArticulosListComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/articulos/detail', component: CatalogoArticulosComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/articulos/detail/:id', component: CatalogoArticulosComponent, canActivate: [AuthGuard] },
+  { path: 'catalogos/categoria-articulos', component: CatalogoCategoriaArticuloListComponent, canActivate: [AuthGuard] },
+  { path: 'catalogos/categoria-articulos/detail', component: CatalogoCategoriaArticuloComponent, canActivate: [AuthGuard] },
+  { path: 'catalogos/categoria-articulos/detail/:id', component: CatalogoCategoriaArticuloComponent, canActivate: [AuthGuard] },
+  { path: 'catalogos/articulos', component: CatalogoArticuloListComponent, canActivate: [AuthGuard] },
+  { path: 'catalogos/articulos/detail', component: CatalogoArticuloComponent, canActivate: [AuthGuard] },
+  { path: 'catalogos/articulos/detail/:id', component: CatalogoArticuloComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({

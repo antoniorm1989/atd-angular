@@ -25,7 +25,7 @@
                 <div class="form-row one-col">
                     <div class="form-field name">
                         <mat-label class="text-1">Rol*</mat-label>
-                        <mat-label class="text-1" *ngIf="isReadOnly">{{this.f['name'].value}}</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['name'].value}}</mat-label>
                         <mat-form-field *ngIf="!isReadOnly">
                             <input matInput placeholder="Escribir nombre de la rol" formControlName="name"
                                 [ngClass]="{ 'is-invalid': submitted && f['name'].errors }" required>
@@ -35,7 +35,7 @@
                 <div class="form-row one-col">
                     <div class="form-field description">
                         <mat-label class="text-1">Descripción</mat-label>
-                        <mat-label class="text-1" *ngIf="isReadOnly">{{this.f['description'].value}}</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['description'].value}}</mat-label>
                         <mat-form-field *ngIf="!isReadOnly">
                             <input matInput placeholder="Escribir la descripción de la rol"
                                 formControlName="description">

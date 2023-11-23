@@ -61,4 +61,8 @@ export class CatalogoAlmacenesListComponent{
       queryParams: { action: 'edit' },
     });
   }
+
+  navigate(route: string) {
+    this.router.navigate([route]);
+  }
 }

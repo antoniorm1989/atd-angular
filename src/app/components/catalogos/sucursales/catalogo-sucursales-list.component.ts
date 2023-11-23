@@ -61,4 +61,8 @@ export class CatalogoSucursalesListComponent{
       queryParams: { action: 'edit' },
     });
   }
+
+  navigate(route: string) {
+    this.router.navigate([route]);
+  }
 }

@@ -81,21 +81,8 @@ export class LoginComponent implements OnInit {
   }
 
   openMessageSnack() {
-    const snackBarRef = this._snackBar.open(
-      '✅ La acción se realizó con exíto <br/> se ha iniciado sesion correctamente',   // Pass your string content here
-      '✅',               // Action button label
-      {
-        duration: 5000,   // Set the duration in milliseconds
-      }
-    );
-
-    snackBarRef.afterDismissed().subscribe(() => {
-      console.log('Snackbar dismissed');
-    });
-
-    snackBarRef.onAction().subscribe(() => {
-      console.log('Snackbar action button clicked');
-      // Add any action you want to perform here
+    this._snackBar.open('✅ La acción se realizó con éxito. Se ha iniciado sesión correctamente', '', {
+      duration: 5000, // Duración en milisegundos (5 segundos)
     });
   }
 }

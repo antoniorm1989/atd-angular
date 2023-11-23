@@ -168,6 +168,7 @@ mat-panel-description {
     border-color: #BA9400;
 }
 
+
 .rights mat-panel-title {
     font-size: 16px;
     font-weight: 700;
@@ -182,60 +183,6 @@ mat-panel-description {
 .catalogo-articulos .rights .gray{
     background-color: #FAFAFA;
 }
-
-.catalogo-articulos .main-container {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-}
-
-.catalogo-articulos .column {
-    flex: 6;
-    padding: 0px 24px;
-}
-
-.catalogo-articulos .column.column-photo {
-    flex: 1;
-    padding: 24px;
-}
-
- /* photo */
-.catalogo-articulos .container-photo{
-    width: 150px;
-    height: 150px;
-    position: relative;
-    margin: auto;
-}
-
-.catalogo-articulos .container-photo .photo{
-    width: 150px;
-    height: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-}
-
-.catalogo-articulos .empty-image-container{
-    width: 150px;
-    height: 150px;
-    background-color: #C5C6C7;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-}
-.catalogo-articulos .empty-image-container .empty-image{
-    width: 51px;
-    height: 51px;
-}
-.catalogo-articulos .container-photo .photo-button{
-    position: absolute;
-    top: 120px;
-    right: -20px;
-    background-color: #BA9400;
-}
-
 
 @media only screen and (max-width: 1084px) {
     .catalogo-articulos .container .form-row.four-col {

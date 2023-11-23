@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { MatSnackBar, MatSnackBarAction, MatSnackBarActions, MatSnackBarLabel, MatSnackBarRef } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -36,8 +36,10 @@ import { CatalogoAlmacenesComponent } from './components/catalogos/almacenes/alm
 import { CatalogoRolesListComponent } from './components/catalogos/roles/catalogo-roles-list.component';
 import { CatalogoRolesComponent } from './components/catalogos/roles/rol/catalogo-roles.component';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { CatalogoArticulosListComponent } from './components/catalogos/articulos/catalogo-articulo-list.component';
-import { CatalogoArticulosComponent } from './components/catalogos/articulos/articulo/catalogo-articulo.component';
+import { CatalogoCategoriaArticuloListComponent } from './components/catalogos/categoria_articulos/catalogo-categoria-articulo-list.component';
+import { CatalogoCategoriaArticuloComponent } from './components/catalogos/categoria_articulos/categoria_articulo/catalogo-categoria-articulo.component';
+import { CatalogoArticuloListComponent } from './components/catalogos/articulos/catalogo-articulo-list.component';
+import { CatalogoArticuloComponent } from './components/catalogos/articulos/articulo/catalogo-articulo.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -56,8 +58,10 @@ export function tokenGetter() {
     CatalogoAlmacenesComponent,
     CatalogoRolesListComponent,
     CatalogoRolesComponent,
-    CatalogoArticulosListComponent,
-    CatalogoArticulosComponent,
+    CatalogoCategoriaArticuloListComponent,
+    CatalogoCategoriaArticuloComponent,
+    CatalogoArticuloListComponent,
+    CatalogoArticuloComponent,
   ],
   imports: [
     BrowserModule,
@@ -88,11 +92,7 @@ export function tokenGetter() {
     MatSelectModule,
     MatTabsModule,
     MatGridListModule,
-    MatSnackBar,
-    MatSnackBarAction,
-    MatSnackBarActions,
-    MatSnackBarLabel,
-    MatSnackBarRef
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

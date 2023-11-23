@@ -1,32 +1,45 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, NavigationEnd, Event } from '@angular/router';
+import { Observable } from 'rxjs';
 import { CatalogoArticuloModel } from 'src/app/models/catalogo-articulo.model';
+import { CatalogoCategoriaArticuloModel } from 'src/app/models/catalogo-categoria-articulo.model';
 import { User } from 'src/app/models/user';
-import { CatalogoArticulosService } from 'src/app/services/catalogo-articulos.service';
+import { CatalogoArticuloService } from 'src/app/services/catalogo-articulos.service';
+import { CatalogoCategoriaArticuloService } from 'src/app/services/catalogo-categoria-articulos.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-catalogo-articulo',
+  selector: 'app-articulo',
   templateUrl: './catalogo-articulo.component.html',
   styleUrls: ['./catalogo-articulo.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class CatalogoArticulosComponent {
+export class CatalogoArticuloComponent {
 
   action: string = 'view';
   title: string = '';
   form: FormGroup;
   submitted = false;
   id = 0;
+  categories!: CatalogoCategoriaArticuloModel[];
 
-  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogoArticulosService: CatalogoArticulosService, private router: Router) {
+  selectedFile: File | null = null;
+  imageUrl: string | null = null;
+
+  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogoArticuloService: CatalogoArticuloService, private router: Router, private catalogoCategoriaArticuloService: CatalogoCategoriaArticuloService) {
 
     this.form = this.formBuilder.group({
-      name: [''],
+      part_number: [''],
       description: [''],
+      comment: [''],
+      cost: [''],
+      category: [''],
       show_admin_users: [''],
       status: [''],
-      created_at: ['created_at']
+      created_at: ['created_at'],
+      selectedCategory: [null, Validators.required],
+      photo: [null, Validators.required],
     });
 
     this.router.events.subscribe((event: Event) => {
@@ -35,16 +48,24 @@ export class CatalogoArticulosComponent {
         this.route.params.subscribe(params => {
           this.id = params['id'];
           if (this.id != undefined) {
-            this.catalogoArticulosService.getById(this.id).subscribe({
+            this.catalogoArticuloService.getById(this.id).subscribe({
               next: (data) => {
 
-                this.form = this.formBuilder.group({
-                  name: [data.name],
+                var articulo = data;
+
+                this.form.patchValue({
+                  part_number: [data.part_number],
                   description: [data.description],
+                  comment: [data.comment],
+                  cost: [data.cost],
                   show_admin_users: [data.show_admin_users],
                   status: [data.status],
-                  created_at: [data.created_at]
+                  created_at: [data.created_at],
+                  selectedCategory: [null, Validators.required],
                 });
+
+                if (data.photo)
+                  this.imageUrl = `${environment.apiUrl}images/articulos/${data.photo}`;
 
                 this.route.queryParams.subscribe(params => {
                   switch (params['action']) {
@@ -59,6 +80,20 @@ export class CatalogoArticulosComponent {
                       break;
                   }
                 });
+
+                this.catalogoCategoriaArticuloService.getAll().subscribe({
+                  next: (data) => {
+                    if (data.length > 0) {
+                      this.categories = data;
+                      var category = data.filter(c => c.id == articulo.cat_articulo_id)
+                      if (category.length > 0)
+                        this.f['selectedCategory'].setValue(category[0]);
+                    }
+                  },
+                  error: (e) => {
+                  }
+                });
+
               },
               error: (e) => {
               }
@@ -66,9 +101,17 @@ export class CatalogoArticulosComponent {
           } else {
             this.action = 'new';
             this.title = 'Agregar articulo';
+            this.catalogoCategoriaArticuloService.getAll().subscribe({
+              next: (data) => {
+                if (data.length > 0) {
+                  this.categories = data;
+                }
+              },
+              error: (e) => {
+              }
+            });
           }
         });
-
       }
     });
 
@@ -93,26 +136,45 @@ export class CatalogoArticulosComponent {
 
     let articulo = new CatalogoArticuloModel();
     articulo.id = this.id;
-    articulo.name = this.f['name'].value;
+    articulo.part_number = this.f['part_number'].value;
     articulo.description = this.f['description'].value;
+    articulo.comment = this.f['comment'].value;
+    articulo.cost = this.f['cost'].value;
+    articulo.photo = '';
     articulo.show_admin_users = this.f['show_admin_users'].value == true;
     articulo.status = this.f['status'].value || '0';
     articulo.user = user;
+    articulo.cat_articulo_id = this.f['selectedCategory'].value.id;
 
     if (this.action == 'new') {
-      this.catalogoArticulosService.create(articulo).subscribe({
+      this.catalogoArticuloService.create(articulo).subscribe({
         next: (data) => {
-          this.router.navigate(['catalogos/articulos']);
+          this.uploadPhoto(data.id).subscribe({
+            next: () => {
+              this.router.navigate(['catalogos/articulos']);
+            },
+            error: (e) => {
+              console.log(e);
+            }
+          });
         },
         error: (e) => {
         }
       });
     } else {
-      this.catalogoArticulosService.update(articulo).subscribe({
+      this.catalogoArticuloService.update(articulo).subscribe({
         next: (data) => {
-          this.router.navigate(['catalogos/articulos']);
+          this.uploadPhoto(data.id).subscribe({
+            next: () => {
+              this.router.navigate(['catalogos/articulos']);
+            },
+            error: (e) => {
+              console.log(e);
+            }
+          });
         },
         error: (e) => {
+          console.log(e);
         }
       });
     }
@@ -136,4 +198,24 @@ export class CatalogoArticulosComponent {
     this.title = 'Editar articulo';
     this.form.enable();
   }
+
+  onFileSelected(event: any): void {
+    this.selectedFile = event.target.files[0];
+
+    // Display a preview of the selected image
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.imageUrl = e.target.result;
+    };
+
+    if (this.selectedFile)
+      reader.readAsDataURL(this.selectedFile);
+  }
+
+  uploadPhoto(id: number): Observable<void> {
+    const formData = new FormData();
+    formData.append('photo', this.selectedFile!);
+    return this.catalogoArticuloService.uploadPhoto(id, formData);
+  }
+
 }

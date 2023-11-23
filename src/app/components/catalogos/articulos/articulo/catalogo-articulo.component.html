@@ -2,14 +2,16 @@
     <div class="toolbar">
         <div class="toolbar-title">
             <i class="icon fa-regular fa-building"></i>
-            <span class="title">Catálogo articulos</span>
+            <span class="title">Catálogo categoría de artículos</span>
         </div>
         <div class="toolbar-breadcrumb">
             <span class="link-breadcrumb" (click)="navigate('catalogos')"> Catálogos </span> /
-            <span class="link-breadcrumb" (click)="navigate('catalogos/articulos')"> Catálogo articulos </span> /
+            <span class="link-breadcrumb" (click)="navigate('catalogos/articulos')"> Catálogo categoría de artículos
+            </span> /
             <span class="breadcrumb-item">{{title}}</span>
 
-            <button *ngIf="isReadOnly" mat-button class="btn" (click)="makeEditMode()"><mat-icon>edit</mat-icon>Editar información</button>
+            <button *ngIf="isReadOnly" mat-button class="btn" (click)="makeEditMode()"><mat-icon>edit</mat-icon>Editar
+                información</button>
         </div>
     </div>
     <div class="container">
@@ -21,23 +23,81 @@
                     <span *ngIf="action != 'new'" class="id"><b>ID</b> {{id}}</span>
                 </div>
 
-                <div class="form-row one-col">
-                    <div class="form-field name">
-                        <mat-label class="text-1">articulo*</mat-label>
-                        <mat-label class="text-1" *ngIf="isReadOnly">{{this.f['name'].value}}</mat-label>
-                        <mat-form-field *ngIf="!isReadOnly">
-                            <input matInput placeholder="Escribir nombre de la articulo" formControlName="name" [ngClass]="{ 'is-invalid': submitted && f['name'].errors }" required>
-                        </mat-form-field>
+                <div class="main-container">
+                    <div class="column column-photo">
+                        <div class="container-photo">
+                            <div *ngIf="!imageUrl" class="empty-image-container">
+                                <img src="../../assets/images/empty-image.png" class="empty-image">
+                            </div>
+                            <img class="photo" *ngIf="imageUrl" [src]="imageUrl">
+                            <button *ngIf="!isReadOnly" class="photo-button" mat-mini-fab (click)="fileInput.click()" type="button">
+                                <mat-icon>photo_camera</mat-icon>
+                            </button>
+                            <input #fileInput style="display: none" formControlName="photo" type="file" (change)="onFileSelected($event)">
+                        </div>
                     </div>
-                </div>
-                <div class="form-row one-col">
-                    <div class="form-field description">
-                        <mat-label class="text-1">Descripción</mat-label>
-                        <mat-label class="text-1" *ngIf="isReadOnly">{{this.f['description'].value}}</mat-label>
-                        <mat-form-field *ngIf="!isReadOnly">
-                            <input matInput placeholder="Escribir la descripción de la articulo"
-                                formControlName="description">
-                        </mat-form-field>
+                    <div class="column">
+                        <div class="form-row two-col">
+                            <div class="form-field part_number">
+                                <mat-label class="text-1">Número de parte*</mat-label>
+                                <mat-label class="text-1-regular"
+                                    *ngIf="isReadOnly">{{this.f['part_number'].value}}</mat-label>
+                                <mat-form-field *ngIf="!isReadOnly">
+                                    <input matInput placeholder="Escribir número de parte del articulo"
+                                        formControlName="part_number"
+                                        [ngClass]="{ 'is-invalid': submitted && f['part_number'].errors }" required>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="form-field description">
+                                <mat-label class="text-1">Descripción*</mat-label>
+                                <mat-label class="text-1-regular"
+                                    *ngIf="isReadOnly">{{this.f['description'].value}}</mat-label>
+                                <mat-form-field *ngIf="!isReadOnly">
+                                    <input matInput placeholder="Escribir la descripción de la articulo"
+                                        formControlName="description"
+                                        [ngClass]="{ 'is-invalid': submitted && f['description'].errors }" required>
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <div class="form-row two-col">
+                            <div class="form-field">
+                                <mat-label class="text-1">Categoría*</mat-label>
+                                <mat-label class="text-1-regular"
+                                    *ngIf="isReadOnly">{{this.f['selectedCategory'].value?.name}}</mat-label>
+                                <mat-form-field *ngIf="!isReadOnly" required>
+                                    <mat-label>Seleccionar categoria</mat-label>
+                                    <mat-select formControlName="selectedCategory">
+                                        <mat-option>None</mat-option>
+                                        <mat-option *ngFor="let category of categories" [value]="category">{{
+                                            category.name }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="form-field cost">
+                                <mat-label class="text-1">Costo unitario</mat-label>
+                                <mat-label class="text-1-regular"
+                                    *ngIf="isReadOnly">{{this.f['cost'].value}}</mat-label>
+                                <mat-form-field *ngIf="!isReadOnly">
+                                    <input matInput placeholder="$00.00" formControlName="cost">
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <div class="form-row one-col">
+                            <div class="form-field comment">
+                                <mat-label class="text-1">Comentarios</mat-label>
+                                <mat-label class="text-1-regular"
+                                    *ngIf="isReadOnly">{{this.f['comment'].value}}</mat-label>
+                                <mat-form-field *ngIf="!isReadOnly">
+                                    <input matInput placeholder="Escribe el comentario del artículo"
+                                        formControlName="comment">
+                                </mat-form-field>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -55,7 +115,8 @@
                     </mat-expansion-panel-header>
                     <div class="form-row four-col">
                         <div class="form-field num-ext">
-                            <mat-slide-toggle formControlName="show_admin_users" color="primary">Mostrar al gestionar usuarios</mat-slide-toggle>
+                            <mat-slide-toggle formControlName="show_admin_users" color="primary">Mostrar al gestionar
+                                usuarios</mat-slide-toggle>
                         </div>
 
                         <div class="form-field num-ext">

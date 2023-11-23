@@ -1,30 +1,30 @@
-<div class="catalogo-roles-list">
+<div class="catalogo-categoria-articulos-list">
     <div class="toolbar">
         <div class="toolbar-title">
             <i class="icon fa-regular fa-building"></i>
-            <span class="title">Catálogo roles</span>
+            <span class="title">Catálogo categoría de artículos</span>
         </div>
         <div>
-            <span class="link-breadcrumb" (click)="navigate('catalogos')"> Catálogos </span> /<span class="breadcrumb-item">Catálogo roles</span>
+            <span class="link-breadcrumb" (click)="navigate('catalogos')"> Catálogos </span> /<span class="breadcrumb-item">Catálogo categoría de artículos</span>
         </div>
     </div>
     <div class="container">
         <div *ngIf="!hasRecords" class="container-empty">
             <img src="../../assets/images/empty-list.png" alt="empty logo" class="img">
-            <span class="text">Aún no tienes roles en el catálogo, para poder ver información favor de agregar una
-                rol.</span>
-            <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Agregar rol</button>
+            <span class="text">Aún no tienes articulos en el catálogo, para poder ver información favor de agregar una
+                articulo.</span>
+            <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Agregar articulo</button>
         </div>
         <div *ngIf="hasRecords" class="container-list">
 
             <div class="toolbar">
-                <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Agregar rol</button>
+                <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Agregar articulo</button>
             </div>
 
             <table class="table" mat-table [dataSource]="dataSource">
 
                 <ng-container matColumnDef="name">
-                    <th mat-header-cell *matHeaderCellDef>Rol</th>
+                    <th mat-header-cell *matHeaderCellDef>Articulo</th>
                     <td mat-cell *matCellDef="let element"><span (click)="onView(element.id)"
                             class="title-grid">{{element.name}}</span></td>
                 </ng-container>

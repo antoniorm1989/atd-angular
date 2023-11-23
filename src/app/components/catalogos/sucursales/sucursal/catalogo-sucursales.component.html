@@ -24,27 +24,27 @@
                 <div class="form-row four-col">
                     <div class="form-field name">
                         <mat-label class="text-1">Sucursal*</mat-label>
-                        <mat-label class="text-1" *ngIf="isReadOnly">{{this.f['name'].value}}</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['name'].value}}</mat-label>
                         <mat-form-field *ngIf="!isReadOnly">
                             <input matInput placeholder="Escribir nombre de la sucursal" formControlName="name" [ngClass]="{ 'is-invalid': submitted && f['name'].errors }" required>
                         </mat-form-field>
                     </div>
                     <div class="form-field phone">
                         <mat-label class="text-1 ">Teléfono</mat-label>
-                        <mat-label class="text-1" *ngIf="isReadOnly">{{this.f['phone'].value}}</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['phone'].value}}</mat-label>
                         <mat-form-field *ngIf="!isReadOnly">
                             <input type="tel" matInput placeholder="00-00000" formControlName="phone">
                         </mat-form-field>
                     </div>
                     <div class="form-field phone" *ngIf="isReadOnly">
                         <mat-label class="text-1 ">Fecha de creación</mat-label>
-                        <mat-label class="text-1">{{formatDate(this.f['created_at'].value)}}</mat-label>
+                        <mat-label class="text-1-regular">{{formatDate(this.f['created_at'].value)}}</mat-label>
                     </div>
                 </div>
                 <div class="form-row one-col">
                     <div class="form-field description">
                         <mat-label class="text-1">Descripción</mat-label>
-                        <mat-label class="text-1" *ngIf="isReadOnly">{{this.f['description'].value}}</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['description'].value}}</mat-label>
                         <mat-form-field *ngIf="!isReadOnly">
                             <input matInput placeholder="Escribir la descripción de la sucursal"
                                 formControlName="description">
@@ -67,10 +67,10 @@
                     <div class="form-row four-col">
                         <div class="form-field estado">
                             <mat-label class="text-1">Estado</mat-label>
-                            <mat-label class="text-1" *ngIf="isReadOnly">{{getStateByKey(this.f['state_key'].value)}}</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{getStateByKey(this.f['state_key'].value)}}</mat-label>
                             <mat-form-field *ngIf="!isReadOnly">
                                 <mat-label>Seleccionar estado</mat-label>
-                                <mat-label class="text-1" *ngIf="isReadOnly">{{this.f['state_key'].value}} </mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['state_key'].value}} </mat-label>
                                 <mat-select [(value)]="selectedState" (selectionChange)="onStateChange($event)" formControlName="state_key">
                                     <mat-option>None</mat-option>
                                     <mat-option *ngFor="let estado of states" [value]="estado.key">{{ estado.name }}
@@ -80,7 +80,7 @@
                         </div>
                         <div class="form-field municipio">
                             <mat-label class="text-1">Municipio</mat-label>
-                            <mat-label class="text-1" *ngIf="isReadOnly">{{getCityByKey(this.f['city_key'].value)}}</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{getCityByKey(this.f['city_key'].value)}}</mat-label>
                             <mat-form-field *ngIf="!isReadOnly">
                                 <mat-label>Seleccionar municipio</mat-label>
                                 <mat-select formControlName="city_key">
@@ -92,35 +92,35 @@
                         </div>
                         <div class="form-field calle">
                             <mat-label class="text-1">Calle</mat-label>
-                            <mat-label class="text-1" *ngIf="isReadOnly">{{this.f['street'].value}}</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['street'].value}}</mat-label>
                             <mat-form-field *ngIf="!isReadOnly">
                                 <input matInput placeholder="Escribir calle" formControlName="street">
                             </mat-form-field>
                         </div>
                         <div class="form-field colonia">
                             <mat-label class="text-1">Colonia</mat-label>
-                            <mat-label class="text-1" *ngIf="isReadOnly">{{this.f['neighborhood'].value}}</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['neighborhood'].value}}</mat-label>
                             <mat-form-field *ngIf="!isReadOnly">
                                 <input matInput placeholder="Escribir colonia" formControlName="neighborhood">
                             </mat-form-field>
                         </div>
                         <div class="form-field num-ext">
                             <mat-label class="text-1">Núm. exterior</mat-label>
-                            <mat-label class="text-1" *ngIf="isReadOnly">{{this.f['external_number'].value}}</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['external_number'].value}}</mat-label>
                             <mat-form-field *ngIf="!isReadOnly">
                                 <input matInput placeholder="Número de exterior" formControlName="external_number">
                             </mat-form-field>
                         </div>
                         <div class="form-field num-int">
                             <mat-label class="text-1">Núm. interior </mat-label>
-                            <mat-label class="text-1" *ngIf="isReadOnly">{{this.f['internal_number'].value}}</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['internal_number'].value}}</mat-label>
                             <mat-form-field *ngIf="!isReadOnly">
                                 <input matInput placeholder="Número de interior" formControlName="internal_number">
                             </mat-form-field>
                         </div>
                         <div class="form-field cp">
                             <mat-label class="text-1">Cp</mat-label>
-                            <mat-label class="text-1" *ngIf="isReadOnly">{{this.f['postal_code'].value}}</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['postal_code'].value}}</mat-label>
                             <mat-form-field *ngIf="!isReadOnly">
                                 <input matInput placeholder="Escribir código postal" formControlName="postal_code">
                             </mat-form-field>
