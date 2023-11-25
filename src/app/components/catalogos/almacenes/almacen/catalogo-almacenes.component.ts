@@ -1,8 +1,10 @@
 import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router, NavigationEnd, Event } from '@angular/router';
+import { MessageComponent } from 'src/app/components/genericos/snack-message.component';
 import { CatalogoAlmacenModel, CatalogoAlmacenSucursalModel } from 'src/app/models/catalogo-almacen.model';
 import { CatalogoSucursalModel } from 'src/app/models/catalogo-sucursal.model';
 import { CatalogoCityModel, CatalogoStateModel } from 'src/app/models/catalogos.model';
@@ -38,10 +40,10 @@ export class CatalogoAlmacenesComponent {
   filteredSucursales!: CatalogoSucursalModel[];
   selectedSucursal!: CatalogoSucursalModel | undefined;
 
-  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogosService: CatalogosService, private catalogoAlmacenesService: CatalogoAlmacenesService, private router: Router, private catalogoSucursalesService: CatalogoSucursalesService) {
+  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogosService: CatalogosService, private catalogoAlmacenesService: CatalogoAlmacenesService, private router: Router, private catalogoSucursalesService: CatalogoSucursalesService, private _snackBar: MatSnackBar) {
 
     this.form = this.formBuilder.group({
-      name: [''],
+      name: ['', [Validators.required]],
       phone: [''],
       description: [''],
       street: [''],
@@ -65,7 +67,7 @@ export class CatalogoAlmacenesComponent {
             this.catalogoAlmacenesService.getById(this.id).subscribe({
               next: (data) => {
 
-                this.form = this.formBuilder.group({
+                this.form.patchValue({
                   name: [data.name],
                   phone: [data.phone],
                   description: [data.description],
@@ -194,6 +196,7 @@ export class CatalogoAlmacenesComponent {
     if (this.action == 'new') {
       this.catalogoAlmacenesService.create(almacen).subscribe({
         next: (data) => {
+          this.openMessageSnack();
           this.router.navigate(['catalogos/almacenes']);
         },
         error: (e) => {
@@ -202,6 +205,7 @@ export class CatalogoAlmacenesComponent {
     } else {
       this.catalogoAlmacenesService.update(almacen).subscribe({
         next: (data) => {
+          this.openMessageSnack();
           this.router.navigate(['catalogos/almacenes']);
         },
         error: (e) => {
@@ -285,6 +289,16 @@ export class CatalogoAlmacenesComponent {
       this.hasRecords = false;
     else
       this.hasRecords = true;
+  }
+
+  openMessageSnack() {
+    const config: MatSnackBarConfig = {
+      duration: 5000,
+      data: {
+        html: '✅ <b>¡En hora buena!</b><br/> La acción se ha realizado con éxito',
+      },
+    };
+    this._snackBar.openFromComponent(MessageComponent, config);
   }
 
 }

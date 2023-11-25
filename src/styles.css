@@ -74,3 +74,12 @@ body {
 .toolbar .link-breadcrumb:hover {
     text-decoration: underline;
 }
+
+.invalid-feedback{
+    color: red;
+}
+
+.mat-mdc-snack-bar-container {
+    --mdc-snackbar-container-color: #F1FFF4 !important;
+    --mdc-snackbar-supporting-text-color: #212121 !important;
+}

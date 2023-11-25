@@ -40,6 +40,7 @@ import { CatalogoCategoriaArticuloListComponent } from './components/catalogos/c
 import { CatalogoCategoriaArticuloComponent } from './components/catalogos/categoria_articulos/categoria_articulo/catalogo-categoria-articulo.component';
 import { CatalogoArticuloListComponent } from './components/catalogos/articulos/catalogo-articulo-list.component';
 import { CatalogoArticuloComponent } from './components/catalogos/articulos/articulo/catalogo-articulo.component';
+import { MessageComponent } from './components/genericos/snack-message.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -62,6 +63,7 @@ export function tokenGetter() {
     CatalogoCategoriaArticuloComponent,
     CatalogoArticuloListComponent,
     CatalogoArticuloComponent,
+    MessageComponent
   ],
   imports: [
     BrowserModule,

@@ -1,7 +1,9 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, NavigationEnd, Event } from '@angular/router';
 import { Observable } from 'rxjs';
+import { MessageComponent } from 'src/app/components/genericos/snack-message.component';
 import { CatalogoArticuloModel } from 'src/app/models/catalogo-articulo.model';
 import { CatalogoCategoriaArticuloModel } from 'src/app/models/catalogo-categoria-articulo.model';
 import { User } from 'src/app/models/user';
@@ -27,11 +29,11 @@ export class CatalogoArticuloComponent {
   selectedFile: File | null = null;
   imageUrl: string | null = null;
 
-  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogoArticuloService: CatalogoArticuloService, private router: Router, private catalogoCategoriaArticuloService: CatalogoCategoriaArticuloService) {
+  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogoArticuloService: CatalogoArticuloService, private router: Router, private catalogoCategoriaArticuloService: CatalogoCategoriaArticuloService, private _snackBar: MatSnackBar) {
 
     this.form = this.formBuilder.group({
-      part_number: [''],
-      description: [''],
+      part_number: ['', [Validators.required]],
+      description: ['', [Validators.required]],
       comment: [''],
       cost: [''],
       category: [''],
@@ -151,6 +153,7 @@ export class CatalogoArticuloComponent {
         next: (data) => {
           this.uploadPhoto(data.id).subscribe({
             next: () => {
+              this.openMessageSnack();
               this.router.navigate(['catalogos/articulos']);
             },
             error: (e) => {
@@ -166,6 +169,7 @@ export class CatalogoArticuloComponent {
         next: (data) => {
           this.uploadPhoto(data.id).subscribe({
             next: () => {
+              this.openMessageSnack();
               this.router.navigate(['catalogos/articulos']);
             },
             error: (e) => {
@@ -216,6 +220,16 @@ export class CatalogoArticuloComponent {
     const formData = new FormData();
     formData.append('photo', this.selectedFile!);
     return this.catalogoArticuloService.uploadPhoto(id, formData);
+  }
+
+  openMessageSnack() {
+    const config: MatSnackBarConfig = {
+      duration: 5000,
+      data: {
+        html: '✅ <b>¡En hora buena!</b><br/> La acción se ha realizado con éxito',
+      },
+    };
+    this._snackBar.openFromComponent(MessageComponent, config);
   }
 
 }

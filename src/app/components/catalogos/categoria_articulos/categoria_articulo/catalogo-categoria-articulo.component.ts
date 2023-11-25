@@ -1,6 +1,8 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, NavigationEnd, Event } from '@angular/router';
+import { MessageComponent } from 'src/app/components/genericos/snack-message.component';
 import { CatalogoCategoriaArticuloModel } from 'src/app/models/catalogo-categoria-articulo.model';
 import { User } from 'src/app/models/user';
 import { CatalogoCategoriaArticuloService } from 'src/app/services/catalogo-categoria-articulos.service';
@@ -19,10 +21,10 @@ export class CatalogoCategoriaArticuloComponent {
   submitted = false;
   id = 0;
 
-  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private CatalogoCategoriaArticuloService: CatalogoCategoriaArticuloService, private router: Router) {
+  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private CatalogoCategoriaArticuloService: CatalogoCategoriaArticuloService, private router: Router, private _snackBar: MatSnackBar) {
 
     this.form = this.formBuilder.group({
-      name: [''],
+      name: ['', [Validators.required]],
       description: [''],
       show_admin_users: [''],
       status: [''],
@@ -38,7 +40,7 @@ export class CatalogoCategoriaArticuloComponent {
             this.CatalogoCategoriaArticuloService.getById(this.id).subscribe({
               next: (data) => {
 
-                this.form = this.formBuilder.group({
+                this.form.patchValue({
                   name: [data.name],
                   description: [data.description],
                   show_admin_users: [data.show_admin_users],
@@ -102,6 +104,7 @@ export class CatalogoCategoriaArticuloComponent {
     if (this.action == 'new') {
       this.CatalogoCategoriaArticuloService.create(articulo).subscribe({
         next: (data) => {
+          this.openMessageSnack();
           this.router.navigate(['catalogos/categoria-articulos']);
         },
         error: (e) => {
@@ -110,6 +113,7 @@ export class CatalogoCategoriaArticuloComponent {
     } else {
       this.CatalogoCategoriaArticuloService.update(articulo).subscribe({
         next: (data) => {
+          this.openMessageSnack();
           this.router.navigate(['catalogos/categoria-articulos']);
         },
         error: (e) => {
@@ -135,5 +139,15 @@ export class CatalogoCategoriaArticuloComponent {
     this.action = 'edit';
     this.title = 'Editar articulo';
     this.form.enable();
+  }
+
+  openMessageSnack() {
+    const config: MatSnackBarConfig = {
+      duration: 5000,
+      data: {
+        html: '✅ <b>¡En hora buena!</b><br/> La acción se ha realizado con éxito',
+      },
+    };
+    this._snackBar.openFromComponent(MessageComponent, config);
   }
 }

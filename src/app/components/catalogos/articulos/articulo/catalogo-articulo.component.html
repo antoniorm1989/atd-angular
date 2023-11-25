@@ -39,7 +39,8 @@
                     <div class="column">
                         <div class="form-row two-col">
                             <div class="form-field part_number">
-                                <mat-label class="text-1">Número de parte*</mat-label>
+                                <mat-label class="text-1" *ngIf="isReadOnly">Número de parte</mat-label>
+                                <mat-label class="text-1" *ngIf="!isReadOnly">Número de parte*</mat-label>
                                 <mat-label class="text-1-regular"
                                     *ngIf="isReadOnly">{{this.f['part_number'].value}}</mat-label>
                                 <mat-form-field *ngIf="!isReadOnly">
@@ -47,10 +48,14 @@
                                         formControlName="part_number"
                                         [ngClass]="{ 'is-invalid': submitted && f['part_number'].errors }" required>
                                 </mat-form-field>
+                                <div *ngIf="submitted && f['part_number'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['part_number'].errors['required']">Este campo requerido</div>
+                                </div>
                             </div>
 
                             <div class="form-field description">
-                                <mat-label class="text-1">Descripción*</mat-label>
+                                <mat-label class="text-1"  *ngIf="isReadOnly">Descripción</mat-label>
+                                <mat-label class="text-1"  *ngIf="!isReadOnly">Descripción*</mat-label>
                                 <mat-label class="text-1-regular"
                                     *ngIf="isReadOnly">{{this.f['description'].value}}</mat-label>
                                 <mat-form-field *ngIf="!isReadOnly">
@@ -58,12 +63,16 @@
                                         formControlName="description"
                                         [ngClass]="{ 'is-invalid': submitted && f['description'].errors }" required>
                                 </mat-form-field>
+                                <div *ngIf="submitted && f['description'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['description'].errors['required']">Este campo requerido</div>
+                                </div>
                             </div>
                         </div>
 
                         <div class="form-row two-col">
                             <div class="form-field">
-                                <mat-label class="text-1">Categoría*</mat-label>
+                                <mat-label class="text-1" *ngIf="isReadOnly">Categoría</mat-label>
+                                <mat-label class="text-1" *ngIf="!isReadOnly">Categoría*</mat-label>
                                 <mat-label class="text-1-regular"
                                     *ngIf="isReadOnly">{{this.f['selectedCategory'].value?.name}}</mat-label>
                                 <mat-form-field *ngIf="!isReadOnly" required>
@@ -75,6 +84,9 @@
                                         </mat-option>
                                     </mat-select>
                                 </mat-form-field>
+                                <div *ngIf="submitted && f['selectedCategory'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['selectedCategory'].errors['required']">Este campo requerido</div>
+                                </div>
                             </div>
 
                             <div class="form-field cost">

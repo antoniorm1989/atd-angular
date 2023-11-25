@@ -84,15 +84,6 @@ form {
     letter-spacing: 0.01em;
 }
 
-.invalid-feedback{
-    color: red;
-}
-
-.mat-mdc-snack-bar-container {
-    --mdc-snackbar-container-color: #F1FFF4 !important;
-    --mdc-snackbar-supporting-text-color: #212121 !important;
-}
-
 
 @media only screen and (max-width: 1200px) {}
 

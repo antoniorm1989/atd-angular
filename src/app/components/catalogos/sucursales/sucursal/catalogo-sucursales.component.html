@@ -23,11 +23,15 @@
 
                 <div class="form-row four-col">
                     <div class="form-field name">
-                        <mat-label class="text-1">Sucursal*</mat-label>
+                        <mat-label class="text-1" *ngIf="isReadOnly">Sucursal</mat-label>
+                        <mat-label class="text-1" *ngIf="!isReadOnly">Sucursal*</mat-label>
                         <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['name'].value}}</mat-label>
                         <mat-form-field *ngIf="!isReadOnly">
                             <input matInput placeholder="Escribir nombre de la sucursal" formControlName="name" [ngClass]="{ 'is-invalid': submitted && f['name'].errors }" required>
                         </mat-form-field>
+                        <div *ngIf="submitted && f['name'].errors" class="invalid-feedback">
+                            <div *ngIf="f['name'].errors['required']">Este campo requerido</div>
+                        </div>
                     </div>
                     <div class="form-field phone">
                         <mat-label class="text-1 ">Teléfono</mat-label>

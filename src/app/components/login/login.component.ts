@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { UserService } from 'src/app/services/user.service';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
-import { MessageComponent } from './snack-message.component';
+import { MessageComponent } from '../genericos/snack-message.component';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
@@ -27,9 +27,9 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private userService: UserService,
-    private _snackBar: MatSnackBar,
-    private sanitizer: DomSanitizer
+    private _snackBar: MatSnackBar
   ) {
+    
     this.form = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(4)]],
@@ -87,13 +87,9 @@ export class LoginComponent implements OnInit {
     const config: MatSnackBarConfig = {
       duration: 5000,
       data: {
+        html: '✅ <b>La acción se realizó con éxito.</b><br/> Se ha iniciado sesión correctamente',
       },
     };
-
-    // Sanitize the HTML content
-    const sanitizedMessage = this.sanitizer.bypassSecurityTrustHtml(config.data.message);
-    config.data.message = sanitizedMessage;
-
     this._snackBar.openFromComponent(MessageComponent, config);
   }
 }

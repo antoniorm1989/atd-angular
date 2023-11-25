@@ -1,6 +1,8 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, NavigationEnd, Event } from '@angular/router';
+import { MessageComponent } from 'src/app/components/genericos/snack-message.component';
 import { CatalogoRolModel } from 'src/app/models/catalogo-rol.model';
 import { User } from 'src/app/models/user';
 import { CatalogoRolesService } from 'src/app/services/catalogo-roles.service';
@@ -43,10 +45,10 @@ export class CatalogoRolesComponent {
     }
   };
 
-  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogoRolesService: CatalogoRolesService, private router: Router) {
+  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogoRolesService: CatalogoRolesService, private router: Router, private _snackBar: MatSnackBar) {
 
     this.form = this.formBuilder.group({
-      name: [''],
+      name: ['', [Validators.required]],
       description: [''],
       show_admin_users: [''],
       status: [''],
@@ -62,7 +64,7 @@ export class CatalogoRolesComponent {
             this.catalogoRolesService.getById(this.id).subscribe({
               next: (data) => {
 
-                this.form = this.formBuilder.group({
+                this.form.patchValue({
                   name: [data.name],
                   description: [data.description],
                   show_admin_users: [data.show_admin_users],
@@ -132,6 +134,7 @@ export class CatalogoRolesComponent {
     if (this.action == 'new') {
       this.catalogoRolesService.create(rol).subscribe({
         next: (data) => {
+          this.openMessageSnack();
           this.router.navigate(['catalogos/roles']);
         },
         error: (e) => {
@@ -140,6 +143,7 @@ export class CatalogoRolesComponent {
     } else {
       this.catalogoRolesService.update(rol).subscribe({
         next: (data) => {
+          this.openMessageSnack();
           this.router.navigate(['catalogos/roles']);
         },
         error: (e) => {
@@ -251,6 +255,16 @@ export class CatalogoRolesComponent {
       this.rights.catalogos.usuario.consultar.enable();
       this.rights.catalogos.usuario.inactivar.enable();
     }
+  }
+
+  openMessageSnack() {
+    const config: MatSnackBarConfig = {
+      duration: 5000,
+      data: {
+        html: '✅ <b>¡En hora buena!</b><br/> La acción se ha realizado con éxito',
+      },
+    };
+    this._snackBar.openFromComponent(MessageComponent, config);
   }
 
 }

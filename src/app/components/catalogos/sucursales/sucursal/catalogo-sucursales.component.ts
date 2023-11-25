@@ -1,6 +1,8 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, NavigationEnd, Event } from '@angular/router';
+import { MessageComponent } from 'src/app/components/genericos/snack-message.component';
 import { CatalogoSucursalModel } from 'src/app/models/catalogo-sucursal.model';
 import { CatalogoCityModel, CatalogoStateModel } from 'src/app/models/catalogos.model';
 import { User } from 'src/app/models/user';
@@ -26,10 +28,10 @@ export class CatalogoSucursalesComponent {
   selectedState = '';
   id = 0;
 
-  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogosService: CatalogosService, private catalogoSucursalesService: CatalogoSucursalesService, private router: Router) {
+  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogosService: CatalogosService, private catalogoSucursalesService: CatalogoSucursalesService, private router: Router, private _snackBar: MatSnackBar) {
 
     this.form = this.formBuilder.group({
-      name: [''],
+      name: ['', [Validators.required]],
       phone: [''],
       description: [''],
       street: [''],
@@ -53,7 +55,7 @@ export class CatalogoSucursalesComponent {
             this.catalogoSucursalesService.getById(this.id).subscribe({
               next: (data) => {
 
-                this.form = this.formBuilder.group({
+                this.form.patchValue({
                   name: [data.name],
                   phone: [data.phone],
                   description: [data.description],
@@ -162,6 +164,7 @@ export class CatalogoSucursalesComponent {
     if (this.action == 'new') {
       this.catalogoSucursalesService.create(sucursal).subscribe({
         next: (data) => {
+          this.openMessageSnack();
           this.router.navigate(['catalogos/sucursales']);
         },
         error: (e) => {
@@ -170,6 +173,7 @@ export class CatalogoSucursalesComponent {
     } else {
       this.catalogoSucursalesService.update(sucursal).subscribe({
         next: (data) => {
+          this.openMessageSnack();
           this.router.navigate(['catalogos/sucursales']);
         },
         error: (e) => {
@@ -205,5 +209,15 @@ export class CatalogoSucursalesComponent {
   getCityByKey(key: string): string{
     let city = this.cities.filter(s => s.key == key);
     return city.length > 0 ? city[0].name : '';
+  }
+
+  openMessageSnack() {
+    const config: MatSnackBarConfig = {
+      duration: 5000,
+      data: {
+        html: '✅ <b>¡En hora buena!</b><br/> La acción se ha realizado con éxito',
+      },
+    };
+    this._snackBar.openFromComponent(MessageComponent, config);
   }
 }
