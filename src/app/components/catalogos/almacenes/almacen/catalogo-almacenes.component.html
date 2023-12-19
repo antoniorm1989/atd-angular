@@ -73,7 +73,7 @@
                     <div class="form-row four-col">
                         <div class="form-field estado">
                             <mat-label class="text-1">Estado</mat-label>
-                            <mat-label class="text-1"
+                            <mat-label class="text-1-regular"
                                 *ngIf="isReadOnly">{{getStateByKey(this.f['state_key'].value)}}</mat-label>
                             <mat-form-field *ngIf="!isReadOnly">
                                 <mat-label>Seleccionar estado</mat-label>
@@ -88,7 +88,7 @@
                         </div>
                         <div class="form-field municipio">
                             <mat-label class="text-1">Municipio</mat-label>
-                            <mat-label class="text-1"
+                            <mat-label class="text-1-regular"
                                 *ngIf="isReadOnly">{{getCityByKey(this.f['city_key'].value)}}</mat-label>
                             <mat-form-field *ngIf="!isReadOnly">
                                 <mat-label>Seleccionar municipio</mat-label>

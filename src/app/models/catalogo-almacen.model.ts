@@ -18,6 +18,10 @@ export class CatalogoAlmacenModel {
   updated_at: Date | undefined;
   user: User | undefined;
   sucursales: Array<CatalogoAlmacenSucursalModel> | undefined;
+
+  constructor(id?: number) {
+   this.id = id;
+  }
 }
 
 export class CatalogoAlmacenSucursalModel {

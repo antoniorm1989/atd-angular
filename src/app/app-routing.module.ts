@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AlmacenComponent } from './components/almacen/almacen.component';
 import { CatalogoAlmacenesComponent } from './components/catalogos/almacenes/almacen/catalogo-almacenes.component';
 import { CatalogoAlmacenesListComponent } from './components/catalogos/almacenes/catalogo-almacenes-list.component';
 import { CatalogosComponent } from './components/catalogos/catalogos.component';
@@ -15,11 +14,15 @@ import { CatalogoCategoriaArticuloListComponent } from './components/catalogos/c
 import { CatalogoCategoriaArticuloComponent } from './components/catalogos/categoria_articulos/categoria_articulo/catalogo-categoria-articulo.component';
 import { CatalogoArticuloListComponent } from './components/catalogos/articulos/catalogo-articulo-list.component';
 import { CatalogoArticuloComponent } from './components/catalogos/articulos/articulo/catalogo-articulo.component';
+import { InventoryAlmacenListComponent } from './components/inventory-almacen/inventory-almacen-list.component';
+import { EntradaAlmacenComponent } from './components/inventory-almacen/entrada/entrada-almacen.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/almacen', pathMatch: 'full' }, // Redirect to login by default
+  { path: '', redirectTo: '/inventario-almacen', pathMatch: 'full' }, // Redirect to login by default
   { path: 'login', component: LoginComponent, canActivate: [AuthGuard]}, // Login route
-  { path: 'almacen', component: AlmacenComponent, canActivate: [AuthGuard] },
+  { path: 'inventario-almacen', component: InventoryAlmacenListComponent, canActivate: [AuthGuard] },
+  { path: 'inventario-almacen/entrada/:almacenId', component: EntradaAlmacenComponent, canActivate: [AuthGuard] },
+  { path: 'inventario-almacen/entrada/:almacenId/:articuloId', component: EntradaAlmacenComponent, canActivate: [AuthGuard] },
   { path: 'sucursales', component: SuscursalesComponent, canActivate: [AuthGuard] },
   { path: 'catalogos', component: CatalogosComponent, canActivate: [AuthGuard] },
   { path: 'catalogos/sucursales', component: CatalogoSucursalesListComponent, canActivate: [AuthGuard] },

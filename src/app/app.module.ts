@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { LoginComponent } from './components/login/login.component';
-import { AlmacenComponent } from './components/almacen/almacen.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field'; // Import MatFormFieldModule
 import { MatInputModule } from '@angular/material/input';
@@ -41,6 +40,8 @@ import { CatalogoCategoriaArticuloComponent } from './components/catalogos/categ
 import { CatalogoArticuloListComponent } from './components/catalogos/articulos/catalogo-articulo-list.component';
 import { CatalogoArticuloComponent } from './components/catalogos/articulos/articulo/catalogo-articulo.component';
 import { MessageComponent } from './components/genericos/snack-message.component';
+import { InventoryAlmacenListComponent } from './components/inventory-almacen/inventory-almacen-list.component';
+import { EntradaAlmacenComponent } from './components/inventory-almacen/entrada/entrada-almacen.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -50,7 +51,6 @@ export function tokenGetter() {
   declarations: [
     AppComponent,
     LoginComponent,
-    AlmacenComponent,
     SuscursalesComponent,
     CatalogosComponent,
     CatalogoSucursalesListComponent,
@@ -63,7 +63,9 @@ export function tokenGetter() {
     CatalogoCategoriaArticuloComponent,
     CatalogoArticuloListComponent,
     CatalogoArticuloComponent,
-    MessageComponent
+    MessageComponent,
+    InventoryAlmacenListComponent,
+    EntradaAlmacenComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,153 @@
+<div class="entrada-almacen">
+    <div class="toolbar">
+        <div class="toolbar-title">
+            <i class="icon fa-regular fa-building"></i>
+            <span class="title">Entrada de artículo</span>
+        </div>
+        <div class="toolbar-breadcrumb">
+            <span class="link-breadcrumb" (click)="navigate('inventario-almacen')"> Almacenes </span> /
+            <span class="breadcrumb-item"> Entrada de artículo</span>
+        </div>
+    </div>
+    <div class="container">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <p></p>
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title>{{almacen?.name}}</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <p>{{almacen?.description}}</p>
+                </mat-card-content>
+            </mat-card>
+
+            <div class="form-container">
+
+                <div class="form-container-toolbar">
+                    <span class="title">Artículo</span>
+                </div>
+
+                <div class="main-container">
+                    <div class="form-row two-col-photo">
+                        <div class="column-photo">
+                            <div class="container-photo">
+                                <div *ngIf="!imageUrl" class="empty-image-container">
+                                    <img src="../../assets/images/empty-image.png" class="empty-image">
+                                </div>
+                                <img class="photo" *ngIf="imageUrl" [src]="imageUrl">
+                            </div>
+                        </div>
+                        <div class="">
+                            <div class="form-field">
+                                <mat-form-field>
+                                    <mat-label>Categoria</mat-label>
+                                    <mat-select formControlName="selectedCategory" [(value)]="selectedCategory"
+                                        (selectionChange)="onSelectCategoryChange($event)">
+                                        <mat-option>None</mat-option>
+                                        <mat-option *ngFor="let category of categories"
+                                            [value]="category">{{category.name}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <div *ngIf="submitted && f['selectedCategory'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['selectedCategory'].errors['required']">Este campo requerido</div>
+                                </div>
+                            </div>
+                            <div class="form-field" style="margin-top: 14px;">
+                                <mat-form-field>
+                                    <mat-label>Artículo</mat-label>
+                                    <mat-select formControlName="selectedArticle" [(value)]="selectedArticle"
+                                        (selectionChange)="onSelectArticleChange($event)">
+                                        <mat-option>None</mat-option>
+                                        <mat-option *ngFor="let articule of articles"
+                                            [value]="articule">{{articule.part_number}} -
+                                            {{articule.description}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <div *ngIf="submitted && f['selectedArticle'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['selectedArticle'].errors['required']">Este campo requerido</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row three-col">
+                        <div class="form-field">
+                            <mat-label class="text-1">Cantidad mínima*</mat-label>
+                            <mat-form-field>
+                                <input matInput type="number" formControlName="minimum_stock"
+                                    [ngClass]="{ 'is-invalid': submitted && f['minimum_stock'].errors }" required>
+                            </mat-form-field>
+                            <div *ngIf="submitted && f['minimum_stock'].errors" class="invalid-feedback">
+                                <div *ngIf="f['minimum_stock'].errors['required']">Este campo requerido</div>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <mat-label class="text-1">Cantidad máxima*</mat-label>
+                            <mat-form-field>
+                                <input matInput type="number" formControlName="maximum_stock"
+                                    [ngClass]="{ 'is-invalid': submitted && f['maximum_stock'].errors }" 
+                                    (change)="onMaximumStockChange()" required>
+                            </mat-form-field>
+                            <div *ngIf="submitted && f['maximum_stock'].errors" class="invalid-feedback">
+                                <div *ngIf="f['maximum_stock'].errors['min']">Este campo debe ser mayor de 0</div>
+                            </div>
+                        </div>
+
+                        <div class="form-field" style="justify-content: center;">
+                            <mat-slide-toggle formControlName="notify_stock" color="primary">Generar alerta</mat-slide-toggle>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-container">
+
+                <div class="form-container-toolbar">
+                    <span class="title">Agregar entrada</span>
+                </div>
+
+                <div class="main-container">
+
+                    <div class="form-row three-col add-stock">
+
+                        <div class="form-field">
+                            <mat-label class="text-1">Cantidad a ingresar</mat-label>
+                            <mat-form-field>
+                                <input type="number" matInput formControlName="qty"
+                                    [ngClass]="{ 'is-invalid': submitted && f['qty'].errors }" required>
+                            </mat-form-field>
+                            <div *ngIf="submitted && f['qty'].errors" class="invalid-feedback">
+                                <div *ngIf="f['qty'].errors['max']">El stock maximo es de {{f['maximum_stock'].value}}</div>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <mat-label class="text-1">Comment</mat-label>
+                            <mat-form-field>
+                                <input matInput type="text" formControlName="comment"
+                                    [ngClass]="{ 'is-invalid': submitted && f['comment'].errors }">
+                            </mat-form-field>
+                        </div>
+
+                        <div class="stock_indicator">
+                            <span class="title-stock">Stock</span>
+                            <span class="stock">{{getStock()}}</span>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div style="height: 24px;"></div>
+
+            <div class="toolbar-bottom">
+                <button mat-flat-button class="btn secundary" type="button"
+                    (click)="navigate('catalogos/articulos')">Cancelar</button>
+                <button mat-flat-button class="btn" type="submit">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>

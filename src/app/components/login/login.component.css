@@ -14,7 +14,7 @@
     border-radius: 20px;
 }
 
-mat-card-header {
+.login mat-card-header {
     display: flex;
     padding: 16px 16px 0;
     align-items: center;
@@ -27,7 +27,7 @@ mat-card-header {
 
 }
 
-.mat-mdc-card-content {
+.login .mat-mdc-card-content {
     margin-top: 50px;
 }
 
@@ -36,7 +36,7 @@ form {
     flex-direction: column;
 }
 
-.form-field {
+.login .form-field {
     display: flex;
     flex-direction: column;
     margin-top: 20px;

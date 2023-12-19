@@ -1,3 +1,4 @@
+import { CatalogoCategoriaArticuloModel } from "./catalogo-categoria-articulo.model";
 import { User } from "./user";
 
 export class CatalogoArticuloModel {
@@ -13,4 +14,9 @@ export class CatalogoArticuloModel {
   cost: number | undefined;
   photo: string | undefined;
   cat_articulo_id: number | undefined;
+  category: CatalogoCategoriaArticuloModel | undefined;
+
+  constructor(id?: number) {
+    this.id = id;
+  }
 }

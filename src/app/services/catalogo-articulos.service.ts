@@ -16,6 +16,10 @@ export class CatalogoArticuloService {
     return this.http.get<Array<CatalogoArticuloModel>>(`${environment.apiUrl}articulo/getAll`);
   }
 
+  getAllByCategory(categoryId: number): Observable<Array<CatalogoArticuloModel>> {
+    return this.http.get<Array<CatalogoArticuloModel>>(`${environment.apiUrl}articulo/getAllByCategory/${categoryId}`);
+  }
+
   getById(id: number): Observable<CatalogoArticuloModel> {
     return this.http.get<CatalogoArticuloModel>(`${environment.apiUrl}articulo/getById/${id}`);
   }
