@@ -78,6 +78,9 @@ body {
 .invalid-feedback{
     color: red;
 }
+.invalid-feedback-warning{
+    color: goldenrod
+}
 
 .mat-mdc-snack-bar-container {
     --mdc-snackbar-container-color: #F1FFF4 !important;

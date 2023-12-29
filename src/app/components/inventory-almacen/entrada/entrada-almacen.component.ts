@@ -1,5 +1,5 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, NavigationEnd, Event } from '@angular/router';
 import { MessageComponent } from 'src/app/components/genericos/snack-message.component';
@@ -39,16 +39,24 @@ export class EntradaAlmacenComponent {
   imageUrl: string | null = null;
 
   constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private inventoryAlmacenService: InventoryAlmacenService, private catalogoAlmacenesService: CatalogoAlmacenesService, private router: Router, private catalogoCategoriaArticuloService: CatalogoCategoriaArticuloService, private catalogoArticuloService: CatalogoArticuloService, private _snackBar: MatSnackBar) {
+
+
+
     this.form = this.formBuilder.group({
       id: [0, [Validators.required]],
       selectedCategory: [null, Validators.required],
       selectedArticle: [null, Validators.required],
-      minimum_stock: [0, [Validators.required]],
-      maximum_stock: [0, [Validators.min(1)]],
+      minimum_stock: [null],
+      maximum_stock: [null],
       notify_stock: [false, [Validators.required]],
-      qty: [0, [Validators.max(0)]],
+      qty: [null, []],
       comment: ['', []]
     });
+
+
+    this.addMinValidator();
+    this.addMaxValidator();
+    this.addMaxMinValidator('qty');
   }
 
   ngOnInit() {
@@ -69,18 +77,18 @@ export class EntradaAlmacenComponent {
         this.inventoryAlmacenService.getInventoryByAlmacenByArticulo(parseInt(almacenId), parseInt(articuloId)).subscribe({
           next: (data) => {
             if (data) {
+              if (data.inventory_transaction && data.inventory_transaction.length > 0) {
+                this.stock = data.inventory_transaction[0]?.stock;
+              }
 
+              // todo calculr maximos y minoims
               this.form.patchValue({
                 id: data.id,
                 minimum_stock: data.minimum_stock,
                 maximum_stock: data.maximum_stock,
                 notify_stock: data.notify_stock,
-                qty: [0, [Validators.max(data.maximum_stock || 0)]],
+                qty: 0
               });
-
-              if (data.inventory_transaction && data.inventory_transaction.length > 0) {
-                this.stock = data.inventory_transaction[0]?.stock;
-              }
             }
           }
         });
@@ -131,10 +139,6 @@ export class EntradaAlmacenComponent {
 
   get f() { return this.form!.controls; }
 
-  get isReadOnly() {
-    return this.action == 'view';
-  }
-
   onSelectCategoryChange(event: any) {
     const selectedCategory = event.value;
     if (selectedCategory)
@@ -163,8 +167,9 @@ export class EntradaAlmacenComponent {
             minimum_stock: data.minimum_stock,
             maximum_stock: data.maximum_stock,
             notify_stock: data.notify_stock,
-            qty: [0, [Validators.max(data.maximum_stock || 0)]],
+            qty: 0
           });
+
         } else {
           this.stock = 0;
 
@@ -173,7 +178,7 @@ export class EntradaAlmacenComponent {
             minimum_stock: 0,
             maximum_stock: 0,
             notify_stock: false,
-            qty: [0, [Validators.max(0)]],
+            qty: 0,
           });
         }
       }
@@ -194,30 +199,23 @@ export class EntradaAlmacenComponent {
     let inventoryAlmacen = new InventoryAlmacenModel();
     inventoryAlmacen.id = this.f['id'].value;
     inventoryAlmacen.almacen = new CatalogoAlmacenModel(this.almacen?.id || 0);
-    inventoryAlmacen.articulo = new CatalogoArticuloModel(this.f['selectedArticle'].value);
+    inventoryAlmacen.articulo = new CatalogoArticuloModel(this.f['selectedArticle'].value.id);
     inventoryAlmacen.minimum_stock = this.f['minimum_stock'].value;
     inventoryAlmacen.maximum_stock = this.f['maximum_stock'].value;
     inventoryAlmacen.notify_stock = this.f['notify_stock'].value;
 
-    if (this.f['qty'].value > 0) {
+    if (this.f['qty'].value != 0) {
       inventoryAlmacen.inventory_transaction = [
         new InventoryAlmacenTransactionsModel(1, this.f['qty'].value, this.f['comment'].value, user)
       ];
     }
 
-    debugger;
-
-    if (inventoryAlmacen.id == 0) {
-      //this.inventoryAlmacenService.create(inventoryAlmacen).subscribe({
-      //  next: (data) => {
-      //  }
-      //});
-    } else {
-      //this.inventoryAlmacenService.update(inventoryAlmacen).subscribe({
-      //  next: (data) => {
-      //  }
-      //});
-    }
+    this.inventoryAlmacenService.createOrUpdate(inventoryAlmacen).subscribe({
+      next: (data) => {
+        this.openMessageSnack();
+        this.router.navigate(['inventario-almacen']);
+      }
+    });
   }
 
   navigate(route: string) {
@@ -240,13 +238,69 @@ export class EntradaAlmacenComponent {
     return (this.stock ?? 0) + qty;
   }
 
-  onMaximumStockChange() {
-    this.f['qty'].setValidators([Validators.max(this.f['maximum_stock'].value)]);
+  onMinimumStockChange() {
+    this.addMaxValidator();
+  }
 
-    if (this.f['maximum_stock'].value >= this.getStock())
-      this.f['qty'].setErrors(null);
-    else
-      this.f['qty'].setErrors({ 'max': true });
+  onMaximumStockChange() {
+    this.addMinValidator();
+  }
+
+  private addMaxMinValidator(property: string) {
+    // Create a custom validator function
+    const qtyValidator: ValidatorFn = (control: AbstractControl) => {
+      if (this.getStock() !== undefined && this.getStock() < 0) {
+        return { isStockNeg: true };
+      }
+      return null;
+    };
+
+    const formControl = this.f[property];
+    formControl.clearValidators();
+    formControl.setValidators([qtyValidator]);
+    formControl.updateValueAndValidity();
+  }
+
+  private addMaxValidator() {
+    // Create a custom validator function
+    const maxValidator: ValidatorFn = (control: AbstractControl) => {
+
+      const minStock = this.f['minimum_stock'].value;
+      const maxStock = this.f['maximum_stock'].value;
+
+      if (minStock !== null && maxStock !== null && maxStock < minStock) {
+        return { maxLessThanMin: true };
+      } else if (maxStock < 0)
+        return { lessThanZero: true };
+
+      return null;
+    };
+
+    const formControl = this.f['maximum_stock'];
+    formControl.clearValidators();
+    formControl.setValidators([maxValidator]);
+    formControl.updateValueAndValidity();
+  }
+
+  private addMinValidator() {
+    // Create a custom validator function
+    const minValidator: ValidatorFn = (control: AbstractControl) => {
+
+      const minStock = this.f['minimum_stock'].value;
+      const maxStock = this.f['maximum_stock'].value;
+
+      if (minStock !== null && maxStock !== null && minStock > maxStock) {
+        return { minGreaterThanMax: true };
+      } else if (maxStock < 0)
+        return { lessThanZero: true };
+
+      return null;
+    };
+
+    const formControl = this.f['minimum_stock'];
+    formControl.clearValidators();
+    formControl.setValidators([minValidator]);
+    formControl.updateValueAndValidity();
   }
 
 }

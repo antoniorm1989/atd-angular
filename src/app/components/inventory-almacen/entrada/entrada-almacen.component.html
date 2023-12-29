@@ -39,11 +39,11 @@
                         </div>
                         <div class="">
                             <div class="form-field">
+
+                                <mat-label class="text-1">*Categoria</mat-label>
                                 <mat-form-field>
-                                    <mat-label>Categoria</mat-label>
                                     <mat-select formControlName="selectedCategory" [(value)]="selectedCategory"
                                         (selectionChange)="onSelectCategoryChange($event)">
-                                        <mat-option>None</mat-option>
                                         <mat-option *ngFor="let category of categories"
                                             [value]="category">{{category.name}}</mat-option>
                                     </mat-select>
@@ -53,11 +53,10 @@
                                 </div>
                             </div>
                             <div class="form-field" style="margin-top: 14px;">
+                                <mat-label class="text-1">*Artículo</mat-label>
                                 <mat-form-field>
-                                    <mat-label>Artículo</mat-label>
                                     <mat-select formControlName="selectedArticle" [(value)]="selectedArticle"
                                         (selectionChange)="onSelectArticleChange($event)">
-                                        <mat-option>None</mat-option>
                                         <mat-option *ngFor="let articule of articles"
                                             [value]="articule">{{articule.part_number}} -
                                             {{articule.description}}</mat-option>
@@ -75,10 +74,12 @@
                             <mat-label class="text-1">Cantidad mínima*</mat-label>
                             <mat-form-field>
                                 <input matInput type="number" formControlName="minimum_stock"
-                                    [ngClass]="{ 'is-invalid': submitted && f['minimum_stock'].errors }" required>
+                                    [ngClass]="{ 'is-invalid': submitted && f['minimum_stock'].errors }" required
+                                    (change)="onMinimumStockChange()">
                             </mat-form-field>
                             <div *ngIf="submitted && f['minimum_stock'].errors" class="invalid-feedback">
-                                <div *ngIf="f['minimum_stock'].errors['required']">Este campo requerido</div>
+                                <div *ngIf="f['minimum_stock'].hasError('lessThanZero')">Este campo debe ser mayor de 0</div>
+                                <div *ngIf="f['minimum_stock'].hasError('minGreaterThanMax')">Este campo no puede ser mayor que la canitad maxima</div>
                             </div>
                         </div>
 
@@ -86,11 +87,12 @@
                             <mat-label class="text-1">Cantidad máxima*</mat-label>
                             <mat-form-field>
                                 <input matInput type="number" formControlName="maximum_stock"
-                                    [ngClass]="{ 'is-invalid': submitted && f['maximum_stock'].errors }" 
-                                    (change)="onMaximumStockChange()" required>
+                                    [ngClass]="{ 'is-invalid': submitted && f['maximum_stock'].errors }" required
+                                    (change)="onMaximumStockChange()">
                             </mat-form-field>
                             <div *ngIf="submitted && f['maximum_stock'].errors" class="invalid-feedback">
-                                <div *ngIf="f['maximum_stock'].errors['min']">Este campo debe ser mayor de 0</div>
+                                <div *ngIf="f['maximum_stock'].hasError('lessThanZero')">Este campo debe ser mayor de 0</div>
+                                <div *ngIf="f['maximum_stock'].hasError('maxLessThanMin')">Este campo no puede ser menor que la canitad minima</div>
                             </div>
                         </div>
 
@@ -105,7 +107,7 @@
             <div class="form-container">
 
                 <div class="form-container-toolbar">
-                    <span class="title">Agregar entrada</span>
+                    <span class="title">Ajustar stock </span>
                 </div>
 
                 <div class="main-container">
@@ -119,7 +121,11 @@
                                     [ngClass]="{ 'is-invalid': submitted && f['qty'].errors }" required>
                             </mat-form-field>
                             <div *ngIf="submitted && f['qty'].errors" class="invalid-feedback">
-                                <div *ngIf="f['qty'].errors['max']">El stock maximo es de {{f['maximum_stock'].value}}</div>
+                                <div *ngIf="f['qty'].hasError('isStockNeg')">El stock no puede ser negativo</div>
+                            </div>
+                            <div *ngIf="getStock() < f['minimum_stock'].value || getStock() > f['maximum_stock'].value" class="invalid-feedback-warning">
+                                <div *ngIf="getStock() < f['minimum_stock'].value">El cantidad minima para el stock es de {{f['minimum_stock'].value}}</div>
+                                <div *ngIf="getStock() > f['maximum_stock'].value">La cantidad maxima para el sotock es de {{f['maximum_stock'].value}}</div>
                             </div>
                         </div>
 
@@ -131,10 +137,14 @@
                             </mat-form-field>
                         </div>
 
-                        <div class="stock_indicator">
+                        <div [matBadge]="(f['qty'].value > 0 ? '+' : '') + f['qty'].value" matBadgeOverlap="false" class="stock_indicator" [ngClass]="{
+                            'stock_indicator-neg': f['qty'].value < 0,
+                            'stock_indicator-hide': f['qty'].value === 0 || f['qty'].value === null
+                          }" >
                             <span class="title-stock">Stock</span>
-                            <span class="stock">{{getStock()}}</span>
+                            <span class="stock">{{stock}}</span>
                         </div>
+                        
 
                     </div>
 
@@ -145,7 +155,7 @@
 
             <div class="toolbar-bottom">
                 <button mat-flat-button class="btn secundary" type="button"
-                    (click)="navigate('catalogos/articulos')">Cancelar</button>
+                    (click)="navigate('inventario-almacen')">Cancelar</button>
                 <button mat-flat-button class="btn" type="submit">Guardar</button>
             </div>
         </form>

@@ -68,13 +68,11 @@ export class InventoryAlmacenListComponent {
   }
 
   onView(id: string) {
-    this.router.navigate(['catalogos/articulos/detail', id]);
+    this.router.navigate(['inventario-almacen/entrada/', this.selectedAlmacen!.id, id]);
   }
 
-  onEdit(id: string) {
-    this.router.navigate(['catalogos/articulos/detail', id], {
-      queryParams: { action: 'edit' },
-    });
+  onViewHistory(id: string) {
+    this.router.navigate(['inventario-almacen/historial-almacen/', id]);
   }
 
   navigate(route: string) {

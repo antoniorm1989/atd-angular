@@ -1,0 +1,144 @@
+<div class="historial-almacen">
+    <div class="toolbar">
+        <div class="toolbar-title">
+            <i class="icon fa-regular fa-rectangle-list"></i>
+            <span class="title">Historial de movimientos</span>
+        </div>
+        <div class="toolbar-breadcrumb">
+            <span class="link-breadcrumb" (click)="navigate('inventario-almacen')"> Almacenes </span> /
+            <span class="breadcrumb-item">Consulta</span>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div class="form-container" style="position: relative;">
+
+            <div *ngIf="showStockIndicator()" class="stock-indicator">
+                <span matTooltip="Se requiere pedir" class="stock-warning-icon"></span>
+                <span class="stock-indicator-text">Se requiere pedir</span>
+            </div>
+
+            <div class="form-container-toolbar">
+                <span class="title">Datos generales</span>
+            </div>
+
+            <div class="main-container">
+                <div class="form-row one-col">
+                    <div class="" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
+                        <div>
+                            <mat-label class="text-1">Almacen</mat-label><br/>
+                            <mat-label class="text-1-regular">{{inventoryAlmacenModel?.almacen?.name}}</mat-label>
+                        </div>
+                        <div>
+                            <mat-label class="text-1">Categoría</mat-label><br/>
+                            <mat-label class="text-1-regular">{{inventoryAlmacenModel?.articulo?.category}}</mat-label>
+                        </div>
+                        <div style="display: flex; gap: 20px;">
+                            <div class="container-photo">
+                                <div *ngIf="!imageUrl" class="empty-image-container">
+                                    <img src="../../assets/images/empty-image.png" class="empty-image">
+                                </div>
+                                <img class="photo" *ngIf="imageUrl" [src]="imageUrl">
+                            </div>
+                            <div>
+                                <mat-label class="text-1">Descripción</mat-label><br/>
+                                <mat-label class="text-1-regular">{{inventoryAlmacenModel?.articulo?.description}}</mat-label>
+                            </div>
+                        </div>
+                        <div class="stock_indicator">
+                            <span class="title-stock">Stock</span>
+                            <span class="stock">{{getStock()}}</span>
+                        </div>
+                        <div class="numero-parte-container">
+                            <mat-label class="text-1">Número de parte</mat-label>
+                            <mat-label class="text-1-regular">{{inventoryAlmacenModel?.articulo?.part_number}}</mat-label>
+                        </div>
+                        <div>
+                            <mat-label class="text-1">Cantidad mínima</mat-label><br/>
+                            <mat-label class="text-1-regular">{{inventoryAlmacenModel?.minimum_stock}}</mat-label>
+                        </div>
+                        <div>
+                            <mat-label class="text-1">Cantidad máxima</mat-label><br/>
+                            <mat-label class="text-1-regular">{{inventoryAlmacenModel?.maximum_stock}}</mat-label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="height: 24px;"></div>
+
+        <div class="container-list">
+
+            <table class="table" mat-table [dataSource]="dataSource">
+
+                <ng-container matColumnDef="created_at">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Fecha</th>
+                    <td mat-cell *matCellDef="let element" class="center-column"><span>{{formatDate(element.created_at)}}</span></td>
+                </ng-container>
+
+                <ng-container matColumnDef="added">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Movimiento</th>
+                    <td mat-cell *matCellDef="let element" class="center-column">
+                        <span *ngIf="element.qty > 0">Entrada</span>
+                        <span *ngIf="element.qty < 0">Salida</span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="type">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Tipo</th>
+                    <td mat-cell *matCellDef="let element" class="center-column"><span>Manual</span></td>
+                </ng-container>
+
+                <ng-container matColumnDef="qty">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Cantidad</th>
+                    <td mat-cell *matCellDef="let element" class="center-column qty-column" [ngClass]="{ 'qty-neg': element.qty < 0 }">
+                        <span *ngIf="element.qty > 0">+</span>
+                        <span>{{element.qty}}</span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="before_qty">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Anterior</th>
+                    <td mat-cell *matCellDef="let element" class="center-column"><span>{{element.before_qty}}</span></td>
+                </ng-container>
+
+                <ng-container matColumnDef="current_qty">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Actual</th>
+                    <td mat-cell *matCellDef="let element" class="center-column"><span>{{element.current_qty}}</span></td>
+                </ng-container>
+
+                <ng-container matColumnDef="comment">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Comment</th>
+                    <td mat-cell *matCellDef="let element" class="center-column">
+                        <span (click)="openDialog(element.comment)" class="title-grid">{{element.comment}}</span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="user">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Usuario</th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="user-wrapper">
+                            <div class="circle-initials" mat-mini-fab color="primary">
+                                {{getUserName(element.user.name, element.user.last_name)}}</div>
+                            <span class="text">{{element.user.name}} {{element.user.last_name}}</span>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons
+                aria-label="Select page of periodic elements">
+            </mat-paginator>
+        </div>
+
+        <div class="toolbar-bottom">
+            <button mat-flat-button class="btn secundary" type="button"
+                (click)="navigate('inventario-almacen')">Regresar</button>
+        </div>
+    </div>
+</div>

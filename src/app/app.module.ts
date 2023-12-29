@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
@@ -42,6 +43,8 @@ import { CatalogoArticuloComponent } from './components/catalogos/articulos/arti
 import { MessageComponent } from './components/genericos/snack-message.component';
 import { InventoryAlmacenListComponent } from './components/inventory-almacen/inventory-almacen-list.component';
 import { EntradaAlmacenComponent } from './components/inventory-almacen/entrada/entrada-almacen.component';
+import { HistorialAlmacenComponent } from './components/inventory-almacen/historial/historial-almacen.component';
+import { MatDialogModule, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -65,7 +68,8 @@ export function tokenGetter() {
     CatalogoArticuloComponent,
     MessageComponent,
     InventoryAlmacenListComponent,
-    EntradaAlmacenComponent
+    EntradaAlmacenComponent,
+    HistorialAlmacenComponent
   ],
   imports: [
     BrowserModule,
@@ -85,6 +89,7 @@ export function tokenGetter() {
     HttpClientModule,
     CommonModule,
     MatTableModule,
+    MatBadgeModule,
     MatPaginatorModule,
     MatSlideToggleModule,
     JwtModule.forRoot({
@@ -96,7 +101,8 @@ export function tokenGetter() {
     MatSelectModule,
     MatTabsModule,
     MatGridListModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

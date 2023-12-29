@@ -16,6 +16,7 @@ import { CatalogoArticuloListComponent } from './components/catalogos/articulos/
 import { CatalogoArticuloComponent } from './components/catalogos/articulos/articulo/catalogo-articulo.component';
 import { InventoryAlmacenListComponent } from './components/inventory-almacen/inventory-almacen-list.component';
 import { EntradaAlmacenComponent } from './components/inventory-almacen/entrada/entrada-almacen.component';
+import { HistorialAlmacenComponent } from './components/inventory-almacen/historial/historial-almacen.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/inventario-almacen', pathMatch: 'full' }, // Redirect to login by default
@@ -23,6 +24,7 @@ const routes: Routes = [
   { path: 'inventario-almacen', component: InventoryAlmacenListComponent, canActivate: [AuthGuard] },
   { path: 'inventario-almacen/entrada/:almacenId', component: EntradaAlmacenComponent, canActivate: [AuthGuard] },
   { path: 'inventario-almacen/entrada/:almacenId/:articuloId', component: EntradaAlmacenComponent, canActivate: [AuthGuard] },
+  { path: 'inventario-almacen/historial-almacen/:id', component: HistorialAlmacenComponent, canActivate: [AuthGuard] },
   { path: 'sucursales', component: SuscursalesComponent, canActivate: [AuthGuard] },
   { path: 'catalogos', component: CatalogosComponent, canActivate: [AuthGuard] },
   { path: 'catalogos/sucursales', component: CatalogoSucursalesListComponent, canActivate: [AuthGuard] },
