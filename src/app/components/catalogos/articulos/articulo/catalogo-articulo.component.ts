@@ -34,14 +34,14 @@ export class CatalogoArticuloComponent {
     this.form = this.formBuilder.group({
       part_number: ['', [Validators.required]],
       description: ['', [Validators.required]],
-      comment: [''],
-      cost: [''],
-      category: [''],
-      show_admin_users: [''],
-      status: [''],
-      created_at: ['created_at'],
+      comment: '',
+      cost: '',
+      category: '',
+      show_admin_users: '',
+      status: '',
+      created_at: '',
       selectedCategory: [null, Validators.required],
-      photo: [null, Validators.required],
+      photo: null,
     });
 
     this.router.events.subscribe((event: Event) => {
@@ -56,13 +56,13 @@ export class CatalogoArticuloComponent {
                 var articulo = data;
 
                 this.form.patchValue({
-                  part_number: [data.part_number],
-                  description: [data.description],
-                  comment: [data.comment],
-                  cost: [data.cost],
-                  show_admin_users: [data.show_admin_users],
-                  status: [data.status],
-                  created_at: [data.created_at],
+                  part_number: data.part_number,
+                  description: data.description,
+                  comment: data.comment,
+                  cost: data.cost,
+                  show_admin_users: data.show_admin_users,
+                  status: data.status,
+                  created_at: data.created_at,
                   selectedCategory: [null, Validators.required],
                 });
 
@@ -73,12 +73,12 @@ export class CatalogoArticuloComponent {
                   switch (params['action']) {
                     case undefined:
                       this.action = 'view';
-                      this.title = 'Consultar articulo';
+                      this.title = 'Consultar artículo';
                       this.form.disable();
                       break;
                     case 'edit':
                       this.action = 'edit';
-                      this.title = 'Editar articulo';
+                      this.title = 'Editar artículo';
                       break;
                   }
                 });
@@ -102,7 +102,7 @@ export class CatalogoArticuloComponent {
             });
           } else {
             this.action = 'new';
-            this.title = 'Agregar articulo';
+            this.title = 'Agregar artículo';
             this.catalogoCategoriaArticuloService.getAll().subscribe({
               next: (data) => {
                 if (data.length > 0) {
@@ -151,15 +151,20 @@ export class CatalogoArticuloComponent {
     if (this.action == 'new') {
       this.catalogoArticuloService.create(articulo).subscribe({
         next: (data) => {
-          this.uploadPhoto(data.id).subscribe({
-            next: () => {
-              this.openMessageSnack();
-              this.router.navigate(['catalogos/articulos']);
-            },
-            error: (e) => {
-              console.log(e);
-            }
-          });
+          if (this.selectedFile != null)
+            this.uploadPhoto(data.id).subscribe({
+              next: () => {
+                this.openMessageSnack();
+                this.router.navigate(['catalogos/articulos']);
+              },
+              error: (e) => {
+                console.log(e);
+              }
+            });
+          else {
+            this.openMessageSnack();
+            this.router.navigate(['catalogos/articulos']);
+          }
         },
         error: (e) => {
         }
@@ -167,15 +172,20 @@ export class CatalogoArticuloComponent {
     } else {
       this.catalogoArticuloService.update(articulo).subscribe({
         next: (data) => {
-          this.uploadPhoto(data.id).subscribe({
-            next: () => {
-              this.openMessageSnack();
-              this.router.navigate(['catalogos/articulos']);
-            },
-            error: (e) => {
-              console.log(e);
-            }
-          });
+          if (this.selectedFile != null)
+            this.uploadPhoto(data.id).subscribe({
+              next: () => {
+                this.openMessageSnack();
+                this.router.navigate(['catalogos/articulos']);
+              },
+              error: (e) => {
+                console.log(e);
+              }
+            });
+          else {
+            this.openMessageSnack();
+            this.router.navigate(['catalogos/articulos']);
+          }
         },
         error: (e) => {
           console.log(e);
@@ -209,12 +219,16 @@ export class CatalogoArticuloComponent {
     // Display a preview of the selected image
     const reader = new FileReader();
     reader.onload = (e: any) => {
-      this.imageUrl = e.target.result;
+      if (reader.readyState === FileReader.DONE) {
+        this.imageUrl = e.target.result;
+      }
     };
 
-    if (this.selectedFile)
+    if (this.selectedFile) {
       reader.readAsDataURL(this.selectedFile);
+    }
   }
+
 
   uploadPhoto(id: number): Observable<void> {
     const formData = new FormData();

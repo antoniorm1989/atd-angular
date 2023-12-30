@@ -14,7 +14,6 @@
             <div class="select-wrapper">
                 <mat-label class="text-1">Almacén</mat-label><br/>
                 <mat-form-field>
-                    <mat-label>Seleccionar almacén</mat-label>
                     <mat-select [(value)]="selectedAlmacen" (selectionChange)="onAlmacenChange($event)">
                         <mat-option *ngFor="let almacen of almacenes" [value]="almacen">{{ almacen.name }}
                         </mat-option>

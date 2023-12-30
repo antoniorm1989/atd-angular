@@ -196,3 +196,6 @@
     width: 9px;
     background-color: red;
 }
+.inventory-almacen-list .select-wrapper mat-form-field{
+    width: 400px;
+}
