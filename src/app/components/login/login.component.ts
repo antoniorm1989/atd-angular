@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit {
       this.f['remember'].setValue(true);
     }
 
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/almacen';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/inventario-almacen';
   }
 
   get f() { return this.form!.controls; }

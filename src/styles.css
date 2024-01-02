@@ -86,3 +86,9 @@ body {
     --mdc-snackbar-container-color: #F1FFF4 !important;
     --mdc-snackbar-supporting-text-color: #212121 !important;
 }
+
+.cdk-global-overlay-wrapper{
+    justify-content: flex-end !important;
+    margin-right: 12px;
+    margin-bottom: 12px;
+}
