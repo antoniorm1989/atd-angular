@@ -1,7 +1,7 @@
 <div class="entrada-almacen">
     <div class="toolbar">
         <div class="toolbar-title">
-            <i class="icon fa-regular fa-building"></i>
+            <i class="icon fa-brands fa-dropbox"></i>
             <span class="title">Entrada de artículo</span>
         </div>
         <div class="toolbar-breadcrumb">
@@ -80,6 +80,7 @@
                             <div *ngIf="submitted && f['minimum_stock'].errors" class="invalid-feedback">
                                 <div *ngIf="f['minimum_stock'].hasError('lessThanZero')">Este campo debe ser mayor de 0</div>
                                 <div *ngIf="f['minimum_stock'].hasError('minGreaterThanMax')">Este campo no puede ser mayor que la canitad maxima</div>
+                                <div *ngIf="f['minimum_stock'].hasError('undefined')">Este campo es requerido</div>
                             </div>
                         </div>
 
@@ -93,6 +94,7 @@
                             <div *ngIf="submitted && f['maximum_stock'].errors" class="invalid-feedback">
                                 <div *ngIf="f['maximum_stock'].hasError('lessThanZero')">Este campo debe ser mayor de 0</div>
                                 <div *ngIf="f['maximum_stock'].hasError('maxLessThanMin')">Este campo no puede ser menor que la canitad minima</div>
+                                <div *ngIf="f['maximum_stock'].hasError('undefined')">Este campo es requerido</div>
                             </div>
                         </div>
 
@@ -130,7 +132,7 @@
                         </div>
 
                         <div class="form-field">
-                            <mat-label class="text-1">Comment</mat-label>
+                            <mat-label class="text-1">Comentario</mat-label>
                             <mat-form-field>
                                 <input matInput type="text" formControlName="comment"
                                     [ngClass]="{ 'is-invalid': submitted && f['comment'].errors }">

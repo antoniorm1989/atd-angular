@@ -270,8 +270,10 @@ export class EntradaAlmacenComponent {
 
       if (minStock !== null && maxStock !== null && maxStock < minStock) {
         return { maxLessThanMin: true };
-      } else if (maxStock < 0)
+      } else if (maxStock < 0 || maxStock == 0) {
         return { lessThanZero: true };
+      } else if (maxStock == null)
+        return { undefined: true };
 
       return null;
     };
@@ -291,8 +293,10 @@ export class EntradaAlmacenComponent {
 
       if (minStock !== null && maxStock !== null && minStock > maxStock) {
         return { minGreaterThanMax: true };
-      } else if (maxStock < 0)
+      } else if (minStock < 0 || minStock == 0) {
         return { lessThanZero: true };
+      } else if (minStock == null)
+        return { undefined: true };
 
       return null;
     };

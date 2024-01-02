@@ -52,12 +52,12 @@ export class CatalogoCategoriaArticuloComponent {
                   switch (params['action']) {
                     case undefined:
                       this.action = 'view';
-                      this.title = 'Consultar articulo';
+                      this.title = 'Consultar categoría';
                       this.form.disable();
                       break;
                     case 'edit':
                       this.action = 'edit';
-                      this.title = 'Editar articulo';
+                      this.title = 'Editar categoría';
                       break;
                   }
                 });
@@ -67,7 +67,7 @@ export class CatalogoCategoriaArticuloComponent {
             });
           } else {
             this.action = 'new';
-            this.title = 'Agregar articulo';
+            this.title = 'Agregar categoría';
           }
         });
 
@@ -137,7 +137,7 @@ export class CatalogoCategoriaArticuloComponent {
 
   makeEditMode() {
     this.action = 'edit';
-    this.title = 'Editar articulo';
+    this.title = 'Editar categoría';
     this.form.enable();
   }
 

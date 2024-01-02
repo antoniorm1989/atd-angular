@@ -1,7 +1,7 @@
 <div class="catalogo-articulos">
     <div class="toolbar">
         <div class="toolbar-title">
-            <i class="icon fa-regular fa-building"></i>
+            <i class="icon fa-solid fa-layer-group"></i>
             <span class="title">Catálogo categoría de artículos</span>
         </div>
         <div class="toolbar-breadcrumb">
@@ -23,8 +23,8 @@
 
                 <div class="form-row one-col">
                     <div class="form-field name">
-                        <mat-label class="text-1"  *ngIf="isReadOnly">articulo</mat-label>
-                        <mat-label class="text-1"  *ngIf="!isReadOnly">articulo*</mat-label>
+                        <mat-label class="text-1"  *ngIf="isReadOnly">Categoría de artículo</mat-label>
+                        <mat-label class="text-1"  *ngIf="!isReadOnly">Categoría de artículo*</mat-label>
                         <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['name'].value}}</mat-label>
                         <mat-form-field *ngIf="!isReadOnly">
                             <input matInput placeholder="Escribir nombre de la articulo" formControlName="name" [ngClass]="{ 'is-invalid': submitted && f['name'].errors }" required>

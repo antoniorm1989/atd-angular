@@ -15,7 +15,7 @@ import { environment } from 'src/environments/environment';
 export class CatalogoArticuloListComponent {
 
   hasRecords = false;
-  displayedColumns: string[] = ['part_number', 'description', 'created', 'modified', 'user', 'status', 'actions'];
+  displayedColumns: string[] = ['part_number', 'description', 'cat_articulo_id', 'created', 'modified', 'user', 'status', 'actions'];
   dataSource = new MatTableDataSource<CatalogoArticuloModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   private dataLoaded = false;
@@ -58,6 +58,10 @@ export class CatalogoArticuloListComponent {
 
   onView(id: string) {
     this.router.navigate(['catalogos/articulos/detail', id]);
+  }
+
+  onViewCategory(categoryId: string) {
+    this.router.navigate(['catalogos/categoria-articulos/detail', categoryId]);
   }
 
   onEdit(id: string) {

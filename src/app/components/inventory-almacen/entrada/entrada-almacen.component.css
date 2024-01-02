@@ -277,7 +277,7 @@ mat-panel-description {
 
 
 .entrada-almacen {
-    margin: 0px 250px;
+    margin: 0px 150px;
 }
 
 .entrada-almacen .mat-badge-content{
@@ -294,7 +294,7 @@ mat-panel-description {
 
 @media only screen and (max-width: 1500px) {
     .entrada-almacen {
-        margin: 0px 150px;
+        margin: 0px 50px;
     }
 }
 
