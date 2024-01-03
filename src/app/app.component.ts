@@ -1,7 +1,8 @@
 import { MediaMatcher } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, ViewChild } from '@angular/core';
 import { UserService } from './services/user.service';
 import { Router, NavigationEnd, Event } from '@angular/router';
+import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-root',
@@ -30,6 +31,8 @@ export class AppComponent implements OnDestroy {
 
   private _mobileQueryListener: () => void;
 
+  @ViewChild('snav') sidenav!: MatSidenav;
+
   constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private userService: UserService, private router: Router) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
@@ -43,6 +46,12 @@ export class AppComponent implements OnDestroy {
       }
     });
   }
+
+    ngAfterViewInit() {
+        // Close and open the sidenav to trigger its adaptation
+        this.sidenav.close();
+        this.sidenav.open();
+    }
 
   ngOnDestroy() {
     this.mobileQuery.removeListener(this._mobileQueryListener);

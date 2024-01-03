@@ -5,7 +5,6 @@ import { first } from 'rxjs/operators';
 import { UserService } from 'src/app/services/user.service';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { MessageComponent } from '../genericos/snack-message.component';
-import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +18,7 @@ export class LoginComponent implements OnInit {
   form: FormGroup;
   loading = false;
   submitted = false;
-  returnUrl: string | undefined;
+  returnUrl: string = '';
   hidePassword: boolean = true;
 
   constructor(
@@ -71,7 +70,12 @@ export class LoginComponent implements OnInit {
         next: (data) => {
           this.openMessageSnack();
           localStorage.setItem('user_data', JSON.stringify(data));
-          this.router.navigate([this.returnUrl]);
+          
+          if (this.isValidRoute(this.returnUrl)) {
+            this.router.navigate([this.returnUrl]);
+          } else {
+            this.router.navigate(['/inventario-almacen']);
+          }
         },
         error: (e) => {
           this.loading = false;
@@ -91,5 +95,14 @@ export class LoginComponent implements OnInit {
       },
     };
     this._snackBar.openFromComponent(MessageComponent, config);
+  }
+
+  private isValidRoute(route: string): boolean {
+    // Extract the path from the route (remove query parameters if any)
+    const path = route.split('?')[0];
+
+    // Check if the path exists in the defined routes
+    const validRoutes = this.router.config.map(route => route.path);
+    return validRoutes.includes(path);
   }
 }

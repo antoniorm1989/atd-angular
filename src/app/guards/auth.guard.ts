@@ -13,7 +13,7 @@ export class AuthGuard implements CanActivate {
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         if (this.userService.isTokenValid()) {
             if (route.routeConfig!.path == 'login') {
-                this.router.navigate(['/almacen'], { queryParams: { returnUrl: state.url } });
+                this.router.navigate(['/inventario-almacen'], { queryParams: { returnUrl: state.url } });
                 return false;
             } else
                 return true;
