@@ -21,11 +21,11 @@
 
     </mat-toolbar>
 
-    <mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 00">
+    <mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 00" >
 
-        <mat-sidenav class="mat-sidenav-menu" #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
-            [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
-            <mat-nav-list class="mat-nav-menu">
+        <mat-sidenav class="mat-sidenav-menu" [ngClass]="{ 'mat-sidenav-menu-hide': !isTokenValid }"  #snav [mode]="mobileQuery.matches ? 'over' : 'side'" 
+            [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" opened>
+            <mat-nav-list class="mat-nav-menu" >
                 <div routerLinkActive="active" *ngFor="let nav of fillerNav" class="menu-option"
                     [routerLink]="[nav.href]">
                     <div class="menu-space"></div>

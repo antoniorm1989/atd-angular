@@ -31,9 +31,9 @@ export class InventoryAlmacenListComponent {
         this.catalogoAlmacenesService.getAll().subscribe({
           next: (data) => {
             this.almacenes = data;
-            if(data.length > 0)
+            if (data.length > 0)
               this.selectedAlmacen = data[0];
-              this.onAlmacenChange(null);
+            this.onAlmacenChange(null);
           },
           error: (e) => {
           }
@@ -59,7 +59,9 @@ export class InventoryAlmacenListComponent {
   }
 
   getUserName(name: string, lastname: string): string {
-    return name[0].toUpperCase() + lastname[0].toUpperCase();
+    if (name && lastname)
+      return name[0].toUpperCase() + lastname[0].toUpperCase();
+    else return '';
   }
 
 

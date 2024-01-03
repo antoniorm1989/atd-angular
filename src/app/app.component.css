@@ -126,6 +126,10 @@ h1.example-app-name {
   letter-spacing: 0.01em;
 }
 
+.mat-sidenav-menu-hide{
+  display: none;
+}
+
 @media only screen and (max-width: 1200px) {}
 
 @media only screen and (max-width: 1000px) {}

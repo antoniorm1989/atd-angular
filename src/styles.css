@@ -92,3 +92,7 @@ body {
     margin-right: 12px;
     margin-bottom: 12px;
 }
+
+.mat-toolbar-single-row {
+    height: 80px;
+}
