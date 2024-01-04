@@ -28,6 +28,7 @@ export class CatalogoArticuloComponent {
 
   selectedFile: File | null = null;
   imageUrl: string | null = null;
+  isPartNumberDuplicate: boolean = false;
 
   constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogoArticuloService: CatalogoArticuloService, private router: Router, private catalogoCategoriaArticuloService: CatalogoCategoriaArticuloService, private _snackBar: MatSnackBar) {
 
@@ -127,6 +128,7 @@ export class CatalogoArticuloComponent {
 
   onSubmit() {
     this.submitted = true;
+    this.isPartNumberDuplicate = false;
 
     // stop here if form is invalid
     if (this.form!.invalid)
@@ -188,6 +190,9 @@ export class CatalogoArticuloComponent {
           }
         },
         error: (e) => {
+          if (e.error.error == 'Part number already exists')
+            this.isPartNumberDuplicate = true;
+
           console.log(e);
         }
       });
