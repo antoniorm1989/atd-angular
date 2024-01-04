@@ -1,10 +1,11 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { UserService } from 'src/app/services/user.service';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { MessageComponent } from '../genericos/snack-message.component';
+import { CommunicationService } from 'src/app/services/communication.service';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +27,8 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private userService: UserService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private communicationService: CommunicationService
   ) {
     
     this.form = this.formBuilder.group({
@@ -68,6 +70,7 @@ export class LoginComponent implements OnInit {
       .pipe(first())
       .subscribe({
         next: (data) => {
+          this.communicationService.callMethod();
           this.openMessageSnack();
           localStorage.setItem('user_data', JSON.stringify(data));
           

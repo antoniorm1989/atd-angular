@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, OnDestroy, ViewChild } from '@angular/cor
 import { UserService } from './services/user.service';
 import { Router, NavigationEnd, Event } from '@angular/router';
 import { MatSidenav } from '@angular/material/sidenav';
+import { CommunicationService } from './services/communication.service';
 
 @Component({
   selector: 'app-root',
@@ -33,7 +34,12 @@ export class AppComponent implements OnDestroy {
 
   @ViewChild('snav') sidenav!: MatSidenav;
 
-  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private userService: UserService, private router: Router) {
+  constructor(changeDetectorRef: ChangeDetectorRef, 
+    media: MediaMatcher, 
+    private userService: UserService, 
+    private router: Router, 
+    private communicationService: CommunicationService) {
+      
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -47,11 +53,18 @@ export class AppComponent implements OnDestroy {
     });
   }
 
-    ngAfterViewInit() {
-        // Close and open the sidenav to trigger its adaptation
-        this.sidenav.close();
-        this.sidenav.open();
-    }
+  ngOnInit(): void {
+    this.communicationService.methodCalled$.subscribe(() => {
+      this.sidenav.close();
+      setTimeout(() => {
+        this.updateMenu();
+      }, 100); 
+    });
+  }
+
+  ngAfterViewInit() {
+    this.updateMenu();
+  }
 
   ngOnDestroy() {
     this.mobileQuery.removeListener(this._mobileQueryListener);
@@ -82,4 +95,8 @@ export class AppComponent implements OnDestroy {
     this.userService.logout();
   }
 
+  updateMenu(){
+    this.sidenav.close();
+    this.sidenav.open();
+  }
 }

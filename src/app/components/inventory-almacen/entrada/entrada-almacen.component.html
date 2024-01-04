@@ -2,11 +2,11 @@
     <div class="toolbar">
         <div class="toolbar-title">
             <i class="icon fa-brands fa-dropbox"></i>
-            <span class="title">Entrada de artículo</span>
+            <span class="title">Disponibilidad de artículo</span>
         </div>
         <div class="toolbar-breadcrumb">
             <span class="link-breadcrumb" (click)="navigate('inventario-almacen')"> Almacenes </span> /
-            <span class="breadcrumb-item"> Entrada de artículo</span>
+            <span class="breadcrumb-item"> Disponibilidad de artículo</span>
         </div>
     </div>
     <div class="container">
@@ -109,7 +109,7 @@
             <div class="form-container">
 
                 <div class="form-container-toolbar">
-                    <span class="title">Ajustar stock </span>
+                    <span class="title">Disponibles</span>
                 </div>
 
                 <div class="main-container">
@@ -117,7 +117,7 @@
                     <div class="form-row three-col add-stock">
 
                         <div class="form-field">
-                            <mat-label class="text-1">Cantidad a ingresar</mat-label>
+                            <mat-label class="text-1">Agregar o retirar</mat-label>
                             <mat-form-field>
                                 <input type="number" matInput formControlName="qty"
                                     [ngClass]="{ 'is-invalid': submitted && f['qty'].errors }" required>
@@ -143,7 +143,7 @@
                             'stock_indicator-neg': f['qty'].value < 0,
                             'stock_indicator-hide': f['qty'].value === 0 || f['qty'].value === null
                           }" >
-                            <span class="title-stock">Stock</span>
+                            <span class="title-stock">Actual</span>
                             <span class="stock">{{stock}}</span>
                         </div>
                         
