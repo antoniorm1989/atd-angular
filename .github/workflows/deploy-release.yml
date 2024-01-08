@@ -41,13 +41,13 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          ssh -i $HOME/.ssh/atd $SSH_USERNAME@208.109.188.104 "cd /home/$SSH_USERNAME/atd-angular-staging && chown -R $SSH_USERNAME:$SSH_USERNAME /home/$SSH_USERNAME/atd-angular-staging/dist && export PATH=$PATH:/home/$SSH_USERNAME/.nvm/versions/node/v18.19.0/bin && npm install && ng build --configuration staging --aot --verbose"
+          ssh -i $HOME/.ssh/atd $SSH_USERNAME@208.109.188.104 "cd /home/$SSH_USERNAME/atd-angular-staging && chown -R $SSH_USERNAME:$SSH_USERNAME /home/$SSH_USERNAME/atd-angular-staging/dist && export PATH=$PATH:/home/$SSH_USERNAME/.nvm/versions/node/v121.0.0/bin && npm install && ng build --configuration staging --aot --verbose"
         env:
           SSH_USERNAME: ${{ secrets.USERNAME }}
 
       - name: Copy dist to /var/www/html/
         run: |
-          ssh -i $HOME/.ssh/atd $SSH_USERNAME@208.109.188.104 "cd /home/$SSH_USERNAME/atd-angular-staging && export PATH=$PATH:/home/$SSH_USERNAME/.nvm/versions/node/v18.19.0/bin && chown -R $SSH_USERNAME:$SSH_USERNAME /var/www/html && if [ -d /var/www/html/atd-app-staging ]; then rm -r /var/www/html/atd-app-staging; fi && cp -r /home/$SSH_USERNAME/atd-angular-staging/dist/atd-app/ /var/www/html/atd-app-staging"
+          ssh -i $HOME/.ssh/atd $SSH_USERNAME@208.109.188.104 "cd /home/$SSH_USERNAME/atd-angular-staging && export PATH=$PATH:/home/$SSH_USERNAME/.nvm/versions/node/v121.0.0/bin && chown -R $SSH_USERNAME:$SSH_USERNAME /var/www/html && if [ -d /var/www/html/atd-app-staging ]; then rm -r /var/www/html/atd-app-staging; fi && cp -r /home/$SSH_USERNAME/atd-angular-staging/dist/atd-app/ /var/www/html/atd-app-staging"
         env:
           SSH_USERNAME: ${{ secrets.USERNAME }}
 
