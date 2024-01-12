@@ -17,6 +17,9 @@ import { CatalogoArticuloComponent } from './components/catalogos/articulos/arti
 import { InventoryAlmacenListComponent } from './components/inventory-almacen/inventory-almacen-list.component';
 import { EntradaAlmacenComponent } from './components/inventory-almacen/entrada/entrada-almacen.component';
 import { HistorialAlmacenComponent } from './components/inventory-almacen/historial/historial-almacen.component';
+import { InventorySucursalListComponent } from './components/inventory-sucursal/inventory-sucursal-list.component';
+import { EntradaSucursalComponent } from './components/inventory-sucursal/entrada/entrada-sucursal.component';
+import { HistorialSucursalComponent } from './components/inventory-sucursal/historial/historial-sucursal.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/inventario-almacen', pathMatch: 'full' }, // Redirect to login by default
@@ -25,6 +28,10 @@ const routes: Routes = [
   { path: 'inventario-almacen/entrada/:almacenId', component: EntradaAlmacenComponent, canActivate: [AuthGuard] },
   { path: 'inventario-almacen/entrada/:almacenId/:articuloId', component: EntradaAlmacenComponent, canActivate: [AuthGuard] },
   { path: 'inventario-almacen/historial-almacen/:id', component: HistorialAlmacenComponent, canActivate: [AuthGuard] },
+  { path: 'inventario-sucursal', component: InventorySucursalListComponent, canActivate: [AuthGuard] },
+  { path: 'inventario-sucursal/entrada/:sucursalId', component: EntradaSucursalComponent, canActivate: [AuthGuard] },
+  { path: 'inventario-sucursal/entrada/:sucursalId/:articuloId', component: EntradaSucursalComponent, canActivate: [AuthGuard] },
+  { path: 'inventario-sucursal/historial-sucursal/:id', component: HistorialSucursalComponent, canActivate: [AuthGuard] },
   { path: 'sucursales', component: SuscursalesComponent, canActivate: [AuthGuard] },
   { path: 'catalogos', component: CatalogosComponent, canActivate: [AuthGuard] },
   { path: 'catalogos/sucursales', component: CatalogoSucursalesListComponent, canActivate: [AuthGuard] },

@@ -44,7 +44,10 @@ import { MessageComponent } from './components/genericos/snack-message.component
 import { InventoryAlmacenListComponent } from './components/inventory-almacen/inventory-almacen-list.component';
 import { EntradaAlmacenComponent } from './components/inventory-almacen/entrada/entrada-almacen.component';
 import { HistorialAlmacenComponent } from './components/inventory-almacen/historial/historial-almacen.component';
-import { MatDialogModule, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
+import { InventorySucursalListComponent } from './components/inventory-sucursal/inventory-sucursal-list.component';
+import { EntradaSucursalComponent } from './components/inventory-sucursal/entrada/entrada-sucursal.component';
+import { HistorialSucursalComponent } from './components/inventory-sucursal/historial/historial-sucursal.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -69,7 +72,10 @@ export function tokenGetter() {
     MessageComponent,
     InventoryAlmacenListComponent,
     EntradaAlmacenComponent,
-    HistorialAlmacenComponent
+    HistorialAlmacenComponent,
+    InventorySucursalListComponent,
+    EntradaSucursalComponent,
+    HistorialSucursalComponent
   ],
   imports: [
     BrowserModule,

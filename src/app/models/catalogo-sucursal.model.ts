@@ -17,4 +17,8 @@ export class CatalogoSucursalModel {
   created_at: Date | undefined;
   updated_at: Date | undefined;
   user: User | undefined;
+
+  constructor(id?: number) {
+    this.id = id;
+   }
 }

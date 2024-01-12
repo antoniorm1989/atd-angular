@@ -1,0 +1,201 @@
+.inventory-sucursal-list {
+    padding: 24px;
+    background-color: #F7F7F7;
+    height: 100%;
+}
+
+.inventory-sucursal-list .toolbar .icon {
+    font-size: 23px;
+}
+
+.inventory-sucursal-list .toolbar .toolbar-title {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.inventory-sucursal-list .toolbar .title {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 54px;
+    letter-spacing: 0.01em;
+    margin-left: 12px;
+}
+
+.inventory-sucursal-list .toolbar .breadcrumb-item {
+    font-size: 16px;
+    line-height: 19px;
+    letter-spacing: 0.01em;
+    color: #BA9400;
+}
+
+.inventory-sucursal-list .container .container-empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 600px;
+    margin: auto;
+}
+
+.inventory-sucursal-list .container .container-empty .img {
+    height: 238px;
+    width: 237px;
+}
+
+.inventory-sucursal-list .container .container-empty .text {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 32px;
+    letter-spacing: 0.01em;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.inventory-sucursal-list .container .container-empty .btn {
+    width: 170px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: #BA9400;
+    color: #fff;
+    margin-top: 50px;
+    padding: 0px 5px;
+}
+
+
+/* list */
+.inventory-sucursal-list .container .container-list {
+    margin-top: 30px;
+}
+
+.inventory-sucursal-list .container .container-list .table{
+    margin-top: 30px;
+}
+
+.inventory-sucursal-list .container .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    margin-top: 12px;
+}
+
+.inventory-sucursal-list .container .toolbar .btn {
+    width: 170px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: #BA9400;
+    color: #fff;
+    padding: 0px 5px;
+}
+
+.inventory-sucursal-list .container .container-list .user-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.inventory-sucursal-list .container .container-list .user-wrapper .circle-initials {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #BA9400;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    color: #ffffff;
+    min-width: 28px;
+}
+
+.inventory-sucursal-list .container .container-list .user-wrapper .text {
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: 0px;
+    text-align: center;
+    margin-left: 8px;
+}
+
+.inventory-sucursal-list .container .title-grid {
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: 0px;
+}
+
+.inventory-sucursal-list .container .title-grid:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    color: #BA9400;
+}
+
+.inventory-sucursal-list .container .table .mat-icon{
+    color: #ba9400;
+}
+
+.mat-mdc-header-row{
+    background-color: #eadfb2;
+}
+
+.inventory-sucursal-list .container .table .photo{
+    height: 45px;
+    width: 45px;
+    margin-right: 8px;
+}
+.inventory-sucursal-list .container .table .description-wrapper{
+    display: flex;
+    align-items: center;
+}
+
+.inventory-sucursal-list .container .table  .empty-image-container{
+    height: 45px;
+    width: 45px;
+    margin-right: 8px;
+    background-color: #C5C6C7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.inventory-sucursal-list .container .table .empty-image-container .empty-image{
+    width: 30px;
+    height: 30px;
+}
+.inventory-sucursal-list .table .center-column{
+    text-align: center;
+}
+
+.inventory-sucursal-list .container-list .table .user-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.inventory-sucursal-list .container-list .table .user-wrapper .circle-initials {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #BA9400;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    color: #ffffff;
+    min-width: 28px;
+}
+.inventory-sucursal-list .container-list .table .user-wrapper .text {
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: 0px;
+    text-align: center;
+    margin-left: 8px;
+}
+.inventory-sucursal-list .container-list .table .stock-warning-icon{
+    border-radius: 9px;
+    display: inline-block;
+    vertical-align: middle;
+    height: 9px;
+    margin-right: 8px;
+    width: 9px;
+    background-color: red;
+}
+.inventory-sucursal-list .select-wrapper mat-form-field{
+    width: 400px;
+}

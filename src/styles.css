@@ -93,6 +93,10 @@ body {
     margin-bottom: 12px;
 }
 
+.cdk-overlay-container .cdk-global-overlay-wrapper{
+    justify-content: center !important;
+}
+
 .mat-toolbar-single-row {
     height: 80px;
 }

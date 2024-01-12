@@ -1,32 +1,32 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, NavigationEnd, Event } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageComponent } from 'src/app/components/genericos/snack-message.component';
 import { CatalogoCategoriaArticuloModel } from 'src/app/models/catalogo-categoria-articulo.model';
 import { User } from 'src/app/models/user';
 import { CatalogoCategoriaArticuloService } from 'src/app/services/catalogo-categoria-articulos.service';
-import { InventoryAlmacenService } from 'src/app/services/inventory.service';
-import { CatalogoAlmacenesService } from 'src/app/services/catalogo-almacenes.service';
+import { CatalogoSucursalesService } from 'src/app/services/catalogo-sucursales.service';
 import { CatalogoArticuloService } from 'src/app/services/catalogo-articulos.service';
 import { CatalogoArticuloModel } from 'src/app/models/catalogo-articulo.model';
-import { CatalogoAlmacenModel } from 'src/app/models/catalogo-almacen.model';
+import { CatalogoSucursalModel } from 'src/app/models/catalogo-sucursal.model';
 import { environment } from 'src/environments/environment';
-import { InventoryAlmacenModel, InventoryAlmacenTransactionsModel } from 'src/app/models/inventory-almacen.model';
+import { InventorySucursalModel, InventorySucursalTransactionsModel } from 'src/app/models/inventory-sucursal.model';
+import { InventorySucursalService } from 'src/app/services/inventory_sucursal.service';
 
 @Component({
-  selector: 'app-entrada-almacen',
-  templateUrl: './entrada-almacen.component.html',
-  styleUrls: ['./entrada-almacen.component.css'],
+  selector: 'app-entrada-sucursal',
+  templateUrl: './entrada-sucursal.component.html',
+  styleUrls: ['./entrada-sucursal.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
 
-export class EntradaAlmacenComponent {
+export class EntradaSucursalComponent {
 
   action: string = 'new';
   form: FormGroup;
   submitted = false;
-  almacen: CatalogoAlmacenModel | null = null;
+  sucursal: CatalogoSucursalModel | null = null;
   stock: number | undefined = 0;
 
   categories!: CatalogoCategoriaArticuloModel[];
@@ -38,9 +38,7 @@ export class EntradaAlmacenComponent {
   selectedFile: File | null = null;
   imageUrl: string | null = null;
 
-  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private inventoryAlmacenService: InventoryAlmacenService, private catalogoAlmacenesService: CatalogoAlmacenesService, private router: Router, private catalogoCategoriaArticuloService: CatalogoCategoriaArticuloService, private catalogoArticuloService: CatalogoArticuloService, private _snackBar: MatSnackBar) {
-
-
+  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private inventorySucursalService: InventorySucursalService, private catalogoSucursalesService: CatalogoSucursalesService, private router: Router, private catalogoCategoriaArticuloService: CatalogoCategoriaArticuloService, private catalogoArticuloService: CatalogoArticuloService, private _snackBar: MatSnackBar) {
 
     this.form = this.formBuilder.group({
       id: [0, [Validators.required]],
@@ -61,11 +59,11 @@ export class EntradaAlmacenComponent {
 
   ngOnInit() {
 
-    const almacenId = this.route.snapshot.paramMap.get('almacenId');
-    if (almacenId != undefined) {
-      this.catalogoAlmacenesService.getById(parseInt(almacenId)).subscribe({
+    const sucursalId = this.route.snapshot.paramMap.get('sucursalId');
+    if (sucursalId != undefined) {
+      this.catalogoSucursalesService.getById(parseInt(sucursalId)).subscribe({
         next: (data) => {
-          this.almacen = data;
+          this.sucursal = data;
         },
         error: (e) => {
         }
@@ -74,7 +72,7 @@ export class EntradaAlmacenComponent {
       var articuloId = this.route.snapshot.paramMap.get('articuloId');
       if (articuloId != undefined) {
 
-        this.inventoryAlmacenService.getInventoryByAlmacenByArticulo(parseInt(almacenId), parseInt(articuloId)).subscribe({
+        this.inventorySucursalService.getInventoryBySucursalByArticulo(parseInt(sucursalId), parseInt(articuloId)).subscribe({
           next: (data) => {
             if (data) {
               if (data.inventory_transaction && data.inventory_transaction.length > 0) {
@@ -154,7 +152,7 @@ export class EntradaAlmacenComponent {
     if (selectedArticle.photo)
       this.imageUrl = `${environment.apiUrl}images/articulos/${selectedArticle.photo}`;
 
-    this.inventoryAlmacenService.getInventoryByAlmacenByArticulo(this.almacen?.id, selectedArticle.id).subscribe({
+    this.inventorySucursalService.getInventoryBySucursalByArticulo(this.sucursal?.id, selectedArticle.id).subscribe({
       next: (data) => {
         if (data && data.id) {
           if (data.inventory_transaction && data.inventory_transaction.length > 0) {
@@ -196,24 +194,24 @@ export class EntradaAlmacenComponent {
     let user = new User();
     user.user_id = userData.user_id;
 
-    let inventoryAlmacen = new InventoryAlmacenModel();
-    inventoryAlmacen.id = this.f['id'].value;
-    inventoryAlmacen.almacen = new CatalogoAlmacenModel(this.almacen?.id || 0);
-    inventoryAlmacen.articulo = new CatalogoArticuloModel(this.f['selectedArticle'].value.id);
-    inventoryAlmacen.minimum_stock = this.f['minimum_stock'].value;
-    inventoryAlmacen.maximum_stock = this.f['maximum_stock'].value;
-    inventoryAlmacen.notify_stock = this.f['notify_stock'].value;
+    let inventorySucursal = new InventorySucursalModel();
+    inventorySucursal.id = this.f['id'].value;
+    inventorySucursal.sucursal = new CatalogoSucursalModel(this.sucursal?.id || 0);
+    inventorySucursal.articulo = new CatalogoArticuloModel(this.f['selectedArticle'].value.id);
+    inventorySucursal.minimum_stock = this.f['minimum_stock'].value;
+    inventorySucursal.maximum_stock = this.f['maximum_stock'].value;
+    inventorySucursal.notify_stock = this.f['notify_stock'].value;
 
     if (this.f['qty'].value != 0) {
-      inventoryAlmacen.inventory_transaction = [
-        new InventoryAlmacenTransactionsModel(1, this.f['qty'].value, this.f['comment'].value, user)
+      inventorySucursal.inventory_transaction = [
+        new InventorySucursalTransactionsModel(1, this.f['qty'].value, this.f['comment'].value, user)
       ];
     }
 
-    this.inventoryAlmacenService.createOrUpdate(inventoryAlmacen).subscribe({
+    this.inventorySucursalService.createOrUpdate(inventorySucursal).subscribe({
       next: (data) => {
         this.openMessageSnack();
-        this.router.navigate(['inventario-almacen']);
+        this.router.navigate(['inventario-sucursal']);
       }
     });
   }

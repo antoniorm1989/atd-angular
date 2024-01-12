@@ -20,7 +20,7 @@ export class AppComponent implements OnDestroy {
       text: 'Almacen', icon: 'fa-brands fa-dropbox', href: 'inventario-almacen'
     },
     {
-      text: 'Sucursales', icon: 'fa-solid fa-clipboard-check', href: 'sucursales'
+      text: 'Sucursales', icon: 'fa-solid fa-clipboard-check', href: 'inventario-sucursal'
     }
   ];
   fillerNavEnd = [
