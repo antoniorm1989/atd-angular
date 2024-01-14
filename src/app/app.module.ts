@@ -48,6 +48,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { InventorySucursalListComponent } from './components/inventory-sucursal/inventory-sucursal-list.component';
 import { EntradaSucursalComponent } from './components/inventory-sucursal/entrada/entrada-sucursal.component';
 import { HistorialSucursalComponent } from './components/inventory-sucursal/historial/historial-sucursal.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -108,7 +109,8 @@ export function tokenGetter() {
     MatTabsModule,
     MatGridListModule,
     MatSnackBarModule,
-    MatDialogModule
+    MatDialogModule,
+    MatTooltipModule
   ],
   providers: [],
   bootstrap: [AppComponent]

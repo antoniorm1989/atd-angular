@@ -65,7 +65,8 @@
                     <th mat-header-cell *matHeaderCellDef class="center-column">Stock</th>
                     <td mat-cell *matCellDef="let element" class="center-column">
                         <span *ngIf="element.minimum_stock > element.inventory_transaction[0].stock" matTooltip="Se requiere pedir" class="stock-warning-icon"></span>
-                        <span>{{element.inventory_transaction[0].stock}}</span>
+                        <span *ngIf="element.inventory_transaction[0].id != null">{{element.inventory_transaction[0].stock}}</span>
+                        <span *ngIf="element.inventory_transaction[0].id == null">0</span>
                     </td>
                 </ng-container>
 
@@ -82,7 +83,8 @@
                 <ng-container matColumnDef="user">
                     <th mat-header-cell *matHeaderCellDef>Usuario</th>
                     <td mat-cell *matCellDef="let element">
-                        <div class="user-wrapper">
+                        <span *ngIf="element.inventory_transaction[0].id == null">Sin transacciones</span>
+                        <div *ngIf="element.inventory_transaction[0].id != null" class="user-wrapper">
                             <div class="circle-initials" mat-mini-fab color="primary">
                                 {{getUserName(element.inventory_transaction[0].user.name, element.inventory_transaction[0].user.last_name)}}</div>
                             <span class="text">{{element.inventory_transaction[0].user.name}} {{element.inventory_transaction[0].user.last_name}}</span>

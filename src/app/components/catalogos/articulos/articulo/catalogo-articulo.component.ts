@@ -169,6 +169,10 @@ export class CatalogoArticuloComponent {
           }
         },
         error: (e) => {
+          if (e.error.error == 'Part number already exists')
+            this.isPartNumberDuplicate = true;
+
+          console.log(e);
         }
       });
     } else {
