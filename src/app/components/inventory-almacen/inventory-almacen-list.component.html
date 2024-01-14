@@ -22,7 +22,7 @@
             </div>
 
             <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>
-                Entrada al artículo
+                Agregar artículo
             </button>
         </div>
 
@@ -30,7 +30,6 @@
             <img src="../../assets/images/empty-list.png" alt="empty logo" class="img">
             <span class="text">Aún no tienes artículos en tu inventario, para poder ver información favor de dar entrada
                 un artículo.</span>
-            <!--<button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Entrada al artículo</button>-->
         </div>
         
         <div *ngIf="hasRecords && selectedAlmacen != null" class="container-list">
@@ -93,7 +92,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="actions">
-                    <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                    <th mat-header-cell *matHeaderCellDef>Historial</th>
                     <td mat-cell *matCellDef="let element">
                         <button mat-icon-button aria-label="ver historial" (click)="onViewHistory(element.id)">
                             <mat-icon>visibility</mat-icon>

@@ -123,7 +123,7 @@
                                     [ngClass]="{ 'is-invalid': submitted && f['qty'].errors }" required>
                             </mat-form-field>
                             <div *ngIf="submitted && f['qty'].errors" class="invalid-feedback">
-                                <div *ngIf="f['qty'].hasError('isStockNeg')">El stock no puede ser negativo</div>
+                                <div *ngIf="f['qty'].hasError('isStockNeg')">No se permite retirar cantidad mayor a la actual</div>
                             </div>
                             <div *ngIf="getStock() < f['minimum_stock'].value || getStock() > f['maximum_stock'].value" class="invalid-feedback-warning">
                                 <div *ngIf="getStock() < f['minimum_stock'].value">El cantidad minima para el stock es de {{f['minimum_stock'].value}}</div>
