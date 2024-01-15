@@ -264,8 +264,9 @@ mat-panel-description {
 }
 
 .historial-almacen .stock_indicator .stock{
-    font-size: 24px;
-    font-weight: 500;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 38px;
 }
 
 
@@ -296,10 +297,9 @@ mat-panel-description {
 }
 .historial-almacen .numero-parte-container .text-1-regular{
     background-color: #fff;
-    padding: 6px 0px;
+    padding: 6px 12px;
     margin-top: 8px;
-    width: 100%;
-    display: inline-block;
+    display: flex;
 }
 
 .historial-almacen .stock-indicator{
