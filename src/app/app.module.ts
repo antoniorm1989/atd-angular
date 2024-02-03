@@ -49,6 +49,7 @@ import { InventorySucursalListComponent } from './components/inventory-sucursal/
 import { EntradaSucursalComponent } from './components/inventory-sucursal/entrada/entrada-sucursal.component';
 import { HistorialSucursalComponent } from './components/inventory-sucursal/historial/historial-sucursal.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -110,7 +111,8 @@ export function tokenGetter() {
     MatGridListModule,
     MatSnackBarModule,
     MatDialogModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatAutocompleteModule
   ],
   providers: [],
   bootstrap: [AppComponent]

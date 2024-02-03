@@ -20,3 +20,8 @@ export class CatalogoArticuloModel {
     this.id = id;
   }
 }
+
+export class ArticuloGroup {
+  categoria: CatalogoCategoriaArticuloModel | undefined;
+  articulos: CatalogoArticuloModel[] | undefined;
+}

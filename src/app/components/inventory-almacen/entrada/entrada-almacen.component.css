@@ -1,6 +1,7 @@
-mat-sidenav-content{
+mat-sidenav-content {
     background-color: #F7F7F7;
 }
+
 .entrada-almacen {
     padding: 34px;
     background-color: #F7F7F7;
@@ -119,11 +120,11 @@ mat-sidenav-content{
     grid-template-columns: 1fr 2fr 1fr;
 }
 
-.entrada-almacen .container .form-row.three-col .mat-mdc-form-field-infix{
+.entrada-almacen .container .form-row.three-col .mat-mdc-form-field-infix {
     width: auto;
 }
 
-.entrada-almacen .mat-mdc-card-subtitle{
+.entrada-almacen .mat-mdc-card-subtitle {
     font-size: 20px;
 }
 
@@ -134,6 +135,7 @@ mat-sidenav-content{
 .entrada-almacen .container .form-row.two-col-photo {
     grid-template-columns: 170px 2fr
 }
+
 .form-field {
     display: flex;
     flex-direction: column;
@@ -176,16 +178,18 @@ mat-panel-description {
     line-height: 36px;
 }
 
-.mat-expansion-panel-header-description{
+.mat-expansion-panel-header-description {
     font-size: 20px;
     flex-grow: unset !important;
 }
 
-.mat-mdc-tab:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label, .mat-mdc-tab-link:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label{
-    color : #BA9400;
+.mat-mdc-tab:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label,
+.mat-mdc-tab-link:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label {
+    color: #BA9400;
 }
 
-.mat-mdc-tab:not(.mat-mdc-tab-disabled) .mdc-tab-indicator__content--underline, .mat-mdc-tab-link:not(.mat-mdc-tab-disabled) .mdc-tab-indicator__content--underline{
+.mat-mdc-tab:not(.mat-mdc-tab-disabled) .mdc-tab-indicator__content--underline,
+.mat-mdc-tab-link:not(.mat-mdc-tab-disabled) .mdc-tab-indicator__content--underline {
     border-color: #BA9400;
 }
 
@@ -196,11 +200,11 @@ mat-panel-description {
     letter-spacing: 0em;
 }
 
-.entrada-almacen .rights .mat-grid-tile-content{
+.entrada-almacen .rights .mat-grid-tile-content {
     justify-content: flex-start;
 }
 
-.entrada-almacen .rights .gray{
+.entrada-almacen .rights .gray {
     background-color: #FAFAFA;
 }
 
@@ -217,14 +221,14 @@ mat-panel-description {
     flex: 1;
 }
 
- /* photo */
-.entrada-almacen .container-photo{
+/* photo */
+.entrada-almacen .container-photo {
     width: 150px;
     height: 150px;
     position: relative;
 }
 
-.entrada-almacen .container-photo .photo{
+.entrada-almacen .container-photo .photo {
     width: 150px;
     height: 150px;
     display: flex;
@@ -233,7 +237,7 @@ mat-panel-description {
     border-radius: 8px;
 }
 
-.entrada-almacen .empty-image-container{
+.entrada-almacen .empty-image-container {
     width: 150px;
     height: 150px;
     background-color: #C5C6C7;
@@ -242,18 +246,20 @@ mat-panel-description {
     justify-content: center;
     border-radius: 8px;
 }
-.entrada-almacen .empty-image-container .empty-image{
+
+.entrada-almacen .empty-image-container .empty-image {
     width: 51px;
     height: 51px;
 }
-.entrada-almacen .container-photo .photo-button{
+
+.entrada-almacen .container-photo .photo-button {
     position: absolute;
     top: 120px;
     right: -20px;
     background-color: #BA9400;
 }
 
-.entrada-almacen .stock_indicator{
+.entrada-almacen .stock_indicator {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -265,12 +271,12 @@ mat-panel-description {
     margin: auto;
 }
 
-.entrada-almacen .stock_indicator .title-stock{
+.entrada-almacen .stock_indicator .title-stock {
     font-size: 16px;
     font-weight: 500;
 }
 
-.entrada-almacen .stock_indicator .stock{
+.entrada-almacen .stock_indicator .stock {
     font-size: 24px;
     font-weight: 500;
 }
@@ -280,48 +286,218 @@ mat-panel-description {
     margin: 0px 150px;
 }
 
-.entrada-almacen .mat-badge-content{
+.entrada-almacen .mat-badge-content {
     background-color: green;
 }
 
-.entrada-almacen .stock_indicator-neg .mat-badge-content{
+.entrada-almacen .stock_indicator-neg .mat-badge-content {
     background-color: red !important;
 }
 
-.entrada-almacen .stock_indicator-hide .mat-badge-content{
+.entrada-almacen .stock_indicator-hide .mat-badge-content {
     display: none;
 }
 
+.option-img {
+    vertical-align: middle;
+    margin-right: 8px;
+    border-radius: 4px;
+    height: 35px;
+    width: 35px;
+}
+
+.option-img.no-image {
+    background-color: black;
+    padding: 5px;
+    height: 25px;
+    width: 25px;
+}
+
+.entrada-almacen .container-datos-articulo {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin: auto auto auto 0;
+}
+
+.entrada-almacen .container-datos-articulo .row {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.row:nth-child(3) {
+    grid-column: span 2;
+    /* Make the third and fourth items span 2 columns */
+}
+
+.entrada-almacen .container-agregar-retirar {
+    display: flex;
+}
+
+.entrada-almacen .container-agregar-retirar button {
+   margin: 5px;
+}
+
+.entrada-almacen .container-agregar-retirar button.mat-mdc-mini-fab {
+    --mdc-fab-container-color: #BA9400;
+}
+
+.entrada-almacen mat-form-field{
+    height: 70px;
+}
+
+.entrada-almacen .autocomplete-articulo-container{
+    display: flex;
+}
+.entrada-almacen .autocomplete-articulo-container mat-form-field{
+    flex: 1;
+}
+.mdc-list-item__primary-text{
+    font-weight: 500;
+}
+
+
+
+
+
+.entrada-almacen {
+    padding: 24px 8px 0px 8px;
+}
+
+.entrada-almacen .container .form-row.two-col,
+.entrada-almacen .container .form-row.four-col {
+    grid-template-columns: repeat(1, 1fr) !important;
+}
+
+.entrada-almacen .container .two-col-photo {
+    grid-template-columns: 120px 2fr !important;
+}
+
+.entrada-almacen .container .container-photo {
+    margin: auto;
+}
+
+.entrada-almacen .container .container-datos-articulo {
+    margin: auto 0 auto 0;
+}
+
+.entrada-almacen .container .form-row.three-col.add-stock {
+    grid-template-columns: 2fr 1fr;
+    margin-top: 8px;
+}
+
+.entrada-almacen .mat-mdc-card.mdc-card {
+    margin-top: 12px;
+}
+
+.entrada-almacen .container .form-container {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding: 14px;
+}
+
+.entrada-almacen .main-container {
+    padding: 0px;
+}
+
+.entrada-almacen .container .form-row {
+    gap: 0px;
+}
+
+.entrada-almacen .container-photo {
+    width: 100px;
+    height: 100px;
+}
+
+.entrada-almacen .container-photo .photo {
+    width: 100px;
+    height: 100px;
+}
+
+.entrada-almacen .empty-image-container {
+    width: 100px;
+    height: 100px;
+}
+
+.entrada-almacen .container-datos-articulo {
+    gap: 4px;
+}
+
+.entrada-almacen .container .row-cantidades {
+    gap: 18px;
+}
+
+.toolbar-bottom {
+    margin-top: 0px;
+}
+
+.entrada-almacen .invalid-feedback,
+.entrada-almacen .invalid-feedback-warning {
+    text-align: center;
+}
+
+.entrada-almacen .mat-mdc-card-header {
+    padding: 8px 16px 0;
+}
+
+.entrada-almacen .mat-mdc-card-content:last-child {
+    padding-bottom: 8px;
+}
+
+.entrada-almacen .form-field.comment {
+    grid-column: span 2;
+}
+
+.entrada-almacen .stock_indicator {
+    margin: 18px auto;
+}
+.entrada-almacen .form-field.comment{
+    margin-top: 12px;
+}
+
+
+
 @media only screen and (max-width: 1500px) {
     .entrada-almacen {
-        margin: 0px 50px;
+        margin: 0px 70px;
     }
 }
 
 @media only screen and (max-width: 1250px) {
     .entrada-almacen {
-        margin: 0px 0px;
+        margin: 0px 60px;
     }
 }
 
 @media only screen and (max-width: 1084px) {
+    .entrada-almacen {
+        margin: 0px 50px;
+    }
     .entrada-almacen .container .form-row.four-col {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
 @media only screen and (max-width: 835px) {
-    .entrada-almacen .container .form-row.four-col {
-        grid-template-columns: repeat(2, 1fr);
+    .entrada-almacen {
+        margin: 0px 0px;
     }
-    .form-field.phone {
-        grid-column: span 2;
-    }
+    
 }
 
 @media only screen and (max-width: 587px) {
-    .entrada-almacen .container .form-row.two-col,
-    .entrada-almacen .container .form-row.four-col {
-        grid-template-columns: repeat(1, 1fr);
+    .entrada-almacen .toolbar .title {
+        font-size: 22px;
+    }
+
+    .entrada-almacen .mat-mdc-card-title {
+        line-height: 20px;
+        font-size: 16px;
+    }
+
+    .entrada-almacen .container .form-container .title {
+        font-size: 20px;
     }
 }

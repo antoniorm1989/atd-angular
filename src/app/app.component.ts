@@ -34,12 +34,12 @@ export class AppComponent implements OnDestroy {
 
   @ViewChild('snav') sidenav!: MatSidenav;
 
-  constructor(changeDetectorRef: ChangeDetectorRef, 
-    media: MediaMatcher, 
-    private userService: UserService, 
-    private router: Router, 
+  constructor(changeDetectorRef: ChangeDetectorRef,
+    media: MediaMatcher,
+    private userService: UserService,
+    private router: Router,
     private communicationService: CommunicationService) {
-      
+
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -58,12 +58,8 @@ export class AppComponent implements OnDestroy {
       this.sidenav.close();
       setTimeout(() => {
         this.updateMenu();
-      }, 100); 
+      }, 100);
     });
-  }
-
-  ngAfterViewInit() {
-    this.updateMenu();
   }
 
   ngOnDestroy() {
@@ -95,7 +91,7 @@ export class AppComponent implements OnDestroy {
     this.userService.logout();
   }
 
-  updateMenu(){
+  updateMenu() {
     this.sidenav.close();
     this.sidenav.open();
   }

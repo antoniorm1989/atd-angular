@@ -134,7 +134,12 @@ h1.example-app-name {
 
 @media only screen and (max-width: 1000px) {}
 
-@media only screen and (max-width: 768px) {}
+@media only screen and (max-width: 768px) {
+  .toolbar-calendar,
+  .user-name-label{
+    display: none;
+  }
+}
 
 @media only screen and (max-width: 576px) {
   .logo-image {
