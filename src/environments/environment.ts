@@ -2,6 +2,6 @@ import { environmentEnum } from 'src/app/global/tools';
 
 export const environment = {
     environment: environmentEnum.production,
-    apiUrl: 'https://portal.atdtools.com.mx/api/',
+    apiUrl: 'https://portal.atdtools.com.mx:3000/api/',
     fileFolder: '/Users/antonio.rosales/files/development'
 };
