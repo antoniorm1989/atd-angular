@@ -111,7 +111,7 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
               var articulo = data;
 
               if (articulo.photo)
-                this.imageUrl = `${environment.apiUrl}images/articulos/${articulo.photo}`;
+                this.imageUrl = `${environment.apiUrl}/images/articulos/${articulo.photo}`;
             }
           });
         }
@@ -155,7 +155,7 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
 
   getUrlPhoto(articulo: CatalogoArticuloModel): string {
     try {
-      return articulo.photo != '' ? `${environment.apiUrl}images/articulos/${articulo.photo}` : '../../assets/images/empty-image.png';
+      return articulo.photo != '' ? `${environment.apiUrl}/images/articulos/${articulo.photo}` : '../../assets/images/empty-image.png';
     } catch (error) {
       console.error('An error occurred in getUrlPhoto:', error);
       return "../../assets/images/empty-image.png";
@@ -168,7 +168,7 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
       this.selectedArticle = this.getArticuloByPartNumber(partNumber);
       if (this.selectedArticle != undefined) {
         if (this.selectedArticle.photo)
-          this.imageUrl = `${environment.apiUrl}images/articulos/${this.selectedArticle.photo}`;
+          this.imageUrl = `${environment.apiUrl}/images/articulos/${this.selectedArticle.photo}`;
 
         this.inventoryAlmacenService.getInventoryByAlmacenByArticulo(this.almacen?.id, this.selectedArticle.id).subscribe({
           next: (data) => {
@@ -481,11 +481,7 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
             <mat-dialog-actions align="end">
               <button mat-button mat-dialog-close>Cancel</button>
             </mat-dialog-actions>`,
-  styles: [`
-    .cdk-overlay-pane {
-      width: 90vw;
-    }
-  `],
+  styles: [],
   standalone: true,
   imports: [
     MatDialogModule, 

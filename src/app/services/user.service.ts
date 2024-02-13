@@ -31,7 +31,7 @@ export class UserService {
 
   login(email: string, password: string) {
 
-    return this.http.post<User>(`${environment.apiUrl}auth/login`, { email, password })
+    return this.http.post<User>(`${environment.apiUrl}/api/auth/login`, { email, password })
       .pipe(
         map(token => {
           const userToken: User = token;

@@ -45,7 +45,7 @@ export class HistorialAlmacenComponent {
           if (this.inventoryAlmacenModel) {
 
             if (this.inventoryAlmacenModel.articulo && this.inventoryAlmacenModel.articulo.photo)
-              this.imageUrl = `${environment.apiUrl}images/articulos/${this.inventoryAlmacenModel.articulo.photo}`;
+              this.imageUrl = `${environment.apiUrl}/images/articulos/${this.inventoryAlmacenModel.articulo.photo}`;
 
             if (this.inventoryAlmacenModel.almacen && this.inventoryAlmacenModel.articulo)
               this.inventoryAlmacenService.getInventoryTransactions(this.inventoryAlmacenModel.almacen.id, this.inventoryAlmacenModel.articulo.id).subscribe({

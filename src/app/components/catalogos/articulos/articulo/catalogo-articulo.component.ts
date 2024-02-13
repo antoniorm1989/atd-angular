@@ -68,7 +68,7 @@ export class CatalogoArticuloComponent {
                 });
 
                 if (data.photo)
-                  this.imageUrl = `${environment.apiUrl}images/articulos/${data.photo}`;
+                  this.imageUrl = `${environment.apiUrl}/images/articulos/${data.photo}`;
 
                 this.route.queryParams.subscribe(params => {
                   switch (params['action']) {

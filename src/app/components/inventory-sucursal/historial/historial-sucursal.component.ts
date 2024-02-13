@@ -45,7 +45,7 @@ export class HistorialSucursalComponent {
           if (this.inventorySucursalModel) {
 
             if (this.inventorySucursalModel.articulo && this.inventorySucursalModel.articulo.photo)
-              this.imageUrl = `${environment.apiUrl}images/articulos/${this.inventorySucursalModel.articulo.photo}`;
+              this.imageUrl = `${environment.apiUrl}/images/articulos/${this.inventorySucursalModel.articulo.photo}`;
 
             if (this.inventorySucursalModel.sucursal && this.inventorySucursalModel.articulo)
               this.inventorySucursalService.getInventoryTransactions(this.inventorySucursalModel.sucursal.id, this.inventorySucursalModel.articulo.id).subscribe({

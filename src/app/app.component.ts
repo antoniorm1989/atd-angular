@@ -93,6 +93,7 @@ export class AppComponent implements OnDestroy {
 
   updateMenu() {
     this.sidenav.close();
-    this.sidenav.open();
+    if(!this.mobileQuery.matches)
+      this.sidenav.open();
   }
 }

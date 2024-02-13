@@ -13,23 +13,23 @@ export class InventoryAlmacenService {
   }
 
   getById(id: number | undefined): Observable<InventoryAlmacenModel> {
-    return this.http.get<InventoryAlmacenModel>(`${environment.apiUrl}inventoryAlmacen/getById/${id}`, this.getHeaders());
+    return this.http.get<InventoryAlmacenModel>(`${environment.apiUrl}/api/inventoryAlmacen/getById/${id}`, this.getHeaders());
   }
 
   getInventoryByAlmacen(almacenId: number | undefined): Observable<Array<InventoryAlmacenModel>> {
-    return this.http.get<Array<InventoryAlmacenModel>>(`${environment.apiUrl}inventoryAlmacen/getInventoryByAlmacen/${almacenId}`, this.getHeaders());
+    return this.http.get<Array<InventoryAlmacenModel>>(`${environment.apiUrl}/api/inventoryAlmacen/getInventoryByAlmacen/${almacenId}`, this.getHeaders());
   }
 
   getInventoryByAlmacenByArticulo(almacenId: number | undefined, articuloId: number | undefined): Observable<InventoryAlmacenModel> {
-    return this.http.get<InventoryAlmacenModel>(`${environment.apiUrl}inventoryAlmacen/getInventoryByAlmacenByArticulo/${almacenId}/${articuloId}`, this.getHeaders());
+    return this.http.get<InventoryAlmacenModel>(`${environment.apiUrl}/api/inventoryAlmacen/getInventoryByAlmacenByArticulo/${almacenId}/${articuloId}`, this.getHeaders());
   }
 
   createOrUpdate(inventoryAlmacen: InventoryAlmacenModel): Observable<any> {
-    return this.http.post<void>(`${environment.apiUrl}inventoryAlmacen/createOrUpdate`, inventoryAlmacen, this.getHeaders());
+    return this.http.post<void>(`${environment.apiUrl}/api/inventoryAlmacen/createOrUpdate`, inventoryAlmacen, this.getHeaders());
   }
 
   getInventoryTransactions(almacenId: number | undefined, articuloId: number | undefined): Observable<Array<InventoryAlmacenTransactionsModel>> {
-    return this.http.get<Array<InventoryAlmacenTransactionsModel>>(`${environment.apiUrl}inventoryAlmacen/getInventoryTransactions/${almacenId}/${articuloId}`, this.getHeaders());
+    return this.http.get<Array<InventoryAlmacenTransactionsModel>>(`${environment.apiUrl}/api/inventoryAlmacen/getInventoryTransactions/${almacenId}/${articuloId}`, this.getHeaders());
   }
 
   private getHeaders() {

@@ -13,19 +13,19 @@ export class CatalogoRolesService {
   }
 
   getAll(): Observable<Array<CatalogoRolModel>> {
-    return this.http.get<Array<CatalogoRolModel>>(`${environment.apiUrl}rol/getAll`);
+    return this.http.get<Array<CatalogoRolModel>>(`${environment.apiUrl}/api/rol/getAll`);
   }
 
   getById(id: number): Observable<CatalogoRolModel> {
-    return this.http.get<CatalogoRolModel>(`${environment.apiUrl}rol/getById/${id}`);
+    return this.http.get<CatalogoRolModel>(`${environment.apiUrl}/api/rol/getById/${id}`);
   }
 
   create(catalogoRolModel: CatalogoRolModel): Observable<void> {
-    return this.http.post<void>(`${environment.apiUrl}rol/create`, catalogoRolModel, this.getHeaders());
+    return this.http.post<void>(`${environment.apiUrl}/api/rol/create`, catalogoRolModel, this.getHeaders());
   }
 
   update(catalogoRolModel: CatalogoRolModel): Observable<void> {
-    return this.http.put<void>(`${environment.apiUrl}rol/update`, catalogoRolModel, this.getHeaders());
+    return this.http.put<void>(`${environment.apiUrl}/api/rol/update`, catalogoRolModel, this.getHeaders());
   }
 
   private getHeaders() {

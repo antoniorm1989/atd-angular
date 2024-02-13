@@ -2,7 +2,7 @@ mat-sidenav-content{
     background-color: #F7F7F7;
 }
 .historial-sucursal {
-    padding: 34px;
+    padding: 16px 34px;
     background-color: #F7F7F7;
     height: 100%;
 }
@@ -150,10 +150,6 @@ mat-sidenav-content{
     justify-content: flex-end;
     align-items: center;
     margin-top: 24px;
-}
-
-.toolbar-bottom {
-    height: 100px;
 }
 
 .toolbar-bottom .btn.secundary {

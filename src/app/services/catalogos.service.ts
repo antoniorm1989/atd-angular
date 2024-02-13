@@ -13,10 +13,10 @@ export class CatalogosService {
   }
 
   getStates(): Observable<Array<CatalogoStateModel>> {
-    return this.http.get<Array<CatalogoStateModel>>(`${environment.apiUrl}catalogs/getStates`);
+    return this.http.get<Array<CatalogoStateModel>>(`${environment.apiUrl}/api/catalogs/getStates`);
   }
 
   getCitiesByState(state: string): Observable<Array<CatalogoCityModel>> {
-    return this.http.get<Array<CatalogoCityModel>>(`${environment.apiUrl}catalogs/getCities/${state}`);
+    return this.http.get<Array<CatalogoCityModel>>(`${environment.apiUrl}/api/catalogs/getCities/${state}`);
   }
 }

@@ -13,19 +13,19 @@ export class CatalogoSucursalesService {
   }
 
   getAll(): Observable<Array<CatalogoSucursalModel>> {
-    return this.http.get<Array<CatalogoSucursalModel>>(`${environment.apiUrl}sucursal/getAll`);
+    return this.http.get<Array<CatalogoSucursalModel>>(`${environment.apiUrl}/api/sucursal/getAll`);
   }
 
   getById(id: number): Observable<CatalogoSucursalModel> {
-    return this.http.get<CatalogoSucursalModel>(`${environment.apiUrl}sucursal/getById/${id}`);
+    return this.http.get<CatalogoSucursalModel>(`${environment.apiUrl}/api/sucursal/getById/${id}`);
   }
 
   create(catalogoSucursalModel: CatalogoSucursalModel): Observable<void> {
-    return this.http.post<void>(`${environment.apiUrl}sucursal/create`, catalogoSucursalModel, this.getHeaders());
+    return this.http.post<void>(`${environment.apiUrl}/api/sucursal/create`, catalogoSucursalModel, this.getHeaders());
   }
 
   update(catalogoSucursalModel: CatalogoSucursalModel): Observable<void> {
-    return this.http.put<void>(`${environment.apiUrl}sucursal/update`, catalogoSucursalModel, this.getHeaders());
+    return this.http.put<void>(`${environment.apiUrl}/api/sucursal/update`, catalogoSucursalModel, this.getHeaders());
   }
 
   private getHeaders() {

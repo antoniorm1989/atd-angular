@@ -13,19 +13,19 @@ export class CatalogoCategoriaArticuloService {
   }
 
   getAll(): Observable<Array<CatalogoCategoriaArticuloModel>> {
-    return this.http.get<Array<CatalogoCategoriaArticuloModel>>(`${environment.apiUrl}catArticulo/getAll`);
+    return this.http.get<Array<CatalogoCategoriaArticuloModel>>(`${environment.apiUrl}/api/catArticulo/getAll`);
   }
 
   getById(id: number): Observable<CatalogoCategoriaArticuloModel> {
-    return this.http.get<CatalogoCategoriaArticuloModel>(`${environment.apiUrl}catArticulo/getById/${id}`);
+    return this.http.get<CatalogoCategoriaArticuloModel>(`${environment.apiUrl}/api/catArticulo/getById/${id}`);
   }
 
   create(CatalogoCategoriaArticuloModel: CatalogoCategoriaArticuloModel): Observable<void> {
-    return this.http.post<void>(`${environment.apiUrl}catArticulo/create`, CatalogoCategoriaArticuloModel, this.getHeaders());
+    return this.http.post<void>(`${environment.apiUrl}/api/catArticulo/create`, CatalogoCategoriaArticuloModel, this.getHeaders());
   }
 
   update(CatalogoCategoriaArticuloModel: CatalogoCategoriaArticuloModel): Observable<void> {
-    return this.http.put<void>(`${environment.apiUrl}catArticulo/update`, CatalogoCategoriaArticuloModel, this.getHeaders());
+    return this.http.put<void>(`${environment.apiUrl}/api/catArticulo/update`, CatalogoCategoriaArticuloModel, this.getHeaders());
   }
 
   private getHeaders() {

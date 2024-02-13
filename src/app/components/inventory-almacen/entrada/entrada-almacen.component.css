@@ -3,9 +3,8 @@ mat-sidenav-content {
 }
 
 .entrada-almacen {
-    padding: 34px;
+    padding: 16px 34px;
     background-color: #F7F7F7;
-    height: 100%;
 }
 
 .entrada-almacen .toolbar .icon {
@@ -116,10 +115,6 @@ mat-sidenav-content {
     grid-template-columns: repeat(3, 1fr);
 }
 
-.entrada-almacen .container .form-row.three-col.add-stock {
-    grid-template-columns: 1fr 2fr 1fr;
-}
-
 .entrada-almacen .container .form-row.three-col .mat-mdc-form-field-infix {
     width: auto;
 }
@@ -155,10 +150,6 @@ mat-sidenav-content {
     justify-content: flex-end;
     align-items: center;
     margin-top: 24px;
-}
-
-.toolbar-bottom {
-    height: 100px;
 }
 
 .toolbar-bottom .btn.secundary {
@@ -363,7 +354,7 @@ mat-panel-description {
 
 
 .entrada-almacen {
-    padding: 24px 8px 0px 8px;
+    padding: 0px 8px 16px 8px;
 }
 
 .entrada-almacen .container .form-row.two-col,
@@ -384,7 +375,7 @@ mat-panel-description {
 }
 
 .entrada-almacen .container .form-row.three-col.add-stock {
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 3fr 3fr 3fr;
     margin-top: 8px;
 }
 
@@ -447,7 +438,7 @@ mat-panel-description {
 }
 
 .entrada-almacen .form-field.comment {
-    grid-column: span 2;
+    grid-column: span 3;
 }
 
 .entrada-almacen .stock_indicator {
@@ -458,6 +449,11 @@ mat-panel-description {
 }
 
 
+.cdk-overlay-pane {
+    width: 95vw;
+    max-width: 95vw !important;
+}
+
 
 @media only screen and (max-width: 1500px) {
     .entrada-almacen {
@@ -466,6 +462,10 @@ mat-panel-description {
 }
 
 @media only screen and (max-width: 1250px) {
+    .entrada-almacen .container .form-row.three-col.add-stock {
+        grid-template-columns: 3fr 2fr 3fr;
+    }
+
     .entrada-almacen {
         margin: 0px 60px;
     }
@@ -478,11 +478,17 @@ mat-panel-description {
     .entrada-almacen .container .form-row.four-col {
         grid-template-columns: repeat(3, 1fr);
     }
+    .entrada-almacen .container .form-row.three-col.add-stock {
+        grid-template-columns: 3fr 1fr 3fr;
+    }
 }
 
 @media only screen and (max-width: 835px) {
     .entrada-almacen {
         margin: 0px 0px;
+    }
+    .entrada-almacen .container .form-row.three-col.add-stock {
+        grid-template-columns: 3fr 0fr 3fr;
     }
     
 }

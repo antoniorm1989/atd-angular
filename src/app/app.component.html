@@ -22,11 +22,13 @@
 
     </mat-toolbar>
 
-    <mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 00" >
+    <mat-sidenav-container class="example-sidenav-container" [ngClass]="{'logged': isTokenValid}"
+        [style.marginTop.px]="mobileQuery.matches ? 0 : 00">
 
-        <mat-sidenav class="mat-sidenav-menu" [ngClass]="{ 'mat-sidenav-menu-hide': !isTokenValid }"  #snav [mode]="mobileQuery.matches ? 'over' : 'side'" 
-            [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" [opened]="!this.mobileQuery.matches">
-            <mat-nav-list class="mat-nav-menu" >
+        <mat-sidenav class="mat-sidenav-menu" [ngClass]="{ 'mat-sidenav-menu-hide': !isTokenValid }" #snav
+            [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches"
+            [opened]="!this.mobileQuery.matches">
+            <mat-nav-list class="mat-nav-menu">
                 <div routerLinkActive="active" *ngFor="let nav of fillerNav" class="menu-option"
                     [routerLink]="[nav.href]">
                     <div class="menu-space"></div>
@@ -34,18 +36,18 @@
                     <span class="menu-item-text">{{nav.text}}</span>
                 </div>
 
-                <div class="menu-options-end">
-                    <div routerLinkActive="active" *ngFor="let nav of fillerNavEnd" class="menu-option"
-                        [routerLink]="[nav.href]">
-                        <div class="menu-space"></div>
-                        <i class="{{nav.icon}}"></i>
-                        <span class="menu-item-text">{{nav.text}}</span>
-                    </div>
-                    <div class="menu-option" (click)="snav.toggle(); logout();">
-                        <div class="menu-space"></div>
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                        <span class="menu-item-text">Cerrar sesión</span>
-                    </div>
+                <div class="menu-option" style="flex: 1;"></div>
+
+                <div routerLinkActive="active" *ngFor="let nav of fillerNavEnd" class="menu-option"
+                    [routerLink]="[nav.href]">
+                    <div class="menu-space"></div>
+                    <i class="{{nav.icon}}"></i>
+                    <span class="menu-item-text">{{nav.text}}</span>
+                </div>
+                <div class="menu-option" (click)="snav.toggle(); logout();">
+                    <div class="menu-space"></div>
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span class="menu-item-text">Cerrar sesión</span>
                 </div>
             </mat-nav-list>
         </mat-sidenav>

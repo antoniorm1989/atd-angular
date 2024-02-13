@@ -97,7 +97,7 @@ export class EntradaSucursalComponent {
             var articulo = data;
 
             if (articulo.photo)
-              this.imageUrl = `${environment.apiUrl}images/articulos/${articulo.photo}`;
+              this.imageUrl = `${environment.apiUrl}/images/articulos/${articulo.photo}`;
 
             this.catalogoCategoriaArticuloService.getAll().subscribe({
               next: (data) => {
@@ -150,7 +150,7 @@ export class EntradaSucursalComponent {
   onSelectArticleChange(event: any) {
     const selectedArticle = event.value;
     if (selectedArticle.photo)
-      this.imageUrl = `${environment.apiUrl}images/articulos/${selectedArticle.photo}`;
+      this.imageUrl = `${environment.apiUrl}/images/articulos/${selectedArticle.photo}`;
 
     this.inventorySucursalService.getInventoryBySucursalByArticulo(this.sucursal?.id, selectedArticle.id).subscribe({
       next: (data) => {

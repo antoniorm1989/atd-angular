@@ -13,31 +13,31 @@ export class CatalogoArticuloService {
   }
 
   getAll(): Observable<Array<CatalogoArticuloModel>> {
-    return this.http.get<Array<CatalogoArticuloModel>>(`${environment.apiUrl}articulo/getAll`);
+    return this.http.get<Array<CatalogoArticuloModel>>(`${environment.apiUrl}/api/articulo/getAll`);
   }
 
   getAllByCategory(categoryId: number): Observable<Array<CatalogoArticuloModel>> {
-    return this.http.get<Array<CatalogoArticuloModel>>(`${environment.apiUrl}articulo/getAllByCategory/${categoryId}`);
+    return this.http.get<Array<CatalogoArticuloModel>>(`${environment.apiUrl}/api/articulo/getAllByCategory/${categoryId}`);
   }
 
   getById(id: number): Observable<CatalogoArticuloModel> {
-    return this.http.get<CatalogoArticuloModel>(`${environment.apiUrl}articulo/getById/${id}`);
+    return this.http.get<CatalogoArticuloModel>(`${environment.apiUrl}/api/articulo/getById/${id}`);
   }
 
   create(catalogoArticuloModel: CatalogoArticuloModel): Observable<any> {
-    return this.http.post<void>(`${environment.apiUrl}articulo/create`, catalogoArticuloModel, this.getHeaders());
+    return this.http.post<void>(`${environment.apiUrl}/api/articulo/create`, catalogoArticuloModel, this.getHeaders());
   }
 
   update(catalogoArticuloModel: CatalogoArticuloModel): Observable<any> {
-    return this.http.put<void>(`${environment.apiUrl}articulo/update`, catalogoArticuloModel, this.getHeaders());
+    return this.http.put<void>(`${environment.apiUrl}/api/articulo/update`, catalogoArticuloModel, this.getHeaders());
   }
 
   uploadPhoto(id: number, formData: FormData): Observable<void> {
-    return this.http.put<void>(`${environment.apiUrl}articulo/uploadPhoto/${id}`, formData, this.getHeadersFile());
+    return this.http.put<void>(`${environment.apiUrl}/api/articulo/uploadPhoto/${id}`, formData, this.getHeadersFile());
   }
 
   getAllGroupedByCategory(): Observable<ArticuloGroup[]> {
-    return this.http.get<ArticuloGroup[]>(`${environment.apiUrl}articulo/getAllGroupedByCategory`);
+    return this.http.get<ArticuloGroup[]>(`${environment.apiUrl}/api/articulo/getAllGroupedByCategory`);
   }
 
   private getHeaders() {

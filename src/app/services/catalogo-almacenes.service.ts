@@ -13,19 +13,19 @@ export class CatalogoAlmacenesService {
   }
 
   getAll(): Observable<Array<CatalogoAlmacenModel>> {
-    return this.http.get<Array<CatalogoAlmacenModel>>(`${environment.apiUrl}almacen/getAll`);
+    return this.http.get<Array<CatalogoAlmacenModel>>(`${environment.apiUrl}/api/almacen/getAll`);
   }
 
   getById(id: number): Observable<CatalogoAlmacenModel> {
-    return this.http.get<CatalogoAlmacenModel>(`${environment.apiUrl}almacen/getById/${id}`);
+    return this.http.get<CatalogoAlmacenModel>(`${environment.apiUrl}/api/almacen/getById/${id}`);
   }
 
   create(catalogoAlmacenModel: CatalogoAlmacenModel): Observable<void> {
-    return this.http.post<void>(`${environment.apiUrl}almacen/create`, catalogoAlmacenModel, this.getHeaders());
+    return this.http.post<void>(`${environment.apiUrl}/api/almacen/create`, catalogoAlmacenModel, this.getHeaders());
   }
 
   update(catalogoAlmacenModel: CatalogoAlmacenModel): Observable<void> {
-    return this.http.put<void>(`${environment.apiUrl}almacen/update`, catalogoAlmacenModel, this.getHeaders());
+    return this.http.put<void>(`${environment.apiUrl}/api/almacen/update`, catalogoAlmacenModel, this.getHeaders());
   }
 
   private getHeaders() {

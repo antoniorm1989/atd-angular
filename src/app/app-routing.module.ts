@@ -25,7 +25,7 @@ const routes: Routes = [
   { path: '', redirectTo: '/inventario-almacen', pathMatch: 'full' }, // Redirect to login by default
   { path: 'login', component: LoginComponent, canActivate: [AuthGuard]}, // Login route
   { path: 'inventario-almacen', component: InventoryAlmacenListComponent, canActivate: [AuthGuard] },
-  { path: 'inventario-almacen/entrada/:almacenId', component: EntradaAlmacenComponent },
+  { path: 'inventario-almacen/entrada/:almacenId', component: EntradaAlmacenComponent, canActivate: [AuthGuard]},
   { path: 'inventario-almacen/entrada/:almacenId/:articuloId', component: EntradaAlmacenComponent, canActivate: [AuthGuard] },
   { path: 'inventario-almacen/historial-almacen/:id', component: HistorialAlmacenComponent, canActivate: [AuthGuard] },
   { path: 'inventario-sucursal', component: InventorySucursalListComponent, canActivate: [AuthGuard] },

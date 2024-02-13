@@ -1,16 +1,28 @@
 .example-container {
-  display: flex;
+  /*display: flex;
   flex-direction: column;
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
-  right: 0;
+  right: 0;*/
 }
 
+
+.logged mat-sidenav {
+  overflow-y: auto; 
+  position: absolute;
+  height: calc(100vh - 80px); 
+}
+
+.logged mat-sidenav-content {
+  overflow-y: auto; 
+  height: calc(100vh - 80px); 
+}
+
+
 .example-is-mobile .example-toolbar {
-  position: fixed;
-  z-index: 2;
+  position: relative;
 }
 
 h1.example-app-name {
@@ -55,11 +67,6 @@ h1.example-app-name {
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-
-.menu-options-end {
-  margin-top: auto;
-  padding: 24px 0px 12px;
 }
 
 .menu-option {

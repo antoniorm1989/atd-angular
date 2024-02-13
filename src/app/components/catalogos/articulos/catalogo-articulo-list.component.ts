@@ -75,6 +75,6 @@ export class CatalogoArticuloListComponent {
   }
 
   getPathPhoto(photo: string): string {
-    return `${environment.apiUrl}images/articulos/${photo}`
+    return `${environment.apiUrl}/images/articulos/${photo}`
   }
 }

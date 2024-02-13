@@ -13,23 +13,23 @@ export class InventorySucursalService {
   }
 
   getById(id: number | undefined): Observable<InventorySucursalModel> {
-    return this.http.get<InventorySucursalModel>(`${environment.apiUrl}inventorySucursal/getById/${id}`, this.getHeaders());
+    return this.http.get<InventorySucursalModel>(`${environment.apiUrl}/api/inventorySucursal/getById/${id}`, this.getHeaders());
   }
 
   getInventoryBySucursal(sucursalId: number | undefined): Observable<Array<InventorySucursalModel>> {
-    return this.http.get<Array<InventorySucursalModel>>(`${environment.apiUrl}inventorySucursal/getInventoryBySucursal/${sucursalId}`, this.getHeaders());
+    return this.http.get<Array<InventorySucursalModel>>(`${environment.apiUrl}/api/inventorySucursal/getInventoryBySucursal/${sucursalId}`, this.getHeaders());
   }
 
   getInventoryBySucursalByArticulo(sucursalId: number | undefined, articuloId: number | undefined): Observable<InventorySucursalModel> {
-    return this.http.get<InventorySucursalModel>(`${environment.apiUrl}inventorySucursal/getInventoryBySucursalByArticulo/${sucursalId}/${articuloId}`, this.getHeaders());
+    return this.http.get<InventorySucursalModel>(`${environment.apiUrl}/api/inventorySucursal/getInventoryBySucursalByArticulo/${sucursalId}/${articuloId}`, this.getHeaders());
   }
 
   createOrUpdate(inventorySucursal: InventorySucursalModel): Observable<any> {
-    return this.http.post<void>(`${environment.apiUrl}inventorySucursal/createOrUpdate`, inventorySucursal, this.getHeaders());
+    return this.http.post<void>(`${environment.apiUrl}/api/inventorySucursal/createOrUpdate`, inventorySucursal, this.getHeaders());
   }
 
   getInventoryTransactions(sucursalId: number | undefined, articuloId: number | undefined): Observable<Array<InventorySucursalTransactionsModel>> {
-    return this.http.get<Array<InventorySucursalTransactionsModel>>(`${environment.apiUrl}inventorySucursal/getInventoryTransactions/${sucursalId}/${articuloId}`, this.getHeaders());
+    return this.http.get<Array<InventorySucursalTransactionsModel>>(`${environment.apiUrl}/api/inventorySucursal/getInventoryTransactions/${sucursalId}/${articuloId}`, this.getHeaders());
   }
 
   private getHeaders() {
