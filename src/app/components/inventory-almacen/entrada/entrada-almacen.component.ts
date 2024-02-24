@@ -470,6 +470,16 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
       return [];
     }
   }
+
+  formatearComoMoneda(valor: number | undefined): string {
+    if(!valor)
+      return 'n/a';
+
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(valor);
+  }
 }
 
 @Component({

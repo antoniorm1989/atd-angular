@@ -78,7 +78,7 @@
                             </div>
                             <div class="row">
                                 <mat-label class="text-1">Costo unitario</mat-label>
-                                <mat-label class="text-1-regular">${{selectedArticle?.cost}}</mat-label>
+                                <mat-label class="text-1-regular">{{ formatearComoMoneda(selectedArticle?.cost) }} </mat-label>
                             </div>
                             <div class="row">
                                 <mat-label class="text-1">Descripción</mat-label>
@@ -89,7 +89,7 @@
 
                     <div class="form-row three-col row-cantidades" style="margin-top: 24px;">
                         <div class="form-field">
-                            <mat-label class="text-1">*Mínimos</mat-label>
+                            <mat-label class="text-1">Mínimos*</mat-label>
                             <mat-form-field>
                                 <input matInput type="number" formControlName="minimum_stock"
                                     [ngClass]="{ 'is-invalid': submitted && f['minimum_stock'].errors }" required
@@ -105,7 +105,7 @@
                         </div>
 
                         <div class="form-field">
-                            <mat-label class="text-1">*Máximos</mat-label>
+                            <mat-label class="text-1">Máximos*</mat-label>
                             <mat-form-field>
                                 <input matInput type="number" formControlName="maximum_stock"
                                     [ngClass]="{ 'is-invalid': submitted && f['maximum_stock'].errors }" required
@@ -142,13 +142,13 @@
                         <div class="form-field">
                             <mat-label class="text-1">Agregar o retirar</mat-label>
                             <div class="container-agregar-retirar">
-                                <button type="button" color="primary" mat-mini-fab matTooltip="agregar" (click)="restarQty()">
+                                <button type="button" color="primary" mat-mini-fab (click)="restarQty()">
                                     <mat-icon>remove</mat-icon>
                                 </button>
                                 <mat-form-field>
                                     <input type="number" matInput formControlName="qty" [ngClass]="{ 'is-invalid': submitted && f['qty'].errors }" required>
                                 </mat-form-field>
-                                <button type="button" color="primary" mat-mini-fab matTooltip="agregar" (click)="agregarQty()">
+                                <button type="button" color="primary" mat-mini-fab (click)="agregarQty()">
                                     <mat-icon>add</mat-icon>
                                 </button>
                             </div>

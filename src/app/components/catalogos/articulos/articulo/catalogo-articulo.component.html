@@ -95,10 +95,10 @@
 
                             <div class="form-field cost">
                                 <mat-label class="text-1">Costo unitario</mat-label>
-                                <mat-label class="text-1-regular"
-                                    *ngIf="isReadOnly">{{this.f['cost'].value}}</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{ formatearComoMoneda(this.f['cost'].value) }}</mat-label>
+
                                 <mat-form-field *ngIf="!isReadOnly">
-                                    <input matInput placeholder="$00.00" formControlName="cost">
+                                    <input matInput type="number" min="0" step="0.01" formControlName="cost" (keypress)="validarDecimal($event)">
                                 </mat-form-field>
                             </div>
                         </div>

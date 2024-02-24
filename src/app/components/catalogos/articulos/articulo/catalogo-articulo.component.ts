@@ -255,4 +255,28 @@ export class CatalogoArticuloComponent {
     this._snackBar.openFromComponent(MessageComponent, config);
   }
 
+  formatearComoMoneda(valor: number): string {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(valor);
+  }
+
+  validarDecimal(event: any) {
+    const allowedChars = /[0-9\.\,]/;
+    const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+  
+    if (!allowedKeys.includes(event.key) && !allowedChars.test(event.key)) {
+      event.preventDefault();
+    }
+  
+    const input = event.target as HTMLInputElement;
+    const value = input.value.replace(',', '.');
+    const regexp = new RegExp(/^\d+(\.\d{0,2})?$/);
+  
+    if (!regexp.test(value + event.key)) {
+      event.preventDefault();
+    }
+  }
+
 }

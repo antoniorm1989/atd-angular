@@ -372,6 +372,13 @@ mat-panel-description {
     color: red;
 }
 
+.historial-almacen .container .container-data{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 100px 1fr; 
+    gap: 10px;
+}
+
+
 @media only screen and (max-width: 1500px) {
     .historial-almacen {
         margin: 0px 50px;
@@ -388,6 +395,10 @@ mat-panel-description {
     .historial-almacen .container .form-row.four-col {
         grid-template-columns: repeat(3, 1fr);
     }
+    .historial-almacen .mdc-data-table__header-cell,
+    .historial-almacen .mdc-data-table__cell  {
+        padding: 0 10px 0 10px;
+    }
 }
 
 @media only screen and (max-width: 835px) {
@@ -397,11 +408,73 @@ mat-panel-description {
     .form-field.phone {
         grid-column: span 2;
     }
+    .historial-almacen .mdc-data-table__header-cell,
+    .historial-almacen .mdc-data-table__cell {
+        padding: 0 6px 0 6px;
+    }
+
+    .historial-almacen .container .container-data {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+    .historial-almacen .main-container {
+        padding: 0px;
+    }
+    .historial-almacen .container .form-container {
+        margin-top: 8px;
+        padding: 12px;
+        margin-bottom: 0px;
+    }
+    .historial-almacen .container .container-data {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+    .historial-almacen .numero-parte-container {
+        grid-column: span 2;
+    }
 }
 
 @media only screen and (max-width: 587px) {
+    .historial-almacen {
+        padding: 0px 8px;
+    }
+
+    .historial-almacen .toolbar .title {
+        font-size: 22px;
+    }
+
+    .historial-almacen .mat-mdc-card-title {
+        line-height: 20px;
+        font-size: 16px;
+    }
+
+    .historial-almacen .container .form-container .title {
+        font-size: 20px;
+    }
+
     .historial-almacen .container .form-row.two-col,
     .historial-almacen .container .form-row.four-col {
         grid-template-columns: repeat(1, 1fr);
+    }
+
+    .historial-almacen .mdc-data-table__header-cell,
+    .historial-almacen .mdc-data-table__cell  {
+        padding: 0 4px 0 4px;
+    }
+
+    .historial-almacen .container .form-container{
+        padding: 6px;
+    }
+
+    .historial-almacen .container .container-data{
+        display: grid;
+        grid-template-columns: 1fr 1fr; 
+        gap: 20px;
+        text-align: center;
+    }
+
+    .historial-almacen .numero-parte-container {
+        grid-column: span 2;
+    }
+    .historial-almacen .stock_indicator {
+        margin: auto;
     }
 }

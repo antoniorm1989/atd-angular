@@ -328,7 +328,7 @@ mat-panel-description {
 }
 
 .entrada-almacen .container-agregar-retirar button {
-   margin: 5px;
+    margin: 8px 5px;
 }
 
 .entrada-almacen .container-agregar-retirar button.mat-mdc-mini-fab {
@@ -447,11 +447,12 @@ mat-panel-description {
 .entrada-almacen .form-field.comment{
     margin-top: 12px;
 }
-
-
-.cdk-overlay-pane {
-    width: 95vw;
-    max-width: 95vw !important;
+.entrada-almacen .container-agregar-retirar .mdc-fab--mini {
+    width: 32px;
+    height: 32px;
+}
+.dialog-component{
+    width: 3000px;
 }
 
 
