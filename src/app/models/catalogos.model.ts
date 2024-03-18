@@ -1,33 +1,27 @@
-export class CatalogoStateModel {
-  id: string;
-  name: string;
-  key: string;
-  created: Date;
-  modified: Date;
+import Integer from "@zxing/library/esm/core/util/Integer";
 
-  constructor(id: string, name: string, key: string, created: Date, modified: Date) {
-    this.id = id;
-    this.name = name;
-    this.key = key;
-    this.created = created;
-    this.modified = modified;
-  }
+export class CatalogoCountryModel {
+  id: string | undefined;
+  name: string | undefined;
+  key: string | undefined;
+}
+
+export class CatalogoStateModel {
+  id: string | undefined;
+  name: string | undefined;
+  key: string | undefined;
 }
 
 export class CatalogoCityModel {
-  id: string;
-  name: string;
-  key: string;
-  keyState: string;
-  created: Date;
-  modified: Date;
+  id: string | undefined;
+  code: string | undefined;
+  name: string | undefined;
+}
 
-  constructor(id: string, name: string, key: string, keyState: string, created: Date, modified: Date) {
-    this.id = id;
-    this.name = name;
-    this.key = key;
-    this.keyState = keyState;
-    this.created = created;
-    this.modified = modified;
-  }
+export class CatalogoRegimenFiscalModel {
+  id: string | undefined;
+  name: string | undefined;
+  key: number | undefined;
+  persona_fisica: boolean | undefined;
+  persona_moral: boolean | undefined;
 }

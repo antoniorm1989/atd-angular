@@ -37,10 +37,11 @@ export class BarcodeScannerComponent implements OnDestroy{
             this.scannedValue.emit(scannedText); 
           }
           if (error) {
+            alert(error.message);
           }
         });
       })
-      .catch(err => console.error('Error accessing camera:', err));
+      .catch(err => alert('Error accessing camera: ' + err));
   }
 
   stop(){

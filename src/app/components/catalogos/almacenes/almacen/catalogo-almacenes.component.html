@@ -94,7 +94,7 @@
                                 <mat-label>Seleccionar municipio</mat-label>
                                 <mat-select formControlName="city_key">
                                     <mat-option>None</mat-option>
-                                    <mat-option *ngFor="let city of cities" [value]="city.key">{{ city.name }}
+                                    <mat-option *ngFor="let city of cities" [value]="city.id">{{ city.name }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>

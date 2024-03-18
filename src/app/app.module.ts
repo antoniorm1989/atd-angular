@@ -50,6 +50,8 @@ import { EntradaSucursalComponent } from './components/inventory-sucursal/entrad
 import { HistorialSucursalComponent } from './components/inventory-sucursal/historial/historial-sucursal.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { CatalogoClientesListComponent } from './components/catalogos/clientes/catalogo-clientes-list.component';
+import { CatalogoClientesComponent } from './components/catalogos/clientes/sucursal/catalogo-clientes.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -77,7 +79,9 @@ export function tokenGetter() {
     HistorialAlmacenComponent,
     InventorySucursalListComponent,
     EntradaSucursalComponent,
-    HistorialSucursalComponent
+    HistorialSucursalComponent,
+    CatalogoClientesListComponent,
+    CatalogoClientesComponent
   ],
   imports: [
     BrowserModule,

@@ -107,7 +107,7 @@ export class CatalogoSucursalesComponent {
       }
     });
 
-    this.catalogosService.getStates().subscribe({
+    this.catalogosService.getStatesByCountry('MX').subscribe({
       next: (data) => {
         this.states = data;
       },
@@ -203,12 +203,12 @@ export class CatalogoSucursalesComponent {
 
   getStateByKey(key: string): string{
     let state = this.states.filter(s => s.key == key);
-    return state.length > 0 ? state[0].name : '';
+    return state.length > 0 ? state[0].name ?? '' : '';
   }
 
-  getCityByKey(key: string): string{
-    let city = this.cities.filter(s => s.key == key);
-    return city.length > 0 ? city[0].name : '';
+  getCityByKey(id: string): string{
+    let city = this.cities.filter(s => s.id == id);
+    return city.length > 0 ? city[0].name ?? '' : '';
   }
 
   openMessageSnack() {

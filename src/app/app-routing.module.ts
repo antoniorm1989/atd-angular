@@ -20,6 +20,8 @@ import { HistorialAlmacenComponent } from './components/inventory-almacen/histor
 import { InventorySucursalListComponent } from './components/inventory-sucursal/inventory-sucursal-list.component';
 import { EntradaSucursalComponent } from './components/inventory-sucursal/entrada/entrada-sucursal.component';
 import { HistorialSucursalComponent } from './components/inventory-sucursal/historial/historial-sucursal.component';
+import { CatalogoClientesComponent } from './components/catalogos/clientes/sucursal/catalogo-clientes.component';
+import { CatalogoClientesListComponent } from './components/catalogos/clientes/catalogo-clientes-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/inventario-almacen', pathMatch: 'full' }, // Redirect to login by default
@@ -49,6 +51,9 @@ const routes: Routes = [
   { path: 'catalogos/articulos', component: CatalogoArticuloListComponent, canActivate: [AuthGuard] },
   { path: 'catalogos/articulos/detail', component: CatalogoArticuloComponent, canActivate: [AuthGuard] },
   { path: 'catalogos/articulos/detail/:id', component: CatalogoArticuloComponent, canActivate: [AuthGuard] },
+  { path: 'catalogos/clientes', component: CatalogoClientesListComponent, canActivate: [AuthGuard] },
+  { path: 'catalogos/clientes/detail', component: CatalogoClientesComponent, canActivate: [AuthGuard] },
+  { path: 'catalogos/clientes/detail/:id', component: CatalogoClientesComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({
