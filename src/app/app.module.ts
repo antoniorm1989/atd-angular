@@ -52,6 +52,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CatalogoClientesListComponent } from './components/catalogos/clientes/catalogo-clientes-list.component';
 import { CatalogoClientesComponent } from './components/catalogos/clientes/sucursal/catalogo-clientes.component';
+import { BarcodeScannerComponent } from './components/genericos/barcodesScanner.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -116,9 +117,10 @@ export function tokenGetter() {
     MatSnackBarModule,
     MatDialogModule,
     MatTooltipModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    BarcodeScannerComponent
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }
