@@ -46,8 +46,7 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
 
   constructor(public route: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private inventoryAlmacenService:
-      InventoryAlmacenService,
+    private inventoryAlmacenService: InventoryAlmacenService,
     private catalogoAlmacenesService: CatalogoAlmacenesService,
     private router: Router,
     private catalogoArticuloService: CatalogoArticuloService,

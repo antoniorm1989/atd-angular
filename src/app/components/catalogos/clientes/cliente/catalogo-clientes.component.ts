@@ -39,9 +39,12 @@ export class CatalogoClientesComponent {
 
   id = 0;
 
+  isRfcDuplicate: boolean = false;
+
   constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogosService: CatalogosService, private router: Router, private _snackBar: MatSnackBar, private catalogoClientesService: CatalogoClientesService) {
 
     this.form = this.formBuilder.group({
+      cliente: ['', [Validators.required]],
       tipoCliente: ['Nacional', [Validators.required]],
       rfc: ['', [Validators.required]],
       nombreFiscal: ['', [Validators.required]],
@@ -70,6 +73,7 @@ export class CatalogoClientesComponent {
               next: (data) => {
 
                 this.form.patchValue({
+                  cliente: data.cliente,
                   tipoCliente: data.tipo,
                   rfc: data.rfc,
                   nombreFiscal: data.nombre_fiscal,
@@ -163,7 +167,7 @@ export class CatalogoClientesComponent {
                   });
                 }
 
-                if(data.tipo == 'Extranjero'){
+                if (data.tipo == 'Extranjero') {
                   this.removeValidations();
                 }
 
@@ -220,9 +224,9 @@ export class CatalogoClientesComponent {
   }
 
   onTipoChange(event: any) {
-    if(this.selectedTipoCliente == 'Extranjero'){
+    if (this.selectedTipoCliente == 'Extranjero') {
       this.removeValidations()
-    }else{
+    } else {
       this.addValidations();
     }
   }
@@ -252,6 +256,7 @@ export class CatalogoClientesComponent {
 
   onSubmit() {
     this.submitted = true;
+    this.isRfcDuplicate = false;
 
     // stop here if form is invalid
     if (this.form!.invalid)
@@ -263,6 +268,7 @@ export class CatalogoClientesComponent {
 
     let cliente = new CatalogoClienteModel();
     cliente.id = this.id;
+    cliente.cliente = this.f['cliente'].value;
     cliente.tipo = this.f['tipoCliente'].value;
     cliente.rfc = this.f['rfc'].value;
     cliente.nombre_fiscal = this.f['nombreFiscal'].value;
@@ -288,6 +294,10 @@ export class CatalogoClientesComponent {
           this.router.navigate(['catalogos/clientes']);
         },
         error: (e) => {
+          if (e.error.error == 'Ya existe un cliente registrado con el mismo RFC')
+            this.isRfcDuplicate = true;
+
+          console.log(e);
         }
       });
     } else {
@@ -297,6 +307,10 @@ export class CatalogoClientesComponent {
           this.router.navigate(['catalogos/clientes']);
         },
         error: (e) => {
+          if (e.error.error == 'Ya existe un cliente registrado con el mismo RFC')
+            this.isRfcDuplicate = true;
+
+          console.log(e);
         }
       });
     }
@@ -341,7 +355,7 @@ export class CatalogoClientesComponent {
     this._snackBar.openFromComponent(MessageComponent, config);
   }
 
-  private removeValidations (){
+  private removeValidations() {
     this.f['country'].clearValidators();
     this.f['country'].updateValueAndValidity();
 
@@ -367,7 +381,7 @@ export class CatalogoClientesComponent {
     this.f['cp'].updateValueAndValidity();
   }
 
-  private addValidations (){
+  private addValidations() {
     this.f['country'].setValidators([Validators.required]);
     this.f['country'].updateValueAndValidity();
 

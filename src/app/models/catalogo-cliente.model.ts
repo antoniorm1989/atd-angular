@@ -3,6 +3,7 @@ import { User } from "./user";
 
 export class CatalogoClienteModel {
   id: number | undefined;
+  cliente: string | undefined;
   tipo: string | undefined;
   rfc: string | undefined;
   nombre_fiscal: string | undefined;

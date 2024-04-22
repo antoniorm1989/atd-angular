@@ -51,12 +51,47 @@ import { HistorialSucursalComponent } from './components/inventory-sucursal/hist
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CatalogoClientesListComponent } from './components/catalogos/clientes/catalogo-clientes-list.component';
-import { CatalogoClientesComponent } from './components/catalogos/clientes/sucursal/catalogo-clientes.component';
+import { CatalogoClientesComponent } from './components/catalogos/clientes/cliente/catalogo-clientes.component';
 import { BarcodeScannerComponent } from './components/genericos/barcodesScanner.component';
+import { VentasListComponent } from './components/ventas/ventas-list.component';
+import { ArticuloVentaModalComponent, VentaComponent } from './components/ventas/venta/venta.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { DateAdapter, MAT_DATE_FORMATS, NativeDateAdapter } from '@angular/material/core';
+import { VentaArticuloComponent } from './components/ventas/venta/articulo/venta-articulo.component';
+import { MatRadioModule } from '@angular/material/radio';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
+
+export class AppDateAdapter extends NativeDateAdapter {
+  override format(date: Date, displayFormat: Object): string {
+    if (displayFormat === 'input') {
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+
+      return `${this._twoDigit(day)}/${this._twoDigit(month)}/${year}`;
+    }
+    return date.toDateString();
+  }
+
+  private _twoDigit(n: number) {
+    return ('00' + n).slice(-2);
+  }
+}
+
+const yourFormat = {
+  parse: {
+    dateInput: 'DD/MM/YYYY', // Formato de entrada de fecha
+  },
+  display: {
+    dateInput: 'DD/MM/YYYY', // Formato de visualización de fecha en el input
+    monthYearLabel: 'MMM YYYY', // Formato de visualización del mes y año en el selector de mes y año
+    dateA11yLabel: 'DD/MM/YYYY', // Formato accesible para la fecha completa
+    monthYearA11yLabel: 'MMMM YYYY', // Formato accesible para el mes y el año
+  },
+};
 
 @NgModule({
   declarations: [
@@ -82,7 +117,11 @@ export function tokenGetter() {
     EntradaSucursalComponent,
     HistorialSucursalComponent,
     CatalogoClientesListComponent,
-    CatalogoClientesComponent
+    CatalogoClientesComponent,
+    VentasListComponent,
+    VentaComponent,
+    VentaArticuloComponent,
+    ArticuloVentaModalComponent
   ],
   imports: [
     BrowserModule,
@@ -118,9 +157,14 @@ export function tokenGetter() {
     MatDialogModule,
     MatTooltipModule,
     MatAutocompleteModule,
-    BarcodeScannerComponent
+    BarcodeScannerComponent,
+    MatDatepickerModule,
+    MatRadioModule
   ],
-  providers: [],
+  providers:[
+    { provide: DateAdapter, useClass: AppDateAdapter }, 
+    { provide: MAT_DATE_FORMATS, useValue: yourFormat }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

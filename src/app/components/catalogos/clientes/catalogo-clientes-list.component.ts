@@ -13,7 +13,7 @@ import { CatalogoClienteModel } from 'src/app/models/catalogo-cliente.model';
 export class CatalogoClientesListComponent{
 
   hasRecords = false;
-  displayedColumns: string[] = ['nombre', 'correo', 'telefono', 'created', 'modified', 'user', 'status', 'actions'];
+  displayedColumns: string[] = ['cliente', 'rfc', 'correo', 'telefono', 'created', 'modified', 'user', 'status', 'actions'];
   dataSource = new MatTableDataSource<CatalogoClienteModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 

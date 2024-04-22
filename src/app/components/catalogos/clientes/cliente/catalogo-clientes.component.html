@@ -20,7 +20,20 @@
                     <span class="title">Datos generales</span>
                     <span *ngIf="action != 'new'" class="id"><b>ID</b> {{id}}</span>
                 </div>
-                <div class="form-row three-col">
+                <div class="form-row four-col">
+
+                    <div class="form-field cliente">
+                        <mat-label class="text-1"  *ngIf="isReadOnly">Cliente</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['cliente'].value}}</mat-label>
+
+                        <mat-label class="text-1"  *ngIf="!isReadOnly">Cliente*</mat-label>
+                        <mat-form-field *ngIf="!isReadOnly">
+                            <input matInput placeholder="Escribe el cliente" formControlName="cliente" [ngClass]="{ 'is-invalid': submitted && f['cliente'].errors }" required>
+                        </mat-form-field>
+                        <div *ngIf="submitted && f['cliente'].errors" class="invalid-feedback">
+                            <div *ngIf="f['cliente'].errors['required']">Este campo requerido</div>
+                        </div>
+                    </div>
                     
                     <div class="form-field tipoCliente">
                         <mat-label class="text-1" *ngIf="isReadOnly">Tipo Cliente</mat-label>
@@ -42,9 +55,10 @@
                         <mat-form-field *ngIf="!isReadOnly">
                             <input matInput placeholder="Escribe el RFC" formControlName="rfc" pattern="[A-Z]{4}[0-9]{6}[A-Za-z0-9]{3}" [ngClass]="{ 'is-invalid': submitted && f['rfc'].errors }" required>
                         </mat-form-field>
-                        <div *ngIf="submitted && f['rfc'].errors" class="invalid-feedback">
-                            <div *ngIf="f['rfc'].errors['required']">Este campo requerido</div>
-                            <div *ngIf="f['rfc'].errors['pattern']">La estructura del RFC no es válida</div>
+                        <div *ngIf="submitted && (f['rfc'].errors || isRfcDuplicate)" class="invalid-feedback">
+                            <div *ngIf="f['rfc'].errors && f['rfc'].errors['required']">Este campo requerido</div>
+                            <div *ngIf="f['rfc'].errors && f['rfc'].errors['pattern']">La estructura del RFC no es válida</div>
+                            <div *ngIf="isRfcDuplicate">Ya existe un cliente registrado con el mismo RFC</div>
                         </div>
                     </div>
 

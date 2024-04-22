@@ -1,0 +1,90 @@
+<div class="ventas-list">
+    <div class="toolbar">
+        <div class="toolbar-title">
+            <i class="icon fa-solid fa-cash-register"></i>
+            <span class="title">Ventas</span>
+        </div>
+        <div>
+            <span class="breadcrumb-item">Ventas</span>
+        </div>
+    </div>
+    <div class="container">
+        <div *ngIf="!hasRecords" class="container-empty">
+            <img src="../../assets/images/empty-list.png" alt="empty logo" class="img">
+            <span class="text">Aún no tienes ventas registradas, para poder ver información favor de agregar una venta.</span>
+            <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Agregar venta</button>
+        </div>
+        <div *ngIf="hasRecords" class="container-list">
+
+            <div class="toolbar">
+                <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Agregar venta</button>
+            </div>
+
+            <table class="table" mat-table [dataSource]="dataSource">
+
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef>Venta</th>
+                    <td mat-cell *matCellDef="let element"><span (click)="onView(element.id)"
+                            class="title-grid">{{element.id}}</span></td>
+                </ng-container>
+
+                <ng-container matColumnDef="creacion">
+                    <th mat-header-cell *matHeaderCellDef>Creación</th>
+                    <td mat-cell *matCellDef="let element">{{formatDate(element.created_at)}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="cliente">
+                    <th mat-header-cell *matHeaderCellDef>Cliente</th>
+                    <td mat-cell *matCellDef="let element"><span>{{element.cliente.cliente}}</span></td>
+                </ng-container>
+
+                <ng-container matColumnDef="moneda">
+                    <th mat-header-cell *matHeaderCellDef>Moneda</th>
+                    <td mat-cell *matCellDef="let element"><span>{{element.moneda}}</span></td>
+                </ng-container>
+
+                <ng-container matColumnDef="importe">
+                    <th mat-header-cell *matHeaderCellDef>Importe</th>
+                    <td mat-cell *matCellDef="let element"><span>{{formatearComoMoneda(element.importe)}}</span></td>
+                </ng-container>
+
+                <ng-container matColumnDef="estatus">
+                    <th mat-header-cell *matHeaderCellDef>Estatus</th>
+                    <td mat-cell *matCellDef="let element"><span>{{element.estatus.estatus}}</span></td>
+                </ng-container>
+
+                <ng-container matColumnDef="fecha_sat">
+                    <th mat-header-cell *matHeaderCellDef>Fecha SAT</th>
+                    <td mat-cell *matCellDef="let element">{{formatDate(element.estatus.created_at)}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="responsable">
+                    <th mat-header-cell *matHeaderCellDef>Responsable</th>
+                    <td mat-cell *matCellDef="let element">
+                        <div *ngIf="element.vendedor.id" class="user-wrapper">
+                            <div class="circle-initials" mat-mini-fab color="primary">
+                                {{getUserName(element.vendedor.name, element.vendedor.last_name)}}</div>
+                            <span class="text">{{element.vendedor.name}} {{element.vendedor.last_name}}</span>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element">
+                        <button mat-icon-button aria-label="" (click)="onEdit(element.id)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons
+                aria-label="Select page of periodic elements">
+            </mat-paginator>
+        </div>
+    </div>
+</div>

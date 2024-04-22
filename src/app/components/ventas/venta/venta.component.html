@@ -1,0 +1,425 @@
+<div class="venta">
+    <div class="toolbar">
+        <div class="toolbar-title">
+            <i class="icon fa-solid fa-cash-register"></i>
+            <span class="title">Ventas</span>
+        </div>
+        <div class="toolbar-breadcrumb">
+            <span class="link-breadcrumb" (click)="navigate('ventas')"> Ventas </span> /
+            <span class="breadcrumb-item">{{title}}</span>
+
+            <button *ngIf="isReadOnly" mat-button class="btn" (click)="makeEditMode()"><mat-icon>edit</mat-icon>Editar
+                información
+            </button>
+        </div>
+    </div>
+    <div class="container">
+
+        <div class="separator"></div>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+            <mat-accordion>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Datos generales
+                        </mat-panel-title>
+                        <mat-panel-description>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+
+                    <div class="form-row two-col">
+                        <div>
+                            <div class="form-field">
+                                <mat-label class="text-1" *ngIf="isReadOnly">Fecha compra cliente</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['fecha_compra_cliente'].value}}</mat-label>
+                                <mat-label class="text-1" *ngIf="!isReadOnly">Fecha compra cliente (opcional)</mat-label>
+                                <mat-form-field *ngIf="!isReadOnly">
+                                    <input matInput [matDatepicker]="picker" formControlName="fecha_compra_cliente">
+                                    <mat-hint>DD/MM/YYYY</mat-hint>
+                                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                            <div class="form-field">
+                                <mat-label class="text-1" *ngIf="isReadOnly">Vendedor</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly && editData != null">{{this.editData.vendedor?.name + ' ' + this.editData.vendedor?.lastname}}</mat-label>
+                                <mat-label class="text-1" *ngIf="!isReadOnly">Vendedor (opcional)</mat-label>
+                                <mat-form-field *ngIf="!isReadOnly">
+                                    <input type="text" matInput [matAutocomplete]="autoVenddores" formControlName="vendedor">
+                                    <button type="button" matSuffix mat-icon-button aria-label="Clear" *ngIf="route.snapshot.paramMap.get('ventaId') == undefined && this.f['vendedor'].value != undefined" (click)="clearAutocompleteInputVendedor()">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                    <mat-autocomplete requireSelection autoActiveFirstOption #autoVenddores="matAutocomplete">
+                                        <ng-container *ngFor="let vendedor of filteredVendedores | async; track vendedor">
+                                            <mat-option [value]="vendedor.name + ' ' + vendedor.lastname">{{vendedor.name}} {{vendedor.lastname}}</mat-option> 
+                                        </ng-container>
+                                      </mat-autocomplete>
+                                </mat-form-field>
+                            </div>
+                            <div class="form-field">
+                                <mat-label class="text-1" *ngIf="isReadOnly">Uso CFDI</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['usoCfdi'].value?.name}}</mat-label>
+                                <mat-label class="text-1" *ngIf="!isReadOnly">Uso CFDI*</mat-label>
+                                <mat-form-field *ngIf="!isReadOnly">
+                                    <mat-select [(value)]="selectedUsoCfdi" formControlName="usoCfdi" >
+                                        <mat-option *ngFor="let usoCfdi of usoCfdiList" [value]="usoCfdi">{{ usoCfdi.key }} - {{ usoCfdi.name }}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <div *ngIf="submitted && f['usoCfdi'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['usoCfdi'].errors['required']">Este campo requerido</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="datos-cliente">
+                            <div class="form-row one-col">
+                                <div class="form-field" style="margin-top: 00px;">
+                                    <mat-label class="text-1" *ngIf="isReadOnly">Cliente</mat-label>
+                                    <mat-label class="text-1-regular" *ngIf="isReadOnly && editData != null">{{this.editData.cliente?.cliente}}</mat-label>
+                                    <mat-label class="text-1" *ngIf="!isReadOnly">ClienteI*</mat-label>
+                                    <mat-form-field *ngIf="!isReadOnly">
+                                        <input type="text" matInput required [matAutocomplete]="auto" formControlName="cliente" [value]="selectedCliente ? selectedCliente.cliente : null">
+                                        <button type="button" matSuffix mat-icon-button aria-label="Clear" *ngIf="route.snapshot.paramMap.get('ventaId') == undefined && this.f['cliente'].value != undefined" (click)="clearAutocompleteInput()">
+                                            <mat-icon>close</mat-icon>
+                                        </button>
+                                        <mat-autocomplete requireSelection autoActiveFirstOption #auto="matAutocomplete">
+                                            <ng-container *ngFor="let cliente of filteredClientes | async; track cliente">
+                                                <mat-option [value]="cliente" (onSelectionChange)="onClienteSelectionChange($event)">{{cliente.cliente}}</mat-option>
+                                            </ng-container>
+                                          </mat-autocomplete>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="form-row two-col">
+                                <div class="form-field">
+                                    <mat-label class="text-1">Tipo de Cliente</mat-label>
+                                    <mat-label *ngIf="isReadOnly && editData != null" class="text-1-regular">{{this.editData.cliente?.tipo}}</mat-label>
+                                    <mat-label *ngIf="!isReadOnly" class="text-1-regular">{{ this.f['cliente'].value != null ? this.f['cliente'].value.tipo : 'Selecciona un cliente' }}</mat-label>
+                                </div>
+                                <div class="form-field">
+                                    <mat-label class="text-1">RFC</mat-label>
+                                    <mat-label *ngIf="isReadOnly && editData != null" class="text-1-regular">{{this.editData.cliente?.rfc}}</mat-label>
+                                    <mat-label *ngIf="!isReadOnly" class="text-1-regular">{{ this.f['cliente'].value != null ? this.f['cliente'].value.rfc : 'Selecciona un cliente' }}</mat-label>
+                                </div>
+                            </div>
+                            <div class="form-row one-col">
+                                <div class="form-field">
+                                    <mat-label class="text-1"  *ngIf="isReadOnly">Razón social</mat-label>
+                                    <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['nombre_fiscal'].value}}</mat-label>
+            
+                                    <mat-label class="text-1"  *ngIf="!isReadOnly">Razón social*</mat-label>
+                                    <mat-form-field *ngIf="!isReadOnly">
+                                        <mat-label>Campo editable, aplica solo para fines de esta venta.</mat-label>
+                                        <input matInput formControlName="nombre_fiscal" required>
+                                    </mat-form-field>
+                                    <div *ngIf="submitted && f['nombre_fiscal'].errors" class="invalid-feedback">
+                                        <div *ngIf="f['nombre_fiscal'].errors['required']">Este campo requerido</div>
+                                    </div>
+                                </div>
+                                <div class="form-field ">
+                                    <mat-label class="text-1" *ngIf="isReadOnly">Regimen físcal</mat-label>
+                                    <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['regimen_fiscal'].value.key}} - {{this.f['regimen_fiscal'].value.name}}</mat-label>
+                                    <mat-label class="text-1" *ngIf="!isReadOnly">Regimen físcal</mat-label>
+                                    <mat-form-field *ngIf="!isReadOnly">
+                                        <mat-label>Campo editable, aplica solo para fines de esta venta.</mat-label>
+                                        <mat-select [(value)]="selectedRegimenFiscal" formControlName="regimen_fiscal" >
+                                            <mat-option *ngFor="let regimenFiscal of regimenesFiscales" [value]="regimenFiscal">{{ regimenFiscal.key }} - {{ regimenFiscal.name }}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div class="separator"></div>
+
+            <mat-accordion>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Forma de pago
+                        </mat-panel-title>
+                        <mat-panel-description>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+
+                    <div class="form-row three-col">
+                        <div class="form-field">
+                            <mat-label class="text-1" *ngIf="isReadOnly">Condición de pago</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['condicion_pago'].value}}</mat-label>
+                            <mat-label class="text-1" *ngIf="!isReadOnly">Condición de pago*</mat-label>
+                            <mat-form-field *ngIf="!isReadOnly">
+                                <mat-select formControlName="condicion_pago" [(value)]="selectedCondicionPago" (selectionChange)="onCondicionPagoChange($event)">
+                                  <mat-option value="credito">Crédito</mat-option>
+                                  <mat-option value="contado">Contado</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <div *ngIf="submitted && f['condicion_pago'].errors" class="invalid-feedback">
+                                <div *ngIf="f['condicion_pago'].errors['required']">Este campo requerido</div>
+                            </div>
+                        </div>
+                        <div class="form-row two-col">
+                            <div class="form-field" >
+                                <mat-label class="text-1" *ngIf="isReadOnly">Tiene días de crédito</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['tiene_dias_credito'].value == true ? 'Sí' : 'No'}}</mat-label>
+                                <mat-slide-toggle *ngIf="!isReadOnly" formControlName="tiene_dias_credito" color="primary" style="margin: auto;" (toggleChange)="onTieneDiasCreditoChange()">Días de crédito</mat-slide-toggle>
+                            </div>
+                            <div class="form-field">
+                                <mat-label class="text-1"  *ngIf="isReadOnly">Días de crédito</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['cantidad_dias_credito'].value}}</mat-label>
+        
+                                <mat-label class="text-1"  *ngIf="!isReadOnly">Días de crédito*</mat-label>
+                                <mat-form-field *ngIf="!isReadOnly">
+                                    <input matInput type="number" placeholder="Días de crédito" formControlName="cantidad_dias_credito" required>
+                                </mat-form-field>
+                                <div *ngIf="submitted && f['cantidad_dias_credito'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['cantidad_dias_credito'].errors['required']">Este campo requerido</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <mat-label class="text-1" *ngIf="isReadOnly">Moneda</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['moneda'].value  ==  'peso mx' ? 'Pesos' : 'Dolares'}}</mat-label>
+                            <mat-label class="text-1" *ngIf="!isReadOnly">Moneda*</mat-label>
+                            <mat-form-field *ngIf="!isReadOnly">
+                                <mat-select formControlName="moneda">
+                                  <mat-option value="peso mx">Pesos</mat-option>
+                                  <mat-option value="dolar">Dolares</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <div *ngIf="submitted && f['moneda'].errors" class="invalid-feedback">
+                                <div *ngIf="f['moneda'].errors['required']">Este campo requerido</div>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <mat-label class="text-1" *ngIf="isReadOnly">Forma de pago</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{ this.f['forma_pago'].value?.key }} - {{ this.f['forma_pago'].value?.name }}</mat-label>
+                            <mat-label class="text-1" *ngIf="!isReadOnly">Forma de pago*</mat-label>
+                            <mat-form-field  *ngIf="!isReadOnly">
+                                <mat-select [(value)]="selectedFormaPago" formControlName="forma_pago" >
+                                    <mat-option *ngFor="let forma_pago of formaPagoList" [value]="forma_pago">{{ forma_pago.key }} - {{ forma_pago.name }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <div *ngIf="submitted && f['forma_pago'].errors" class="invalid-feedback">
+                                <div *ngIf="f['forma_pago'].errors['required']">Este campo requerido</div>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <mat-label class="text-1" *ngIf="isReadOnly">Método de pago</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{ this.f['metodo_pago'].value?.key }} - {{ this.f['metodo_pago'].value?.name }}</mat-label>
+                            <mat-label class="text-1" *ngIf="!isReadOnly">Método de pago*</mat-label>
+                            <mat-form-field *ngIf="!isReadOnly">
+                                <mat-select [(value)]="selectedMetodoPago" formControlName="metodo_pago" >
+                                    <mat-option *ngFor="let metodo_pago of metodoPagoList" [value]="metodo_pago">{{ metodo_pago.key }} - {{ metodo_pago.name }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <div *ngIf="submitted && f['metodo_pago'].errors" class="invalid-feedback">
+                                <div *ngIf="f['metodo_pago'].errors['required']">Este campo requerido</div>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <mat-label class="text-1">Tipo de cambio</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{ formatearComoMoneda(this.f['tipo_cambio'].value) }}</mat-label>
+                            <mat-form-field floatLabel="always" *ngIf="!isReadOnly">
+                                <input matInput type="number" class="example-right-align" placeholder="0" formControlName="tipo_cambio" min="0" step="0.01" (keypress)="validarDecimal($event)">
+                                <span matTextPrefix>$&nbsp;</span>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div class="separator"></div>
+
+            <mat-accordion>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Articulos
+                        </mat-panel-title>
+                        <mat-panel-description>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+
+                    <div class="form-row" [class.three-col]="isReadOnly" [class.four-col]="!isReadOnly">
+                        <div class="form-field">
+                            <mat-label class="text-1" *ngIf="isReadOnly">Objeto impuesto</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['objeto_impuesto'].value?.name}}</mat-label>
+                            <mat-label class="text-1" *ngIf="!isReadOnly">Objeto impuesto*</mat-label>
+                            <mat-form-field *ngIf="!isReadOnly">
+                                <mat-select [(value)]="selectedObjetoImpuesto" formControlName="objeto_impuesto" >
+                                    <mat-option *ngFor="let objeto_impuesto of objetoImpuestoList" [value]="objeto_impuesto">{{ objeto_impuesto.name }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <div *ngIf="submitted && f['objeto_impuesto'].errors" class="invalid-feedback">
+                                <div *ngIf="f['objeto_impuesto'].errors['required']">Este campo requerido</div>
+                            </div>
+                        </div>
+                        <div style="width: 400px;" class="form-row two-col">
+                            <div class="form-field">
+                                <mat-label class="text-1" *ngIf="isReadOnly">Traslada IVA</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['translada_iva'].value == true ? 'Sí' : 'No'}}</mat-label>
+                                <mat-slide-toggle *ngIf="!isReadOnly" formControlName="translada_iva" color="primary" style="margin: auto;">Traslada IVA</mat-slide-toggle>
+                            </div>
+                            <div class="form-field" *ngIf="isReadOnly">
+                                <mat-label class="text-1">Traslada IVA Porcentaje</mat-label>
+                                <mat-label class="text-1-regular">{{this.f['translada_iva_porcentaje'].value}}%</mat-label>
+                            </div>
+                            <div class="form-field" style="margin-top: 40px;" *ngIf="!isReadOnly">
+                                <mat-form-field>
+                                    <mat-select formControlName="translada_iva_porcentaje">
+                                        <mat-option value="0">0%</mat-option>
+                                        <mat-option value="0.08">8%</mat-option>
+                                        <mat-option value="0.16">16%</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div style="width: 400px;" class="form-row two-col">
+                            <div class="form-field" >
+                                <mat-label class="text-1" *ngIf="isReadOnly">Retiene IVA</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['retiene_iva'].value == true ? 'Sí' : 'No'}}</mat-label>
+                                <mat-slide-toggle *ngIf="!isReadOnly" formControlName="retiene_iva" color="primary" style="margin: auto;">Retiene IVA</mat-slide-toggle>
+                            </div>
+
+                            <div class="form-field" *ngIf="isReadOnly">
+                                <mat-label class="text-1">Retiene IVA Porcentaje</mat-label>
+                                <mat-label class="text-1-regular">{{this.f['retiene_iva_porcentaje'].value}}%</mat-label>
+                            </div>
+                            <div class="form-field" style="margin-top: 40px;" *ngIf="!isReadOnly">
+                                <mat-form-field>
+                                    <mat-select formControlName="retiene_iva_porcentaje">
+                                        <mat-option value="0">0%</mat-option>
+                                        <mat-option value="0.04">4%</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <button *ngIf="!isReadOnly" type="button" style="width: 200px; margin-top: 50px;" mat-flat-button class="btn" (click)="openArticuloVentaModalComponent()" ><mat-icon>add</mat-icon>Agregar artículo</button>
+                    </div>
+
+                    <div class="form-row one-col">
+                        <div *ngIf="!hasRecords" class="container-empty">
+                            <img src="../../assets/images/empty-sucursales-alamcen.png" alt="empty logo" class="img">
+                            <span class="text">
+                                Al parecer aún no tienes información para leer, cuando tengas aparecerán en está sección.
+                            </span>
+                        </div>
+
+                        <table *ngIf="hasRecords" class="table" mat-table [dataSource]="dataSourceArticulos" style="margin-top: 24px;">
+
+                            <ng-container matColumnDef="cantidad">
+                                <th mat-header-cell *matHeaderCellDef>Cantidad</th>
+                                <td mat-cell *matCellDef="let element">{{element.cantidad}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="numero_parte">
+                                <th mat-header-cell *matHeaderCellDef>#Parte</th>
+                                <td mat-cell *matCellDef="let element">{{element.almacen.articulo.part_number}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="descripcion">
+                                <th mat-header-cell *matHeaderCellDef>Descripción</th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div class="description-wrapper">
+                                        <div *ngIf="!element.almacen.articulo.photo" class="empty-image-container">
+                                            <img src="../../assets/images/empty-image.png" class="empty-image">
+                                        </div>
+                                        <img *ngIf="element.almacen.articulo.photo" class="photo" [src]="getPathPhoto(element.almacen.articulo.photo)">
+                                        <span>{{element.almacen.articulo.description}}</span>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="precio_unitario">
+                                <th mat-header-cell *matHeaderCellDef>Precio unitario</th>
+                                <td mat-cell *matCellDef="let element">{{element.precio_venta}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="descuento">
+                                <th mat-header-cell *matHeaderCellDef>Descuento</th>
+                                <td mat-cell *matCellDef="let element">{{element.descuento}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="importe">
+                                <th mat-header-cell *matHeaderCellDef>Importe</th>
+                                <td mat-cell *matCellDef="let element">{{calcularImporteByArticulo(element.precio_venta, element.cantidad, element.descuento)}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="unidad_medida">
+                                <th mat-header-cell *matHeaderCellDef>Unidad Medida</th>
+                                <td mat-cell *matCellDef="let element">{{element.cantidad}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="importe_iva">
+                                <th mat-header-cell *matHeaderCellDef>Importe IVA</th>
+                                <td mat-cell *matCellDef="let element">{{calcularImporteByArticuloIva(element.precio_venta, element.cantidad, element.descuento)}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="importe_retencion">
+                                <th mat-header-cell *matHeaderCellDef>Importe Retención</th>
+                                <td mat-cell *matCellDef="let element">{{calcularImporteByArticuloRetencion(element.precio_venta, element.cantidad, element.descuento)}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="actions">
+                                <th mat-header-cell *matHeaderCellDef></th>
+                                <td mat-cell *matCellDef="let element">
+                                    <button type="button" mat-icon-button aria-label="editar articulo" (click)="editArticuloVentaModalComponent(element)">
+                                        <mat-icon *ngIf="!isReadOnly">edit</mat-icon>
+                                    </button>
+                                    <button type="button" mat-icon-button aria-label="elimianr articulo" (click)="removeArticulo(element)">
+                                        <mat-icon *ngIf="!isReadOnly">delete</mat-icon>
+                                    </button>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div class="form-container form-row two-col" style="grid-template-columns: auto 1fr auto; box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);">
+                <div class="form-field" style="width: 600px;">
+                    <mat-label *ngIf="isReadOnly" class="text-1">Comentarios</mat-label>
+                    <mat-label class="text-1-regular" *ngIf="isReadOnly">{{ this.f['comentarios'].value }}</mat-label>
+                    <mat-form-field *ngIf="!isReadOnly">
+                        <mat-label>Comentarios</mat-label>
+                        <textarea matInput formControlName="comentarios" rows="5"></textarea>
+                    </mat-form-field>    
+                </div>
+                <div>
+                </div>
+                <div class="form-row two-col" style="width: 300px; grid-column-gap: 8px; grid-row-gap: 10px;">
+                    <span class="resumen-label">Subtotal</span>
+                    <div class="resumen-value">{{ formatearComoMoneda(subTotal) }}</div>
+
+                    <span class="resumen-label">Descuento</span>
+                    <div class="resumen-value">{{ formatearComoMoneda(descuento) }}</div>
+
+                    <span class="resumen-label">IVA</span>
+                    <div class="resumen-value">{{ formatearComoMoneda(iva) }}</div>
+
+                    <span class="resumen-label">Retención</span>
+                    <div class="resumen-value">{{ formatearComoMoneda(retencion) }}</div>
+
+                    <span class="resumen-label"><b>Total</b></span>
+                    <div class="resumen-value"><b>{{ formatearComoMoneda(total) }}</b></div>
+                </div>
+            </div>
+
+            <div class="toolbar-bottom">
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('ventas')"
+                    *ngIf="isReadOnly">Regresar</button>
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('ventas')"
+                    *ngIf="!isReadOnly">Cancelar</button>
+                <button mat-flat-button class="btn" type="submit" *ngIf="!isReadOnly">{{title}}</button>
+            </div>
+        </form>
+    </div>
+</div>

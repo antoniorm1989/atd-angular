@@ -22,10 +22,15 @@
 
             <table class="table" mat-table [dataSource]="dataSource">
 
-                <ng-container matColumnDef="nombre">
+                <ng-container matColumnDef="cliente">
                     <th mat-header-cell *matHeaderCellDef>Cliente</th>
                     <td mat-cell *matCellDef="let element"><span (click)="onView(element.id)"
-                            class="title-grid">{{element.nombre}}</span></td>
+                            class="title-grid">{{element.cliente}}</span></td>
+                </ng-container>
+
+                <ng-container matColumnDef="rfc">
+                    <th mat-header-cell *matHeaderCellDef>RFC</th>
+                    <td mat-cell *matCellDef="let element">{{element.rfc}}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="correo">

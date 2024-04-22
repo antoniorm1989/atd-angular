@@ -29,6 +29,10 @@ export class UserService {
     return this.tokenSubject.value;
   }
 
+  getAll(): Observable<Array<User>> {
+    return this.http.get<Array<User>>(`${environment.apiUrl}/api/auth/getAll`);
+  }
+
   login(email: string, password: string) {
 
     return this.http.post<User>(`${environment.apiUrl}/api/auth/login`, { email, password })
