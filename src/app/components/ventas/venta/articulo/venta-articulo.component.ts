@@ -153,7 +153,6 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         this.form.patchValue({
           selectedArticle: ventaArticuloModel.almacen?.articulo?.part_number,
           qty: ventaArticuloModel.cantidad,
-          precio_venta: ventaArticuloModel.precio_venta,
           descuento: ventaArticuloModel.descuento,
           comentarios: ventaArticuloModel.comentarios,
           unidad_medida: ventaArticuloModel.unidad_medida,
@@ -255,10 +254,6 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
     this.subtotal = ((this.f['precio_venta'].value * this.f['qty'].value) - this.f['descuento'].value);
   }
 
-  get isReadOnly() {
-    return this.action == 'View';
-  }
-
   onRadioChange(event: MatRadioChange) {
     this.isAlmacen = event.value == 'almacen';
   }
@@ -315,7 +310,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
           this.imageUrl = `${environment.apiUrl}/images/articulos/${this.selectedArticle.photo}`;
 
         this.form.patchValue({
-          precio_venta: this.selectedArticle.cost
+          precio_venta: this.isEditing ? this.ventaArticuloModel?.precio_venta : this.selectedArticle.cost
         });
 
         this.calcularSubTotal();

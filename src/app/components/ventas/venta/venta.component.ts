@@ -16,6 +16,7 @@ import { CatalogosService } from 'src/app/services/catalogos.service';
 import { UserService } from 'src/app/services/user.service';
 import { VentaService } from 'src/app/services/ventas.service';
 import { environment } from 'src/environments/environment';
+import { DialogSuccessComponent } from '../../genericos/dialogSuccess.component';
 
 @Component({
   selector: 'app-venta',
@@ -120,7 +121,6 @@ export class VentaComponent {
                   // Datos generales
                   fecha_compra_cliente: venta.fecha_compra_cliente,
                   usoCfdi: venta.uso_cfdi,
-                  cliente: venta.cliente,
                   comentarios: venta.comentarios,
                   nombre_fiscal: venta.cliente?.nombre_fiscal,
                   regimen_fiscal: venta.cliente?.regimen_fiscal,
@@ -232,12 +232,10 @@ export class VentaComponent {
     if (this.action == 'new') {
       this.ventaService.create(venta).subscribe({
         next: (data) => {
-          debugger;
-          this.openMessageSnack();
+          this.openDialogSuccess(`Se ha creado con éxito la venta #${data.id},  podrás visualizarlo desde tu listado ventas.`)
           this.router.navigate(['ventas']);
         },
         error: (e) => {
-          debugger;
           console.log(e);
         }
       });
@@ -252,6 +250,17 @@ export class VentaComponent {
         }
       });
     }
+  }
+
+  openDialogSuccess(comment: string): void {
+    const dialogRef = this.dialog.open(DialogSuccessComponent, {
+      width: '710px',
+      data: { title: '¡ En hora buena !', content: comment }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('Dialog closed');
+    });
   }
 
   navigate(route: string) {
@@ -310,7 +319,7 @@ export class VentaComponent {
             map(value => this._filter(value || '')),
           );
           if (this.editData != undefined)
-            this.form.patchValue({ cliente: this.clientes.find(x => x.id == this.editData.cliente?.id)?.cliente });
+            this.form.patchValue({ cliente: this.clientes.find(x => x.id == this.editData.cliente?.id) });
         }
       },
       error: (e) => {

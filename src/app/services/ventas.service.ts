@@ -24,8 +24,8 @@ export class VentaService {
     return this.http.post<void>(`${environment.apiUrl}/api/ventas/create`, ventaModel, this.getHeaders());
   }
 
-  update(catalogoArticuloModel: VentaModel): Observable<any> {
-    return this.http.put<void>(`${environment.apiUrl}/api/articulo/update`, catalogoArticuloModel, this.getHeaders());
+  update(ventaModel: VentaModel): Observable<any> {
+    return this.http.post<void>(`${environment.apiUrl}/api/ventas/update`, ventaModel, this.getHeaders());
   }
 
   private getHeaders() {

@@ -62,21 +62,15 @@
             </div>
             <div class="form-row" style="grid-template-columns: 1fr 1fr 200px 150px; gap: 20px;">
                 <div class="form-field" style="margin-top: 0px; width: 190px;">
-                    <mat-label class="text-1"  *ngIf="isReadOnly">Precio venta</mat-label>
-                    <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['precio_venta'].value}}</mat-label>
-
-                    <mat-label class="text-1"  *ngIf="!isReadOnly">Precio venta*</mat-label>
-                    <mat-form-field floatLabel="always" *ngIf="!isReadOnly">
+                    <mat-label class="text-1" >Precio venta*</mat-label>
+                    <mat-form-field floatLabel="always">
                         <input matInput type="number" class="example-right-align" placeholder="0" formControlName="precio_venta" min="0" step="0.01" (keypress)="validarDecimal($event)" (change)="calcularSubTotal()">
                         <span matTextPrefix>$&nbsp;</span>
                     </mat-form-field>
                 </div>
                 <div class="form-field" style="margin-top: 0px; width: 190px;">
-                    <mat-label class="text-1"  *ngIf="isReadOnly">Descuento (opcional)</mat-label>
-                    <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['descuento'].value}}</mat-label>
-
-                    <mat-label class="text-1"  *ngIf="!isReadOnly">Descuento (opcional)</mat-label>
-                    <mat-form-field floatLabel="always" *ngIf="!isReadOnly">
+                    <mat-label class="text-1" >Descuento (opcional)</mat-label>
+                    <mat-form-field floatLabel="always">
                         <input matInput type="number" class="example-right-align" placeholder="0" formControlName="descuento" min="0" step="0.01" (keypress)="validarDecimal($event)" (change)="calcularSubTotal()">
                         <span matTextPrefix>$&nbsp;</span>
                     </mat-form-field>
@@ -115,18 +109,13 @@
             </div>
             <div class="form-row two-col" style="column-gap: 24px;">
                 <div class="form-field">
-                    <mat-label class="text-1"  *ngIf="isReadOnly">No. Identificación </mat-label>
-                    <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['numero_identificacion_fiscal'].value}}</mat-label>
-    
-                    <mat-label class="text-1"  *ngIf="!isReadOnly">No. Identificación </mat-label>
-                    <mat-form-field *ngIf="!isReadOnly">
+                    <mat-label class="text-1">No. Identificación </mat-label>
+                    <mat-form-field>
                         <input matInput formControlName="numero_identificacion_fiscal">
                     </mat-form-field>
                 </div>
                 <div class="form-field">
-                    <mat-label class="text-1" *ngIf="isReadOnly">Unidad de medida</mat-label>
-                    <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['unidad_medida'].value}}</mat-label>
-                    <mat-label class="text-1" *ngIf="!isReadOnly">Unidad de medida*</mat-label>
+                    <mat-label class="text-1">Unidad de medida*</mat-label>
                     <mat-form-field>
                         <mat-label>Seleccionar</mat-label>
                         <mat-select formControlName="unidad_medida" value="producto">
@@ -138,9 +127,7 @@
             </div>
             <div class="form-row one-col">
                 <!--<div class="form-field">
-                    <mat-label class="text-1" *ngIf="isReadOnly">ProdServ (Producto/ Servicio)</mat-label>
-                    <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['producto_servicio'].value}}</mat-label>
-                    <mat-label class="text-1" *ngIf="!isReadOnly">ProdServ (Producto/ Servicio) *</mat-label>
+                    <mat-label class="text-1">ProdServ (Producto/ Servicio) *</mat-label>
                     <mat-form-field>
                         <mat-label>Seleccionar</mat-label>
                         <mat-select [(value)]="selectedProductoServicio" formControlName="producto_servicio" >
@@ -152,9 +139,7 @@
                     </div>
                 </div>
                 <div class="form-field">
-                    <mat-label class="text-1" *ngIf="isReadOnly">Unidad de medida</mat-label>
-                    <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['unidadMedida'].value}}</mat-label>
-                    <mat-label class="text-1" *ngIf="!isReadOnly">Unidad de medida *</mat-label>
+                    <mat-label class="text-1">Unidad de medida *</mat-label>
                     <mat-form-field>
                         <mat-label>Seleccionar</mat-label>
                         <mat-select [(value)]="selectedProductoServicio" formControlName="unidadMedida" >
