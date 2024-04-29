@@ -32,7 +32,7 @@
                                    required
                                    [matAutocomplete]="autoGroup"
                                    formControlName="selectedArticle">
-                                   <button type="button" *ngIf="isEditing == false" matSuffix mat-icon-button aria-label="Clear" (click)="clearAutocompleteInput()">
+                                   <button type="button" *ngIf="isEditing == false && selectedArticle != null" matSuffix mat-icon-button aria-label="Clear" (click)="clearAutocompleteInput()">
                                       <mat-icon>close</mat-icon>
                                   </button>
                             <mat-autocomplete autoActiveFirstOption #autoGroup="matAutocomplete">

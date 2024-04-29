@@ -33,10 +33,10 @@
                         <div>
                             <div class="form-field">
                                 <mat-label class="text-1" *ngIf="isReadOnly">Fecha compra cliente</mat-label>
-                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['fecha_compra_cliente'].value}}</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{formatDate(this.f['fecha_compra_cliente'].value)}}</mat-label>
                                 <mat-label class="text-1" *ngIf="!isReadOnly">Fecha compra cliente (opcional)</mat-label>
                                 <mat-form-field *ngIf="!isReadOnly">
-                                    <input matInput [matDatepicker]="picker" formControlName="fecha_compra_cliente">
+                                    <input matInput [matDatepicker]="picker" formControlName="fecha_compra_cliente" [matDatepickerFilter]="filterFutureDates">
                                     <mat-hint>DD/MM/YYYY</mat-hint>
                                     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                                     <mat-datepicker #picker></mat-datepicker>
@@ -44,7 +44,8 @@
                             </div>
                             <div class="form-field">
                                 <mat-label class="text-1" *ngIf="isReadOnly">Vendedor</mat-label>
-                                <mat-label class="text-1-regular" *ngIf="isReadOnly && editData != null">{{this.editData.vendedor?.name + ' ' + this.editData.vendedor?.lastname}}</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly && editData != null && editData.vendedor != null && editData.vendedor.name != null">{{this.editData.vendedor.name + ' ' + this.editData.vendedor.lastname}}</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly && editData != null && editData.vendedor != null && editData.vendedor.name == null">Sin vendedor</mat-label>
                                 <mat-label class="text-1" *ngIf="!isReadOnly">Vendedor (opcional)</mat-label>
                                 <mat-form-field *ngIf="!isReadOnly">
                                     <input type="text" matInput [matAutocomplete]="autoVenddores" formControlName="vendedor">
@@ -55,7 +56,7 @@
                                         <ng-container *ngFor="let vendedor of filteredVendedores | async; track vendedor">
                                             <mat-option [value]="vendedor.name + ' ' + vendedor.lastname">{{vendedor.name}} {{vendedor.lastname}}</mat-option> 
                                         </ng-container>
-                                      </mat-autocomplete>
+                                    </mat-autocomplete>
                                 </mat-form-field>
                             </div>
                             <div class="form-field">
@@ -77,7 +78,7 @@
                                 <div class="form-field" style="margin-top: 00px;">
                                     <mat-label class="text-1" *ngIf="isReadOnly">Cliente</mat-label>
                                     <mat-label class="text-1-regular" *ngIf="isReadOnly && editData != null">{{this.editData.cliente?.cliente}}</mat-label>
-                                    <mat-label class="text-1" *ngIf="!isReadOnly">ClienteI*</mat-label>
+                                    <mat-label class="text-1" *ngIf="!isReadOnly">Cliente*</mat-label>
                                     <mat-form-field *ngIf="!isReadOnly">
                                         <input type="text" matInput required [matAutocomplete]="auto" formControlName="cliente" [value]="selectedCliente ? selectedCliente.cliente : null">
                                         <button type="button" matSuffix mat-icon-button aria-label="Clear" *ngIf="route.snapshot.paramMap.get('ventaId') == undefined && this.f['cliente'].value != undefined" (click)="clearAutocompleteInput()">
@@ -87,7 +88,7 @@
                                             <ng-container *ngFor="let cliente of filteredClientes | async; track cliente">
                                                 <mat-option [value]="cliente" (onSelectionChange)="onClienteSelectionChange($event)">{{cliente.cliente}}</mat-option>
                                             </ng-container>
-                                          </mat-autocomplete>
+                                        </mat-autocomplete>
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -244,7 +245,7 @@
                         </mat-panel-description>
                     </mat-expansion-panel-header>
 
-                    <div class="form-row" [class.three-col]="isReadOnly" [class.four-col]="!isReadOnly">
+                    <div class="form-row seccion-articulos-header" [class.three-col]="isReadOnly" [class.four-col]="!isReadOnly" style="grid-column-gap: 10px;">
                         <div class="form-field">
                             <mat-label class="text-1" *ngIf="isReadOnly">Objeto impuesto</mat-label>
                             <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['objeto_impuesto'].value?.name}}</mat-label>
@@ -258,7 +259,7 @@
                                 <div *ngIf="f['objeto_impuesto'].errors['required']">Este campo requerido</div>
                             </div>
                         </div>
-                        <div style="width: 400px;" class="form-row two-col">
+                        <div class="form-row two-col">
                             <div class="form-field">
                                 <mat-label class="text-1" *ngIf="isReadOnly">Traslada IVA</mat-label>
                                 <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['translada_iva'].value == true ? 'Sí' : 'No'}}</mat-label>
@@ -268,7 +269,7 @@
                                 <mat-label class="text-1">Traslada IVA Porcentaje</mat-label>
                                 <mat-label class="text-1-regular">{{this.f['translada_iva_porcentaje'].value}}%</mat-label>
                             </div>
-                            <div class="form-field" style="margin-top: 40px;" *ngIf="!isReadOnly">
+                            <div class="form-field" style="margin-top: 40px; min-width: 80px;" *ngIf="!isReadOnly">
                                 <mat-form-field>
                                     <mat-select formControlName="translada_iva_porcentaje">
                                         <mat-option value="0">0%</mat-option>
@@ -278,7 +279,7 @@
                                 </mat-form-field>
                             </div>
                         </div>
-                        <div style="width: 400px;" class="form-row two-col">
+                        <div class="form-row two-col">
                             <div class="form-field" >
                                 <mat-label class="text-1" *ngIf="isReadOnly">Retiene IVA</mat-label>
                                 <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['retiene_iva'].value == true ? 'Sí' : 'No'}}</mat-label>
@@ -289,7 +290,7 @@
                                 <mat-label class="text-1">Retiene IVA Porcentaje</mat-label>
                                 <mat-label class="text-1-regular">{{this.f['retiene_iva_porcentaje'].value}}%</mat-label>
                             </div>
-                            <div class="form-field" style="margin-top: 40px;" *ngIf="!isReadOnly">
+                            <div class="form-field" style="margin-top: 40px; min-width: 80px;" *ngIf="!isReadOnly">
                                 <mat-form-field>
                                     <mat-select formControlName="retiene_iva_porcentaje">
                                         <mat-option value="0">0%</mat-option>
@@ -298,7 +299,7 @@
                                 </mat-form-field>
                             </div>
                         </div>
-                        <button *ngIf="!isReadOnly" type="button" style="width: 200px; margin-top: 50px;" mat-flat-button class="btn" (click)="openArticuloVentaModalComponent()" ><mat-icon>add</mat-icon>Agregar artículo</button>
+                        <button *ngIf="!isReadOnly" type="button" style="width: 200px; margin: 50px auto;" mat-flat-button class="btn" (click)="openArticuloVentaModalComponent()" ><mat-icon>add</mat-icon>Agregar artículo</button>
                     </div>
 
                     <div class="form-row one-col">
@@ -312,13 +313,13 @@
                         <table *ngIf="hasRecords" class="table" mat-table [dataSource]="dataSourceArticulos" style="margin-top: 24px;">
 
                             <ng-container matColumnDef="cantidad">
-                                <th mat-header-cell *matHeaderCellDef>Cantidad</th>
-                                <td mat-cell *matCellDef="let element">{{element.cantidad}}</td>
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Cantidad</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.cantidad}}</td>
                             </ng-container>
 
                             <ng-container matColumnDef="numero_parte">
-                                <th mat-header-cell *matHeaderCellDef>#Parte</th>
-                                <td mat-cell *matCellDef="let element">{{element.almacen.articulo.part_number}}</td>
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">#Parte</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen.articulo.part_number}}</td>
                             </ng-container>
 
                             <ng-container matColumnDef="descripcion">
@@ -329,44 +330,49 @@
                                             <img src="../../assets/images/empty-image.png" class="empty-image">
                                         </div>
                                         <img *ngIf="element.almacen.articulo.photo" class="photo" [src]="getPathPhoto(element.almacen.articulo.photo)">
-                                        <span>{{element.almacen.articulo.description}}</span>
+                                        <span class="dos-renglones">{{element.almacen.articulo.description}}</span>
                                     </div>
                                 </td>
                             </ng-container>
 
+                            <ng-container matColumnDef="almacen">
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Almacen</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen.almacen.name}}</td>
+                            </ng-container>
+
                             <ng-container matColumnDef="precio_unitario">
-                                <th mat-header-cell *matHeaderCellDef>Precio unitario</th>
-                                <td mat-cell *matCellDef="let element">{{element.precio_venta}}</td>
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Precio venta</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">${{element.precio_venta}}</td>
                             </ng-container>
 
                             <ng-container matColumnDef="descuento">
-                                <th mat-header-cell *matHeaderCellDef>Descuento</th>
-                                <td mat-cell *matCellDef="let element">{{element.descuento}}</td>
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Descuento</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.descuento}}</td>
                             </ng-container>
 
                             <ng-container matColumnDef="importe">
-                                <th mat-header-cell *matHeaderCellDef>Importe</th>
-                                <td mat-cell *matCellDef="let element">{{calcularImporteByArticulo(element.precio_venta, element.cantidad, element.descuento)}}</td>
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Importe</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticulo(element.precio_venta, element.cantidad, element.descuento)}}</td>
                             </ng-container>
 
                             <ng-container matColumnDef="unidad_medida">
                                 <th mat-header-cell *matHeaderCellDef>Unidad Medida</th>
-                                <td mat-cell *matCellDef="let element">{{element.cantidad}}</td>
+                                <td mat-cell *matCellDef="let element">{{element.unidad_medida}}</td>
                             </ng-container>
 
                             <ng-container matColumnDef="importe_iva">
-                                <th mat-header-cell *matHeaderCellDef>Importe IVA</th>
-                                <td mat-cell *matCellDef="let element">{{calcularImporteByArticuloIva(element.precio_venta, element.cantidad, element.descuento)}}</td>
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Importe IVA</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticuloIva(element.precio_venta, element.cantidad, element.descuento)}}</td>
                             </ng-container>
 
                             <ng-container matColumnDef="importe_retencion">
-                                <th mat-header-cell *matHeaderCellDef>Importe Retención</th>
-                                <td mat-cell *matCellDef="let element">{{calcularImporteByArticuloRetencion(element.precio_venta, element.cantidad, element.descuento)}}</td>
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Importe Retención</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticuloRetencion(element.precio_venta, element.cantidad, element.descuento)}}</td>
                             </ng-container>
 
                             <ng-container matColumnDef="actions">
-                                <th mat-header-cell *matHeaderCellDef></th>
-                                <td mat-cell *matCellDef="let element">
+                                <th mat-header-cell *matHeaderCellDef style="width: 110px; text-align: center;"></th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">
                                     <button type="button" mat-icon-button aria-label="editar articulo" (click)="editArticuloVentaModalComponent(element)">
                                         <mat-icon *ngIf="!isReadOnly">edit</mat-icon>
                                     </button>

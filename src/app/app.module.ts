@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -8,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { LoginComponent } from './components/login/login.component';
 import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field'; // Import MatFormFieldModule
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -55,10 +54,10 @@ import { CatalogoClientesComponent } from './components/catalogos/clientes/clien
 import { BarcodeScannerComponent } from './components/genericos/barcodesScanner.component';
 import { VentasListComponent } from './components/ventas/ventas-list.component';
 import { ArticuloVentaModalComponent, VentaComponent } from './components/ventas/venta/venta.component';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule, NativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { DateAdapter, MAT_DATE_FORMATS, NativeDateAdapter } from '@angular/material/core';
-import { VentaArticuloComponent } from './components/ventas/venta/articulo/venta-articulo.component';
 import { MatRadioModule } from '@angular/material/radio';
+import { VentaArticuloComponent } from './components/ventas/venta/articulo/venta-articulo.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -83,13 +82,13 @@ export class AppDateAdapter extends NativeDateAdapter {
 
 const yourFormat = {
   parse: {
-    dateInput: 'DD/MM/YYYY', // Formato de entrada de fecha
+    dateInput: 'DD/MM/YYYY',
   },
   display: {
-    dateInput: 'DD/MM/YYYY', // Formato de visualización de fecha en el input
-    monthYearLabel: 'MMM YYYY', // Formato de visualización del mes y año en el selector de mes y año
-    dateA11yLabel: 'DD/MM/YYYY', // Formato accesible para la fecha completa
-    monthYearA11yLabel: 'MMMM YYYY', // Formato accesible para el mes y el año
+    dateInput: 'DD/MM/YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'DD/MM/YYYY',
+    monthYearA11yLabel: 'MMMM YYYY',
   },
 };
 
@@ -159,11 +158,13 @@ const yourFormat = {
     MatAutocompleteModule,
     BarcodeScannerComponent,
     MatDatepickerModule,
-    MatRadioModule
+    MatRadioModule,
+    MatNativeDateModule // Incluye MatNativeDateModule
   ],
   providers:[
-    { provide: DateAdapter, useClass: AppDateAdapter }, 
-    { provide: MAT_DATE_FORMATS, useValue: yourFormat }
+    { provide: DateAdapter, useClass: AppDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: yourFormat },
+    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }
   ],
   bootstrap: [AppComponent],
 })

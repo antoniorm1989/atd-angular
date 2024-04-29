@@ -11,6 +11,7 @@ export class CatalogoArticuloModel {
   updated_at: Date | undefined;
   user: User | undefined;
   comment: string | undefined;
+  precio_venta: number | undefined;
   cost: number | undefined;
   photo: string | undefined;
   cat_articulo_id: number | undefined;

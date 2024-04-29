@@ -63,6 +63,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
   @Output() add = new EventEmitter<VentaArticuloModel>();
 
   @Input() ventaArticuloModel: VentaArticuloModel | undefined;
+  @Input() ventaArticulosModel: VentaArticuloModel[] | undefined;
 
   isEditing: boolean = false;
 
@@ -285,6 +286,24 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
       this.catalogoArticuloService.getAllGroupedByCategoryByAlmacen(this.selectedAlmacen.id).subscribe({
         next: (data) => {
           this.articuloGroups = data;
+
+          if (this.ventaArticulosModel?.length ?? 0 > 0)
+            this.articuloGroups.forEach(articuloGroup => {
+              articuloGroup.articulos = articuloGroup.articulos?.filter((articulo) => {
+                let exist = false;
+
+                this.ventaArticulosModel?.forEach(ventaArticulo => {
+                  if (this.selectedAlmacen?.id == ventaArticulo?.almacen?.almacen?.id && ventaArticulo?.almacen?.articulo?.id == articulo.id) {
+                    exist = true;
+                  }
+                });
+
+                return !exist;
+              });
+            });
+
+          this.articuloGroups = this.articuloGroups.filter(group => group.articulos && group.articulos.length > 0);
+
           this.articuloGroupOptions = this.form.get('selectedArticle')!.valueChanges.pipe(
             startWith(''),
             map(value => this._filterGroup(value || '')),
@@ -310,7 +329,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
           this.imageUrl = `${environment.apiUrl}/images/articulos/${this.selectedArticle.photo}`;
 
         this.form.patchValue({
-          precio_venta: this.isEditing ? this.ventaArticuloModel?.precio_venta : this.selectedArticle.cost
+          precio_venta: this.isEditing ? this.ventaArticuloModel?.precio_venta : this.selectedArticle.precio_venta
         });
 
         this.calcularSubTotal();
@@ -351,7 +370,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
 
   agregarQty() {
     try {
-      if (this.stock != undefined && this.f['qty'].value < this.stock)
+      if (this.stock != undefined)
         this.f['qty'].setValue(this.f['qty'].value + 1);
 
       this.calcularSubTotal();

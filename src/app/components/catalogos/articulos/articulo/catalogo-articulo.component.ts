@@ -36,6 +36,7 @@ export class CatalogoArticuloComponent {
       part_number: ['', [Validators.required]],
       description: ['', [Validators.required]],
       comment: '',
+      precio_venta: ['', [Validators.required]],
       cost: '',
       category: '',
       show_admin_users: '',
@@ -60,6 +61,7 @@ export class CatalogoArticuloComponent {
                   part_number: data.part_number,
                   description: data.description,
                   comment: data.comment,
+                  precio_venta: data.precio_venta,
                   cost: data.cost,
                   show_admin_users: data.show_admin_users,
                   status: data.status,
@@ -143,6 +145,7 @@ export class CatalogoArticuloComponent {
     articulo.part_number = this.f['part_number'].value;
     articulo.description = this.f['description'].value;
     articulo.comment = this.f['comment'].value;
+    articulo.precio_venta = this.f['precio_venta'].value;
     articulo.cost = this.f['cost'].value;
     articulo.photo = '';
     articulo.show_admin_users = this.f['show_admin_users'].value == true;

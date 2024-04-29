@@ -25,8 +25,9 @@
 
                 <ng-container matColumnDef="part_number">
                     <th mat-header-cell *matHeaderCellDef>#Parte</th>
-                    <td mat-cell *matCellDef="let element"><span (click)="onView(element.id)"
-                            class="title-grid">{{element.part_number}}</span></td>
+                    <td mat-cell *matCellDef="let element">
+                        <span (click)="onView(element.id)" class="title-grid un-renglon">{{element.part_number}}</span>
+                    </td>
                 </ng-container>
 
                 <ng-container matColumnDef="description">
@@ -37,15 +38,16 @@
                                 <img src="../../assets/images/empty-image.png" class="empty-image">
                             </div>
                             <img *ngIf="element.photo" class="photo" [src]="getPathPhoto(element.photo)">
-                            <span>{{element.description}}</span>
+                            <span class="un-renglon">{{element.description}}</span>
                         </div>
                     </td>
                 </ng-container>
 
                 <ng-container matColumnDef="cat_articulo_id">
                     <th mat-header-cell *matHeaderCellDef>Categoría</th>
-                    <td mat-cell *matCellDef="let element"><span (click)="onViewCategory(element.cat_articulo_id)"
-                            class="title-grid">{{element.category.name}}</span></td>
+                    <td mat-cell *matCellDef="let element">
+                        <span (click)="onViewCategory(element.cat_articulo_id)" class="title-grid un-renglon">{{element.category.name}}</span>
+                    </td>
                 </ng-container>
 
                 <ng-container matColumnDef="created">

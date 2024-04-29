@@ -108,6 +108,10 @@
     grid-template-columns: repeat(2, 1fr);
 }
 
+.catalogo-articulos .container .form-row.three-col {
+    grid-template-columns: repeat(3, 1fr);
+}
+
 .catalogo-articulos .container .form-row.four-col {
     grid-template-columns: repeat(4, 1fr);
 }
@@ -250,6 +254,7 @@ mat-panel-description {
 
 @media only screen and (max-width: 587px) {
     .catalogo-articulos .container .form-row.two-col,
+    .catalogo-articulos .container .form-row.three-col,
     .catalogo-articulos .container .form-row.four-col {
         grid-template-columns: repeat(1, 1fr);
     }

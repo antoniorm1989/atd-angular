@@ -67,8 +67,7 @@
 .inventory-almacen-list .container .toolbar {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    align-items: end;
+    align-items: flex-end;
 }
 
 .inventory-almacen-list .container .toolbar .btn {

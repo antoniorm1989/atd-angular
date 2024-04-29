@@ -324,6 +324,10 @@ mat-panel-description {
     height: 30px;
 }
 
+.venta .mdc-data-table__cell, .mdc-data-table__header-cell {
+    padding: 0 6px 0 6px;
+}
+
 @media only screen and (max-width: 1084px) {
     .venta .container .form-row.four-col {
         grid-template-columns: repeat(3, 1fr);

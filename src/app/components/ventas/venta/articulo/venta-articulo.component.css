@@ -318,25 +318,16 @@ mat-panel-description {
 }
 
 @media only screen and (max-width: 1500px) {
-    .venta-articulo {
-        margin: 0px 70px;
-    }
+
 }
 
 @media only screen and (max-width: 1250px) {
     .venta-articulo .container .form-row.three-col.add-stock {
         grid-template-columns: 3fr 2fr 3fr;
     }
-
-    .venta-articulo {
-        margin: 0px 60px;
-    }
 }
 
 @media only screen and (max-width: 1084px) {
-    .venta-articulo {
-        margin: 0px 50px;
-    }
     .venta-articulo .container .form-row.four-col {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -346,9 +337,6 @@ mat-panel-description {
 }
 
 @media only screen and (max-width: 835px) {
-    .venta-articulo {
-        margin: 0px 0px;
-    }
     .venta-articulo .container .form-row.three-col.add-stock {
         grid-template-columns: 3fr 0fr 3fr;
     }

@@ -87,6 +87,23 @@ body {
     --mdc-snackbar-supporting-text-color: #212121 !important;
 }
 
+.mat-mdc-snack-bar-container.snackbar-error {
+    --mdc-snackbar-container-color: #ffcccc !important;
+    --mdc-snackbar-supporting-text-color: #212121 !important;
+    --mdc-snackbar-container-color: #ffcccc; /* Color de fondo */
+    --mdc-snackbar-supporting-text-color: #333333 !important; /* Color de texto oscuro */
+    font-weight: bold; /* Texto en negrita */
+    border: 2px solid #ff0000; /* Borde rojo de 2px */
+    margin: 10px; /* Espaciado externo */
+    border-radius: 5px; /* Bordes redondeados */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
+}
+
+.mat-mdc-snack-bar-container.snackbar-erro:hover {
+    --mdc-snackbar-container-color: #ff9999 !important; 
+}
+
 .cdk-global-overlay-wrapper{
     justify-content: flex-end !important;
     margin-right: 12px;
@@ -99,4 +116,22 @@ body {
 
 .mat-toolbar-single-row {
     height: 80px;
+}
+
+.un-renglon{
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+
+.dos-renglones{
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
 }

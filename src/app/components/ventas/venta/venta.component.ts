@@ -57,7 +57,7 @@ export class VentaComponent {
   selectedCondicionPago = "contado";
 
   hasRecords = false;
-  displayedColumns: string[] = ['cantidad', 'numero_parte', 'descripcion', 'precio_unitario', 'descuento', 'importe', 'unidad_medida', 'importe_iva', 'importe_retencion', 'actions'];
+  displayedColumns: string[] = ['cantidad', 'numero_parte', 'descripcion', 'almacen', 'precio_unitario', 'descuento', 'importe', 'unidad_medida', 'importe_iva', 'importe_retencion', 'actions'];
   dataSourceArticulos = new MatTableDataSource<VentaArticuloModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -195,6 +195,11 @@ export class VentaComponent {
 
   onSubmit() {
     this.submitted = true;
+
+    if (this.dataSourceArticulos.data.length == 0) {
+      this.openSnackBarError('Debes agregar al menos un artículo para continuar.');
+      return
+    }
 
     // stop here if form is invalid
     if (this.form!.invalid)
@@ -486,7 +491,7 @@ export class VentaComponent {
   }
 
   removeArticulo(articulo: VentaArticuloModel) {
-    const indexToRemove = this.dataSourceArticulos.data.findIndex(item => item.id === articulo.id);
+    const indexToRemove = this.dataSourceArticulos.data.findIndex(item => item.almacen?.articulo?.id === articulo.almacen?.articulo?.id);
     if (indexToRemove !== -1) {
       this.dataSourceArticulos.data.splice(indexToRemove, 1);
       this.dataSourceArticulos._updateChangeSubscription();
@@ -533,6 +538,7 @@ export class VentaComponent {
   openArticuloVentaModalComponent() {
     const dialogRef = this.dialog.open(ArticuloVentaModalComponent, {
       data: {
+        articulos: this.dataSourceArticulos.data
       },
     });
 
@@ -548,7 +554,9 @@ export class VentaComponent {
 
   editArticuloVentaModalComponent(ventaArticuloModel: VentaArticuloModel) {
     const dialogRef = this.dialog.open(ArticuloVentaModalComponent, {
-      data: ventaArticuloModel,
+      data: {
+        articulo: ventaArticuloModel
+      }
     });
 
     dialogRef.afterClosed().subscribe(ventaArticuloModel => {
@@ -610,16 +618,33 @@ export class VentaComponent {
   }
 
   onClienteSelectionChange(event: any) {
-    this.selectedCliente = event.source.value;
+    if (event.source._selected == true) {
+      this.selectedCliente = event.source.value;
 
-    let regimenFiscal = this.regimenesFiscales.find(x => x.id == this.selectedCliente.regimen_fiscal?.id);
-    if (regimenFiscal != undefined)
-      this.selectedRegimenFiscal = regimenFiscal;
+      let regimenFiscal = this.regimenesFiscales.find(x => x.id == this.selectedCliente.regimen_fiscal?.id);
+      if (regimenFiscal != undefined)
+        this.selectedRegimenFiscal = regimenFiscal;
 
-    this.form.patchValue({
-      nombre_fiscal: this.selectedCliente?.nombre_fiscal,
-      regimen_fiscal: this.selectedRegimenFiscal
+      this.form.patchValue({
+        nombre_fiscal: this.selectedCliente?.nombre_fiscal,
+        regimen_fiscal: this.selectedRegimenFiscal
+      });
+    }
+  }
+
+  openSnackBarError(message: string) {
+    this._snackBar.open(message, 'cerrar', {
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: ['snackbar-error'],
+      duration: 5000,
     });
+  }
+
+  filterFutureDates = (date: Date | null): boolean => {
+    // Disable past dates
+    const currentDate = new Date();
+    return !date || date <= currentDate;
   }
 
 }
@@ -628,7 +653,7 @@ export class VentaComponent {
   selector: 'dialog-component',
   template: `<span mat-dialog-title>Agregar artículos venta </span>
             <mat-dialog-content class="mat-typography">
-              <app-venta-articulo [ventaArticuloModel]="ventaArticuloModel" (cancel)="onCancelar()" (add)="onAgregarArticulo($event)" #appVentaArticuloComponent></app-venta-articulo>
+              <app-venta-articulo [ventaArticulosModel]="ventaArticulosModel" [ventaArticuloModel]="ventaArticuloModel" (cancel)="onCancelar()" (add)="onAgregarArticulo($event)" #appVentaArticuloComponent></app-venta-articulo>
             </mat-dialog-content>`,
   styles: [
   ]
@@ -636,15 +661,23 @@ export class VentaComponent {
 export class ArticuloVentaModalComponent {
   @ViewChild('appVentaArticuloComponent') appVentaArticuloComponent: any;
   ventaArticuloModel!: VentaArticuloModel;
+  ventaArticulosModel!: VentaArticuloModel[];
 
   constructor(
     public dialogRef: MatDialogRef<ArticuloVentaModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: VentaArticuloModel
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     dialogRef.disableClose = true;
 
-    if (Object.keys(data).length > 0)
-      this.ventaArticuloModel = data;
+    if (Object.keys(data).length > 0) {
+      if (data.articulo != undefined) {
+        this.ventaArticuloModel = data.articulo;
+      }
+      if (data.articulos != undefined) {
+        this.ventaArticulosModel = data.articulos;
+      }
+    }
+
   }
 
   onCancelar() {
