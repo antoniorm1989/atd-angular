@@ -135,3 +135,7 @@ body {
     text-overflow: ellipsis;
     white-space: normal;
 }
+
+.ventas-list .mat-mdc-form-field-subscript-wrapper{
+    height: 12px !important;
+}

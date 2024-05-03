@@ -9,6 +9,7 @@ import { CatalogoClienteModel } from 'src/app/models/catalogo-cliente.model';
 import { Observable, fromEvent, map, startWith } from 'rxjs';
 import { CatalogoClientesService } from 'src/app/services/catalogo-cliente.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { DateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-ventas-list',
@@ -30,7 +31,9 @@ export class VentasListComponent {
   selectedCliente: CatalogoClienteModel | undefined;
   filteredClientes!: Observable<CatalogoClienteModel[]>;
 
-  constructor(private formBuilder: FormBuilder, private ventaService: VentaService, private router: Router, private catalogoClientesService: CatalogoClientesService) {
+  constructor(private formBuilder: FormBuilder, private ventaService: VentaService, private router: Router, private catalogoClientesService: CatalogoClientesService
+  ) {
+
 
     this.form = this.formBuilder.group({
       cliente: null,

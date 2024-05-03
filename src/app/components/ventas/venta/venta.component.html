@@ -37,7 +37,6 @@
                                 <mat-label class="text-1" *ngIf="!isReadOnly">Fecha compra cliente (opcional)</mat-label>
                                 <mat-form-field *ngIf="!isReadOnly">
                                     <input matInput [matDatepicker]="picker" formControlName="fecha_compra_cliente" [matDatepickerFilter]="filterFutureDates">
-                                    <mat-hint>DD/MM/YYYY</mat-hint>
                                     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                                     <mat-datepicker #picker></mat-datepicker>
                                 </mat-form-field>

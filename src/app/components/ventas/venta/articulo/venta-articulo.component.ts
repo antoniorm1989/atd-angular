@@ -260,6 +260,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
   }
 
   onAlmacenChange(event: any) {
+    this.clearAutocompleteInput();
     this.loadArticulos();
   }
 

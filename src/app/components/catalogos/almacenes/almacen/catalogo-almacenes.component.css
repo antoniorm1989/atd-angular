@@ -112,7 +112,7 @@
     grid-template-columns: repeat(4, 1fr);
 }
 
-.form-field {
+.catalogo-almacenes .form-field {
     display: flex;
     flex-direction: column;
     margin-top: 20px;

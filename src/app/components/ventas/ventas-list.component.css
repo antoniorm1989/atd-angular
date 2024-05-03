@@ -59,7 +59,6 @@
     background-color: #BA9400;
     color: #fff;
     margin-top: 50px;
-    padding: 0px 5px;
 }
 
 
@@ -74,15 +73,10 @@
 
 .ventas-list .container .container-list .toolbar {
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
-}
-
-.ventas-list .container .container-list .toolbar {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    justify-content: flex-start;
     margin-bottom: 12px;
+    justify-content: space-between;
+    align-items: flex-end;
 }
 
 .ventas-list .container .container-list .toolbar .btn {
@@ -91,7 +85,6 @@
     border-radius: 8px;
     background-color: #BA9400;
     color: #fff;
-    padding: 0px 5px;
 }
 
 .ventas-list .container .container-list .user-wrapper {
@@ -166,18 +159,12 @@
 }
 
 .ventas-list .toolbar .filters{
-    width: 100%;
-    border-radius: 25px;
+    border-radius: 8px;
     background-color: #ffffff;
-    padding: 0px 12px;
+    padding: 0px 24px;
     display: grid;
-    grid-template-columns: 50px 1fr 1fr 1fr 1fr;
-    margin-right: 50px;
-    column-gap: 24px;
-}
-
-.ventas-list .toolbar .filters button.btn-agregar {
-    margin-top: 30px;
+    grid-template-columns: 30px 200px 1fr 180px 180px;
+    column-gap: 12px;
 }
 
 .ventas-list .toolbar .icon-filter {

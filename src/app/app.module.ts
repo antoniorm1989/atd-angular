@@ -59,38 +59,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
 import { VentaArticuloComponent } from './components/ventas/venta/articulo/venta-articulo.component';
 
+
 export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
-
-export class AppDateAdapter extends NativeDateAdapter {
-  override format(date: Date, displayFormat: Object): string {
-    if (displayFormat === 'input') {
-      const day = date.getDate();
-      const month = date.getMonth() + 1;
-      const year = date.getFullYear();
-
-      return `${this._twoDigit(day)}/${this._twoDigit(month)}/${year}`;
-    }
-    return date.toDateString();
-  }
-
-  private _twoDigit(n: number) {
-    return ('00' + n).slice(-2);
-  }
-}
-
-const yourFormat = {
-  parse: {
-    dateInput: 'DD/MM/YYYY',
-  },
-  display: {
-    dateInput: 'DD/MM/YYYY',
-    monthYearLabel: 'MMM YYYY',
-    dateA11yLabel: 'DD/MM/YYYY',
-    monthYearA11yLabel: 'MMMM YYYY',
-  },
-};
 
 @NgModule({
   declarations: [
@@ -162,9 +134,7 @@ const yourFormat = {
     MatNativeDateModule // Incluye MatNativeDateModule
   ],
   providers:[
-    { provide: DateAdapter, useClass: AppDateAdapter },
-    { provide: MAT_DATE_FORMATS, useValue: yourFormat },
-    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
   ],
   bootstrap: [AppComponent],
 })
