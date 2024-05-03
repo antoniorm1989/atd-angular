@@ -107,7 +107,7 @@ export class CatalogoSucursalesComponent {
       }
     });
 
-    this.catalogosService.getStatesByCountry('MX').subscribe({
+    this.catalogosService.getStatesByCountry('MEX').subscribe({
       next: (data) => {
         this.states = data;
       },

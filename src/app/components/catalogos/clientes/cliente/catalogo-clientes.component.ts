@@ -374,9 +374,6 @@ export class CatalogoClientesComponent {
     this.f['numero_exterior'].clearValidators();
     this.f['numero_exterior'].updateValueAndValidity();
 
-    this.f['numero_interior'].clearValidators();
-    this.f['numero_interior'].updateValueAndValidity();
-
     this.f['cp'].clearValidators();
     this.f['cp'].updateValueAndValidity();
   }
@@ -399,9 +396,6 @@ export class CatalogoClientesComponent {
 
     this.f['numero_exterior'].setValidators([Validators.required]);
     this.f['numero_exterior'].updateValueAndValidity();
-
-    this.f['numero_interior'].setValidators([Validators.required]);
-    this.f['numero_interior'].updateValueAndValidity();
 
     this.f['cp'].setValidators([Validators.required]);
     this.f['cp'].updateValueAndValidity();

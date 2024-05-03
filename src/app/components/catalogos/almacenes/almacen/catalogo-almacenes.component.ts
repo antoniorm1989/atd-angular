@@ -138,7 +138,7 @@ export class CatalogoAlmacenesComponent {
       }
     });
 
-    this.catalogosService.getStatesByCountry('MX').subscribe({
+    this.catalogosService.getStatesByCountry('MEX').subscribe({
       next: (data) => {
         this.states = data;
       },

@@ -242,10 +242,6 @@
                             <mat-form-field *ngIf="!isReadOnly">
                                 <input matInput type="number" placeholder="Número de interior" pattern="[0-9]{0,10}" formControlName="numero_interior">
                             </mat-form-field>
-                            <div *ngIf="submitted && f['numero_interior'].errors" class="invalid-feedback">
-                                <div *ngIf="f['numero_interior'].errors['required']">Este campo requerido</div>
-                                <div *ngIf="f['numero_interior'].errors['pattern']">Este campo no debe tener mas de 10 dígitos</div>
-                            </div>
                         </div>
     
                         <div class="form-field cp">

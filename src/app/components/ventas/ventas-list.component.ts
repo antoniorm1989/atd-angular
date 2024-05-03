@@ -1,10 +1,14 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Router, NavigationEnd, Event } from '@angular/router';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { environment } from 'src/environments/environment';
 import { VentaModel } from 'src/app/models/ventas.model';
 import { VentaService } from 'src/app/services/ventas.service';
+import { CatalogoClienteModel } from 'src/app/models/catalogo-cliente.model';
+import { Observable, fromEvent, map, startWith } from 'rxjs';
+import { CatalogoClientesService } from 'src/app/services/catalogo-cliente.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-ventas-list',
@@ -20,24 +24,30 @@ export class VentasListComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   private dataLoaded = false;
 
-  constructor(private ventaService: VentaService, private router: Router) {
+  form: FormGroup;
+
+  clientes: CatalogoClienteModel[] = [];
+  selectedCliente: CatalogoClienteModel | undefined;
+  filteredClientes!: Observable<CatalogoClienteModel[]>;
+
+  constructor(private formBuilder: FormBuilder, private ventaService: VentaService, private router: Router, private catalogoClientesService: CatalogoClientesService) {
+
+    this.form = this.formBuilder.group({
+      cliente: null,
+      estatus: null,
+      fechaDesde: null,
+      fechaHasta: null,
+    });
+
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd && event.url == '/ventas' && !this.dataLoaded) {
-        this.ventaService.getAll().subscribe({
-          next: (data) => {
-            if (data.length > 0) {
-              this.hasRecords = true;
-              this.dataSource = new MatTableDataSource<VentaModel>(data);
-              this.dataSource.paginator = this.paginator;
-              this.dataLoaded = true;
-            }
-          },
-          error: (e) => {
-          }
-        });
+        this.onLoadVentas();
+        this.loadSelectData();
       }
     });
   }
+
+  get f() { return this.form!.controls; }
 
   formatDate(stringDate: string): string {
     const date = new Date(stringDate);
@@ -81,4 +91,90 @@ export class VentasListComponent {
       maximumFractionDigits: 2
     }).format(valor);
   }
+
+  loadSelectData() {
+    this.catalogoClientesService.getAll().subscribe({
+      next: (data) => {
+        if (data.length > 0) {
+          this.clientes = data;
+          this.filteredClientes = this.form.valueChanges.pipe(
+            startWith(''),
+            map(value => this._filter(value || '')),
+          );
+        }
+      },
+      error: (e) => {
+      }
+    });
+  }
+
+  clearAutocompleteInput() {
+    try {
+      this.f['cliente'].reset();
+      this.selectedCliente = undefined;
+      this.onLoadVentas();
+    } catch (error) {
+      console.error('An error occurred in clearAutocompleteInput:', error);
+    }
+  }
+
+  clearSelectionEstatus() {
+    try {
+      this.f['estatus'].reset();
+      this.onLoadVentas();
+    } catch (error) {
+      console.error('An error occurred in clearAutocompleteInput:', error);
+    }
+  }
+
+  onSelectChangeEstatus(event: any) {
+    this.onLoadVentas();
+  }
+
+  onClienteSelectionChange(event: any) {
+    if (event.source._selected == true) {
+      this.selectedCliente = event.source.value;
+      this.onLoadVentas();
+    }
+  }
+
+  onDateChange(event: any) {
+    this.onLoadVentas();
+  }
+
+  onLoadVentas() {
+    let clienteId = this.selectedCliente?.id;
+    let estatus = this.f['estatus'].value;
+    let fechaDesde = this.f['fechaDesde'].value;
+    let fechaHasta = this.f['fechaHasta'].value;
+    let hasFilters = clienteId != undefined || estatus != undefined || fechaDesde != undefined || fechaHasta != undefined;
+
+    this.ventaService.getAll(clienteId, estatus, fechaDesde, fechaHasta).subscribe({
+      next: (data) => {
+        if (data.length > 0) {
+          this.hasRecords = true;
+          this.dataSource = new MatTableDataSource<VentaModel>(data);
+          this.dataSource.paginator = this.paginator;
+        } else {
+          if (!hasFilters)
+            this.hasRecords = false;
+
+          this.dataSource = new MatTableDataSource<VentaModel>([]);
+        }
+      },
+      error: (e) => {
+      }
+    });
+  }
+
+
+  private _filter(value: any): CatalogoClienteModel[] {
+    let filterValue = "";
+    if (value.cliente) {
+      filterValue = value.cliente.nombre_fiscal || value.cliente;
+      filterValue = filterValue.toLowerCase();
+    }
+    return this.clientes.filter(option => option.nombre_fiscal!.toLowerCase().includes(filterValue));
+  }
+
 }

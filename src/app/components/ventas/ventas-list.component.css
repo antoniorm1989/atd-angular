@@ -65,11 +65,11 @@
 
 /* list */
 .ventas-list .container .container-list {
-    margin-top: 30px;
+    margin-top: 12px;
 }
 
 .ventas-list .container .container-list .table{
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 .ventas-list .container .container-list .toolbar {
@@ -163,4 +163,25 @@
 .ventas-list .container .table .empty-image-container .empty-image{
     width: 30px;
     height: 30px;
+}
+
+.ventas-list .toolbar .filters{
+    width: 100%;
+    border-radius: 25px;
+    background-color: #ffffff;
+    padding: 0px 12px;
+    display: grid;
+    grid-template-columns: 50px 1fr 1fr 1fr 1fr;
+    margin-right: 50px;
+    column-gap: 24px;
+}
+
+.ventas-list .toolbar .filters button.btn-agregar {
+    margin-top: 30px;
+}
+
+.ventas-list .toolbar .icon-filter {
+    font-size: 24px;
+    text-align: center;
+    margin-top: 40px;
 }

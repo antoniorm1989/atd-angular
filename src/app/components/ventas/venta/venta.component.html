@@ -373,11 +373,11 @@
                             <ng-container matColumnDef="actions">
                                 <th mat-header-cell *matHeaderCellDef style="width: 110px; text-align: center;"></th>
                                 <td mat-cell *matCellDef="let element" style="text-align: center;">
-                                    <button type="button" mat-icon-button aria-label="editar articulo" (click)="editArticuloVentaModalComponent(element)">
-                                        <mat-icon *ngIf="!isReadOnly">edit</mat-icon>
+                                    <button *ngIf="!isReadOnly" type="button" mat-icon-button aria-label="editar articulo" (click)="editArticuloVentaModalComponent(element)">
+                                        <mat-icon>edit</mat-icon>
                                     </button>
-                                    <button type="button" mat-icon-button aria-label="elimianr articulo" (click)="removeArticulo(element)">
-                                        <mat-icon *ngIf="!isReadOnly">delete</mat-icon>
+                                    <button *ngIf="!isReadOnly" type="button" mat-icon-button aria-label="elimianr articulo" (click)="removeArticulo(element)">
+                                        <mat-icon>delete</mat-icon>
                                     </button>
                                 </td>
                             </ng-container>

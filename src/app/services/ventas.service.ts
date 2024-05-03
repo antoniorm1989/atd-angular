@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -12,8 +12,22 @@ export class VentaService {
   constructor(private http: HttpClient) {
   }
 
-  getAll(): Observable<Array<VentaModel>> {
-    return this.http.get<Array<VentaModel>>(`${environment.apiUrl}/api/ventas/getAll`);
+  getAll(clienteId: number | undefined, estatus: number, fechaDesde: Date, fechaHasta: Date): Observable<Array<VentaModel>> {
+    let params = new HttpParams();
+    if (clienteId) {
+      params = params.set('clienteId', clienteId.toString());
+    }
+    if (estatus) {
+      params = params.set('estatus', estatus.toString());
+    }
+    if (fechaDesde) {
+      params = params.set('fechaDesde', fechaDesde.toISOString());
+    }
+    if (fechaHasta) {
+      params = params.set('fechaHasta', fechaHasta.toISOString());
+    }
+    
+    return this.http.get<Array<VentaModel>>(`${environment.apiUrl}/api/ventas/getAll`, { params: params });
   }
 
   getById(id: number): Observable<VentaModel> {

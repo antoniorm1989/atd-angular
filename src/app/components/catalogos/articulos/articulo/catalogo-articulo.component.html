@@ -48,9 +48,6 @@
                                         formControlName="part_number"
                                         [ngClass]="{ 'is-invalid': submitted && f['part_number'].errors }" required>
                                 </mat-form-field>
-                                <div *ngIf="submitted && f['part_number'].errors" class="invalid-feedback">
-                                    <div *ngIf="f['part_number'].errors['required']">Este campo requerido</div>
-                                </div>
                                 <div *ngIf="submitted && (f['part_number'].errors || isPartNumberDuplicate)" class="invalid-feedback">
                                     <div *ngIf="f['part_number'].errors && f['part_number'].errors['required']">Este campo requerido</div>
                                     <div *ngIf="isPartNumberDuplicate">Este número de parte ya existe</div>
