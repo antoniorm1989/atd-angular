@@ -1,0 +1,264 @@
+<div class="catalogo-proveedores">
+    <div class="toolbar">
+        <div class="toolbar-title">
+            <i class="icon fa-solid fa-user-group"></i>
+            <span class="title">Catálogo proveedores</span>
+        </div>
+        <div class="toolbar-breadcrumb">
+            <span class="link-breadcrumb" (click)="navigate('catalogos')"> Catálogos </span> /
+            <span class="link-breadcrumb" (click)="navigate('catalogos/proveedores')"> Catálogo proveedores </span> /
+            <span class="breadcrumb-item">{{title}}</span>
+
+            <button *ngIf="isReadOnly" mat-button class="btn" (click)="makeEditMode()"><mat-icon>edit</mat-icon>Editar información</button>
+        </div>
+    </div>
+    <div class="container">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+            <div class="form-container">
+                <div class="form-container-toolbar">
+                    <span class="title">Datos generales</span>
+                    <span *ngIf="action != 'new'" class="id"><b>ID</b> {{id}}</span>
+                </div>
+                <div class="form-row one-col">
+                    <div class="form-field proveedor">
+                        <mat-label class="text-1" *ngIf="isReadOnly">Proveedor</mat-label>
+                        <mat-label class="text-1" *ngIf="!isReadOnly">Proveedor*</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['proveedor'].value}}</mat-label>
+                        <mat-form-field *ngIf="!isReadOnly">
+                            <input matInput placeholder="Escribe el nombre del proveedor" formControlName="proveedor" [ngClass]="{ 'is-invalid': submitted && f['proveedor'].errors }" required>
+                        </mat-form-field>
+                        <div *ngIf="submitted && f['proveedor'].errors" class="invalid-feedback">
+                            <div *ngIf="f['proveedor'].errors['required']">Este campo requerido</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row three-col">
+                    <div class="form-field rfc">
+                        <mat-label class="text-1">Nombre(s) del contacto principal</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['nombreContacto'].value}}</mat-label>
+                        <mat-form-field *ngIf="!isReadOnly">
+                            <input matInput placeholder="Escribe el nombre de contacto" formControlName="nombreContacto">
+                        </mat-form-field>
+                    </div>
+
+                    <div class="form-field rfc">
+                        <mat-label class="text-1">Apellidos del contacto</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['apellidoContacto'].value}}</mat-label>
+                        <mat-form-field *ngIf="!isReadOnly">
+                            <input matInput placeholder="Escribe los apellidos" formControlName="apellidoContacto">
+                        </mat-form-field>
+                    </div>
+
+                    <div class="form-row two-col">
+                        <div class="form-field tiempoEstimadoEntrega">
+                            <mat-label class="text-1">Tiempo estimado de entrega</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['tiempoEstimadoEntrega'].value}}</mat-label>
+                            <mat-form-field *ngIf="!isReadOnly">
+                                <input matInput type="number" placeholder="Tiempo de entrega" formControlName="tiempoEstimadoEntrega" pattern="[0-9]{0,10}">
+                            </mat-form-field>
+                        </div>
+                        <div class="form-field unidadTiempo">
+                            <mat-label class="text-1">Condición de pago</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['unidadTiempo'].value}}</mat-label>
+                            <mat-form-field *ngIf="!isReadOnly">
+                                <mat-select formControlName="unidadTiempo">
+                                  <mat-option value="dias">Días</mat-option>
+                                  <mat-option value="semana">Semana</mat-option>
+                                  <mat-option value="mes">Mes</mat-option>
+                                  <mat-option value="año">Año</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row three-col">
+                    <div class="form-field celular">
+                        <mat-label class="text-1">Celular</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['celular'].value}}</mat-label>
+                        <mat-form-field *ngIf="!isReadOnly">
+                            <input matInput placeholder="(00)000-00000" formControlName="celular">
+                        </mat-form-field>
+                    </div>
+
+                    <div class="form-field celular">
+                        <mat-label class="text-1">Teléfono </mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['telefono'].value}}</mat-label>
+                        <mat-form-field *ngIf="!isReadOnly">
+                            <input matInput placeholder="(00)000-00000" formControlName="telefono">
+                        </mat-form-field>
+                    </div>
+
+                    <div class="form-field correo">
+                        <mat-label class="text-1">Correo electrónico</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['correo'].value}}</mat-label>
+                        <mat-form-field *ngIf="!isReadOnly">
+                            <input matInput placeholder="Escribir un email" formControlName="correo">
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="form-row three-col">
+                    <div class="form-field cuentaBancaria">
+                        <mat-label class="text-1">Cuenta bancaria</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['cuentaBancaria'].value}}</mat-label>
+                        <mat-form-field *ngIf="!isReadOnly">
+                            <input matInput placeholder="Escribir cuenta" formControlName="cuentaBancaria">
+                        </mat-form-field>
+                    </div>
+
+                    <div class="form-field rfc">
+                        <mat-label class="text-1"  *ngIf="isReadOnly">RFC</mat-label>
+                        <mat-label class="text-1"  *ngIf="!isReadOnly">RFC*</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['rfc'].value}}</mat-label>
+                        <mat-form-field *ngIf="!isReadOnly">
+                            <input matInput placeholder="Escribe el RFC" formControlName="rfc" pattern="[A-Z]{4}[0-9]{6}[A-Za-z0-9]{3}" [ngClass]="{ 'is-invalid': submitted && f['rfc'].errors }" required>
+                        </mat-form-field>
+                        <div *ngIf="submitted && (f['rfc'].errors || isRfcDuplicate)" class="invalid-feedback">
+                            <div *ngIf="f['rfc'].errors && f['rfc'].errors['required']">Este campo requerido</div>
+                            <div *ngIf="f['rfc'].errors && f['rfc'].errors['pattern']">La estructura del RFC no es válida</div>
+                            <div *ngIf="isRfcDuplicate">Ya existe un cliente registrado con el mismo RFC</div>
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                    </div>
+                </div>
+
+
+                <div class="form-row one-col">
+                    <div class="form-field descripcion">
+                        <mat-label class="text-1">Descripción</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['descripcion'].value}}</mat-label>
+                        <mat-form-field *ngIf="!isReadOnly">
+                            <input matInput placeholder="Escribe la descripción del proveedor" formControlName="descripcion">
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+
+            <div style="height: 24px;"></div>
+
+            <mat-accordion>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Dirección 
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            opcional
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    
+                    <div class="form-row four-col">
+                    
+                        <div class="form-field state">
+                            <mat-label class="text-1" *ngIf="isReadOnly">Estado</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['state'].value.name}}</mat-label>
+                            <mat-label class="text-1" *ngIf="!isReadOnly">Estado</mat-label>
+                            <mat-form-field *ngIf="!isReadOnly">
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['state'].value}} </mat-label>
+                                <mat-select [(value)]="selectedState" formControlName="state" (selectionChange)="onStateChange($event)">
+                                    <mat-option *ngFor="let state of states" [value]="state">{{ state.name }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+    
+                        <div class="form-field city">
+                            <mat-label class="text-1" *ngIf="isReadOnly">Municipio</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['city'].value.name}}</mat-label>
+                            <mat-label class="text-1" *ngIf="!isReadOnly">Municipio</mat-label>
+                            <mat-form-field *ngIf="!isReadOnly">
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['city'].value}} </mat-label>
+                                <mat-select [(value)]="selectedCity" formControlName="city">
+                                    <mat-option *ngFor="let city of cities" [value]="city">{{ city.name }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+    
+                        <div class="form-field calle">
+                            <mat-label class="text-1"  *ngIf="isReadOnly">Calle</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['calle'].value}}</mat-label>
+                            <mat-label class="text-1" *ngIf="!isReadOnly">Calle</mat-label>
+                            <mat-form-field *ngIf="!isReadOnly">
+                                <input matInput placeholder="Escribir calle" formControlName="calle" [ngClass]="{ 'is-invalid': submitted && f['calle'].errors }">
+                            </mat-form-field>
+                        </div>
+    
+                        <div class="form-field colonia">
+                            <mat-label class="text-1"  *ngIf="isReadOnly">Colonia</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['colonia'].value}}</mat-label>
+                            <mat-label class="text-1" *ngIf="!isReadOnly">Colonia</mat-label>
+                            <mat-form-field *ngIf="!isReadOnly">
+                                <input matInput placeholder="Escribir colonia" formControlName="colonia" [ngClass]="{ 'is-invalid': submitted && f['colonia'].errors }">
+                            </mat-form-field>
+                        </div>
+    
+                        <div class="form-field numero_exterior">
+                            <mat-label class="text-1"  *ngIf="isReadOnly">Núm. exterior</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['numero_exterior'].value}}</mat-label>
+                            <mat-label class="text-1" *ngIf="!isReadOnly">Núm. exterior </mat-label>
+                            <mat-form-field *ngIf="!isReadOnly">
+                                <input matInput type="number" placeholder="Número de exterior" formControlName="numero_exterior" pattern="[0-9]{0,10}" [ngClass]="{ 'is-invalid': submitted && f['numero_exterior'].errors }">
+                            </mat-form-field>
+                        </div>
+    
+                        <div class="form-field numero_interior">
+                            <mat-label class="text-1"  *ngIf="isReadOnly">Núm. interior</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['numero_interior'].value}}</mat-label>
+                            <mat-label class="text-1"  *ngIf="!isReadOnly">Núm. interior (Opcional)</mat-label>
+                            <mat-form-field *ngIf="!isReadOnly">
+                                <input matInput type="number" placeholder="Número de interior" pattern="[0-9]{0,10}" formControlName="numero_interior">
+                            </mat-form-field>
+                        </div>
+    
+                        <div class="form-field cp">
+                            <mat-label class="text-1"  *ngIf="isReadOnly">CP</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['cp'].value}}</mat-label>
+                            <mat-label class="text-1" *ngIf="!isReadOnly">CP</mat-label>
+                            <mat-form-field *ngIf="!isReadOnly">
+                                <input matInput type="number" placeholder="Escribir código postal" min="10000" max="99999" formControlName="cp" [ngClass]="{ 'is-invalid': submitted && f['cp'].errors }">
+                            </mat-form-field>
+                        </div>
+    
+                    </div>
+
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div style="height: 24px;"></div>
+
+            <mat-accordion>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Configuración
+                        </mat-panel-title>
+                        <mat-panel-description>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div class="form-row four-col">
+                        <div class="form-field num-ext">
+                            <mat-slide-toggle formControlName="status" color="primary">Activo</mat-slide-toggle>
+                        </div>
+
+                        <div class="form-field empty"></div>
+
+                        <div class="form-field empty"></div>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div class="toolbar-bottom">
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('catalogos/proveedores')"
+                    *ngIf="isReadOnly">Regresar</button>
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('catalogos/proveedores')"
+                    *ngIf="!isReadOnly">Cancelar</button>
+                <button mat-flat-button class="btn" type="submit" *ngIf="!isReadOnly">{{title}}</button>
+            </div>
+        </form>
+    </div>
+</div>

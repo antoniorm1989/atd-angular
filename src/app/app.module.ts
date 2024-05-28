@@ -58,6 +58,8 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule, Na
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
 import { VentaArticuloComponent } from './components/ventas/venta/articulo/venta-articulo.component';
+import { CatalogoProveedoresListComponent } from './components/catalogos/proveedores/catalogo-proveedores-list.component';
+import { CatalogoProveedoresComponent } from './components/catalogos/proveedores/proveedor/catalogo-proveedores.component';
 
 
 export function tokenGetter() {
@@ -92,7 +94,9 @@ export function tokenGetter() {
     VentasListComponent,
     VentaComponent,
     VentaArticuloComponent,
-    ArticuloVentaModalComponent
+    ArticuloVentaModalComponent,
+    CatalogoProveedoresListComponent,
+    CatalogoProveedoresComponent
   ],
   imports: [
     BrowserModule,

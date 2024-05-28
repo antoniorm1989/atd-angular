@@ -24,6 +24,8 @@ import { CatalogoClientesComponent } from './components/catalogos/clientes/clien
 import { CatalogoClientesListComponent } from './components/catalogos/clientes/catalogo-clientes-list.component';
 import { VentasListComponent } from './components/ventas/ventas-list.component';
 import { VentaComponent } from './components/ventas/venta/venta.component';
+import { CatalogoProveedoresListComponent } from './components/catalogos/proveedores/catalogo-proveedores-list.component';
+import { CatalogoProveedoresComponent } from './components/catalogos/proveedores/proveedor/catalogo-proveedores.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/inventario-almacen', pathMatch: 'full' }, // Redirect to login by default
@@ -59,6 +61,9 @@ const routes: Routes = [
   { path: 'ventas', component: VentasListComponent, canActivate: [AuthGuard] },
   { path: 'ventas/detail', component: VentaComponent, canActivate: [AuthGuard]},
   { path: 'ventas/detail/:ventaId', component: VentaComponent, canActivate: [AuthGuard]},
+  { path: 'catalogos/proveedores', component: CatalogoProveedoresListComponent, canActivate: [AuthGuard] },
+  { path: 'catalogos/proveedores/detail', component: CatalogoProveedoresComponent, canActivate: [AuthGuard] },
+  { path: 'catalogos/proveedores/detail/:id', component: CatalogoProveedoresComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({
