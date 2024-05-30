@@ -164,6 +164,136 @@ mat-panel-description {
     flex-grow: 0 !important;
 }
 
+.catalogo-clientes .container-empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 600px;
+    margin: auto;
+    padding: 50px 0px;
+}
+
+.catalogo-clientes .container-empty .img {
+    height: 67px;
+    width: 67px;
+}
+
+.catalogo-clientes .container-empty .text {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 32px;
+    letter-spacing: 0.01em;
+    text-align: center;
+}
+
+
+/* list */
+.catalogo-clientes .container .container-list {
+    margin-top: 30px;
+}
+
+.catalogo-clientes .container .container-list .table{
+    margin-top: 30px;
+}
+
+.catalogo-clientes .container .container-list .toolbar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.catalogo-clientes .container .container-list .toolbar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.catalogo-clientes .container .container-list .toolbar .btn {
+    width: 170px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: #BA9400;
+    color: #fff;
+    padding: 0px 5px;
+}
+
+.catalogo-clientes .container .container-list .user-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.catalogo-clientes .container .container-list .user-wrapper .circle-initials {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #BA9400;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    color: #ffffff;
+    min-width: 28px;
+}
+
+.catalogo-clientes .container .container-list .user-wrapper .text {
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: 0px;
+    text-align: center;
+    margin-left: 8px;
+}
+
+.catalogo-clientes .container .title-grid {
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: 0px;
+}
+
+.catalogo-clientes .container .title-grid:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    color: #BA9400;
+}
+
+.catalogo-clientes .container .table .mat-icon{
+    color: #ba9400;
+}
+
+.mat-mdc-header-row{
+    background-color: #eadfb2 !important;
+}
+
+.catalogo-clientes .container .table .photo{
+    height: 45px;
+    width: 45px;
+    margin-right: 8px;
+}
+.catalogo-clientes .container .table .description-wrapper{
+    display: flex;
+    align-items: center;
+}
+
+.catalogo-clientes .container .table  .empty-image-container{
+    height: 45px;
+    width: 45px;
+    margin-right: 8px;
+    background-color: #C5C6C7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.catalogo-clientes .container .table .empty-image-container .empty-image{
+    width: 30px;
+    height: 30px;
+}
+
+.catalogo-clientes .mdc-data-table__cell, .mdc-data-table__header-cell {
+    padding: 0 6px 0 6px;
+}
+
 @media only screen and (max-width: 1084px) {
     .catalogo-clientes .container .form-row.four-col {
         grid-template-columns: repeat(3, 1fr);

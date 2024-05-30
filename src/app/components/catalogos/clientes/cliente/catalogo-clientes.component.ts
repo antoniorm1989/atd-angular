@@ -1,13 +1,17 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router, NavigationEnd, Event } from '@angular/router';
 import { MessageComponent } from 'src/app/components/genericos/snack-message.component';
-import { CatalogoClienteModel } from 'src/app/models/catalogo-cliente.model';
+import { CatalogoClienteModel, ClienteArticuloModel } from 'src/app/models/catalogo-cliente.model';
 import { CatalogoCityModel, CatalogoCountryModel, CatalogoRegimenFiscalModel, CatalogoStateModel } from 'src/app/models/catalogos.model';
 import { User } from 'src/app/models/user';
 import { CatalogoClientesService } from 'src/app/services/catalogo-cliente.service';
 import { CatalogosService } from 'src/app/services/catalogos.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-catalogo-clientes',
@@ -41,7 +45,12 @@ export class CatalogoClientesComponent {
 
   isRfcDuplicate: boolean = false;
 
-  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogosService: CatalogosService, private router: Router, private _snackBar: MatSnackBar, private catalogoClientesService: CatalogoClientesService) {
+  hasRecords = false;
+  displayedColumns: string[] = ['numero_parte', 'descripcion', 'categoria', 'costo', 'descuento', 'actions'];
+  dataSourceArticulos = new MatTableDataSource<ClienteArticuloModel>([]);
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogosService: CatalogosService, private router: Router, private _snackBar: MatSnackBar, private catalogoClientesService: CatalogoClientesService, private dialog: MatDialog) {
 
     this.form = this.formBuilder.group({
       cliente: ['', [Validators.required]],
@@ -184,6 +193,9 @@ export class CatalogoClientesComponent {
                       break;
                   }
                 });
+
+                this.dataSourceArticulos.data = data.articulos || [];
+                this.hasRecords = this.dataSourceArticulos.data.length > 0;
               },
               error: (e) => {
                 console.log(e);
@@ -286,6 +298,8 @@ export class CatalogoClientesComponent {
     cliente.regimen_fiscal = this.f['rf'].value;
     cliente.status = this.f['status'].value || '0';
     cliente.user = user;
+
+    cliente.articulos = this.dataSourceArticulos.data;
 
     if (this.action == 'new') {
       this.catalogoClientesService.create(cliente).subscribe({
@@ -399,5 +413,106 @@ export class CatalogoClientesComponent {
 
     this.f['cp'].setValidators([Validators.required]);
     this.f['cp'].updateValueAndValidity();
+  }
+
+  getPathPhoto(photo: string): string {
+    return `${environment.apiUrl}/images/articulos/${photo}`
+  }
+
+  editArticuloModalComponent(clienteArticuloModel: ClienteArticuloModel) {
+    const dialogRef = this.dialog.open(ArticuloClienteModalComponent, {
+      data: {
+        articulo: clienteArticuloModel
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(clienteArticuloModel => {
+      if (clienteArticuloModel && clienteArticuloModel !== "") {
+        const existingIndex = this.dataSourceArticulos.data.findIndex(item => item.articulo?.id === clienteArticuloModel.articulo?.id);
+        if (existingIndex !== -1) {
+          // Si existe un objeto con el mismo id, elimínalo
+          this.dataSourceArticulos.data.splice(existingIndex, 1);
+        }
+        // Agrega el nuevo objeto
+        this.dataSourceArticulos.data.push(clienteArticuloModel);
+        this.dataSourceArticulos._updateChangeSubscription();
+        this.hasRecords = true;
+      }
+    });
+  }
+
+  removeArticulo(articulo: ClienteArticuloModel) {
+    const indexToRemove = this.dataSourceArticulos.data.findIndex(item => item.articulo?.id === articulo.articulo?.id);
+    if (indexToRemove !== -1) {
+      this.dataSourceArticulos.data.splice(indexToRemove, 1);
+      this.dataSourceArticulos._updateChangeSubscription();
+    }
+
+    if (this.dataSourceArticulos.data.length == 0)
+      this.hasRecords = false;
+  }
+
+  openArticuloClienteModalComponent() {
+    const dialogRef = this.dialog.open(ArticuloClienteModalComponent, {
+      data: {
+        articulos: this.dataSourceArticulos.data
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(ventaArticuloModel => {
+      if (ventaArticuloModel != undefined && ventaArticuloModel != "") {
+        this.dataSourceArticulos.data.push(ventaArticuloModel);
+        this.dataSourceArticulos._updateChangeSubscription();
+        this.hasRecords = true;
+      }
+    });
+  }
+}
+
+@Component({
+  selector: 'dialog-component',
+  template: `<span mat-dialog-title>Asignar artículos</span>
+            <mat-dialog-content class="mat-typography">
+              <app-cliente-articulo [clienteArticulosModel]="clienteArticulosModel" [clienteArticuloModel]="clienteArticuloModel" (cancel)="onCancelar()" (add)="onAgregarArticulo($event)" #appClienteArticuloComponent></app-cliente-articulo>
+            </mat-dialog-content>`,
+  styles: [
+  ]
+})
+export class ArticuloClienteModalComponent {
+  @ViewChild('appClienteArticuloComponent') appClienteArticuloComponent: any;
+  clienteArticuloModel!: ClienteArticuloModel;
+  clienteArticulosModel!: ClienteArticuloModel[];
+
+  constructor(
+    public dialogRef: MatDialogRef<ArticuloClienteModalComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    dialogRef.disableClose = true;
+
+    if (Object.keys(data).length > 0) {
+      if (data.articulo != undefined) {
+        this.clienteArticuloModel = data.articulo;
+      }
+      if (data.articulos != undefined) {
+        this.clienteArticulosModel = data.articulos;
+      }
+    }
+
+  }
+
+  onCancelar() {
+    try {
+      this.dialogRef.close();
+    } catch (error) {
+      console.error('An error occurred in onAgregarArticulo:', error);
+    }
+  }
+
+  onAgregarArticulo(clienteArticuloModel: ClienteArticuloModel) {
+    try {
+      this.dialogRef.close(clienteArticuloModel);
+    } catch (error) {
+      console.error('An error occurred in onAgregarArticulo:', error);
+    }
   }
 }

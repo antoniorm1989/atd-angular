@@ -1,5 +1,8 @@
+import { float } from "@zxing/library/esm/customTypings";
 import { CatalogoCityModel, CatalogoCountryModel, CatalogoRegimenFiscalModel, CatalogoStateModel } from "./catalogos.model";
 import { User } from "./user";
+import { CatalogoArticuloModel } from "./catalogo-articulo.model";
+import { VentaArticuloModel } from "./ventas.model";
 
 export class CatalogoClienteModel {
   id: number | undefined;
@@ -25,7 +28,19 @@ export class CatalogoClienteModel {
   city: CatalogoCityModel | undefined;
   regimen_fiscal: CatalogoRegimenFiscalModel | undefined;
 
+  articulos: ClienteArticuloModel[] | undefined;
+
   constructor(id?: number) {
     this.id = id;
   }
+}
+
+export class ClienteArticuloModel {
+  id: number | undefined;
+  precio: float | undefined;
+  descuento: float | undefined;
+  comentarios: string | undefined;
+  created_at: Date | undefined;
+  updated_at: Date | undefined;
+  articulo: CatalogoArticuloModel | undefined;
 }

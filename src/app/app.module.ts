@@ -50,7 +50,7 @@ import { HistorialSucursalComponent } from './components/inventory-sucursal/hist
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CatalogoClientesListComponent } from './components/catalogos/clientes/catalogo-clientes-list.component';
-import { CatalogoClientesComponent } from './components/catalogos/clientes/cliente/catalogo-clientes.component';
+import { ArticuloClienteModalComponent, CatalogoClientesComponent } from './components/catalogos/clientes/cliente/catalogo-clientes.component';
 import { BarcodeScannerComponent } from './components/genericos/barcodesScanner.component';
 import { VentasListComponent } from './components/ventas/ventas-list.component';
 import { ArticuloVentaModalComponent, VentaComponent } from './components/ventas/venta/venta.component';
@@ -60,6 +60,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { VentaArticuloComponent } from './components/ventas/venta/articulo/venta-articulo.component';
 import { CatalogoProveedoresListComponent } from './components/catalogos/proveedores/catalogo-proveedores-list.component';
 import { CatalogoProveedoresComponent } from './components/catalogos/proveedores/proveedor/catalogo-proveedores.component';
+import { ClienteArticuloComponent } from './components/catalogos/clientes/cliente/articulo/cliente-articulo.component';
 
 
 export function tokenGetter() {
@@ -95,8 +96,10 @@ export function tokenGetter() {
     VentaComponent,
     VentaArticuloComponent,
     ArticuloVentaModalComponent,
+    ArticuloClienteModalComponent,
     CatalogoProveedoresListComponent,
-    CatalogoProveedoresComponent
+    CatalogoProveedoresComponent,
+    ClienteArticuloComponent
   ],
   imports: [
     BrowserModule,

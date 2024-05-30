@@ -301,6 +301,91 @@
                 <mat-expansion-panel [expanded]="true">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
+                            Artículos
+                        </mat-panel-title>
+                        <mat-panel-description>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+
+                    <div class="form-row seccion-articulos-header" [class.three-col]="isReadOnly" [class.four-col]="!isReadOnly" style="grid-column-gap: 10px;">
+                        <div class="form-field">
+                        </div>
+                        <div class="form-row two-col">
+                        </div>
+                        <div class="form-row two-col">
+                        </div>
+                        <button *ngIf="!isReadOnly" type="button" style="width: 200px; justify-self: end;" mat-flat-button class="btn" (click)="openArticuloClienteModalComponent()" ><mat-icon>add</mat-icon>Agregar artículo</button>
+                    </div>
+
+                    <div class="form-row one-col">
+                        <div *ngIf="!hasRecords" class="container-empty">
+                            <img src="../../assets/images/empty-sucursales-alamcen.png" alt="empty logo" class="img">
+                            <span class="text">
+                                Al parecer aún no tienes información para leer, cuando tengas aparecerán en está sección.
+                            </span>
+                        </div>
+
+                        <table *ngIf="hasRecords" class="table" mat-table [dataSource]="dataSourceArticulos" style="margin-top: 24px;">
+
+                            <ng-container matColumnDef="numero_parte">
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">#Parte</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.articulo.part_number}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="descripcion">
+                                <th mat-header-cell *matHeaderCellDef>Descripción</th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div class="description-wrapper">
+                                        <div *ngIf="!element.articulo.photo" class="empty-image-container">
+                                            <img src="../../assets/images/empty-image.png" class="empty-image">
+                                        </div>
+                                        <img *ngIf="element.articulo.photo" class="photo" [src]="getPathPhoto(element.articulo.photo)">
+                                        <span class="dos-renglones">{{element.articulo.description}}</span>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="categoria">
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Precio venta</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">${{element.articulo.part_number}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="costo">
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Precio venta</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">${{element.precio}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="descuento">
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Descuento</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.descuento}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="actions">
+                                <th mat-header-cell *matHeaderCellDef style="width: 110px; text-align: center;"></th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">
+                                    <button *ngIf="!isReadOnly" type="button" mat-icon-button aria-label="editar articulo" (click)="editArticuloModalComponent(element)">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                    <button *ngIf="!isReadOnly" type="button" mat-icon-button aria-label="elimianr articulo" (click)="removeArticulo(element)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div style="height: 24px;"></div>
+
+            <mat-accordion>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
                             Configuración
                         </mat-panel-title>
                         <mat-panel-description>
