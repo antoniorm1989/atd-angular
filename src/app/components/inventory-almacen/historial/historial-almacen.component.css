@@ -378,6 +378,15 @@ mat-panel-description {
     gap: 10px;
 }
 
+.historial-almacen .container .stock_indicator.incoming{
+    background-color: transparent;
+    border: 2px solid #BA9400;
+    box-shadow: 0px 4px 4px 0px #00000040;
+}
+
+.historial-almacen .container .stock_indicator.incoming .stock{
+    color: #BA9400;
+}
 
 @media only screen and (max-width: 1500px) {
     .historial-almacen {

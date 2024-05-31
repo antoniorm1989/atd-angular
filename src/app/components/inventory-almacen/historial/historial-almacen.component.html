@@ -62,6 +62,11 @@
                             <mat-label class="text-1">Cantidad máxima</mat-label><br/>
                             <mat-label class="text-1-regular">{{inventoryAlmacenModel?.maximum_stock}}</mat-label>
                         </div>
+                        <div></div>
+                        <div class="stock_indicator incoming">
+                            <span class="title-stock">Incoming</span>
+                            <span class="stock">{{getStockIncoming()}}</span>
+                        </div>
                     </div>
                 </div>
             </div>

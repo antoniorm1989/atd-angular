@@ -10,11 +10,12 @@ export class InventoryAlmacenModel {
   almacen: CatalogoAlmacenModel | undefined;
   articulo: CatalogoArticuloModel | undefined;
   inventory_transaction: InventoryAlmacenTransactionsModel[] | undefined;
+  inventory_transaction_incoming: InventoryAlmacenTransactionsModel[] | undefined;
 }
 
 export class InventoryAlmacenTransactionsModel {
   id: number | undefined;
-  type: number | undefined;
+  type: number | undefined; // 1 entrada 2 salida
   qty: number | undefined;
   stock: number | undefined;
   comment: string | undefined;

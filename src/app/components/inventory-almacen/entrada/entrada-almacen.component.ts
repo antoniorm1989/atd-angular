@@ -37,6 +37,7 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
   submitted = false;
   almacen: CatalogoAlmacenModel | null = null;
   stock: number | undefined = 0;
+  stock_incoming: number | undefined = 0;
   imageUrl: string | null = null;
   selectedArticle: CatalogoArticuloModel | undefined = undefined;
 
@@ -59,7 +60,9 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
       maximum_stock: [null],
       notify_stock: [true, [Validators.required]],
       qty: [null, []],
+      qty_incoming: [null, []],
       comment: ['', []],
+      comment_incoming: ['', []],
     });
 
     try {
@@ -94,12 +97,17 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
                   this.stock = data.inventory_transaction[0]?.stock;
                 }
 
+                if (data.inventory_transaction_incoming && data.inventory_transaction_incoming.length > 1) {
+                  this.stock_incoming = data.inventory_transaction_incoming[1]?.stock;
+                }
+
                 this.form.patchValue({
                   id: data.id,
                   minimum_stock: data.minimum_stock,
                   maximum_stock: data.maximum_stock,
                   notify_stock: data.notify_stock,
-                  qty: 0
+                  qty: 0,
+                  qty_incoming: 0
                 });
               }
             }
@@ -177,16 +185,23 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
               } else
                 this.stock = 0;
 
+              if (data.inventory_transaction_incoming && data.inventory_transaction_incoming.length > 0) {
+                this.stock_incoming = data.inventory_transaction_incoming[0]?.stock;
+              } else
+                this.stock_incoming = 0;
+
               this.form.patchValue({
                 id: data.id,
                 minimum_stock: data.minimum_stock,
                 maximum_stock: data.maximum_stock,
                 notify_stock: data.notify_stock,
-                qty: 0
+                qty: 0,
+                qty_incoming: 0
               });
 
             } else {
               this.stock = 0;
+              this.stock_incoming = 0;
 
               this.form.patchValue({
                 id: 0,
@@ -194,6 +209,7 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
                 maximum_stock: 0,
                 notify_stock: false,
                 qty: 0,
+                qty_incoming: 0
               });
             }
           }
@@ -227,6 +243,12 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
       if (this.f['qty'].value != 0) {
         inventoryAlmacen.inventory_transaction = [
           new InventoryAlmacenTransactionsModel(1, this.f['qty'].value, this.f['comment'].value, user)
+        ];
+      }
+
+      if (this.f['qty_incoming'].value != 0) {
+        inventoryAlmacen.inventory_transaction_incoming = [
+          new InventoryAlmacenTransactionsModel(1, this.f['qty_incoming'].value, this.f['comment_incoming'].value, user)
         ];
       }
 
@@ -268,6 +290,17 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
       const qtyValue = this.f['qty'].value;
       const qty = qtyValue ? parseInt(qtyValue) : 0;
       return (this.stock ?? 0) + qty;
+    } catch (error) {
+      console.error('An error occurred in getStock:', error);
+      return 0;
+    }
+  }
+
+  getStockIncoming(): number {
+    try {
+      const qtyValue = this.f['qty_incoming'].value;
+      const qty = qtyValue ? parseInt(qtyValue) : 0;
+      return (this.stock_incoming ?? 0) + qty;
     } catch (error) {
       console.error('An error occurred in getStock:', error);
       return 0;
@@ -443,6 +476,22 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
     }
   }
 
+  agregarQtyIncoming() {
+    try {
+      this.f['qty_incoming'].setValue(this.f['qty_incoming'].value + 1);
+    } catch (error) {
+      console.error('An error occurred in agregarQty:', error);
+    }
+  }
+
+  restarQtyIncoming() {
+    try {
+      this.f['qty_incoming'].setValue(this.f['qty_incoming'].value - 1);
+    } catch (error) {
+      console.error('An error occurred in restarQty:', error);
+    }
+  }
+
   openDialogEscanner() {
     const dialogRef = this.dialog.open(DialogEscannerComponent, {
       data: {
@@ -450,7 +499,7 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result)
+      if (result)
         this.f['selectedArticle'].setValue(result);
     });
   }
@@ -471,7 +520,7 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
   }
 
   formatearComoMoneda(valor: number | undefined): string {
-    if(!valor)
+    if (!valor)
       return 'n/a';
 
     return new Intl.NumberFormat('en-US', {
@@ -493,12 +542,12 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
   styles: [],
   standalone: true,
   imports: [
-    MatDialogModule, 
+    MatDialogModule,
     MatButtonModule,
     BarcodeScannerComponent
   ]
 })
-export class DialogEscannerComponent { 
+export class DialogEscannerComponent {
   @ViewChild('appBarcodeScanner', { static: false }) appBarcodeScanner: BarcodeScannerComponent | undefined;
 
   constructor(
@@ -511,7 +560,7 @@ export class DialogEscannerComponent {
       this.appBarcodeScanner?.start();
     });
   }
-  
+
   handleScannedValue(value: String) {
     try {
       this.dialogRef.close(value);

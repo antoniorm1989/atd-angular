@@ -75,6 +75,10 @@ export class HistorialAlmacenComponent {
     return this.inventoryAlmacenModel?.inventory_transaction?.[0]?.stock || 0;
   }
 
+  getStockIncoming(): number {
+    return this.inventoryAlmacenModel?.inventory_transaction_incoming?.[0]?.stock || 0;
+  }
+
   showStockIndicator(): boolean {
     return this.getStock() < (this.inventoryAlmacenModel?.minimum_stock || 0);
   }
