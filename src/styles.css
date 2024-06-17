@@ -139,3 +139,7 @@ body {
 .ventas-list .mat-mdc-form-field-subscript-wrapper{
     height: 12px !important;
 }
+
+.mat-mdc-dialog-content{
+    max-height: max-content !important;
+}

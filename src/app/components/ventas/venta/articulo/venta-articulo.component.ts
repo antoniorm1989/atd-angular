@@ -19,6 +19,8 @@ import { CatalogosService } from 'src/app/services/catalogos.service';
 import { CatalogoArticuloService } from 'src/app/services/catalogo-articulos.service';
 import { VentaArticuloModel } from 'src/app/models/ventas.model';
 import { InventorySucursalModel } from 'src/app/models/inventory-sucursal.model';
+import { User } from 'src/app/models/user';
+import { VentaService } from 'src/app/services/ventas.service';
 
 
 export const _filter = (opt: CatalogoArticuloModel[], value: string): CatalogoArticuloModel[] => {
@@ -64,8 +66,11 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
 
   @Input() ventaArticuloModel: VentaArticuloModel | undefined;
   @Input() ventaArticulosModel: VentaArticuloModel[] | undefined;
+  @Input() clienteId: number = 0;
+  @Input() isDespachar: boolean = false;
 
   isEditing: boolean = false;
+  hasBackOrder: boolean = false;
 
   inventory_almacen_id = 0;
 
@@ -77,20 +82,26 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
     private router: Router,
     private catalogosService: CatalogosService,
     private catalogoArticuloService: CatalogoArticuloService,
-    private dialog: MatDialog) {
+    private dialog: MatDialog,
+    private ventaService: VentaService,) {
 
     this.form = this.formBuilder.group({
       tipoAlmacen: ['almacen'],
       almacen: [null],
       sucursal: [null],
       selectedArticle: [null, Validators.required],
-      qty: 1,
+      qty: [1, [Validators.min(1)]],
       precio_venta: [0, [Validators.required, Validators.min(0.01)]],
       descuento: 0,
       comentarios: '',
       unidad_medida: ['producto'],
-      numero_identificacion_fiscal: ['']
+      numero_identificacion_fiscal: [''],
+      articulosCliente: false,
+      backorder: 0
     });
+
+    this.form.controls['precio_venta'].disable();
+    this.form.controls['descuento'].disable();
   }
 
   ngOnInit() {
@@ -153,13 +164,15 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
       if (ventaArticuloModel.almacen?.articulo?.part_number) {
         this.form.patchValue({
           selectedArticle: ventaArticuloModel.almacen?.articulo?.part_number,
-          qty: ventaArticuloModel.cantidad,
+          qty: this.isDespachar ? 0 : ventaArticuloModel.cantidad,
           descuento: ventaArticuloModel.descuento,
           comentarios: ventaArticuloModel.comentarios,
           unidad_medida: ventaArticuloModel.unidad_medida,
-          numero_identificacion_fiscal: ventaArticuloModel.numero_identificacion_fiscal
+          numero_identificacion_fiscal: ventaArticuloModel.numero_identificacion_fiscal,
+          backorder: 0
         });
         this.onOptionSelected(ventaArticuloModel.almacen?.articulo?.part_number);
+        this.calcularBackOrder();
       }
   }
 
@@ -179,17 +192,6 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
       this.router.navigate([route]);
     } catch (error) {
       console.error('An error occurred in navigate:', error);
-    }
-  }
-
-  getStock(): number {
-    try {
-      const qtyValue = this.f['qty'].value;
-      const qty = qtyValue ? parseInt(qtyValue) : 0;
-      return (this.stock ?? 0) + qty;
-    } catch (error) {
-      console.error('An error occurred in getStock:', error);
-      return 0;
     }
   }
 
@@ -282,9 +284,8 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
   }
 
   loadArticulos() {
-
     if (this.isAlmacen && this.selectedAlmacen && this.selectedAlmacen.id) {
-      this.catalogoArticuloService.getAllGroupedByCategoryByAlmacen(this.selectedAlmacen.id).subscribe({
+      this.catalogoArticuloService.getAllGroupedByCategoryByAlmacen(this.selectedAlmacen.id, this.f['articulosCliente'].value ? 0 : this.clienteId).subscribe({
         next: (data) => {
           this.articuloGroups = data;
 
@@ -334,7 +335,6 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         });
 
         this.calcularSubTotal();
-
         this.inventoryAlmacenService.getInventoryByAlmacenByArticulo(this.selectedAlmacen?.id, this.selectedArticle.id).subscribe({
           next: (data) => {
             if (data && data.id) {
@@ -346,6 +346,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
             } else {
               this.stock = 0;
             }
+            this.calcularBackOrder();
           }
         });
       }
@@ -371,10 +372,14 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
 
   agregarQty() {
     try {
-      if (this.stock != undefined)
+      if(this.selectedArticle == undefined || (this.isDespachar && ((this.stock != undefined && this.f['qty'].value >= this.stock) || this.f['backorder'].value <= 0)))
+        return;
+
+      if (this.stock != undefined && ((this.isDespachar && this.f['qty'].value <= this.stock) || !this.isDespachar))
         this.f['qty'].setValue(this.f['qty'].value + 1);
 
       this.calcularSubTotal();
+      this.calcularBackOrder();
     } catch (error) {
       console.error('An error occurred in agregarQty:', error);
     }
@@ -386,9 +391,24 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         this.f['qty'].setValue(this.f['qty'].value - 1);
 
       this.calcularSubTotal();
+      this.calcularBackOrder();
     } catch (error) {
       console.error('An error occurred in restarQty:', error);
     }
+  }
+
+  private calcularBackOrder() {
+    if (!this.isDespachar)
+      this.form.patchValue({
+        backorder: this.f['qty'].value > (this.stock || 0) ? (((this.stock || 0) - this.f['qty'].value) * -1) : 0
+      });
+    else
+      if (this.ventaArticuloModel != undefined && this.ventaArticuloModel.backorder != undefined)
+        this.form.patchValue({
+          backorder: this.ventaArticuloModel.backorder - this.f['qty'].value
+        });
+
+    this.hasBackOrder = this.f['backorder'].value > 0
   }
 
   private _filterGroup(value: string): ArticuloGroup[] {
@@ -409,7 +429,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
   onAdd() {
     try {
       this.submitted = true;
-      if (this.form!.invalid == false) {
+      if (this.form!.invalid == false && this.isDespachar == false) {
         let ventaArticuloModel = new VentaArticuloModel();
         ventaArticuloModel.inventory_almacen_id = this.inventory_almacen_id;
         ventaArticuloModel.precio_venta = this.f['precio_venta'].value;
@@ -418,6 +438,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         ventaArticuloModel.numero_identificacion_fiscal = this.f['numero_identificacion_fiscal'].value;
         ventaArticuloModel.unidad_medida = this.f['unidad_medida'].value;
         ventaArticuloModel.comentarios = this.f['comentarios'].value;
+        ventaArticuloModel.backorder = this.f['backorder'].value;
 
         if (this.selectedProductoServicio)
           ventaArticuloModel.producto_servicio = this.selectedProductoServicio;
@@ -437,8 +458,32 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         }
 
         this.add.emit(ventaArticuloModel);
-      }
+      } else if (this.isDespachar == true) {
+        // stop here if form is invalid
+        if (this.form!.invalid)
+          return;
 
+        let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","lastname":""}');
+        let user = new User();
+        user.user_id = userData.user_id;
+
+        let ventaArticuloModel = new VentaArticuloModel();
+        ventaArticuloModel.id = this.ventaArticuloModel?.id;
+        ventaArticuloModel.cantidad = this.f['qty'].value;
+        ventaArticuloModel.comentarios = this.f['comentarios'].value;
+        ventaArticuloModel.user = user;
+        ventaArticuloModel.inventory_almacen_id = this.inventory_almacen_id;
+        ventaArticuloModel.ventaId = this.ventaArticuloModel?.ventaId;
+
+        this.ventaService.despachar(ventaArticuloModel).subscribe({
+          next: (data) => {
+            this.add.emit(ventaArticuloModel);
+          },
+          error: (e) => {
+            console.log(e);
+          }
+        });
+      }
     } catch (error) {
       console.error('An error occurred in onSubmit:', error);
     }

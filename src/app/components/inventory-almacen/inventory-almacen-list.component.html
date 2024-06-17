@@ -66,6 +66,14 @@
                     </td>
                 </ng-container>
 
+                <ng-container matColumnDef="incoming">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Incoming</th>
+                    <td mat-cell *matCellDef="let element" class="center-column">
+                        <span *ngIf="element.inventory_transaction_incoming[0].id != null">{{element.inventory_transaction_incoming[0].stock}}</span>
+                        <span *ngIf="element.inventory_transaction_incoming[0].id == null">0</span>
+                    </td>
+                </ng-container>
+
                 <ng-container matColumnDef="minimum_stock">
                     <th mat-header-cell *matHeaderCellDef class="center-column column-minimum_stock">Mínimos</th>
                     <td mat-cell *matCellDef="let element" class="center-column"><span>{{element.minimum_stock}}</span></td>

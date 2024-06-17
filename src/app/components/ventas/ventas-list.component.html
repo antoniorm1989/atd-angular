@@ -70,6 +70,16 @@
 
             <table class="table" mat-table [dataSource]="dataSource">
 
+                <ng-container matColumnDef="estatus">
+                    <th mat-header-cell *matHeaderCellDef>Estatus</th>
+                    <td mat-cell *matCellDef="let element"><span>{{element.estatus.estatus.toUpperCase()}}</span></td>
+                </ng-container>
+
+                <ng-container matColumnDef="backorder">
+                    <th mat-header-cell *matHeaderCellDef>Back Order</th>
+                    <td mat-cell *matCellDef="let element">{{element.backorder}}</td>
+                </ng-container>
+
                 <ng-container matColumnDef="id">
                     <th mat-header-cell *matHeaderCellDef>Venta</th>
                     <td mat-cell *matCellDef="let element"><span (click)="onView(element.id)"
@@ -94,11 +104,6 @@
                 <ng-container matColumnDef="importe">
                     <th mat-header-cell *matHeaderCellDef>Importe</th>
                     <td mat-cell *matCellDef="let element"><span>{{formatearComoMoneda(element.importe)}}</span></td>
-                </ng-container>
-
-                <ng-container matColumnDef="estatus">
-                    <th mat-header-cell *matHeaderCellDef>Estatus</th>
-                    <td mat-cell *matCellDef="let element"><span>{{element.estatus.estatus.toUpperCase()}}</span></td>
                 </ng-container>
 
                 <ng-container matColumnDef="fecha_sat">

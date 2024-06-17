@@ -17,7 +17,7 @@ import { CatalogoAlmacenesService } from 'src/app/services/catalogo-almacenes.se
 export class InventoryAlmacenListComponent {
 
   hasRecords = false;
-  displayedColumns: string[] = ['part_number', 'description', 'category', 'stock', 'minimum_stock', 'maximum_stock', 'user', 'actions'];
+  displayedColumns: string[] = ['part_number', 'description', 'category', 'stock', 'incoming', 'minimum_stock', 'maximum_stock', 'user', 'actions'];
   dataSource = new MatTableDataSource<InventoryAlmacenModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataLoaded = false;

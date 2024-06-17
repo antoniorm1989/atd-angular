@@ -11,6 +11,7 @@ export class InventoryAlmacenModel {
   articulo: CatalogoArticuloModel | undefined;
   inventory_transaction: InventoryAlmacenTransactionsModel[] | undefined;
   inventory_transaction_incoming: InventoryAlmacenTransactionsModel[] | undefined;
+  total_backorder: number | undefined;
 }
 
 export class InventoryAlmacenTransactionsModel {

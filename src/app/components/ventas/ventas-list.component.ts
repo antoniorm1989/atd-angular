@@ -20,7 +20,7 @@ import { DateAdapter } from '@angular/material/core';
 export class VentasListComponent {
 
   hasRecords = false;
-  displayedColumns: string[] = ['id', 'creacion', 'cliente', 'moneda', 'importe', 'estatus', 'fecha_sat', 'responsable'];
+  displayedColumns: string[] = ['estatus', 'backorder', 'id', 'creacion', 'cliente', 'moneda', 'importe', 'fecha_sat', 'responsable'];
   dataSource = new MatTableDataSource<VentaModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   private dataLoaded = false;

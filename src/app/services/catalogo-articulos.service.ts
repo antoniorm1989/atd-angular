@@ -40,8 +40,8 @@ export class CatalogoArticuloService {
     return this.http.get<ArticuloGroup[]>(`${environment.apiUrl}/api/articulo/getAllGroupedByCategory`);
   }
 
-  getAllGroupedByCategoryByAlmacen(almacenId: number): Observable<ArticuloGroup[]> {
-    return this.http.get<ArticuloGroup[]>(`${environment.apiUrl}/api/articulo/getAllGroupedByCategoryByAlmacen/${almacenId}`);
+  getAllGroupedByCategoryByAlmacen(almacenId: number, clienteId: number): Observable<ArticuloGroup[]> {
+    return this.http.get<ArticuloGroup[]>(`${environment.apiUrl}/api/articulo/getAllGroupedByCategoryByAlmacen/${almacenId}/${clienteId}`);
   }
 
   private getHeaders() {

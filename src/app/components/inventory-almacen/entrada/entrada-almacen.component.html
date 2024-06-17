@@ -161,17 +161,18 @@
                             </div>
                         </div>
 
-                        <div>
-                            
-                        </div>
-
                         <div [matBadge]="(f['qty'].value > 0 ? '+' : '') + f['qty'].value" matBadgeOverlap="false"
                             class="stock_indicator" [ngClass]="{
                             'stock_indicator-neg': f['qty'].value < 0,
                             'stock_indicator-hide': f['qty'].value === 0 || f['qty'].value === null
                           }">
-                            <span class="title-stock">Actual</span>
+                            <span class="title-stock">Stock</span>
                             <span class="stock">{{stock}}</span>
+                        </div>
+
+                        <div class="stock_indicator" style="width: 90px;">
+                            <span class="title-stock">Back Order</span>
+                            <span class="stock">{{f['total_backorder'].value}}</span>
                         </div>
 
                         <div class="form-field comment">
@@ -197,7 +198,6 @@
                 <div class="main-container">
 
                     <div class="form-row three-col add-stock">
-
                         <div class="form-field">
                             <mat-label class="text-1">Agregar o retirar</mat-label>
                             <div class="container-agregar-retirar">
@@ -219,10 +219,6 @@
                             </div>
                         </div>
 
-                        <div>
-                            
-                        </div>
-
                         <div [matBadge]="(f['qty_incoming'].value > 0 ? '+' : '') + f['qty_incoming'].value" matBadgeOverlap="false"
                             class="stock_indicator" [ngClass]="{
                             'stock_indicator-neg': f['qty_incoming'].value < 0,
@@ -231,7 +227,9 @@
                             <span class="title-stock">Incoming</span>
                             <span class="stock">{{stock_incoming}}</span>
                         </div>
+                    </div>
 
+                    <div class="form-row two-col">
                         <div class="form-field comment_incoming">
                             <mat-label class="text-1">Comentario</mat-label>
                             <mat-form-field>
@@ -239,7 +237,6 @@
                                     [ngClass]="{ 'is-invalid': submitted && f['comment_incoming'].errors }">
                             </mat-form-field>
                         </div>
-
                     </div>
 
                 </div>

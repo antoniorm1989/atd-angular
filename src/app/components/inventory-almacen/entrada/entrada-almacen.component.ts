@@ -1,7 +1,7 @@
 import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd, Event } from '@angular/router';
 import { MessageComponent } from 'src/app/components/genericos/snack-message.component';
 import { User } from 'src/app/models/user';
 import { InventoryAlmacenService } from 'src/app/services/inventory.service';
@@ -16,7 +16,6 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angu
 import { MatButtonModule } from '@angular/material/button';
 import { BarcodeScannerComponent } from '../../genericos/barcodesScanner.component';
 
-
 export const _filter = (opt: CatalogoArticuloModel[], value: string): CatalogoArticuloModel[] => {
   const filterValue = value.toLowerCase();
 
@@ -30,7 +29,7 @@ export const _filter = (opt: CatalogoArticuloModel[], value: string): CatalogoAr
   encapsulation: ViewEncapsulation.None,
 })
 
-export class EntradaAlmacenComponent implements OnInit, OnDestroy {
+export class EntradaAlmacenComponent implements OnDestroy {
 
   action: string = 'new';
   form: FormGroup;
@@ -63,94 +62,94 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
       qty_incoming: [null, []],
       comment: ['', []],
       comment_incoming: ['', []],
+      total_backorder: 0,
     });
 
     try {
       this.addMinValidator();
       this.addMaxValidator();
       this.addMaxMinValidator('qty');
+
+      const almacenId = this.route.snapshot.paramMap.get('almacenId');
+      this.router.events.subscribe((event: Event) => {
+        if (event instanceof NavigationEnd && event.url.includes('/inventario-almacen/entrada')) {
+          if (almacenId != undefined) {
+            this.almacen = new CatalogoAlmacenModel(parseInt(almacenId));
+            this.catalogoAlmacenesService.getById(parseInt(almacenId)).subscribe({
+              next: (data) => {
+                this.almacen = data;
+              },
+              error: (e) => {
+              }
+            });
+    
+            var articuloId = this.route.snapshot.paramMap.get('articuloId');
+            if (articuloId != undefined) {
+              
+              /*this.inventoryAlmacenService.getInventoryByAlmacenByArticulo(parseInt(almacenId), parseInt(articuloId)).subscribe({
+                next: (data) => {
+                  if (data) {
+                    if (data.inventory_transaction && data.inventory_transaction.length > 0) {
+                      this.stock = data.inventory_transaction[0]?.stock;
+                    }
+    
+                    if (data.inventory_transaction_incoming && data.inventory_transaction_incoming.length > 1) {
+                      this.stock_incoming = data.inventory_transaction_incoming[1]?.stock;
+                    }
+    
+                    this.form.patchValue({
+                      id: data.id,
+                      minimum_stock: data.minimum_stock,
+                      maximum_stock: data.maximum_stock,
+                      notify_stock: data.notify_stock,
+                      qty: 0,
+                      qty_incoming: 0,
+                      total_backorder: data.total_backorder
+                    });
+                  }
+                }
+              });*/
+    
+              this.catalogoArticuloService.getById(parseInt(articuloId)).subscribe({
+                next: (data) => {
+                  var articulo = data;
+                  if (articulo.photo)
+                    this.imageUrl = `${environment.apiUrl}/images/articulos/${articulo.photo}`;
+                }
+              });
+            }
+    
+            this.catalogoArticuloService.getAllGroupedByCategory().subscribe({
+              next: (data) => {
+                this.articuloGroups = data;
+                this.articuloGroupOptions = this.form.get('selectedArticle')!.valueChanges.pipe(
+                  startWith(''),
+                  map(value => this._filterGroup(value || '')),
+                );
+    
+                if (articuloId != null) {
+                  this.f['selectedArticle'].setValue(this.getArticuloById(parseInt(articuloId || '0'))?.part_number);
+                  this.f['selectedArticle'].disable();
+                } else {
+                  if (this.selectedArticleInput && this.selectedArticleInput.nativeElement) {
+                    this.selectedArticleInput.nativeElement.focus();
+                  }
+                }
+              },
+              error: (e) => {
+              }
+            });
+    
+            this.form.controls['selectedArticle'].valueChanges.subscribe((newValue) => {
+              this.onOptionSelected(newValue);
+            });
+    
+          }
+        }
+      });
+
     } catch (error) {
       console.error('An error occurred in constructor:', error);
-    }
-  }
-
-  ngOnInit() {
-    try {
-      const almacenId = this.route.snapshot.paramMap.get('almacenId');
-
-      if (almacenId != undefined) {
-        this.almacen = new CatalogoAlmacenModel(parseInt(almacenId));
-        this.catalogoAlmacenesService.getById(parseInt(almacenId)).subscribe({
-          next: (data) => {
-            this.almacen = data;
-          },
-          error: (e) => {
-          }
-        });
-
-        var articuloId = this.route.snapshot.paramMap.get('articuloId');
-        if (articuloId != undefined) {
-          this.inventoryAlmacenService.getInventoryByAlmacenByArticulo(parseInt(almacenId), parseInt(articuloId)).subscribe({
-            next: (data) => {
-              if (data) {
-                if (data.inventory_transaction && data.inventory_transaction.length > 0) {
-                  this.stock = data.inventory_transaction[0]?.stock;
-                }
-
-                if (data.inventory_transaction_incoming && data.inventory_transaction_incoming.length > 1) {
-                  this.stock_incoming = data.inventory_transaction_incoming[1]?.stock;
-                }
-
-                this.form.patchValue({
-                  id: data.id,
-                  minimum_stock: data.minimum_stock,
-                  maximum_stock: data.maximum_stock,
-                  notify_stock: data.notify_stock,
-                  qty: 0,
-                  qty_incoming: 0
-                });
-              }
-            }
-          });
-
-          this.catalogoArticuloService.getById(parseInt(articuloId)).subscribe({
-            next: (data) => {
-              var articulo = data;
-
-              if (articulo.photo)
-                this.imageUrl = `${environment.apiUrl}/images/articulos/${articulo.photo}`;
-            }
-          });
-        }
-
-        this.catalogoArticuloService.getAllGroupedByCategory().subscribe({
-          next: (data) => {
-            this.articuloGroups = data;
-            this.articuloGroupOptions = this.form.get('selectedArticle')!.valueChanges.pipe(
-              startWith(''),
-              map(value => this._filterGroup(value || '')),
-            );
-
-            if (articuloId != null) {
-              this.f['selectedArticle'].setValue(this.getArticuloById(parseInt(articuloId || '0'))?.part_number);
-              this.f['selectedArticle'].disable();
-            } else {
-              if (this.selectedArticleInput && this.selectedArticleInput.nativeElement) {
-                this.selectedArticleInput.nativeElement.focus();
-              }
-            }
-          },
-          error: (e) => {
-          }
-        });
-
-        this.form.controls['selectedArticle'].valueChanges.subscribe((newValue) => {
-          this.onOptionSelected(newValue);
-        });
-
-      }
-    } catch (error) {
-      console.error('An error occurred in ngOnInit:', error);
     }
   }
 
@@ -180,15 +179,14 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
         this.inventoryAlmacenService.getInventoryByAlmacenByArticulo(this.almacen?.id, this.selectedArticle.id).subscribe({
           next: (data) => {
             if (data && data.id) {
+              
               if (data.inventory_transaction && data.inventory_transaction.length > 0) {
                 this.stock = data.inventory_transaction[0]?.stock;
-              } else
-                this.stock = 0;
+              }
 
-              if (data.inventory_transaction_incoming && data.inventory_transaction_incoming.length > 0) {
-                this.stock_incoming = data.inventory_transaction_incoming[0]?.stock;
-              } else
-                this.stock_incoming = 0;
+              if (data.inventory_transaction_incoming && data.inventory_transaction_incoming.length > 1) {
+                this.stock_incoming = data.inventory_transaction_incoming[1]?.stock;
+              }
 
               this.form.patchValue({
                 id: data.id,
@@ -196,7 +194,8 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
                 maximum_stock: data.maximum_stock,
                 notify_stock: data.notify_stock,
                 qty: 0,
-                qty_incoming: 0
+                qty_incoming: 0,
+                total_backorder: data.total_backorder
               });
 
             } else {
@@ -209,14 +208,15 @@ export class EntradaAlmacenComponent implements OnInit, OnDestroy {
                 maximum_stock: 0,
                 notify_stock: false,
                 qty: 0,
-                qty_incoming: 0
+                qty_incoming: 0,
+                total_backorder: 0
               });
             }
           }
         });
       }
     } catch (error) {
-      console.error('An error occurred in onOptionSelected:', error);
+      console.error('An error occurred:', error);
     }
   }
 

@@ -57,7 +57,7 @@ export class VentaComponent {
   selectedCondicionPago = "contado";
 
   hasRecords = false;
-  displayedColumns: string[] = ['cantidad', 'numero_parte', 'descripcion', 'almacen', 'precio_unitario', 'descuento', 'importe', 'unidad_medida', 'importe_iva', 'importe_retencion', 'actions'];
+  displayedColumns: string[] = ['numero_parte', 'descripcion', 'total', 'backorder', 'almacen', 'precio_unitario', 'descuento', 'importe', 'unidad_medida', 'importe_iva', 'importe_retencion', 'actions'];
   dataSourceArticulos = new MatTableDataSource<VentaArticuloModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -109,7 +109,6 @@ export class VentaComponent {
 
         this.route.params.subscribe(params => {
           this.id = params['ventaId'];
-
           if (this.id != undefined) {
             this.ventaService.getById(this.id).subscribe({
               next: (data) => {
@@ -238,16 +237,6 @@ export class VentaComponent {
       this.ventaService.create(venta).subscribe({
         next: (data) => {
           this.openDialogSuccess(`Se ha creado con éxito la venta #${data.id},  podrás visualizarlo desde tu listado ventas.`)
-          this.router.navigate(['ventas']);
-        },
-        error: (e) => {
-          console.log(e);
-        }
-      });
-    } else {
-      this.ventaService.update(venta).subscribe({
-        next: (data) => {
-          this.openMessageSnack();
           this.router.navigate(['ventas']);
         },
         error: (e) => {
@@ -537,8 +526,10 @@ export class VentaComponent {
 
   openArticuloVentaModalComponent() {
     const dialogRef = this.dialog.open(ArticuloVentaModalComponent, {
+      height: '750px',
       data: {
-        articulos: this.dataSourceArticulos.data
+        articulos: this.dataSourceArticulos.data,
+        clienteId: this.f['cliente'].value ? this.f['cliente'].value.id : 0
       },
     });
 
@@ -553,9 +544,12 @@ export class VentaComponent {
   }
 
   editArticuloVentaModalComponent(ventaArticuloModel: VentaArticuloModel) {
+    ventaArticuloModel.ventaId = this.id;
     const dialogRef = this.dialog.open(ArticuloVentaModalComponent, {
+      height: '750px',
       data: {
-        articulo: ventaArticuloModel
+        articulo: ventaArticuloModel,
+        clienteId: this.f['cliente'].value ? this.f['cliente'].value.id : 0
       }
     });
 
@@ -572,6 +566,21 @@ export class VentaComponent {
         this.hasRecords = true;
         this.calcularTotales();
       }
+    });
+  }
+
+  despacharArticuloVentaModalComponent(ventaArticuloModel: VentaArticuloModel) {
+    ventaArticuloModel.ventaId = this.id;
+    const dialogRef = this.dialog.open(ArticuloVentaModalComponent, {
+      height: '550px',
+      data: {
+        articulo: ventaArticuloModel,
+        isDespachar: true
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(ventaArticuloModel => {
+      this.router.navigate(['ventas']);
     });
   }
 
@@ -646,14 +655,13 @@ export class VentaComponent {
     const currentDate = new Date();
     return !date || date <= currentDate;
   }
-
 }
 
 @Component({
   selector: 'dialog-component',
   template: `<span mat-dialog-title>Agregar artículos venta </span>
             <mat-dialog-content class="mat-typography">
-              <app-venta-articulo [ventaArticulosModel]="ventaArticulosModel" [ventaArticuloModel]="ventaArticuloModel" (cancel)="onCancelar()" (add)="onAgregarArticulo($event)" #appVentaArticuloComponent></app-venta-articulo>
+              <app-venta-articulo [ventaArticulosModel]="ventaArticulosModel" [ventaArticuloModel]="ventaArticuloModel" [clienteId]="clienteId" [isDespachar]="isDespachar" (cancel)="onCancelar()" (add)="onAgregarArticulo($event)" #appVentaArticuloComponent></app-venta-articulo>
             </mat-dialog-content>`,
   styles: [
   ]
@@ -662,6 +670,8 @@ export class ArticuloVentaModalComponent {
   @ViewChild('appVentaArticuloComponent') appVentaArticuloComponent: any;
   ventaArticuloModel!: VentaArticuloModel;
   ventaArticulosModel!: VentaArticuloModel[];
+  clienteId = 0;
+  isDespachar = false;
 
   constructor(
     public dialogRef: MatDialogRef<ArticuloVentaModalComponent>,
@@ -675,6 +685,12 @@ export class ArticuloVentaModalComponent {
       }
       if (data.articulos != undefined) {
         this.ventaArticulosModel = data.articulos;
+      }
+      if (data.clienteId != undefined) {
+        this.clienteId = data.clienteId;
+      }
+      if (data.isDespachar != undefined) {
+        this.isDespachar = data.isDespachar;
       }
     }
 
@@ -696,3 +712,6 @@ export class ArticuloVentaModalComponent {
     }
   }
 }
+
+
+

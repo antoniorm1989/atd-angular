@@ -311,11 +311,6 @@
 
                         <table *ngIf="hasRecords" class="table" mat-table [dataSource]="dataSourceArticulos" style="margin-top: 24px;">
 
-                            <ng-container matColumnDef="cantidad">
-                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Cantidad</th>
-                                <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.cantidad}}</td>
-                            </ng-container>
-
                             <ng-container matColumnDef="numero_parte">
                                 <th mat-header-cell *matHeaderCellDef style="text-align: center;">#Parte</th>
                                 <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen.articulo.part_number}}</td>
@@ -331,6 +326,25 @@
                                         <img *ngIf="element.almacen.articulo.photo" class="photo" [src]="getPathPhoto(element.almacen.articulo.photo)">
                                         <span class="dos-renglones">{{element.almacen.articulo.description}}</span>
                                     </div>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="total">
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Total</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.cantidad}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="backorder">
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Back order</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">
+                                    <button *ngIf="element.backorder > 0" [disabled]="id == undefined"
+                                            mat-stroked-button
+                                            type="button"
+                                            title="Despachar artículo"
+                                            (click)="despacharArticuloVentaModalComponent(element)">
+                                        <mat-icon>local_mall</mat-icon>
+                                        {{element.backorder}}
+                                    </button>
                                 </td>
                             </ng-container>
 

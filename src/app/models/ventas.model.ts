@@ -54,6 +54,9 @@ export class VentaArticuloModel {
   almacen: InventoryAlmacenModel | undefined;
   sucursal : InventorySucursalModel | undefined;
   inventory_almacen_id: number | undefined;
+  backorder: number | undefined;
+  user: User | undefined;
+  ventaId: number | undefined;
 }
 
 export class VentaEstatusModel {

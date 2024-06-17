@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { VentaModel } from '../models/ventas.model';
+import { VentaArticuloModel, VentaModel } from '../models/ventas.model';
 
 @Injectable({
   providedIn: 'root'
@@ -38,8 +38,8 @@ export class VentaService {
     return this.http.post<void>(`${environment.apiUrl}/api/ventas/create`, ventaModel, this.getHeaders());
   }
 
-  update(ventaModel: VentaModel): Observable<any> {
-    return this.http.post<void>(`${environment.apiUrl}/api/ventas/update`, ventaModel, this.getHeaders());
+  despachar(articulo: VentaArticuloModel): Observable<any> {
+    return this.http.post<void>(`${environment.apiUrl}/api/ventas/despachar`, articulo, this.getHeaders());
   }
 
   private getHeaders() {
