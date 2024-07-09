@@ -328,8 +328,8 @@
                         <table *ngIf="hasRecords" class="table" mat-table [dataSource]="dataSourceArticulos" style="margin-top: 24px;">
 
                             <ng-container matColumnDef="numero_parte">
-                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">#Parte</th>
-                                <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.articulo.part_number}}</td>
+                                <th mat-header-cell *matHeaderCellDef>#Parte</th>
+                                <td mat-cell *matCellDef="let element">{{element.articulo.part_number}}</td>
                             </ng-container>
 
                             <ng-container matColumnDef="descripcion">
@@ -346,7 +346,7 @@
                             </ng-container>
 
                             <ng-container matColumnDef="categoria">
-                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Precio venta</th>
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Categoría</th>
                                 <td mat-cell *matCellDef="let element" style="text-align: center;">${{element.articulo.part_number}}</td>
                             </ng-container>
 

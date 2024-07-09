@@ -163,12 +163,42 @@
     background-color: #ffffff;
     padding: 0px 24px;
     display: grid;
-    grid-template-columns: 30px 200px 1fr 180px 180px;
+    grid-template-columns: 30px 200px 1fr 180px 180px 120px;
     column-gap: 12px;
+}
+
+.ventas-list .toolbar .filters mat-slide-toggle{
+    margin-top: 40px;
 }
 
 .ventas-list .toolbar .icon-filter {
     font-size: 24px;
     text-align: center;
     margin-top: 40px;
+}
+
+.ventas-list .table .center-column{
+    text-align: center;
+}
+
+.ventas-list .container-list .table .estatus-icon{
+    border-radius: 9px;
+    display: inline-block;
+    vertical-align: middle;
+    height: 9px;
+    margin-right: 8px;
+    width: 9px;
+    margin-bottom: 3px;
+}
+.ventas-list .container-list .table .estatus-icon.timbrada{
+    background-color: #5BD26E;
+}
+.ventas-list .container-list .table .estatus-icon.parcialmente-despachada{
+    background-color: #BA9400;
+}
+.ventas-list .container-list .table .estatus-icon.cancelada{
+    background-color: #FF0000;
+}
+.ventas-list .container-list .table .estatus-icon.despachada{
+    background-color: #71A8F8;
 }

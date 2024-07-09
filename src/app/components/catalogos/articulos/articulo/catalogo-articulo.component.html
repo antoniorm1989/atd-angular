@@ -37,7 +37,7 @@
                         </div>
                     </div>
                     <div class="column">
-                        <div class="form-row two-col">
+                        <div class="form-row three-col">
                             <div class="form-field part_number">
                                 <mat-label class="text-1" *ngIf="isReadOnly">Número de parte</mat-label>
                                 <mat-label class="text-1" *ngIf="!isReadOnly">Número de parte*</mat-label>
@@ -68,9 +68,7 @@
                                     <div *ngIf="f['description'].errors['required']">Este campo requerido</div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="form-row three-col">
                             <div class="form-field">
                                 <mat-label class="text-1" *ngIf="isReadOnly">Categoría</mat-label>
                                 <mat-label class="text-1" *ngIf="!isReadOnly">Categoría*</mat-label>
@@ -89,7 +87,9 @@
                                     <div *ngIf="f['selectedCategory'].errors['required']">Este campo requerido</div>
                                 </div>
                             </div>
+                        </div>
 
+                        <div class="form-row three-col">
                             <div class="form-field precio_venta">
                                 <mat-label class="text-1"  *ngIf="isReadOnly">Precio venta</mat-label>
                                 <mat-label class="text-1"  *ngIf="!isReadOnly">Precio venta*</mat-label>
@@ -112,9 +112,7 @@
                                     <span matTextPrefix>$&nbsp;</span>
                                 </mat-form-field>
                             </div>
-                        </div>
 
-                        <div class="form-row one-col">
                             <div class="form-field comment">
                                 <mat-label class="text-1">Comentarios</mat-label>
                                 <mat-label class="text-1-regular"

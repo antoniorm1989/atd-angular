@@ -22,9 +22,6 @@ export class CatalogoProveedoresComponent {
   form: FormGroup;
   submitted = false;
 
-  countries: CatalogoCountryModel[] = [];
-  selectedCountry!: CatalogoCountryModel;
-
   states: CatalogoStateModel[] = [];
   selectedState!: CatalogoStateModel;
 
@@ -149,14 +146,15 @@ export class CatalogoProveedoresComponent {
             this.action = 'new';
             this.title = 'Agregar proveedor';
 
-            this.catalogosService.getCountries().subscribe({
-              next: (data) => {
-                this.countries = data;
+            this.catalogosService.getStatesByCountry("MEX").subscribe({
+              next: (dataStates) => {
+                this.states = dataStates;
               },
               error: (e) => {
                 console.log(e);
               }
             });
+
 
             this.catalogosService.getRegimenensFiscales().subscribe({
               next: (data) => {
@@ -177,18 +175,6 @@ export class CatalogoProveedoresComponent {
 
   get isReadOnly() {
     return this.action == 'view';
-  }
-
-  onCountryChange(event: any) {
-    this.catalogosService.getStatesByCountry(this.selectedCountry.key ?? '').subscribe({
-      next: (data) => {
-        this.states = data;
-        this.cities = [];
-      },
-      error: (e) => {
-        console.log(e);
-      }
-    });
   }
 
   onStateChange(event: any) {

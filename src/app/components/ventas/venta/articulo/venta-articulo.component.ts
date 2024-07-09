@@ -327,6 +327,11 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
     try {
       this.selectedArticle = this.getArticuloByPartNumber(partNumber);
       if (this.selectedArticle != undefined) {
+        if (!this.isDespachar) {
+          this.form.controls['precio_venta'].enable();
+          this.form.controls['descuento'].enable();
+        }
+
         if (this.selectedArticle.photo)
           this.imageUrl = `${environment.apiUrl}/images/articulos/${this.selectedArticle.photo}`;
 
@@ -349,6 +354,9 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
             this.calcularBackOrder();
           }
         });
+      } else {
+        this.form.controls['precio_venta'].disable();
+        this.form.controls['descuento'].disable();
       }
     } catch (error) {
       console.error('An error occurred in onOptionSelected:', error);
@@ -372,7 +380,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
 
   agregarQty() {
     try {
-      if(this.selectedArticle == undefined || (this.isDespachar && ((this.stock != undefined && this.f['qty'].value >= this.stock) || this.f['backorder'].value <= 0)))
+      if (this.selectedArticle == undefined || (this.isDespachar && ((this.stock != undefined && this.f['qty'].value >= this.stock) || this.f['backorder'].value <= 0)))
         return;
 
       if (this.stock != undefined && ((this.isDespachar && this.f['qty'].value <= this.stock) || !this.isDespachar))

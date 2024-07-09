@@ -357,8 +357,7 @@ mat-panel-description {
     padding: 0px 8px 16px 8px;
 }
 
-.entrada-almacen .container .form-row.two-col,
-.entrada-almacen .container .form-row.four-col {
+.entrada-almacen .container .form-row.two-col {
     grid-template-columns: repeat(1, 1fr) !important;
 }
 
@@ -435,10 +434,6 @@ mat-panel-description {
 
 .entrada-almacen .mat-mdc-card-content:last-child {
     padding-bottom: 8px;
-}
-
-.entrada-almacen .form-field.comment {
-    grid-column: span 3;
 }
 
 .entrada-almacen .stock_indicator {

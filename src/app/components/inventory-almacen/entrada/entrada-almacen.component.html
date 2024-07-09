@@ -137,7 +137,7 @@
 
                 <div class="main-container">
 
-                    <div class="form-row three-col add-stock">
+                    <div class="form-row add-stock" style="grid-template-columns: 1fr 1fr 200px 200px;">
 
                         <div class="form-field">
                             <mat-label class="text-1">Agregar o retirar</mat-label>
@@ -152,16 +152,24 @@
                                     <mat-icon>add</mat-icon>
                                 </button>
                             </div>
-                            <div *ngIf="getStock() < f['minimum_stock'].value || getStock() > f['maximum_stock'].value" class="invalid-feedback-warning">
+                            <div style="text-align: justify;margin-left: 45px;" *ngIf="getStock() < f['minimum_stock'].value || getStock() > f['maximum_stock'].value" class="invalid-feedback-warning">
                                 <div *ngIf="getStock() < f['minimum_stock'].value">La cantidad minima es de {{f['minimum_stock'].value}}</div>
                                 <div *ngIf="getStock() > f['maximum_stock'].value">La cantidad maxima es de {{f['maximum_stock'].value}}</div>
                             </div>
-                            <div *ngIf="submitted && f['qty'].errors" class="invalid-feedback">
+                            <div style="text-align: justify;margin-left: 45px;" *ngIf="submitted && f['qty'].errors" class="invalid-feedback">
                                 <div *ngIf="f['qty'].hasError('isStockNeg')">No se permite retirar cantidad mayor a la actual</div>
                             </div>
                         </div>
 
-                        <div [matBadge]="(f['qty'].value > 0 ? '+' : '') + f['qty'].value" matBadgeOverlap="false"
+                        <div class="form-field comment">
+                            <mat-label class="text-1">Comentario</mat-label>
+                            <mat-form-field>
+                                <input matInput type="text" formControlName="comment"
+                                    [ngClass]="{ 'is-invalid': submitted && f['comment'].errors }">
+                            </mat-form-field>
+                        </div>
+
+                        <div style="width: 100px;" [matBadge]="(f['qty'].value > 0 ? '+' : '') + f['qty'].value" matBadgeOverlap="false"
                             class="stock_indicator" [ngClass]="{
                             'stock_indicator-neg': f['qty'].value < 0,
                             'stock_indicator-hide': f['qty'].value === 0 || f['qty'].value === null
@@ -173,14 +181,6 @@
                         <div class="stock_indicator" style="width: 90px;">
                             <span class="title-stock">Back Order</span>
                             <span class="stock">{{f['total_backorder'].value}}</span>
-                        </div>
-
-                        <div class="form-field comment">
-                            <mat-label class="text-1">Comentario</mat-label>
-                            <mat-form-field>
-                                <input matInput type="text" formControlName="comment"
-                                    [ngClass]="{ 'is-invalid': submitted && f['comment'].errors }">
-                            </mat-form-field>
                         </div>
 
                     </div>
@@ -196,8 +196,7 @@
                 </div>
 
                 <div class="main-container">
-
-                    <div class="form-row three-col add-stock">
+                    <div class="form-row add-stock" style="grid-template-columns: 1fr 1fr 200px 200px;">
                         <div class="form-field">
                             <mat-label class="text-1">Agregar o retirar</mat-label>
                             <div class="container-agregar-retirar">
@@ -214,9 +213,17 @@
                             <div *ngIf="getStockIncoming() < 0" class="invalid-feedback-warning">
                                 <div>La cantidad minima es de 0</div>
                             </div>
-                            <div *ngIf="submitted && f['qty_incoming'].errors" class="invalid-feedback">
+                            <div style="text-align: justify;margin-left: 45px;" *ngIf="submitted && f['qty_incoming'].errors" class="invalid-feedback">
                                 <div *ngIf="f['qty_incoming'].hasError('isStockNeg')">No se permite retirar cantidad mayor a la actual</div>
                             </div>
+                        </div>
+
+                        <div class="form-field comment_incoming">
+                            <mat-label class="text-1">Comentario</mat-label>
+                            <mat-form-field>
+                                <input matInput type="text" formControlName="comment_incoming"
+                                    [ngClass]="{ 'is-invalid': submitted && f['comment_incoming'].errors }">
+                            </mat-form-field>
                         </div>
 
                         <div [matBadge]="(f['qty_incoming'].value > 0 ? '+' : '') + f['qty_incoming'].value" matBadgeOverlap="false"
@@ -228,17 +235,6 @@
                             <span class="stock">{{stock_incoming}}</span>
                         </div>
                     </div>
-
-                    <div class="form-row two-col">
-                        <div class="form-field comment_incoming">
-                            <mat-label class="text-1">Comentario</mat-label>
-                            <mat-form-field>
-                                <input matInput type="text" formControlName="comment_incoming"
-                                    [ngClass]="{ 'is-invalid': submitted && f['comment_incoming'].errors }">
-                            </mat-form-field>
-                        </div>
-                    </div>
-
                 </div>
             </div>
 

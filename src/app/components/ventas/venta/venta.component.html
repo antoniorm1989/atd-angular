@@ -85,7 +85,7 @@
                                         </button>
                                         <mat-autocomplete requireSelection autoActiveFirstOption #auto="matAutocomplete">
                                             <ng-container *ngFor="let cliente of filteredClientes | async; track cliente">
-                                                <mat-option [value]="cliente" (onSelectionChange)="onClienteSelectionChange($event)">{{cliente.cliente}}</mat-option>
+                                                <mat-option [value]="cliente" (onSelectionChange)="onClienteSelectionChange($event)">{{cliente.nombre_fiscal}}</mat-option>
                                             </ng-container>
                                         </mat-autocomplete>
                                     </mat-form-field>

@@ -12,7 +12,7 @@ export class VentaService {
   constructor(private http: HttpClient) {
   }
 
-  getAll(clienteId: number | undefined, estatus: number, fechaDesde: Date, fechaHasta: Date): Observable<Array<VentaModel>> {
+  getAll(clienteId: number | undefined, estatus: number, fechaDesde: Date, fechaHasta: Date, backOrder: boolean): Observable<Array<VentaModel>> {
     let params = new HttpParams();
     if (clienteId) {
       params = params.set('clienteId', clienteId.toString());
@@ -25,6 +25,9 @@ export class VentaService {
     }
     if (fechaHasta) {
       params = params.set('fechaHasta', fechaHasta.toISOString());
+    }
+    if (backOrder) {
+      params = params.set('backOrder', backOrder.toString());
     }
     
     return this.http.get<Array<VentaModel>>(`${environment.apiUrl}/api/ventas/getAll`, { params: params });

@@ -20,7 +20,7 @@ import { DateAdapter } from '@angular/material/core';
 export class VentasListComponent {
 
   hasRecords = false;
-  displayedColumns: string[] = ['estatus', 'backorder', 'id', 'creacion', 'cliente', 'moneda', 'importe', 'fecha_sat', 'responsable'];
+  displayedColumns: string[] = ['id', 'estatus', 'backorder', 'creacion', 'cliente', 'moneda', 'importe', 'fecha_sat', 'responsable'];
   dataSource = new MatTableDataSource<VentaModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   private dataLoaded = false;
@@ -40,6 +40,7 @@ export class VentasListComponent {
       estatus: null,
       fechaDesde: null,
       fechaHasta: null,
+      backOrder: false
     });
 
     this.router.events.subscribe((event: Event) => {
@@ -145,14 +146,19 @@ export class VentasListComponent {
     this.onLoadVentas();
   }
 
+  onToggleChange(event: any) {
+    this.onLoadVentas();
+  }
+
   onLoadVentas() {
     let clienteId = this.selectedCliente?.id;
     let estatus = this.f['estatus'].value;
     let fechaDesde = this.f['fechaDesde'].value;
     let fechaHasta = this.f['fechaHasta'].value;
-    let hasFilters = clienteId != undefined || estatus != undefined || fechaDesde != undefined || fechaHasta != undefined;
+    let backOrder = this.f['backOrder'].value;
+    let hasFilters = clienteId != undefined || estatus != undefined || fechaDesde != undefined || fechaHasta != undefined || backOrder != false;
 
-    this.ventaService.getAll(clienteId, estatus, fechaDesde, fechaHasta).subscribe({
+    this.ventaService.getAll(clienteId, estatus, fechaDesde, fechaHasta, backOrder).subscribe({
       next: (data) => {
         if (data.length > 0) {
           this.hasRecords = true;
@@ -178,6 +184,14 @@ export class VentasListComponent {
       filterValue = filterValue.toLowerCase();
     }
     return this.clientes.filter(option => option.nombre_fiscal!.toLowerCase().includes(filterValue));
+  }
+
+  capitalizeWords(str: string): string {
+    return str
+      .trim()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
   }
 
 }

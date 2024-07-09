@@ -155,10 +155,11 @@ export class CatalogoClientesComponent {
                   });
                 }
 
-                if (data.regimen_fiscal && data.regimen_fiscal.id) {
-                  this.catalogosService.getRegimenensFiscales().subscribe({
-                    next: (dataRegimenesFiscales) => {
-                      this.regimenesFiscales = dataRegimenesFiscales;
+                this.catalogosService.getRegimenensFiscales().subscribe({
+                  next: (dataRegimenesFiscales) => {
+                    this.regimenesFiscales = dataRegimenesFiscales;
+
+                    if (data.regimen_fiscal && data.regimen_fiscal.id) {
                       this.selectedRegimenFiscal = dataRegimenesFiscales.filter(function (regimenFiscal) {
                         return data.regimen_fiscal && data.regimen_fiscal.id == regimenFiscal.id;
                       })[0];
@@ -168,13 +169,12 @@ export class CatalogoClientesComponent {
                           rf: this.selectedRegimenFiscal
                         });
                       }
-
-                    },
-                    error: (e) => {
-                      console.log(e);
                     }
-                  });
-                }
+                  },
+                  error: (e) => {
+                    console.log(e);
+                  }
+                });
 
                 if (data.tipo == 'Extranjero') {
                   this.removeValidations();

@@ -184,8 +184,8 @@ export class EntradaAlmacenComponent implements OnDestroy {
                 this.stock = data.inventory_transaction[0]?.stock;
               }
 
-              if (data.inventory_transaction_incoming && data.inventory_transaction_incoming.length > 1) {
-                this.stock_incoming = data.inventory_transaction_incoming[1]?.stock;
+              if (data.inventory_transaction_incoming && data.inventory_transaction_incoming.length > 0) {
+                this.stock_incoming = data.inventory_transaction_incoming[0]?.stock;
               }
 
               this.form.patchValue({
@@ -470,7 +470,8 @@ export class EntradaAlmacenComponent implements OnDestroy {
 
   restarQty() {
     try {
-      this.f['qty'].setValue(this.f['qty'].value - 1);
+      if(this.f['qty'].value > 0)
+        this.f['qty'].setValue(this.f['qty'].value - 1);
     } catch (error) {
       console.error('An error occurred in restarQty:', error);
     }
@@ -486,7 +487,8 @@ export class EntradaAlmacenComponent implements OnDestroy {
 
   restarQtyIncoming() {
     try {
-      this.f['qty_incoming'].setValue(this.f['qty_incoming'].value - 1);
+      if(this.f['qty_incoming'].value > 0)
+        this.f['qty_incoming'].setValue(this.f['qty_incoming'].value - 1);
     } catch (error) {
       console.error('An error occurred in restarQty:', error);
     }

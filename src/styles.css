@@ -143,3 +143,15 @@ body {
 .mat-mdc-dialog-content{
     max-height: max-content !important;
 }
+
+mat-form-field.mini .mat-mdc-text-field-wrapper .mat-mdc-form-field-infix{ 
+   padding-top: 8px !important;
+   padding-bottom: 8px !important;
+   min-height: 45px;
+}
+
+.mat-mdc-icon-button.mat-mdc-button-base {
+    width: 44px;
+    height: 44px;
+    padding: 12px;
+}

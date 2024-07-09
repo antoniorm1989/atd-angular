@@ -61,6 +61,7 @@ import { VentaArticuloComponent } from './components/ventas/venta/articulo/venta
 import { CatalogoProveedoresListComponent } from './components/catalogos/proveedores/catalogo-proveedores-list.component';
 import { CatalogoProveedoresComponent } from './components/catalogos/proveedores/proveedor/catalogo-proveedores.component';
 import { ClienteArticuloComponent } from './components/catalogos/clientes/cliente/articulo/cliente-articulo.component';
+import { MatMenuModule } from '@angular/material/menu';
 
 
 export function tokenGetter() {
@@ -138,7 +139,8 @@ export function tokenGetter() {
     BarcodeScannerComponent,
     MatDatepickerModule,
     MatRadioModule,
-    MatNativeDateModule // Incluye MatNativeDateModule
+    MatNativeDateModule,
+    MatMenuModule
   ],
   providers:[
     { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
