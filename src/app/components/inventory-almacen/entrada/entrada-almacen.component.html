@@ -146,7 +146,7 @@
                                     <mat-icon>remove</mat-icon>
                                 </button>
                                 <mat-form-field>
-                                    <input type="number" matInput formControlName="qty" [ngClass]="{ 'is-invalid': submitted && f['qty'].errors }" required>
+                                    <input type="number" matInput formControlName="qty" [ngClass]="{ 'is-invalid': submitted && f['qty'].errors }" required (ngModelChange)="onNumberQtyChange($event)">
                                 </mat-form-field>
                                 <button type="button" color="primary" mat-mini-fab (click)="agregarQty()">
                                     <mat-icon>add</mat-icon>
@@ -204,7 +204,7 @@
                                     <mat-icon>remove</mat-icon>
                                 </button>
                                 <mat-form-field>
-                                    <input type="number" matInput formControlName="qty_incoming" [ngClass]="{ 'is-invalid': submitted && f['qty_incoming'].errors }" required>
+                                    <input type="number" matInput formControlName="qty_incoming" [ngClass]="{ 'is-invalid': submitted && f['qty_incoming'].errors }" required (ngModelChange)="onNumberQtyIncomingChange($event)">
                                 </mat-form-field>
                                 <button type="button" color="primary" mat-mini-fab (click)="agregarQtyIncoming()">
                                     <mat-icon>add</mat-icon>

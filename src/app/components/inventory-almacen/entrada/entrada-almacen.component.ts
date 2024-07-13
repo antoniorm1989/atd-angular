@@ -82,10 +82,10 @@ export class EntradaAlmacenComponent implements OnDestroy {
               error: (e) => {
               }
             });
-    
+
             var articuloId = this.route.snapshot.paramMap.get('articuloId');
             if (articuloId != undefined) {
-              
+
               /*this.inventoryAlmacenService.getInventoryByAlmacenByArticulo(parseInt(almacenId), parseInt(articuloId)).subscribe({
                 next: (data) => {
                   if (data) {
@@ -109,7 +109,7 @@ export class EntradaAlmacenComponent implements OnDestroy {
                   }
                 }
               });*/
-    
+
               this.catalogoArticuloService.getById(parseInt(articuloId)).subscribe({
                 next: (data) => {
                   var articulo = data;
@@ -118,7 +118,7 @@ export class EntradaAlmacenComponent implements OnDestroy {
                 }
               });
             }
-    
+
             this.catalogoArticuloService.getAllGroupedByCategory().subscribe({
               next: (data) => {
                 this.articuloGroups = data;
@@ -126,7 +126,7 @@ export class EntradaAlmacenComponent implements OnDestroy {
                   startWith(''),
                   map(value => this._filterGroup(value || '')),
                 );
-    
+
                 if (articuloId != null) {
                   this.f['selectedArticle'].setValue(this.getArticuloById(parseInt(articuloId || '0'))?.part_number);
                   this.f['selectedArticle'].disable();
@@ -139,11 +139,11 @@ export class EntradaAlmacenComponent implements OnDestroy {
               error: (e) => {
               }
             });
-    
+
             this.form.controls['selectedArticle'].valueChanges.subscribe((newValue) => {
               this.onOptionSelected(newValue);
             });
-    
+
           }
         }
       });
@@ -179,7 +179,7 @@ export class EntradaAlmacenComponent implements OnDestroy {
         this.inventoryAlmacenService.getInventoryByAlmacenByArticulo(this.almacen?.id, this.selectedArticle.id).subscribe({
           next: (data) => {
             if (data && data.id) {
-              
+
               if (data.inventory_transaction && data.inventory_transaction.length > 0) {
                 this.stock = data.inventory_transaction[0]?.stock;
               }
@@ -470,7 +470,7 @@ export class EntradaAlmacenComponent implements OnDestroy {
 
   restarQty() {
     try {
-      if(this.f['qty'].value > 0)
+      if (this.stock != null && (this.stock + this.f['qty'].value) > 0)
         this.f['qty'].setValue(this.f['qty'].value - 1);
     } catch (error) {
       console.error('An error occurred in restarQty:', error);
@@ -487,7 +487,7 @@ export class EntradaAlmacenComponent implements OnDestroy {
 
   restarQtyIncoming() {
     try {
-      if(this.f['qty_incoming'].value > 0)
+      if (this.stock_incoming != null && (this.stock_incoming + this.f['qty_incoming'].value) > 0)
         this.f['qty_incoming'].setValue(this.f['qty_incoming'].value - 1);
     } catch (error) {
       console.error('An error occurred in restarQty:', error);
@@ -529,6 +529,24 @@ export class EntradaAlmacenComponent implements OnDestroy {
       style: 'currency',
       currency: 'USD'
     }).format(valor);
+  }
+
+  onNumberQtyChange(event: any) {
+    const newValue = event;
+    if (this.stock != null && (this.stock + this.f['qty'].value) >= 0){
+      this.form.controls['qty'].setValue(newValue);
+    }else{
+      this.form.controls['qty'].setValue(this.f['qty'].value + 1);
+    }
+  }
+
+  onNumberQtyIncomingChange(event: any) {
+    const newValue = event;
+    if (this.stock_incoming != null && (this.stock_incoming + this.f['qty_incoming'].value) >= 0){
+      this.form.controls['qty_incoming'].setValue(newValue);
+    }else{
+      this.form.controls['qty_incoming'].setValue(this.f['qty_incoming'].value + 1);
+    }
   }
 }
 
