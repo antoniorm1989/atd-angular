@@ -143,7 +143,7 @@ export class CatalogoSucursalesComponent {
 
     let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","lastname":""}');
     let user = new User();
-    user.user_id = userData.user_id;
+    user.id = userData.id;
 
     let sucursal = new CatalogoSucursalModel();
     sucursal.id = this.id;

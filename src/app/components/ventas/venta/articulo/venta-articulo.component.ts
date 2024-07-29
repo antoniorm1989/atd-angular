@@ -473,7 +473,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
 
         let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","lastname":""}');
         let user = new User();
-        user.user_id = userData.user_id;
+        user.id = userData.id;
 
         let ventaArticuloModel = new VentaArticuloModel();
         ventaArticuloModel.id = this.ventaArticuloModel?.id;

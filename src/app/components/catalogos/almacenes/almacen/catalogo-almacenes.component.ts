@@ -174,7 +174,7 @@ export class CatalogoAlmacenesComponent {
 
     let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","lastname":""}');
     let user = new User();
-    user.user_id = userData.user_id;
+    user.id = userData.id;
 
     let almacen = new CatalogoAlmacenModel();
     almacen.id = this.id;
@@ -250,7 +250,7 @@ export class CatalogoAlmacenesComponent {
   addSucursal() {
     let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","lastname":""}');
     let user = new User();
-    user.user_id = userData.user_id;
+    user.id = userData.id;
     user.name = userData.name;
     user.lastname = userData.lastname;
 

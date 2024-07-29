@@ -230,7 +230,7 @@ export class EntradaAlmacenComponent implements OnDestroy {
 
       let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","lastname":""}');
       let user = new User();
-      user.user_id = userData.user_id;
+      user.id = userData.id;
 
       let inventoryAlmacen = new InventoryAlmacenModel();
       inventoryAlmacen.id = this.f['id'].value;
@@ -534,7 +534,7 @@ export class EntradaAlmacenComponent implements OnDestroy {
   onNumberQtyChange(event: any) {
     const newValue = event;
     if (this.stock != null && (this.stock + this.f['qty'].value) >= 0){
-      this.form.controls['qty'].setValue(newValue);
+      //this.form.controls['qty'].setValue(newValue);
     }else{
       this.form.controls['qty'].setValue(this.f['qty'].value + 1);
     }
@@ -543,7 +543,7 @@ export class EntradaAlmacenComponent implements OnDestroy {
   onNumberQtyIncomingChange(event: any) {
     const newValue = event;
     if (this.stock_incoming != null && (this.stock_incoming + this.f['qty_incoming'].value) >= 0){
-      this.form.controls['qty_incoming'].setValue(newValue);
+      //this.form.controls['qty_incoming'].setValue(newValue);
     }else{
       this.form.controls['qty_incoming'].setValue(this.f['qty_incoming'].value + 1);
     }

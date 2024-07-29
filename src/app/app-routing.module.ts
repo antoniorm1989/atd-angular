@@ -26,6 +26,9 @@ import { VentasListComponent } from './components/ventas/ventas-list.component';
 import { VentaComponent } from './components/ventas/venta/venta.component';
 import { CatalogoProveedoresListComponent } from './components/catalogos/proveedores/catalogo-proveedores-list.component';
 import { CatalogoProveedoresComponent } from './components/catalogos/proveedores/proveedor/catalogo-proveedores.component';
+import { CatalogoUsuariosListComponent } from './components/catalogos/usuarios/catalogo-usuarios-list.component';
+import { CatalogoUsuariosComponent } from './components/catalogos/usuarios/usuario/catalogo-usuarios.component';
+import { ChangePasswordComponent } from './components/login/changepassword/changepassword.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/inventario-almacen', pathMatch: 'full' }, // Redirect to login by default
@@ -64,6 +67,10 @@ const routes: Routes = [
   { path: 'catalogos/proveedores', component: CatalogoProveedoresListComponent, canActivate: [AuthGuard] },
   { path: 'catalogos/proveedores/detail', component: CatalogoProveedoresComponent, canActivate: [AuthGuard] },
   { path: 'catalogos/proveedores/detail/:id', component: CatalogoProveedoresComponent, canActivate: [AuthGuard] },
+  { path: 'catalogos/usuarios', component: CatalogoUsuariosListComponent, canActivate: [AuthGuard] },
+  { path: 'catalogos/usuarios/detail', component: CatalogoUsuariosComponent, canActivate: [AuthGuard] },
+  { path: 'catalogos/usuarios/detail/:id', component: CatalogoUsuariosComponent, canActivate: [AuthGuard] },
+  { path: 'login/change-password', component: ChangePasswordComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({

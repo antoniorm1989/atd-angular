@@ -82,7 +82,8 @@ export class AppComponent implements OnDestroy {
   }
 
   public get isTokenValid(): boolean {
-    return this.userService.isTokenValid();
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{"isPasswordTemp":0}');
+    return this.userService.isTokenValid()&& userData.isPasswordTemp == 0;
   }
 
   get userName(): string {

@@ -206,7 +206,7 @@ export class VentaComponent {
 
     let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","lastname":""}');
     let user = new User();
-    user.user_id = userData.user_id;
+    user.id = userData.id;
 
     let venta = new VentaModel();
     // Datos generales
@@ -329,7 +329,7 @@ export class VentaComponent {
             map(value => this._filterVendedores(value || '')),
           );
           if (this.editData != undefined)
-            this.form.patchValue({ vendedor: this.vendedores.find(x => x.user_id == this.editData.vendedor?.user_id)?.name + ' ' + this.vendedores.find(x => x.user_id == this.editData.vendedor?.user_id)?.lastname });
+            this.form.patchValue({ vendedor: this.vendedores.find(x => x.id == this.editData.vendedor?.id)?.name + ' ' + this.vendedores.find(x => x.id == this.editData.vendedor?.id)?.lastname });
         }
       },
       error: (e) => {

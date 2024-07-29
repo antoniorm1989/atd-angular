@@ -1,7 +1,17 @@
+import { CatalogoRolModel } from "./catalogo-rol.model";
+
 export class User {
-    user_id: string | undefined;
+    id: string | undefined;
     name: string | undefined;
     lastname: string | undefined;
     email: string | undefined;
     token: string | undefined;
+    photo: string | undefined;
+    movil: string | undefined;
+    isAdmin: boolean | undefined;
+    notifications: boolean | undefined;
+    active: boolean | undefined;
+    password: string | undefined;
+    rol: CatalogoRolModel | undefined;
+    isPasswordTemp: boolean | undefined;
 }

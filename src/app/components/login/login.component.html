@@ -34,6 +34,9 @@
                         <div *ngIf="f['password'].errors['required']">Contraseña es requerida</div>
                         <div *ngIf="f['password'].hasError('minlength')">La Contraseña debe ser mayor a 4 caracters</div>
                     </div>
+                    <div *ngIf="submitted" class="invalid-feedback">
+                        <div *ngIf="loginFail">El usuario o contraseña son incorrectos</div>
+                    </div>
                 </div>
 
                 <div class="form-check">
@@ -47,35 +50,6 @@
 
                 <mat-label class="label-forgot-password">¿Olvidaste tu contraseña?</mat-label>
             </form>
-
-            <!--<form [formGroup]="form" (ngSubmit)="onSubmit()"></form>
-
-                <div class="form-field">
-                    <mat-label class="text-1 ">Correo electrónico</mat-label>
-                    <mat-form-field>
-                        <input matInput [(ngModel)]="username" name="username" required>
-                    </mat-form-field>
-                </div>
-
-                <div class="form-field">
-                    <mat-label class="text-1 ">Contraseña</mat-label>
-                    <mat-form-field>
-                        <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="password"
-                            name="password" required>
-                        <button type="button" mat-icon-button matSuffix (click)="togglePasswordVisibility()">
-                            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-                        </button>
-                    </mat-form-field>
-                </div>
-
-                <div class="form-check">
-                    <mat-checkbox name="remember" [(ngModel)]="remember">Recordar contraseña</mat-checkbox>
-                </div>
-
-                <button type="submit" class="btn-login" mat-raised-button color="primary">Iniciar sesión</button>
-
-                <mat-label class="label-forgot-password">¿Olvidaste tu contraseña?</mat-label>
-            </form>-->
         </mat-card-content>
     </mat-card>
 </div>

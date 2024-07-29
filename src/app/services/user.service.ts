@@ -30,7 +30,27 @@ export class UserService {
   }
 
   getAll(): Observable<Array<User>> {
-    return this.http.get<Array<User>>(`${environment.apiUrl}/api/auth/getAll`);
+    return this.http.get<Array<User>>(`${environment.apiUrl}/api/auth/getAll`, this.getHeaders());
+  }
+
+  getById(id: string | undefined): Observable<User> {
+    return this.http.get<User>(`${environment.apiUrl}/api/auth/getById/${id}`, this.getHeaders());
+  }
+
+  create(user: User): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/api/auth/register`, user, this.getHeaders());
+  }
+
+  update(user: User): Observable<any> {
+    return this.http.put(`${environment.apiUrl}/api/auth/update`, user, this.getHeaders());
+  }
+
+  updatePassword(user: User): Observable<any> {
+    return this.http.put(`${environment.apiUrl}/api/auth/updatePassword`, user, this.getHeaders());
+  }
+
+  uploadPhoto(id: number, formData: FormData): Observable<void> {
+    return this.http.put<void>(`${environment.apiUrl}/api/auth/uploadPhoto/${id}`, formData, this.getHeadersFile());
   }
 
   login(email: string, password: string) {
@@ -39,10 +59,8 @@ export class UserService {
       .pipe(
         map(token => {
           const userToken: User = token;
-
           localStorage.setItem('user-token', JSON.stringify(userToken));
           this.tokenSubject.next(userToken);
-
           return userToken;
         })
       );
@@ -59,6 +77,22 @@ export class UserService {
       return !this.jwtHelper.isTokenExpired(this.tokenValue?.token);
     else
       return false;
+  }
+
+  private getHeaders() {
+    return {
+      headers: {
+        'Content-type': 'application/json'
+      }
+    }
+  }
+
+  private getHeadersFile() {
+    return {
+      headers: {
+        //'Content-Type': 'multipart/form-data',
+      }
+    }
   }
 
 }

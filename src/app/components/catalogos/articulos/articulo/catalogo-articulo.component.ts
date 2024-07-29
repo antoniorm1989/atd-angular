@@ -138,7 +138,7 @@ export class CatalogoArticuloComponent {
 
     let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","lastname":""}');
     let user = new User();
-    user.user_id = userData.user_id;
+    user.id = userData.id;
 
     let articulo = new CatalogoArticuloModel();
     articulo.id = this.id;

@@ -1,0 +1,39 @@
+<div class="catalogo-usuarios-list">
+    <div class="toolbar">
+        <div class="toolbar-title">
+            <i class="icon fa-solid fa-user"></i>
+            <span class="title">Catálogo usuarios</span>
+        </div>
+        <div>
+            <span class="link-breadcrumb" (click)="navigate('catalogos')"> Catálogos </span> /<span class="breadcrumb-item">Catálogo usuarios</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div *ngIf="!hasRecords" class="container-empty">
+            <img src="../../assets/images/empty-list.png" alt="empty logo" class="img">
+            <span class="text">
+                Aún no tienes usuarios en el catálogo, para poder ver información favor de agregar un usuario.
+            </span>
+            <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Agregar usuario</button>
+        </div>
+        <div *ngIf="hasRecords" class="container-list">
+            <div class="toolbar">
+                <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Agregar usuario</button>
+            </div>
+            <mat-nav-list class="list">
+                <div class="list-item" mat-list-item *ngFor="let usuario of usuarios" (click)="onView(usuario.id)">
+                    <div class="user-wrapper">
+                        <div class="user-photo">
+                            <img [src]="getUrlPhoto(usuario.photo)">
+                        </div>
+                        <div class="user-rigth-content">
+                            <span><b>{{usuario.name}} {{usuario.lastname}}</b></span><br/>
+                            <span>{{usuario.email}}</span>
+                        </div>
+                    </div>
+                </div>
+            </mat-nav-list>
+        </div>
+    </div>
+</div>

@@ -62,7 +62,10 @@ import { CatalogoProveedoresListComponent } from './components/catalogos/proveed
 import { CatalogoProveedoresComponent } from './components/catalogos/proveedores/proveedor/catalogo-proveedores.component';
 import { ClienteArticuloComponent } from './components/catalogos/clientes/cliente/articulo/cliente-articulo.component';
 import { MatMenuModule } from '@angular/material/menu';
-
+import { CatalogoUsuariosListComponent } from './components/catalogos/usuarios/catalogo-usuarios-list.component';
+import { CatalogoUsuariosComponent, EditarPasswordModalComponent } from './components/catalogos/usuarios/usuario/catalogo-usuarios.component';
+import { UpdatePasswordComponent } from './components/catalogos/usuarios/usuario/password/update-password.component';
+import { ChangePasswordComponent } from './components/login/changepassword/changepassword.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -100,7 +103,12 @@ export function tokenGetter() {
     ArticuloClienteModalComponent,
     CatalogoProveedoresListComponent,
     CatalogoProveedoresComponent,
-    ClienteArticuloComponent
+    ClienteArticuloComponent,
+    CatalogoUsuariosListComponent,
+    CatalogoUsuariosComponent,
+    UpdatePasswordComponent,
+    EditarPasswordModalComponent,
+    ChangePasswordComponent
   ],
   imports: [
     BrowserModule,
