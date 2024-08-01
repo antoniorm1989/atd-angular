@@ -55,7 +55,7 @@ export class ChangePasswordComponent implements OnInit {
 
     let userData = JSON.parse(localStorage.getItem('user_data') || '{"id":0}');
     let user = new User();
-    user.id = userData.user_id;
+    user.id = userData.id;
     user.password = this.f['password'].value
     user.isPasswordTemp = false;
 
