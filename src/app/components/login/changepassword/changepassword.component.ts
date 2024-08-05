@@ -1,10 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
 import { UserService } from 'src/app/services/user.service';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
-import { CommunicationService } from 'src/app/services/communication.service';
 import { MessageComponent } from '../../genericos/snack-message.component';
 import { User } from 'src/app/models/user';
 
@@ -28,8 +26,7 @@ export class ChangePasswordComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private userService: UserService,
-    private _snackBar: MatSnackBar,
-    private communicationService: CommunicationService
+    private _snackBar: MatSnackBar
   ) {
 
     this.form = this.formBuilder.group({
@@ -61,7 +58,6 @@ export class ChangePasswordComponent implements OnInit {
 
     this.userService.updatePassword(user).subscribe({
       next: (data) => {
-        this.communicationService.callMethod();
         this.openMessageSnack();
 
         userData.isPasswordTemp = 0;
@@ -74,7 +70,7 @@ export class ChangePasswordComponent implements OnInit {
         }
       },
       error: (e) => {
-        this.loading = false;
+        this.loading = false; 
       }
     });
   }
@@ -112,5 +108,9 @@ export class ChangePasswordComponent implements OnInit {
     } else {
       return null;
     }
+  }
+
+  btnBack() {
+    this.userService.logout();
   }
 }

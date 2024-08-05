@@ -15,9 +15,11 @@
                 <mat-icon>notifications</mat-icon>
             </button>
 
-            <button class="btn-user" mat-mini-fab color="primary">{{userInitials}}</button>
+            <button *ngIf="!hasPhoto" class="btn-user" mat-mini-fab color="primary">{{userInitials}}</button>
 
-            <span class="user-name-label">{{userName}}</span>
+            <div *ngIf="hasPhoto" class="container-photo">
+                <img class="photo" [src]="getUrlPhoto()">
+            </div>
         </div>
 
     </mat-toolbar>

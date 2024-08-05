@@ -4,6 +4,7 @@ import { UserService } from './services/user.service';
 import { Router, NavigationEnd, Event } from '@angular/router';
 import { MatSidenav } from '@angular/material/sidenav';
 import { CommunicationService } from './services/communication.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -32,6 +33,7 @@ export class AppComponent implements OnDestroy {
     }
   ];
   userInitials: string = "";
+  hasPhoto: boolean = false;
 
   private _mobileQueryListener: () => void;
 
@@ -57,6 +59,10 @@ export class AppComponent implements OnDestroy {
   }
 
   ngOnInit(): void {
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{"photo":""}');
+    if (userData.photo != '')
+      this.hasPhoto = true;
+
     this.communicationService.methodCalled$.subscribe(() => {
       this.sidenav.close();
       setTimeout(() => {
@@ -99,5 +105,10 @@ export class AppComponent implements OnDestroy {
     this.sidenav.close();
     if(!this.mobileQuery.matches)
       this.sidenav.open();
+  }
+
+  getUrlPhoto(): string {
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{"photo":""}');
+    return `${environment.apiUrl}/images/users/${userData.photo}`;
   }
 }

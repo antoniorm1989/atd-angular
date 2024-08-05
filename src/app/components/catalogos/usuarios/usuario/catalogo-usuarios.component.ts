@@ -36,14 +36,14 @@ export class CatalogoUsuariosComponent {
     this.form = this.formBuilder.group({
       name: ['', [Validators.required]],
       lastname: ['', [Validators.required]],
-      email: ['', [Validators.required]],
-      movil: ['', [Validators.required]],
+      password: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}')]],
       isAdmin: [false, [Validators.required]],
       notifications: [true, [Validators.required]],
       active: [true, [Validators.required]],
       rol: [null, [Validators.required]],
-      photo: null,
-      password: [''],
+      movil: [''],
+      photo: null
     });
 
     this.router.events.subscribe((event: Event) => {
@@ -161,7 +161,13 @@ export class CatalogoUsuariosComponent {
             this.uploadPhoto(data.id).subscribe({
               next: () => {
                 this.openMessageSnack();
-                this.router.navigate(['catalogos/usuarios']);
+                setTimeout(() => {
+                  this.router.navigate(['catalogos/usuarios']).then(() => {
+                    this.router.events.subscribe(event => {
+                      window.location.href = window.location.href;
+                    });
+                  });
+                }, 3000);
               },
               error: (e) => {
                 console.log(e);
@@ -183,7 +189,11 @@ export class CatalogoUsuariosComponent {
             this.uploadPhoto(id).subscribe({
               next: () => {
                 this.openMessageSnack();
-                this.router.navigate(['catalogos/usuarios']);
+                this.router.navigate(['catalogos/usuarios']).then(() => {
+                  this.router.events.subscribe(event => {
+                    window.location.href = window.location.href;
+                  });
+                });
               },
               error: (e) => {
                 console.log(e);
@@ -268,8 +278,6 @@ export class CatalogoUsuariosComponent {
 
   isCurrentUser(): boolean {
     let userData = JSON.parse(localStorage.getItem('user_data') || '{"email":""}');
-    console.log(userData.email);
-    console.log(this.f['email'].value);
     return userData.email == this.f['email'].value;
   }
 

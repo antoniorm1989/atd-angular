@@ -1,7 +1,7 @@
 <div class="catalogo-usuarios">
     <div class="toolbar">
         <div class="toolbar-title">
-            <i class="icon fa-solid fa-users"></i>
+            <i class="icon fa-solid fa-user"></i>
             <span class="title">Catálogo usuarios</span>
         </div>
         <div class="toolbar-breadcrumb">
@@ -96,7 +96,7 @@
             
                                     <mat-label class="text-1"  *ngIf="!isReadOnly">Correo electrónico*</mat-label>
                                     <mat-form-field *ngIf="!isReadOnly">
-                                        <input matInput placeholder="Escribe el correo electrónico" formControlName="email" [ngClass]="{ 'is-invalid': submitted && f['correo'].errors }" required>
+                                        <input matInput placeholder="Escribe el correo electrónico" formControlName="email" [ngClass]="{ 'is-invalid': submitted && f['email'].errors }" required>
                                     </mat-form-field>
                                     <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
                                         <div *ngIf="f['email'].errors['required']">Este campo requerido</div>
@@ -111,12 +111,9 @@
                                 <div class="form-field">
                                     <mat-label class="text-1"  *ngIf="isReadOnly">Contraseña</mat-label>
                                     <mat-label class="text-1"  *ngIf="!isReadOnly">Contraseña*</mat-label>
-                                    <mat-label class="text-1-regular"
-                                        *ngIf="isReadOnly">{{this.f['password'].value}}</mat-label>
+                                    <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['password'].value}}</mat-label>
                                     <mat-form-field *ngIf="!isReadOnly">
-                                        <input matInput placeholder="Ingresa una contraseña temporal"
-                                            formControlName="password"
-                                            [ngClass]="{ 'is-invalid': submitted && f['password'].errors }" required>
+                                        <input matInput placeholder="Ingresa una contraseña temporal" formControlName="password" [ngClass]="{ 'is-invalid': submitted && f['password'].errors }" required>
                                     </mat-form-field>
                                     <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
                                         <div *ngIf="f['password'].errors['required']">Este campo requerido</div>
