@@ -166,3 +166,23 @@ input[type=number]::-webkit-outer-spin-button {
 input[type=number] {
     -moz-appearance: textfield;
 }
+
+
+.container-photo-user{
+    width: 45px;
+    height: 45px;
+    position: relative;
+  }
+  
+.container-photo-user .photo{
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid #fff;
+    box-shadow: 0 0 4px rgba(0, 0, 0, .8);
+    overflow: hidden;
+    margin: auto;
+}

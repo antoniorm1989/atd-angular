@@ -107,5 +107,9 @@ export class HistorialAlmacenComponent {
     });
   }
 
+  getUrlPhoto(photo: string): string {
+    return `${environment.apiUrl}/images/users/${photo}`;
+  }
+
 }
 

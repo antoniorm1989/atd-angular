@@ -194,4 +194,8 @@ export class VentasListComponent {
       .join(' ');
   }
 
+  getUrlPhoto(photo: string): string {
+    return `${environment.apiUrl}/images/users/${photo}`;
+  }
+
 }

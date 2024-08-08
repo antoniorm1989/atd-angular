@@ -4,6 +4,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import { CatalogoClientesService } from 'src/app/services/catalogo-cliente.service';
 import { CatalogoClienteModel } from 'src/app/models/catalogo-cliente.model';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-catalogo-clientes-list',
@@ -64,5 +65,9 @@ export class CatalogoClientesListComponent{
 
   navigate(route: string) {
     this.router.navigate([route]);
+  }
+
+  getUrlPhoto(photo: string): string {
+    return `${environment.apiUrl}/images/users/${photo}`;
   }
 }

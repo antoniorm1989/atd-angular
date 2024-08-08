@@ -103,5 +103,9 @@ export class HistorialSucursalComponent {
     });
   }
 
+  getUrlPhoto(photo: string): string {
+    return `${environment.apiUrl}/images/users/${photo}`;
+  }
+
 }
 

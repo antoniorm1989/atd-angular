@@ -12,6 +12,7 @@ import { User } from 'src/app/models/user';
 import { CatalogoAlmacenesService } from 'src/app/services/catalogo-almacenes.service';
 import { CatalogoSucursalesService } from 'src/app/services/catalogo-sucursales.service';
 import { CatalogosService } from 'src/app/services/catalogos.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-catalogo-almacenes',
@@ -299,6 +300,10 @@ export class CatalogoAlmacenesComponent {
       },
     };
     this._snackBar.openFromComponent(MessageComponent, config);
+  }
+
+  getUrlPhoto(photo: string): string {
+    return `${environment.apiUrl}/images/users/${photo}`;
   }
 
 }

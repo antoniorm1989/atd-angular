@@ -84,4 +84,8 @@ export class InventorySucursalListComponent {
   getPathPhoto(photo: string): string {
     return `${environment.apiUrl}/images/articulos/${photo}`
   }
+
+  getUrlPhoto(photo: string): string {
+    return `${environment.apiUrl}/images/users/${photo}`;
+  }
 }

@@ -22,7 +22,7 @@ export class CatalogoUsuariosComponent {
 
   action: string = 'view';
   title: string = '';
-  form: FormGroup;
+  form: FormGroup = new FormGroup({});
   submitted = false;
   id: string | undefined = '0';
   selectedFile: File | null = null;
@@ -30,29 +30,16 @@ export class CatalogoUsuariosComponent {
 
   roles: CatalogoRolModel[] = [];
   selectedRol!: CatalogoRolModel;
+  isEditMode: boolean = false;
 
   constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private userService: UserService, private router: Router, private _snackBar: MatSnackBar, private catalogoRolesService: CatalogoRolesService, private dialog: MatDialog) {
 
-    this.form = this.formBuilder.group({
-      name: ['', [Validators.required]],
-      lastname: ['', [Validators.required]],
-      password: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}')]],
-      isAdmin: [false, [Validators.required]],
-      notifications: [true, [Validators.required]],
-      active: [true, [Validators.required]],
-      rol: [null, [Validators.required]],
-      movil: [''],
-      photo: null
-    });
-
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd && event.url.includes('/catalogos/usuarios/detail')) {
-
         this.route.params.subscribe(params => {
-
           this.id = params['id'];
           if (this.id != undefined) {
+            this.isEditMode = true;
             this.userService.getById(this.id).subscribe({
               next: (data) => {
 
@@ -108,6 +95,7 @@ export class CatalogoUsuariosComponent {
               }
             });
           } else {
+            this.isEditMode = false;
             this.action = 'new';
             this.title = 'Agregar usuario';
 
@@ -121,6 +109,19 @@ export class CatalogoUsuariosComponent {
               }
             });
           }
+
+          this.form = this.formBuilder.group({
+            name: ['', [Validators.required]],
+            lastname: ['', [Validators.required]],
+            password: this.isEditMode ? [''] : ['', [Validators.required]],
+            email: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}')]],
+            isAdmin: [false, [Validators.required]],
+            notifications: [true, [Validators.required]],
+            active: [true, [Validators.required]],
+            rol: [null, [Validators.required]],
+            movil: [''],
+            photo: null
+          });
         });
 
       }
@@ -152,7 +153,6 @@ export class CatalogoUsuariosComponent {
     usuario.active = this.f['active'].value;
     usuario.password = this.f['password'].value;
     usuario.rol = this.f['rol'].value;
-
 
     if (this.action == 'new') {
       this.userService.create(usuario).subscribe({

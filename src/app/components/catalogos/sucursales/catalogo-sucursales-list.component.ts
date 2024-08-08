@@ -4,6 +4,7 @@ import { CatalogoSucursalesService } from 'src/app/services/catalogo-sucursales.
 import { CatalogoSucursalModel } from 'src/app/models/catalogo-sucursal.model';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-catalogo-sucursales-list',
@@ -64,5 +65,9 @@ export class CatalogoSucursalesListComponent{
 
   navigate(route: string) {
     this.router.navigate([route]);
+  }
+
+  getUrlPhoto(photo: string): string {
+    return `${environment.apiUrl}/images/users/${photo}`;
   }
 }

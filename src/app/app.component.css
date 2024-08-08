@@ -138,27 +138,6 @@ h1.example-app-name {
 }
 
 
-.example-container .container-photo{
-  width: 45x;
-  height: 45px;
-  position: relative;
-  margin: auto;
-}
-
-.example-container .container-photo .photo{
-  width: 45px;
-  height: 45px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  border: 1px solid #fff;
-  box-shadow: 0 0 4px rgba(0, 0, 0, .8);
-  overflow: hidden;
-  margin: auto;
-}
-
-
 @media only screen and (max-width: 1200px) {}
 
 @media only screen and (max-width: 1000px) {}

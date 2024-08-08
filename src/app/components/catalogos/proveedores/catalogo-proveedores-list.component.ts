@@ -4,6 +4,7 @@ import { MatPaginator} from '@angular/material/paginator';
 import { MatTableDataSource} from '@angular/material/table';
 import { CatalogoProveedoresService } from 'src/app/services/catalogo-proveedor.service';
 import { CatalogoProveedorModel } from 'src/app/models/catalogo-proveedor.model';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-catalogo-proveedores-list',
@@ -64,5 +65,9 @@ export class CatalogoProveedoresListComponent{
 
   navigate(route: string) {
     this.router.navigate([route]);
+  }
+
+  getUrlPhoto(photo: string): string {
+    return `${environment.apiUrl}/images/users/${photo}`;
   }
 }

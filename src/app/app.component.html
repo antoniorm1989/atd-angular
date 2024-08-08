@@ -17,7 +17,7 @@
 
             <button *ngIf="!hasPhoto" class="btn-user" mat-mini-fab color="primary">{{userInitials}}</button>
 
-            <div *ngIf="hasPhoto" class="container-photo">
+            <div *ngIf="hasPhoto" class="container-photo-user">
                 <img class="photo" [src]="getUrlPhoto()">
             </div>
         </div>
