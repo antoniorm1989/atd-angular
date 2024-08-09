@@ -60,7 +60,8 @@ export class AppComponent implements OnDestroy {
 
   ngOnInit(): void {
     let userData = JSON.parse(localStorage.getItem('user_data') || '{"photo":""}');
-    if (userData.photo != '' || userData.photo != null || userData.photo != undefined || userData.photo != 'null')
+
+    if (userData.photo == '' || userData.photo == null || userData.photo == undefined || userData.photo == 'null')
       this.hasPhoto = false;
     else
       this.hasPhoto = true;
