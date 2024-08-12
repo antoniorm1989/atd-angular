@@ -57,14 +57,14 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
 
+    // stop here if form is invalid
+    if (this.form!.invalid)
+      return;
+
     if (this.f['remember'].value)
       localStorage.setItem('rememberedCredentials', JSON.stringify({ email: this.f['email'].value, password: this.f['password'].value }));
     else
       localStorage.removeItem('rememberedCredentials');
-
-    // stop here if form is invalid
-    if (this.form!.invalid)
-      return;
 
     this.loading = true;
     this.userService.login(this.f['email'].value, this.f['password'].value)

@@ -56,6 +56,11 @@ export class ChangePasswordComponent implements OnInit {
     user.password = this.f['password'].value
     user.isPasswordTemp = false;
 
+    const rememberedCredentials = localStorage.getItem('rememberedCredentials');
+    if (rememberedCredentials) {
+      localStorage.setItem('rememberedCredentials', JSON.stringify({ email: userData.email, password: this.f['password'].value }));
+    }
+
     this.userService.updatePassword(user).subscribe({
       next: (data) => {
         this.openMessageSnack();
