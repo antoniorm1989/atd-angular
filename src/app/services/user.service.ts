@@ -21,7 +21,7 @@ export class UserService {
     private http: HttpClient,
     private jwtHelper: JwtHelperService
   ) {
-    this.tokenSubject = new BehaviorSubject<User | null>(JSON.parse(localStorage.getItem('user-token')!));
+    this.tokenSubject = new BehaviorSubject<User | null>(JSON.parse(localStorage.getItem('user_data')!));
     this.token = this.tokenSubject.asObservable();
   }
 
@@ -59,7 +59,7 @@ export class UserService {
       .pipe(
         map(token => {
           const userToken: User = token;
-          localStorage.setItem('user-token', JSON.stringify(userToken));
+          localStorage.setItem('user_data', JSON.stringify(userToken));
           this.tokenSubject.next(userToken);
           return userToken;
         })
@@ -67,7 +67,7 @@ export class UserService {
   }
 
   logout() {
-    localStorage.removeItem('user-token');
+    localStorage.removeItem('user_data');
     this.tokenSubject.next(null);
     this.router.navigate(['/login']);
   }

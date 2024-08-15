@@ -18,7 +18,6 @@ export class ChangePasswordComponent implements OnInit {
   form: FormGroup;
   loading = false;
   submitted = false;
-  returnUrl: string = '';
   hidePassword: boolean = true;
 
   constructor(
@@ -36,7 +35,6 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/inventario-almacen';
   }
 
   get f() { return this.form!.controls; }
@@ -68,14 +66,15 @@ export class ChangePasswordComponent implements OnInit {
         userData.isPasswordTemp = 0;
         localStorage.setItem('user_data', JSON.stringify(userData));
 
-        if (this.isValidRoute(this.returnUrl)) {
-          this.router.navigate([this.returnUrl]);
-        } else {
-          this.router.navigate(['/inventario-almacen']);
-        }
+        this.router.navigate(['/inventario-almacen']).then(() => {
+          this.router.events.subscribe(event => {
+            window.location.href = window.location.href;
+          });
+        });
+        
       },
       error: (e) => {
-        this.loading = false; 
+        this.loading = false;
       }
     });
   }
