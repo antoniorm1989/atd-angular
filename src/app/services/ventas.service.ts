@@ -29,7 +29,7 @@ export class VentaService {
     if (backOrder) {
       params = params.set('backOrder', backOrder.toString());
     }
-    
+
     return this.http.get<Array<VentaModel>>(`${environment.apiUrl}/api/ventas/getAll`, { params: params });
   }
 
@@ -43,6 +43,10 @@ export class VentaService {
 
   despachar(articulo: VentaArticuloModel): Observable<any> {
     return this.http.post<void>(`${environment.apiUrl}/api/ventas/despachar`, articulo, this.getHeaders());
+  }
+
+  timbrar(ventaId: number): Observable<any> {
+    return this.http.post<void>(`${environment.apiUrl}/api/facturacion/timbrar`, { id: ventaId }, this.getHeaders());
   }
 
   private getHeaders() {

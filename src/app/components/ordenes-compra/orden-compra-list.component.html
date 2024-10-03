@@ -1,18 +1,18 @@
-<div class="ventas-list">
+<div class="orden-compra-list">
     <div class="toolbar">
         <div class="toolbar-title">
             <i class="icon fa-solid fa-cash-register"></i>
-            <span class="title">Ventas</span>
+            <span class="title">Ordenes de compra</span>
         </div>
         <div>
-            <span class="breadcrumb-item">Ventas</span>
+            <span class="breadcrumb-item">Ordenes de compra</span>
         </div>
     </div>
     <div class="container">
         <div *ngIf="!hasRecords" class="container-empty">
             <img src="../../assets/images/empty-list.png" alt="empty logo" class="img">
-            <span class="text">Aún no tienes ventas registradas, para poder ver información favor de agregar una venta.</span>
-            <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Agregar venta</button>
+            <span class="text">Aún no tienes ordenes de compra, para poder ver información favor de agregar una orde de compra.</span>
+            <button style="width: 200px;" mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Agregar compra</button>
         </div>
         <div *ngIf="hasRecords" class="container-list">
 
@@ -35,13 +35,13 @@
                     <div class="form-field">
                         <mat-label class="text-1">Cliente</mat-label>
                         <mat-form-field style="width: 100%;" class="mini">
-                            <input type="text" matInput [matAutocomplete]="auto" formControlName="cliente" [value]="selectedCliente ? selectedCliente.cliente : null">
+                            <input type="text" matInput [matAutocomplete]="auto" formControlName="cliente" [value]="selectedProveedor ? selectedProveedor : null">
                             <button type="button" matSuffix mat-icon-button aria-label="Clear" *ngIf="this.f['cliente'].value != undefined" (click)="clearAutocompleteInput()">
                                 <mat-icon>close</mat-icon>                                
                             </button>
                             <mat-autocomplete requireSelection autoActiveFirstOption #auto="matAutocomplete">
-                               <ng-container *ngFor="let cliente of filteredClientes | async; track cliente">
-                                    <mat-option [value]="cliente" (onSelectionChange)="onClienteSelectionChange($event)">{{cliente.cliente}}</mat-option>
+                               <ng-container *ngFor="let proveedor of filteredProveedores | async; track cliente">
+                                    <mat-option [value]="proveedor" (onSelectionChange)="onProveedorSelectionChange($event)">{{proveedor.nombreContacto}} {{proveedor.apellidoContacto}}</mat-option>
                                 </ng-container>
                             </mat-autocomplete>
                         </mat-form-field>
@@ -67,13 +67,13 @@
                     </div>
                 </form>
 
-                <button mat-flat-button class="btn btn-agregar" (click)="onNew()" type="button"><mat-icon>add</mat-icon>Agregar venta</button>
+                <button mat-flat-button class="btn btn-agregar" (click)="onNew()" type="button"><mat-icon>add</mat-icon>Agregar orden compra</button>
             </div>
 
             <table class="table" mat-table [dataSource]="dataSource">
 
                 <ng-container matColumnDef="id">
-                    <th mat-header-cell *matHeaderCellDef class="center-column">Venta</th>
+                    <th mat-header-cell *matHeaderCellDef class="center-column">OrdenCompra</th>
                     <td mat-cell *matCellDef="let element" class="center-column"><span (click)="onView(element.id)"
                             class="title-grid">{{element.id}}</span></td>
                 </ng-container>
@@ -104,9 +104,14 @@
                     <td mat-cell *matCellDef="let element"><span>{{element.cliente.cliente}}</span></td>
                 </ng-container>
 
+                <ng-container matColumnDef="moneda">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Moneda</th>
+                    <td mat-cell *matCellDef="let element" class="center-column"><span>{{element.moneda}}</span></td>
+                </ng-container>
+
                 <ng-container matColumnDef="importe">
                     <th mat-header-cell *matHeaderCellDef class="center-column">Importe</th>
-                    <td mat-cell *matCellDef="let element" class="center-column"><span>{{formatearComoMoneda(element.importe)}} {{element.moneda}}</span></td>
+                    <td mat-cell *matCellDef="let element" class="center-column"><span>{{formatearComoMoneda(element.importe)}}</span></td>
                 </ng-container>
 
                 <ng-container matColumnDef="fecha_sat">
@@ -119,7 +124,7 @@
                     <td mat-cell *matCellDef="let element">
                         <div *ngIf="element.responsable.id" class="user-wrapper">
                             <div class="circle-initials" mat-mini-fab color="primary" *ngIf="element.responsable.photo == null">
-                                {{getUserName(element.responsable.name, element.responsable.last_name)}}
+                                {{getUserName(element.responsable.name, element.responsable.lastname)}}
                             </div>
                             <div *ngIf="element.responsable.photo != null" class="container-photo-user">
                                 <img class="photo" [src]="getUrlPhoto(element.responsable.photo)">
@@ -129,19 +134,21 @@
                     </td>
                 </ng-container>
 
+                <!--
                 <ng-container matColumnDef="actions">
-                    <th mat-header-cell *matHeaderCellDef></th>
-                    <td mat-cell *matCellDef="let element">
-                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-                            <mat-icon>more_vert</mat-icon>
-                        </button>
-                        <mat-menu #menu="matMenu">
-                            <button mat-menu-item (click)="timbrarVenta(element.id)">
-                                <span>Facturar</span>
-                            </button>
-                        </mat-menu>
-                    </td>
+                            <th mat-header-cell *matHeaderCellDef></th>
+                            <td mat-cell *matCellDef="let element">
+                                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                                    <mat-icon>more_vert</mat-icon>
+                                  </button>
+                                  <mat-menu #menu="matMenu">
+                                    <button mat-menu-item (click)="des()">
+                                      <span>Despachar</span>
+                                    </button>
+                                  </mat-menu>
+                            </td>
                 </ng-container>
+                -->
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>

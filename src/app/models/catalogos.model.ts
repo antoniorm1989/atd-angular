@@ -45,15 +45,14 @@ export class CatalogoObjetoImpuestoModel {
 }
 
 export class CatalogoProductoServicioModel {
-  id: string | undefined;
-  name: string | undefined;
   key: string | undefined;
+  name: string | undefined;
+  complement: string | undefined;
 }
 
 export class CatalogoUnidadMedidaModel {
-  id: string | undefined;
-  name: string | undefined;
   key: string | undefined;
+  name: string | undefined;
 }
 
 export class CatalogoMetodoPagoModel {
@@ -61,4 +60,9 @@ export class CatalogoMetodoPagoModel {
   name: string | undefined;
   key: string | undefined;
 }
+
+export class CatCmpraVentaEstatus {
+  id: number | undefined;
+  name: string | undefined;
+};
 

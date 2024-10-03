@@ -7,24 +7,24 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router, NavigationEnd, Event } from '@angular/router';
 import { Observable, map, startWith } from 'rxjs';
 import { MessageComponent } from 'src/app/components/genericos/snack-message.component';
-import { CatalogoClienteModel } from 'src/app/models/catalogo-cliente.model';
+import { CatalogoProveedorModel } from 'src/app/models/catalogo-proveedor.model';
 import { CatalogoFormaPagoModel, CatalogoObjetoImpuestoModel, CatalogoRegimenFiscalModel, CatalogoUsoCfdiModel } from 'src/app/models/catalogos.model';
 import { User } from 'src/app/models/user';
-import { VentaArticuloModel, VentaModel } from 'src/app/models/ventas.model';
-import { CatalogoClientesService } from 'src/app/services/catalogo-cliente.service';
+import { CatalogoProveedoresService } from 'src/app/services/catalogo-proveedor.service';
 import { CatalogosService } from 'src/app/services/catalogos.service';
 import { UserService } from 'src/app/services/user.service';
-import { VentaService } from 'src/app/services/ventas.service';
 import { environment } from 'src/environments/environment';
 import { DialogSuccessComponent } from '../../genericos/dialogSuccess.component';
+import { OrdenCompraArticuloModel, OrdenCompraModel } from 'src/app/models/orden-compa.model';
+import { OrdenCompraService } from 'src/app/services/orden-compra.service';
 
 @Component({
-  selector: 'app-venta',
-  templateUrl: './venta.component.html',
-  styleUrls: ['./venta.component.css'],
+  selector: 'app-orden-compra',
+  templateUrl: './orden-compra.component.html',
+  styleUrls: ['./orden-compra.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class VentaComponent {
+export class OrdenCompraComponent {
 
   action: string = 'view';
   title: string = '';
@@ -32,18 +32,10 @@ export class VentaComponent {
   submitted = false;
   id = 0;
 
-  clientes: CatalogoClienteModel[] = [];
-  selectedCliente!: CatalogoClienteModel;
-  filteredClientes!: Observable<CatalogoClienteModel[]>;
+  proveedores: CatalogoProveedorModel[] = [];
+  selectedProveedor!: CatalogoProveedorModel;
+  filteredProveedores!: Observable<CatalogoProveedorModel[]>;
 
-  vendedores: User[] = [];
-  filteredVendedores!: Observable<User[]>;
-
-  usoCfdiList: CatalogoUsoCfdiModel[] = [];
-  selectedUsoCfdi!: CatalogoUsoCfdiModel;
-
-  regimenesFiscales: CatalogoRegimenFiscalModel[] = [];
-  selectedRegimenFiscal!: CatalogoRegimenFiscalModel;
 
   formaPagoList: CatalogoFormaPagoModel[] = [];
   selectedFormaPago!: CatalogoFormaPagoModel;
@@ -51,14 +43,11 @@ export class VentaComponent {
   metodoPagoList: CatalogoFormaPagoModel[] = [];
   selectedMetodoPago!: CatalogoFormaPagoModel;
 
-  objetoImpuestoList: CatalogoObjetoImpuestoModel[] = [];
-  selectedObjetoImpuesto!: CatalogoObjetoImpuestoModel;
-
   selectedCondicionPago = "contado";
 
   hasRecords = false;
-  displayedColumns: string[] = ['numero_parte', 'descripcion', 'total', 'backorder', 'almacen', 'precio_unitario', 'descuento', 'importe', 'unidad_medida', 'importe_iva', 'importe_retencion', 'actions'];
-  dataSourceArticulos = new MatTableDataSource<VentaArticuloModel>([]);
+  displayedColumns: string[] = ['numero_parte', 'descripcion', 'cantidad', 'almacen', 'precio_compra', 'importe', 'importe_iva', 'actions'];
+  dataSourceArticulos = new MatTableDataSource<OrdenCompraArticuloModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   subTotal: number = 0;
@@ -67,15 +56,13 @@ export class VentaComponent {
   retencion: number = 0;
   total: number = 0;
 
-  editData!: VentaModel;
-
-  factura: any;
+  editData!: OrdenCompraModel;
 
   constructor(public route: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private ventaService: VentaService,
+    private ordenCompraService: OrdenCompraService,
     private router: Router,
-    private catalogoClientesService: CatalogoClientesService,
+    private catalogoProveedoresService: CatalogoProveedoresService,
     private userService: UserService,
     private _snackBar: MatSnackBar,
     private catalogosService: CatalogosService,
@@ -83,13 +70,10 @@ export class VentaComponent {
 
     this.form = this.formBuilder.group({
       // Datos generales
-      fecha_compra_cliente: new Date(),
-      vendedor: null,
-      usoCfdi: [null, Validators.required],
-      cliente: [null, Validators.required],
-      nombre_fiscal: [''],
-      regimen_fiscal: [''],
-      comentarios: "",
+      proveedor: [null, Validators.required],
+      folio_interno: ['', Validators.required],
+      fecha_registro: new Date(),
+      comentarios: [''],
       // Forma pago
       condicion_pago: ['contado'],
       tiene_dias_credito: { value: false, disabled: true },
@@ -98,66 +82,51 @@ export class VentaComponent {
       forma_pago: [],
       metodo_pago: [],
       tipo_cambio: 0,
-      // Articulos
-      objeto_impuesto: [],
-      translada_iva: false,
-      translada_iva_porcentaje: "0",
-      retiene_iva: false,
-      retiene_iva_porcentaje: "0",
     });
 
     this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url.includes('/ventas/detail')) {
+      if (event instanceof NavigationEnd && event.url.includes('/ordenesCompra/detail')) {
 
         this.route.params.subscribe(params => {
-          this.id = params['ventaId'];
+          this.id = params['ordenCompraId'];
           if (this.id != undefined) {
-            this.ventaService.getById(this.id).subscribe({
+            this.ordenCompraService.getById(this.id).subscribe({
               next: (data) => {
 
-                var venta = data;
-                this.editData = venta;
+                var ordenCompra = data;
+                this.editData = ordenCompra;
 
                 this.form.patchValue({
                   // Datos generales
-                  fecha_compra_cliente: venta.fecha_compra_cliente,
-                  usoCfdi: venta.uso_cfdi,
-                  comentarios: venta.comentarios,
-                  nombre_fiscal: venta.cliente?.nombre_fiscal,
-                  regimen_fiscal: venta.cliente?.regimen_fiscal,
+                  proveedor: ordenCompra.proveedor,
+                  folio_interno: ordenCompra.folio_interno,
+                  fecha_registro: ordenCompra.fecha_registro,
+                  comentarios: ordenCompra.comentarios,
                   // Forma pago
-                  condicion_pago: venta.condicion_pago,
-                  tiene_dias_credito: venta.tiene_dias_credito,
-                  cantidad_dias_credito: venta.cantidad_dias_credito,
-                  moneda: venta.moneda,
-                  forma_pago: venta.forma_pago,
-                  metodo_pago: venta.metodo_pago,
-                  tipo_cambio: venta.tipo_cambio,
-                  // Articulos
-                  objeto_impuesto: venta.objeto_impuesto,
-                  translada_iva: venta.translada_iva,
-                  translada_iva_porcentaje: venta.translada_iva_porcentaje?.toString(),
-                  retiene_iva: venta.retiene_iva,
-                  retiene_iva_porcentaje: venta.retiene_iva_porcentaje?.toString(),
+                  condicion_pago: ordenCompra.condicion_pago,
+                  tiene_dias_credito: ordenCompra.tiene_dias_credito,
+                  cantidad_dias_credito: ordenCompra.cantidad_dias_credito,
+                  moneda: ordenCompra.moneda,
+                  forma_pago: ordenCompra.forma_pago,
+                  metodo_pago: ordenCompra.metodo_pago,
+                  tipo_cambio: ordenCompra.tipo_cambio
                 });
 
-                this.dataSourceArticulos.data = venta.articulos || [];
+                this.dataSourceArticulos.data = ordenCompra.articulos || [];
                 this.hasRecords = this.dataSourceArticulos.data.length > 0;
 
                 this.calcularTotales();
-
                 this.loadSelectData();
 
                 this.route.queryParams.subscribe(params => {
                   switch (params['action']) {
                     case undefined:
                       this.action = 'view';
-                      this.title = 'Consultar venta';
-                      //this.form.disable();
+                      this.title = 'Consultar ordenCompra';
                       break;
                     case 'edit':
                       this.action = 'edit';
-                      this.title = 'Editar venta';
+                      this.title = 'Editar ordenCompra';
                       break;
                   }
                 });
@@ -167,24 +136,11 @@ export class VentaComponent {
             });
           } else {
             this.action = 'new';
-            this.title = 'Crear venta';
+            this.title = 'Crear ordenCompra';
             this.loadSelectData();
           }
         });
       }
-    });
-
-    this.form.controls['translada_iva'].valueChanges.subscribe((newValue) => {
-      this.calcularTotales();
-    });
-    this.form.controls['translada_iva_porcentaje'].valueChanges.subscribe((newValue) => {
-      this.calcularTotales();
-    });
-    this.form.controls['retiene_iva'].valueChanges.subscribe((newValue) => {
-      this.calcularTotales();
-    });
-    this.form.controls['retiene_iva_porcentaje'].valueChanges.subscribe((newValue) => {
-      this.calcularTotales();
     });
   }
 
@@ -210,36 +166,30 @@ export class VentaComponent {
     let user = new User();
     user.id = userData.id;
 
-    let venta = new VentaModel();
+    let ordenCompra = new OrdenCompraModel();
     // Datos generales
-    venta.id = this.id;
-    venta.fecha_compra_cliente = this.f['fecha_compra_cliente'].value;
-    venta.cliente = this.f['cliente'].value;
-    venta.vendedor = this.vendedores.find(x => (x.name + ' ' + x.lastname) == this.f['vendedor'].value);
-    venta.uso_cfdi = this.f['usoCfdi'].value;
-    venta.comentarios = this.f['comentarios'].value;
-    venta.responsable = user;
+    ordenCompra.id = this.id;
+    ordenCompra.folio_interno = this.f['folio_interno'].value;
+    ordenCompra.fecha_registro = this.f['fecha_registro'].value;
+    ordenCompra.comentarios = this.f['comentarios'].value;
+    ordenCompra.responsable = user;
+    ordenCompra.proveedor = this.f['proveedor'].value;
     // forma pago
-    venta.condicion_pago = this.f['condicion_pago'].value;
-    venta.tiene_dias_credito = this.f['tiene_dias_credito'].value;
-    venta.cantidad_dias_credito = this.f['cantidad_dias_credito'].value;
-    venta.moneda = this.f['moneda'].value;
-    venta.tipo_cambio = this.f['tipo_cambio'].value;
-    venta.forma_pago = this.f['forma_pago'].value;
-    venta.metodo_pago = this.f['metodo_pago'].value;
+    ordenCompra.condicion_pago = this.f['condicion_pago'].value;
+    ordenCompra.tiene_dias_credito = this.f['tiene_dias_credito'].value;
+    ordenCompra.cantidad_dias_credito = this.f['cantidad_dias_credito'].value;
+    ordenCompra.moneda = this.f['moneda'].value;
+    ordenCompra.tipo_cambio = this.f['tipo_cambio'].value;
+    ordenCompra.forma_pago = this.f['forma_pago'].value;
+    ordenCompra.metodo_pago = this.f['metodo_pago'].value;
     // Articulos
-    venta.objeto_impuesto = this.f['objeto_impuesto'].value;
-    venta.translada_iva = this.f['translada_iva'].value;
-    venta.translada_iva_porcentaje = parseFloat(this.f['translada_iva_porcentaje'].value);
-    venta.retiene_iva = this.f['retiene_iva'].value;
-    venta.retiene_iva_porcentaje = parseFloat(this.f['retiene_iva_porcentaje'].value);
-    venta.articulos = this.dataSourceArticulos.data;
+    ordenCompra.articulos = this.dataSourceArticulos.data;
 
     if (this.action == 'new') {
-      this.ventaService.create(venta).subscribe({
+      this.ordenCompraService.create(ordenCompra).subscribe({
         next: (data) => {
-          this.openDialogSuccess(`Se ha creado con éxito la venta #${data.id},  podrás visualizarlo desde tu listado ventas.`)
-          this.router.navigate(['ventas']);
+          this.openDialogSuccess(`Se ha creado con éxito la orden de compra #${data.id},  podrás visualizarlo desde tu listado ordenes de compra.`)
+          this.router.navigate(['ordenesCompra']);
         },
         error: (e) => {
           console.log(e);
@@ -306,72 +256,22 @@ export class VentaComponent {
   }
 
   loadSelectData() {
-    this.catalogoClientesService.getAll().subscribe({
+    this.catalogoProveedoresService.getAll().subscribe({
       next: (data) => {
         if (data.length > 0) {
-          this.clientes = data;
-          this.filteredClientes = this.form.valueChanges.pipe(
+          this.proveedores = data;
+          this.filteredProveedores = this.form.valueChanges.pipe(
             startWith(''),
             map(value => this._filter(value || '')),
           );
           if (this.editData != undefined)
-            this.form.patchValue({ cliente: this.clientes.find(x => x.id == this.editData.cliente?.id) });
+            this.form.patchValue({ proveedor: this.proveedores.find(x => x.id == this.editData.proveedor?.id) });
         }
       },
       error: (e) => {
       }
     });
 
-    this.userService.getAll().subscribe({
-      next: (data) => {
-        if (data.length > 0) {
-          this.vendedores = data;
-          this.filteredVendedores = this.form.valueChanges.pipe(
-            startWith(''),
-            map(value => this._filterVendedores(value || '')),
-          );
-          if (this.editData != undefined)
-            this.form.patchValue({ vendedor: this.vendedores.find(x => x.id == this.editData.vendedor?.id)?.name + ' ' + this.vendedores.find(x => x.id == this.editData.vendedor?.id)?.lastname });
-        }
-      },
-      error: (e) => {
-      }
-    });
-
-    this.catalogosService.getUsoCfdi().subscribe({
-      next: (data) => {
-        if (data.length > 0) {
-          this.usoCfdiList = data;
-          if (this.editData != undefined) {
-            let selectedUsoCfdi = data.find(x => x.id == this.editData.uso_cfdi?.id);
-            if (selectedUsoCfdi != undefined)
-              this.form.patchValue({ usoCfdi: selectedUsoCfdi });
-          }
-          else
-            this.selectedUsoCfdi = data[0];
-        }
-      },
-      error: (e) => {
-      }
-    });
-
-    this.catalogosService.getRegimenensFiscales().subscribe({
-      next: (data) => {
-        if (data.length > 0) {
-          this.regimenesFiscales = data;
-          if (this.editData != undefined) {
-            let selectedRegimenFiscal = data.find(x => x.id == this.editData.cliente?.regimen_fiscal?.id);
-            if (selectedRegimenFiscal != undefined)
-              this.form.patchValue({ regimen_fiscal: selectedRegimenFiscal });
-          }
-          else
-            this.selectedRegimenFiscal = data[0];
-        }
-      },
-      error: (e) => {
-        console.log(e);
-      }
-    });
 
     this.catalogosService.getMetodoPago().subscribe({
       next: (data) => {
@@ -384,24 +284,6 @@ export class VentaComponent {
           }
           else
             this.selectedMetodoPago = data[0];
-        }
-      },
-      error: (e) => {
-        console.log(e);
-      }
-    });
-
-    this.catalogosService.getObjetoImpuesto().subscribe({
-      next: (data) => {
-        if (data.length > 0) {
-          this.objetoImpuestoList = data;
-          if (this.editData != undefined) {
-            let selectedObjetoImpuesto = data.find(x => x.id == this.editData.objeto_impuesto?.id);
-            if (selectedObjetoImpuesto != undefined)
-              this.form.patchValue({ objeto_impuesto: selectedObjetoImpuesto });
-          }
-          else
-            this.selectedObjetoImpuesto = data[0];
         }
       },
       error: (e) => {
@@ -447,27 +329,18 @@ export class VentaComponent {
     });
   }
 
-  private _filter(value: any): CatalogoClienteModel[] {
+  private _filter(value: any): CatalogoProveedorModel[] {
     let filterValue = "";
-    if (value.cliente) {
-      filterValue = value.cliente.nombre_fiscal || value.cliente;
+    if (value.proveedor) {
+      filterValue = value.proveedor.nombre_fiscal || value.proveedor;
       filterValue = filterValue.toLowerCase();
     }
-    return this.clientes.filter(option => option.nombre_fiscal!.toLowerCase().includes(filterValue));
-  }
-
-  private _filterVendedores(value: any): User[] {
-    let filterValue = "";
-    if (value.vendedor) {
-      filterValue = value.vendedor.name || value.vendedor;
-      filterValue = filterValue.toLowerCase();
-    }
-    return this.vendedores.filter(option => option.name!.toLowerCase().includes(filterValue));
+    return this.proveedores.filter(option => (option.nombreContacto!.toLowerCase()).concat(option.apellidoContacto!.toLowerCase()).includes(filterValue));
   }
 
   clearAutocompleteInput() {
     try {
-      this.f['cliente'].reset();
+      this.f['proveedor'].reset();
     } catch (error) {
       console.error('An error occurred in clearAutocompleteInput:', error);
     }
@@ -481,7 +354,7 @@ export class VentaComponent {
     }
   }
 
-  removeArticulo(articulo: VentaArticuloModel) {
+  removeArticulo(articulo: OrdenCompraArticuloModel) {
     const indexToRemove = this.dataSourceArticulos.data.findIndex(item => item.almacen?.articulo?.id === articulo.almacen?.articulo?.id);
     if (indexToRemove !== -1) {
       this.dataSourceArticulos.data.splice(indexToRemove, 1);
@@ -526,18 +399,18 @@ export class VentaComponent {
     return `${environment.apiUrl}/images/articulos/${photo}`
   }
 
-  openArticuloVentaModalComponent() {
-    const dialogRef = this.dialog.open(ArticuloVentaModalComponent, {
-      height: '850px',
+  openArticuloOrdenCompraModalComponent() {
+    const dialogRef = this.dialog.open(ArticuloOrdenCompraModalComponent, {
+      height: '750px',
       data: {
         articulos: this.dataSourceArticulos.data,
-        clienteId: this.f['cliente'].value ? this.f['cliente'].value.id : 0
+        proveedorId: this.f['proveedor'].value ? this.f['proveedor'].value.id : 0
       },
     });
 
-    dialogRef.afterClosed().subscribe(ventaArticuloModel => {
-      if (ventaArticuloModel != undefined && ventaArticuloModel != "") {
-        this.dataSourceArticulos.data.push(ventaArticuloModel);
+    dialogRef.afterClosed().subscribe(ordenCompraArticuloModel => {
+      if (ordenCompraArticuloModel != undefined && ordenCompraArticuloModel != "") {
+        this.dataSourceArticulos.data.push(ordenCompraArticuloModel);
         this.dataSourceArticulos._updateChangeSubscription();
         this.hasRecords = true;
         this.calcularTotales();
@@ -545,25 +418,25 @@ export class VentaComponent {
     });
   }
 
-  editArticuloVentaModalComponent(ventaArticuloModel: VentaArticuloModel) {
-    ventaArticuloModel.ventaId = this.id;
-    const dialogRef = this.dialog.open(ArticuloVentaModalComponent, {
-      height: '850px',
+  editArticuloOrdenCompraModalComponent(ordenCompraArticuloModel: OrdenCompraArticuloModel) {
+    ordenCompraArticuloModel.id = this.id;
+    const dialogRef = this.dialog.open(ArticuloOrdenCompraModalComponent, {
+      height: '750px',
       data: {
-        articulo: ventaArticuloModel,
-        clienteId: this.f['cliente'].value ? this.f['cliente'].value.id : 0
+        articulo: ordenCompraArticuloModel,
+        proveedorId: this.f['proveedor'].value ? this.f['proveedor'].value.id : 0
       }
     });
 
-    dialogRef.afterClosed().subscribe(ventaArticuloModel => {
-      if (ventaArticuloModel && ventaArticuloModel !== "") {
-        const existingIndex = this.dataSourceArticulos.data.findIndex(item => item.almacen?.articulo?.id === ventaArticuloModel.almacen?.articulo?.id);
+    dialogRef.afterClosed().subscribe(ordenCompraArticuloModel => {
+      if (ordenCompraArticuloModel && ordenCompraArticuloModel !== "") {
+        const existingIndex = this.dataSourceArticulos.data.findIndex(item => item.almacen?.articulo?.id === ordenCompraArticuloModel.almacen?.articulo?.id);
         if (existingIndex !== -1) {
           // Si existe un objeto con el mismo id, elimínalo
           this.dataSourceArticulos.data.splice(existingIndex, 1);
         }
         // Agrega el nuevo objeto
-        this.dataSourceArticulos.data.push(ventaArticuloModel);
+        this.dataSourceArticulos.data.push(ordenCompraArticuloModel);
         this.dataSourceArticulos._updateChangeSubscription();
         this.hasRecords = true;
         this.calcularTotales();
@@ -571,24 +444,23 @@ export class VentaComponent {
     });
   }
 
-  despacharArticuloVentaModalComponent(ventaArticuloModel: VentaArticuloModel) {
-    ventaArticuloModel.ventaId = this.id;
-    const dialogRef = this.dialog.open(ArticuloVentaModalComponent, {
+  despacharArticuloOrdenCompraModalComponent(ordenCompraArticuloModel: OrdenCompraArticuloModel) {
+    ordenCompraArticuloModel.id = this.id;
+    const dialogRef = this.dialog.open(ArticuloOrdenCompraModalComponent, {
       height: '550px',
       data: {
-        articulo: ventaArticuloModel,
+        articulo: ordenCompraArticuloModel,
         isDespachar: true
       }
     });
 
-    dialogRef.afterClosed().subscribe(ventaArticuloModel => {
-      this.router.navigate(['ventas']);
+    dialogRef.afterClosed().subscribe(ordenCompraArticuloModel => {
+      this.router.navigate(['ordenesCompra']);
     });
   }
 
   calcularTotales() {
     this.calcularSubTotal();
-    this.calcularDescuento();
     this.calcularIva();
     this.calcularRetencion();
     this.calcularTotal();
@@ -597,14 +469,7 @@ export class VentaComponent {
   calcularSubTotal() {
     this.subTotal = 0;
     this.dataSourceArticulos.data.forEach(articulo => {
-      this.subTotal += (articulo.precio_venta ?? 0) * (articulo.cantidad ?? 0);
-    });
-  }
-
-  calcularDescuento() {
-    this.descuento = 0;
-    this.dataSourceArticulos.data.forEach(articulo => {
-      this.descuento += articulo.descuento ?? 0;
+      this.subTotal += (articulo.precio_orden_compra ?? 0) * (articulo.cantidad ?? 0);
     });
   }
 
@@ -612,7 +477,7 @@ export class VentaComponent {
     this.iva = 0;
     if (this.f['translada_iva'].value == true)
       this.dataSourceArticulos.data.forEach(articulo => {
-        this.iva += ((articulo.precio_venta ?? 0) * (articulo.cantidad ?? 0)) * this.f['translada_iva_porcentaje'].value;
+        this.iva += ((articulo.precio_orden_compra ?? 0) * (articulo.cantidad ?? 0)) * this.f['translada_iva_porcentaje'].value;
       });
   }
 
@@ -620,7 +485,7 @@ export class VentaComponent {
     this.retencion = 0;
     if (this.f['retiene_iva'].value == true)
       this.dataSourceArticulos.data.forEach(articulo => {
-        this.retencion += ((articulo.precio_venta ?? 0) * (articulo.cantidad ?? 0)) * this.f['retiene_iva_porcentaje'].value;
+        this.retencion += ((articulo.precio_orden_compra ?? 0) * (articulo.cantidad ?? 0)) * this.f['retiene_iva_porcentaje'].value;
       });
   }
 
@@ -628,20 +493,20 @@ export class VentaComponent {
     this.total = this.subTotal - this.descuento + this.iva - this.retencion;
   }
 
-  onClienteSelectionChange(event: any) {
-    if (event.source._selected == true) {
-      this.selectedCliente = event.source.value;
+  // onProveedorSelectionChange(event: any) {
+  //   if (event.source._selected == true) {
+  //     this.selectedProveedor = event.source.value;
 
-      let regimenFiscal = this.regimenesFiscales.find(x => x.id == this.selectedCliente.regimen_fiscal?.id);
-      if (regimenFiscal != undefined)
-        this.selectedRegimenFiscal = regimenFiscal;
+  //     let regimenFiscal = this.regimenesFiscales.find(x => x.id == this.selectedProveedor.regimen_fiscal?.id);
+  //     if (regimenFiscal != undefined)
+  //       this.selectedRegimenFiscal = regimenFiscal;
 
-      this.form.patchValue({
-        nombre_fiscal: this.selectedCliente?.nombre_fiscal,
-        regimen_fiscal: this.selectedRegimenFiscal
-      });
-    }
-  }
+  //     this.form.patchValue({
+  //       nombre_fiscal: this.selectedProveedor?.nombre_fiscal,
+  //       regimen_fiscal: this.selectedRegimenFiscal
+  //     });
+  //   }
+  // }
 
   openSnackBarError(message: string) {
     this._snackBar.open(message, 'cerrar', {
@@ -657,52 +522,40 @@ export class VentaComponent {
     const currentDate = new Date();
     return !date || date <= currentDate;
   }
-
-  timbrarVenta() {
-    this.ventaService.timbrar(this.id).subscribe({
-      next: (data) => {
-        this.factura = data;
-        this.openDialogSuccess(`Se ha timbrado con éxito la venta #${this.id}, podrás visualizarlo desde tu listado ventas.`)
-        //this.router.navigate(['ventas']);
-      },
-      error: (e) => {
-        console.log(e);
-      }
-    });
-  }
 }
+
 
 @Component({
   selector: 'dialog-component',
-  template: `<span mat-dialog-title>Agregar artículos venta </span>
+  template: `<span mat-dialog-title>Agregar artículos ordenCompra </span>
             <mat-dialog-content class="mat-typography">
-              <app-venta-articulo [ventaArticulosModel]="ventaArticulosModel" [ventaArticuloModel]="ventaArticuloModel" [clienteId]="clienteId" [isDespachar]="isDespachar" (cancel)="onCancelar()" (add)="onAgregarArticulo($event)" #appVentaArticuloComponent></app-venta-articulo>
+              <!-- <app-orden-compra-articulo [ordenCompraArticulosModel]="ordenCompraArticulosModel" [ordenCompraArticuloModel]="ordenCompraArticuloModel" [proveedorId]="proveedorId" [isDespachar]="isDespachar" (cancel)="onCancelar()" (add)="onAgregarArticulo($event)" #appOrdenCompraArticuloComponent></app-orden-compra-articulo> -->
             </mat-dialog-content>`,
   styles: [
   ]
 })
-export class ArticuloVentaModalComponent {
-  @ViewChild('appVentaArticuloComponent') appVentaArticuloComponent: any;
-  ventaArticuloModel!: VentaArticuloModel;
-  ventaArticulosModel!: VentaArticuloModel[];
-  clienteId = 0;
+export class ArticuloOrdenCompraModalComponent {
+  @ViewChild('appOrdenCompraArticuloComponent') appOrdenCompraArticuloComponent: any;
+  ordenCompraArticuloModel!: OrdenCompraArticuloModel;
+  ordenCompraArticulosModel!: OrdenCompraArticuloModel[];
+  proveedorId = 0;
   isDespachar = false;
 
   constructor(
-    public dialogRef: MatDialogRef<ArticuloVentaModalComponent>,
+    public dialogRef: MatDialogRef<ArticuloOrdenCompraModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     dialogRef.disableClose = true;
 
     if (Object.keys(data).length > 0) {
       if (data.articulo != undefined) {
-        this.ventaArticuloModel = data.articulo;
+        this.ordenCompraArticuloModel = data.articulo;
       }
       if (data.articulos != undefined) {
-        this.ventaArticulosModel = data.articulos;
+        this.ordenCompraArticulosModel = data.articulos;
       }
-      if (data.clienteId != undefined) {
-        this.clienteId = data.clienteId;
+      if (data.proveedorId != undefined) {
+        this.proveedorId = data.proveedorId;
       }
       if (data.isDespachar != undefined) {
         this.isDespachar = data.isDespachar;
@@ -719,9 +572,9 @@ export class ArticuloVentaModalComponent {
     }
   }
 
-  onAgregarArticulo(ventaArticuloModel: VentaArticuloModel) {
+  onAgregarArticulo(ordenCompraArticuloModel: OrdenCompraArticuloModel) {
     try {
-      this.dialogRef.close(ventaArticuloModel);
+      this.dialogRef.close(ordenCompraArticuloModel);
     } catch (error) {
       console.error('An error occurred in onAgregarArticulo:', error);
     }

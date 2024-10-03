@@ -49,7 +49,7 @@ export class CatalogosService {
   }
 
   getUnidadMedida(): Observable<Array<CatalogoUnidadMedidaModel>> {
-    return this.http.get<Array<CatalogoUnidadMedidaModel>>(`${environment.apiUrl}/api/getUnidadMedida/getObjetoImpuesto`);
+    return this.http.get<Array<CatalogoUnidadMedidaModel>>(`${environment.apiUrl}/api/catalogs/getUnidadMedida`);
   }
 
 }

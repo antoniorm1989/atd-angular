@@ -66,6 +66,9 @@ import { CatalogoUsuariosListComponent } from './components/catalogos/usuarios/c
 import { CatalogoUsuariosComponent, EditarPasswordModalComponent } from './components/catalogos/usuarios/usuario/catalogo-usuarios.component';
 import { UpdatePasswordComponent } from './components/catalogos/usuarios/usuario/password/update-password.component';
 import { ChangePasswordComponent } from './components/login/changepassword/changepassword.component';
+import { OrdenesCompraListComponent } from './components/ordenes-compra/orden-compra-list.component';
+import { ArticuloOrdenCompraModalComponent, OrdenCompraComponent } from './components/ordenes-compra/orden-compra/orden-compra.component';
+import { OrdenCompraArticuloComponent } from './components/ordenes-compra/orden-compra/articulo/orden-compra-articulo.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -108,7 +111,11 @@ export function tokenGetter() {
     CatalogoUsuariosComponent,
     UpdatePasswordComponent,
     EditarPasswordModalComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
+    OrdenesCompraListComponent,
+    OrdenCompraComponent,
+    ArticuloOrdenCompraModalComponent,
+    OrdenCompraArticuloComponent
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InventoryAlmacenService } from 'src/app/services/inventory.service';
 import { CatalogoAlmacenesService } from 'src/app/services/catalogo-almacenes.service';
@@ -14,13 +14,13 @@ import { BarcodeScannerComponent } from 'src/app/components/genericos/barcodesSc
 import { MatRadioChange } from '@angular/material/radio';
 import { CatalogoSucursalModel } from 'src/app/models/catalogo-sucursal.model';
 import { CatalogoSucursalesService } from 'src/app/services/catalogo-sucursales.service';
-import { CatalogoProductoServicioModel, CatalogoUnidadMedidaModel } from 'src/app/models/catalogos.model';
+import { CatalogoProductoServicioModel } from 'src/app/models/catalogos.model';
 import { CatalogosService } from 'src/app/services/catalogos.service';
 import { CatalogoArticuloService } from 'src/app/services/catalogo-articulos.service';
-import { VentaArticuloModel } from 'src/app/models/ventas.model';
 import { InventorySucursalModel } from 'src/app/models/inventory-sucursal.model';
 import { User } from 'src/app/models/user';
-import { VentaService } from 'src/app/services/ventas.service';
+import { OrdenCompraArticuloModel } from 'src/app/models/orden-compa.model';
+import { OrdenCompraService } from 'src/app/services/orden-compra.service';
 
 
 export const _filter = (opt: CatalogoArticuloModel[], value: string): CatalogoArticuloModel[] => {
@@ -30,12 +30,12 @@ export const _filter = (opt: CatalogoArticuloModel[], value: string): CatalogoAr
 };
 
 @Component({
-  selector: 'app-venta-articulo',
-  templateUrl: './venta-articulo.component.html',
-  styleUrls: ['./venta-articulo.component.css']
+  selector: 'app-orden-compra-articulo',
+  templateUrl: './orden-compra-articulo.component.html',
+  styleUrls: ['./orden-compra-articulo.component.css']
 })
 
-export class VentaArticuloComponent implements OnInit, OnDestroy {
+export class OrdenCompraArticuloComponent implements OnInit, OnDestroy {
 
   action: string = 'Agregar';
   form: FormGroup;
@@ -50,8 +50,8 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
   selectedSucursal: CatalogoSucursalModel | null = null;
   sucursales: CatalogoSucursalModel[] = [];
 
+  selectedProductoServicio: CatalogoProductoServicioModel | null = null;
   productoServicioList: CatalogoProductoServicioModel[] = [];
-  unidadMedidaList: CatalogoUnidadMedidaModel[] = [];
 
   imageUrl: string | null = null;
 
@@ -62,10 +62,10 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
   subtotal: number = 0;
 
   @Output() cancel = new EventEmitter();
-  @Output() add = new EventEmitter<VentaArticuloModel>();
+  @Output() add = new EventEmitter<OrdenCompraArticuloModel>();
 
-  @Input() ventaArticuloModel: VentaArticuloModel | undefined;
-  @Input() ventaArticulosModel: VentaArticuloModel[] | undefined;
+  @Input() ordenCompraArticuloModel: OrdenCompraArticuloModel | undefined;
+  @Input() ordenCompraArticulosModel: OrdenCompraArticuloModel[] | undefined;
   @Input() clienteId: number = 0;
   @Input() isDespachar: boolean = false;
 
@@ -73,9 +73,6 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
   hasBackOrder: boolean = false;
 
   inventory_almacen_id = 0;
-
-  filteredProductoServicio: Observable<any[]> | undefined;
-  filteredUnidadMedida: Observable<any[]> | undefined;
 
   constructor(public route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -86,7 +83,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
     private catalogosService: CatalogosService,
     private catalogoArticuloService: CatalogoArticuloService,
     private dialog: MatDialog,
-    private ventaService: VentaService,) {
+    private ordenCompraService: OrdenCompraService,) {
 
     this.form = this.formBuilder.group({
       tipoAlmacen: ['almacen'],
@@ -94,51 +91,17 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
       sucursal: [null],
       selectedArticle: [null, Validators.required],
       qty: [1, [Validators.min(1)]],
-      precio_venta: [0, [Validators.required, Validators.min(0.01)]],
+      precio_ordenCompra: [0, [Validators.required, Validators.min(0.01)]],
       descuento: 0,
       comentarios: '',
-      unidad_medida_p_s: ['producto'],
+      unidad_medida: ['producto'],
       numero_identificacion_fiscal: [''],
       articulosCliente: false,
-      backorder: 0,
-      producto_servicio: [null, Validators.required, [this.validarProductoServicio.bind(this)]],
-      unidad_medida: [null, Validators.required, [this.validarUnidadMedida.bind(this)]]
+      backorder: 0
     });
 
-    this.form.controls['precio_venta'].disable();
+    this.form.controls['precio_ordenCompra'].disable();
     this.form.controls['descuento'].disable();
-  }
-
-  validarProductoServicio(control: FormControl): Observable<any> {
-    const valor = control.value;
-    return new Observable(observer => {
-      if (this.productoServicioList.some(option => option.name === valor || option === valor)) {
-        observer.next(null); // Válido
-      } else {
-        observer.next({ invalidOption: true }); // Inválido
-      }
-      observer.complete();
-    });
-  }
-
-  validarUnidadMedida(control: FormControl): Observable<any> {
-    const valor = control.value;
-    return new Observable(observer => {
-      if (this.unidadMedidaList.some(option => option.name === valor || option === valor)) {
-        observer.next(null); // Válido
-      } else {
-        observer.next({ invalidOption: true }); // Inválido
-      }
-      observer.complete();
-    });
-  }
-
-  displayFn(option: any): string {
-    return option ? `${option.key} - ${option.name}` : '';
-  }
-
-  displayFnUnidadMedida(option: any): string {
-    return option ? `${option.key} - ${option.name}` : '';
   }
 
   ngOnInit() {
@@ -165,49 +128,28 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         }
       });
 
+      // this.catalogosService.getProductoServicio('').subscribe({
+      //   next: (data) => {
+      //     this.productoServicioList = data;
+      //     if (data.length > 0)
+      //       this.selectedProductoServicio = data[0];
+      //   },
+      //   error: (e) => {
+      //   }
+      // });
+
       this.form.controls['selectedArticle'].valueChanges.subscribe((newValue) => {
         this.onOptionSelected(newValue);
       });
 
-      this.filteredProductoServicio = this.form.controls['producto_servicio'].valueChanges.pipe(
-        startWith(''),
-        map(value => this._filter(value))
-      );
-
-      this.filteredUnidadMedida = this.form.controls['unidad_medida'].valueChanges.pipe(
-        startWith(''),
-        map(value => this._filterUnidadMedida(value))
-      );
-
-      if (this.ventaArticuloModel != null) {
+      if (this.ordenCompraArticuloModel != null) {
         this.isEditing = true;
         this.action = 'Editar';
         this.f['selectedArticle'].disable();
         this.f['tipoAlmacen'].disable();
         this.f['almacen'].disable();
         this.f['sucursal'].disable();
-        this.f['producto_servicio'].disable();
-        this.f['unidad_medida'].disable();
       }
-
-      this.catalogosService.getProductoServicio().subscribe({
-        next: (data) => {
-          this.productoServicioList = data;
-        },
-        error: (e) => {
-          console.error(e);
-        }
-      });
-
-      this.catalogosService.getUnidadMedida().subscribe({
-        next: (data) => {
-          this.unidadMedidaList = data;
-        },
-        error: (e) => {
-          console.error(e);
-        }
-      });
-
     } catch (error) {
       console.error('An error occurred in ngOnInit:', error);
     }
@@ -217,21 +159,19 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
     this.clearAutocompleteInput();
   }
 
-  loadEdit(ventaArticuloModel: VentaArticuloModel) {
+  loadEdit(ordenCompraArticuloModel: OrdenCompraArticuloModel) {
     if (this.isAlmacen)
-      if (ventaArticuloModel.almacen?.articulo?.part_number) {
+      if (ordenCompraArticuloModel.almacen?.articulo?.part_number) {
         this.form.patchValue({
-          selectedArticle: ventaArticuloModel.almacen?.articulo?.part_number,
-          qty: this.isDespachar ? 0 : ventaArticuloModel.cantidad,
-          descuento: ventaArticuloModel.descuento,
-          comentarios: ventaArticuloModel.comentarios,
-          unidad_medida_p_s: ventaArticuloModel.unidad_medida_p_s,
-          numero_identificacion_fiscal: ventaArticuloModel.numero_identificacion_fiscal,
-          backorder: 0,
-          producto_servicio: ventaArticuloModel.producto_servicio,
-          unidad_medida: ventaArticuloModel.unidad_medida
+          selectedArticle: ordenCompraArticuloModel.almacen?.articulo?.part_number,
+          qty: this.isDespachar ? 0 : ordenCompraArticuloModel.cantidad,
+          //descuento: ordenCompraArticuloModel.descuento,
+          comentarios: ordenCompraArticuloModel.comentarios,
+          //unidad_medida: ordenCompraArticuloModel.unidad_medida,
+          numero_identificacion_fiscal: ordenCompraArticuloModel.numero_identificacion_fiscal,
+          backorder: 0
         });
-        this.onOptionSelected(ventaArticuloModel.almacen?.articulo?.part_number);
+        this.onOptionSelected(ordenCompraArticuloModel.almacen?.articulo?.part_number);
         this.calcularBackOrder();
       }
   }
@@ -314,7 +254,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
   }
 
   calcularSubTotal() {
-    this.subtotal = ((this.f['precio_venta'].value * this.f['qty'].value) - this.f['descuento'].value);
+    this.subtotal = ((this.f['precio_ordenCompra'].value * this.f['qty'].value) - this.f['descuento'].value);
   }
 
   onRadioChange(event: MatRadioChange) {
@@ -349,13 +289,13 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         next: (data) => {
           this.articuloGroups = data;
 
-          if (this.ventaArticulosModel?.length ?? 0 > 0)
+          if (this.ordenCompraArticulosModel?.length ?? 0 > 0)
             this.articuloGroups.forEach(articuloGroup => {
               articuloGroup.articulos = articuloGroup.articulos?.filter((articulo) => {
                 let exist = false;
 
-                this.ventaArticulosModel?.forEach(ventaArticulo => {
-                  if (this.selectedAlmacen?.id == ventaArticulo?.almacen?.almacen?.id && ventaArticulo?.almacen?.articulo?.id == articulo.id) {
+                this.ordenCompraArticulosModel?.forEach(ordenCompraArticulo => {
+                  if (this.selectedAlmacen?.id == ordenCompraArticulo?.almacen?.almacen?.id && ordenCompraArticulo?.almacen?.articulo?.id == articulo.id) {
                     exist = true;
                   }
                 });
@@ -371,8 +311,8 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
             map(value => this._filterGroup(value || '')),
           );
 
-          if (this.ventaArticuloModel != null) {
-            this.loadEdit(this.ventaArticuloModel);
+          if (this.ordenCompraArticuloModel != null) {
+            this.loadEdit(this.ordenCompraArticuloModel);
             this.f['selectedArticle'].disable();
           }
         },
@@ -388,7 +328,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
       this.selectedArticle = this.getArticuloByPartNumber(partNumber);
       if (this.selectedArticle != undefined) {
         if (!this.isDespachar) {
-          this.form.controls['precio_venta'].enable();
+          this.form.controls['precio_ordenCompra'].enable();
           this.form.controls['descuento'].enable();
         }
 
@@ -396,7 +336,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
           this.imageUrl = `${environment.apiUrl}/images/articulos/${this.selectedArticle.photo}`;
 
         this.form.patchValue({
-          precio_venta: this.isEditing ? this.ventaArticuloModel?.precio_venta : this.selectedArticle.precio_venta
+          //precio_ordenCompra: this.isEditing ? this.ordenCompraArticuloModel?.precio_ordenCompra : this.selectedArticle.precio_ordenCompra
         });
 
         this.calcularSubTotal();
@@ -415,7 +355,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
           }
         });
       } else {
-        this.form.controls['precio_venta'].disable();
+        this.form.controls['precio_ordenCompra'].disable();
         this.form.controls['descuento'].disable();
       }
     } catch (error) {
@@ -471,9 +411,9 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         backorder: this.f['qty'].value > (this.stock || 0) ? (((this.stock || 0) - this.f['qty'].value) * -1) : 0
       });
     else
-      if (this.ventaArticuloModel != undefined && this.ventaArticuloModel.backorder != undefined)
+      //if (this.ordenCompraArticuloModel != undefined && this.ordenCompraArticuloModel.backorder != undefined)
         this.form.patchValue({
-          backorder: this.ventaArticuloModel.backorder - this.f['qty'].value
+        //  backorder: this.ordenCompraArticuloModel.backorder - this.f['qty'].value
         });
 
     this.hasBackOrder = this.f['backorder'].value > 0
@@ -498,33 +438,34 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
     try {
       this.submitted = true;
       if (this.form!.invalid == false && this.isDespachar == false) {
-        let ventaArticuloModel = new VentaArticuloModel();
-        ventaArticuloModel.inventory_almacen_id = this.inventory_almacen_id;
-        ventaArticuloModel.precio_venta = this.f['precio_venta'].value;
-        ventaArticuloModel.descuento = this.f['descuento'].value;
-        ventaArticuloModel.cantidad = this.f['qty'].value;
-        ventaArticuloModel.numero_identificacion_fiscal = this.f['numero_identificacion_fiscal'].value;
-        ventaArticuloModel.unidad_medida_p_s = this.f['unidad_medida_p_s'].value;
-        ventaArticuloModel.comentarios = this.f['comentarios'].value;
-        ventaArticuloModel.backorder = this.f['backorder'].value;
-        ventaArticuloModel.producto_servicio = this.f['producto_servicio'].value;
-        ventaArticuloModel.unidad_medida = this.f['unidad_medida'].value;
+        let ordenCompraArticuloModel = new OrdenCompraArticuloModel();
+        // ordenCompraArticuloModel.inventory_almacen_id = this.inventory_almacen_id;
+        // ordenCompraArticuloModel.precio_ordenCompra = this.f['precio_ordenCompra'].value;
+        // ordenCompraArticuloModel.descuento = this.f['descuento'].value;
+        // ordenCompraArticuloModel.cantidad = this.f['qty'].value;
+        // ordenCompraArticuloModel.numero_identificacion_fiscal = this.f['numero_identificacion_fiscal'].value;
+        // ordenCompraArticuloModel.unidad_medida = this.f['unidad_medida'].value;
+        // ordenCompraArticuloModel.comentarios = this.f['comentarios'].value;
+        // ordenCompraArticuloModel.backorder = this.f['backorder'].value;
+
+        if (this.selectedProductoServicio)
+          ordenCompraArticuloModel.producto_servicio = this.selectedProductoServicio;
 
         if (this.selectedAlmacen) {
           let inventoryAlmacenModel = new InventoryAlmacenModel();
           inventoryAlmacenModel.almacen = this.selectedAlmacen;
           inventoryAlmacenModel.articulo = this.selectedArticle;
-          ventaArticuloModel.almacen = inventoryAlmacenModel;
+          ordenCompraArticuloModel.almacen = inventoryAlmacenModel;
         }
 
         if (this.selectedSucursal) {
           let inventorySucursalModel = new InventorySucursalModel();
           inventorySucursalModel.sucursal = this.selectedSucursal;
           inventorySucursalModel.articulo = this.selectedArticle;
-          ventaArticuloModel.sucursal = inventorySucursalModel;
+          ordenCompraArticuloModel.sucursal = inventorySucursalModel;
         }
 
-        this.add.emit(ventaArticuloModel);
+        this.add.emit(ordenCompraArticuloModel);
       } else if (this.isDespachar == true) {
         // stop here if form is invalid
         if (this.form!.invalid)
@@ -534,22 +475,22 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         let user = new User();
         user.id = userData.id;
 
-        let ventaArticuloModel = new VentaArticuloModel();
-        ventaArticuloModel.id = this.ventaArticuloModel?.id;
-        ventaArticuloModel.cantidad = this.f['qty'].value;
-        ventaArticuloModel.comentarios = this.f['comentarios'].value;
-        ventaArticuloModel.user = user;
-        ventaArticuloModel.inventory_almacen_id = this.inventory_almacen_id;
-        ventaArticuloModel.ventaId = this.ventaArticuloModel?.ventaId;
+        let ordenCompraArticuloModel = new OrdenCompraArticuloModel();
+        ordenCompraArticuloModel.id = this.ordenCompraArticuloModel?.id;
+        ordenCompraArticuloModel.cantidad = this.f['qty'].value;
+        ordenCompraArticuloModel.comentarios = this.f['comentarios'].value;
+        //ordenCompraArticuloModel.user = user;
+        //ordenCompraArticuloModel.inventory_almacen_id = this.inventory_almacen_id;
+        //ordenCompraArticuloModel.ordenCompraId = this.ordenCompraArticuloModel?.ordenCompraId;
 
-        this.ventaService.despachar(ventaArticuloModel).subscribe({
-          next: (data) => {
-            this.add.emit(ventaArticuloModel);
-          },
-          error: (e) => {
-            console.log(e);
-          }
-        });
+        // this.ordenCompraService.despachar(ordenCompraArticuloModel).subscribe({
+        //   next: (data) => {
+        //     this.add.emit(ordenCompraArticuloModel);
+        //   },
+        //   error: (e) => {
+        //     console.log(e);
+        //   }
+        // });
       }
     } catch (error) {
       console.error('An error occurred in onSubmit:', error);
@@ -562,36 +503,6 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
     } catch (error) {
       console.error('An error occurred in onSubmit:', error);
     }
-  }
-
-  private _filter(value: any): any[] {
-    if (typeof value == 'object')
-      value = value.name;
-
-    // Solo filtra cuando la longitud del valor es mayor a 3
-    if (value.length < 3) {
-      return [];
-    }
-
-    const filterValue = value.toLowerCase();
-    return this.productoServicioList.filter(option =>
-      option.name!.toLowerCase().includes(filterValue)
-    );
-  }
-
-  private _filterUnidadMedida(value: any): any[] {
-    if (typeof value == 'object')
-      value = value.name;
-
-    // Solo filtra cuando la longitud del valor es mayor a 3
-    if (value.length < 3) {
-      return [];
-    }
-
-    const filterValue = value.toLowerCase();
-    return this.unidadMedidaList.filter(option =>
-      option.name!.toLowerCase().includes(filterValue)
-    );
   }
 }
 

@@ -1,0 +1,204 @@
+.orden-compra-list {
+    padding: 24px;
+    background-color: #F7F7F7;
+    height: 100%;
+}
+
+.orden-compra-list .toolbar .icon {
+    font-size: 23px;
+}
+
+.orden-compra-list .toolbar .toolbar-title {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.orden-compra-list .toolbar .title {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 54px;
+    letter-spacing: 0.01em;
+    margin-left: 12px;
+}
+
+.orden-compra-list .toolbar .breadcrumb-item {
+    font-size: 16px;
+    line-height: 19px;
+    letter-spacing: 0.01em;
+    color: #BA9400;
+}
+
+.orden-compra-list .container .container-empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 600px;
+    margin: auto;
+}
+
+.orden-compra-list .container .container-empty .img {
+    height: 238px;
+    width: 237px;
+}
+
+.orden-compra-list .container .container-empty .text {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 32px;
+    letter-spacing: 0.01em;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.orden-compra-list .container .container-empty .btn {
+    width: 170px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: #BA9400;
+    color: #fff;
+    margin-top: 50px;
+}
+
+
+/* list */
+.orden-compra-list .container .container-list {
+    margin-top: 12px;
+}
+
+.orden-compra-list .container .container-list .table{
+    margin-top: 20px;
+}
+
+.orden-compra-list .container .container-list .toolbar {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 12px;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.orden-compra-list .container .container-list .toolbar .btn {
+    width: 170px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: #BA9400;
+    color: #fff;
+}
+
+.orden-compra-list .container .container-list .user-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.orden-compra-list .container .container-list .user-wrapper .circle-initials {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #BA9400;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    color: #ffffff;
+    min-width: 28px;
+}
+
+.orden-compra-list .container .container-list .user-wrapper .text {
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: 0px;
+    text-align: center;
+    margin-left: 8px;
+}
+
+.orden-compra-list .container .title-grid {
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: 0px;
+}
+
+.orden-compra-list .container .title-grid:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    color: #BA9400;
+}
+
+.orden-compra-list .container .table .mat-icon{
+    color: #ba9400;
+}
+
+.mat-mdc-header-row{
+    background-color: #eadfb2;
+}
+
+.orden-compra-list .container .table .photo{
+    height: 45px;
+    width: 45px;
+    margin-right: 8px;
+}
+.orden-compra-list .container .table .description-wrapper{
+    display: flex;
+    align-items: center;
+}
+
+.orden-compra-list .container .table  .empty-image-container{
+    height: 45px;
+    width: 45px;
+    margin-right: 8px;
+    background-color: #C5C6C7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.orden-compra-list .container .table .empty-image-container .empty-image{
+    width: 30px;
+    height: 30px;
+}
+
+.orden-compra-list .toolbar .filters{
+    border-radius: 8px;
+    background-color: #ffffff;
+    padding: 0px 24px;
+    display: grid;
+    grid-template-columns: 30px 200px 1fr 180px 180px 120px;
+    column-gap: 12px;
+}
+
+.orden-compra-list .toolbar .filters mat-slide-toggle{
+    margin-top: 40px;
+}
+
+.orden-compra-list .toolbar .icon-filter {
+    font-size: 24px;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.orden-compra-list .table .center-column{
+    text-align: center;
+}
+
+.orden-compra-list .container-list .table .estatus-icon{
+    border-radius: 9px;
+    display: inline-block;
+    vertical-align: middle;
+    height: 9px;
+    margin-right: 8px;
+    width: 9px;
+    margin-bottom: 3px;
+}
+.orden-compra-list .container-list .table .estatus-icon.timbrada{
+    background-color: #5BD26E;
+}
+.orden-compra-list .container-list .table .estatus-icon.parcialmente-despachada{
+    background-color: #BA9400;
+}
+.orden-compra-list .container-list .table .estatus-icon.cancelada{
+    background-color: #FF0000;
+}
+.orden-compra-list .container-list .table .estatus-icon.despachada{
+    background-color: #71A8F8;
+}

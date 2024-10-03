@@ -29,6 +29,7 @@ import { CatalogoProveedoresComponent } from './components/catalogos/proveedores
 import { CatalogoUsuariosListComponent } from './components/catalogos/usuarios/catalogo-usuarios-list.component';
 import { CatalogoUsuariosComponent } from './components/catalogos/usuarios/usuario/catalogo-usuarios.component';
 import { ChangePasswordComponent } from './components/login/changepassword/changepassword.component';
+import { OrdenesCompraListComponent } from './components/ordenes-compra/orden-compra-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/inventario-almacen', pathMatch: 'full' }, // Redirect to login by default
@@ -70,7 +71,11 @@ const routes: Routes = [
   { path: 'catalogos/usuarios', component: CatalogoUsuariosListComponent, canActivate: [AuthGuard] },
   { path: 'catalogos/usuarios/detail', component: CatalogoUsuariosComponent, canActivate: [AuthGuard] },
   { path: 'catalogos/usuarios/detail/:id', component: CatalogoUsuariosComponent, canActivate: [AuthGuard] },
-  { path: 'login/change-password', component: ChangePasswordComponent, canActivate: [AuthGuard]}
+  { path: 'login/change-password', component: ChangePasswordComponent, canActivate: [AuthGuard]},
+  { path: 'compras', component: OrdenesCompraListComponent, canActivate: [AuthGuard] },
+  { path: 'compras/detail', component: VentaComponent, canActivate: [AuthGuard]},
+  { path: 'compras/detail/:ordenesCompraId', component: VentaComponent, canActivate: [AuthGuard]},
+
 ];
 
 @NgModule({

@@ -10,6 +10,8 @@ import { Observable, fromEvent, map, startWith } from 'rxjs';
 import { CatalogoClientesService } from 'src/app/services/catalogo-cliente.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
+import { DialogSuccessComponent } from '../genericos/dialogSuccess.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-ventas-list',
@@ -20,7 +22,7 @@ import { DateAdapter } from '@angular/material/core';
 export class VentasListComponent {
 
   hasRecords = false;
-  displayedColumns: string[] = ['id', 'estatus', 'backorder', 'creacion', 'cliente', 'moneda', 'importe', 'fecha_sat', 'responsable'];
+  displayedColumns: string[] = ['id', 'estatus', 'backorder', 'creacion', 'cliente', 'importe', 'fecha_sat', 'responsable', 'actions'];
   dataSource = new MatTableDataSource<VentaModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   private dataLoaded = false;
@@ -31,9 +33,12 @@ export class VentasListComponent {
   selectedCliente: CatalogoClienteModel | undefined;
   filteredClientes!: Observable<CatalogoClienteModel[]>;
 
-  constructor(private formBuilder: FormBuilder, private ventaService: VentaService, private router: Router, private catalogoClientesService: CatalogoClientesService
-  ) {
-
+  constructor(
+    private formBuilder: FormBuilder, 
+    private ventaService: VentaService, 
+    private router: Router, 
+    private catalogoClientesService: CatalogoClientesService,
+    private dialog: MatDialog) {
 
     this.form = this.formBuilder.group({
       cliente: null,
@@ -196,6 +201,32 @@ export class VentasListComponent {
 
   getUrlPhoto(photo: string): string {
     return `${environment.apiUrl}/images/users/${photo}`;
+  }
+
+  timbrarVenta(ventaId: number) {
+    debugger;
+    this.ventaService.timbrar(ventaId).subscribe({
+      next: (data) => {
+        //this.factura = data;
+        this.openDialogSuccess(`Se ha timbrado con éxito la venta #${ventaId}.`)
+        //this.router.navigate(['ventas']);
+      },
+      error: (e) => {
+        console.log(e);
+      }
+    });
+  }
+
+  openDialogSuccess(comment: string): void {
+    const dialogRef = this.dialog.open(DialogSuccessComponent, {
+      width: '710px',
+      data: { title: '¡ En hora buena !', content: comment }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('Dialog closed');
+      this.onLoadVentas();
+    });
   }
 
 }

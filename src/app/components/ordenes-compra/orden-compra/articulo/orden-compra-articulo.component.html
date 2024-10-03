@@ -135,7 +135,7 @@
                     <mat-label class="text-1">Unidad de medida*</mat-label>
                     <mat-form-field>
                         <mat-label>Seleccionar</mat-label>
-                        <mat-select formControlName="unidad_medida_p_s" value="producto">
+                        <mat-select formControlName="unidad_medida" value="producto">
                           <mat-option value="producto">Producto</mat-option>
                           <mat-option value="servicio">Servicio</mat-option>
                         </mat-select>
@@ -143,29 +143,30 @@
                 </div>
             </div>
             <div class="form-row one-col">
-                <div class="form-field">
-                    <mat-form-field class="example-full-width">
-                        <mat-label>Producto o servicio</mat-label>
-                        <input type="text" matInput formControlName="producto_servicio" [matAutocomplete]="autoProductoServicio" placeholder="Buscar producto o servicio" required>
-                        <mat-autocomplete autoActiveFirstOption #autoProductoServicio="matAutocomplete" [displayWith]="displayFn">
-                          <mat-option *ngFor="let option of filteredProductoServicio | async" [value]="option">
-                            {{ option.key }} - {{ option.name }}
-                          </mat-option>
-                        </mat-autocomplete>
-                      </mat-form-field>
+                <!--<div class="form-field">
+                    <mat-label class="text-1">ProdServ (Producto/ Servicio) *</mat-label>
+                    <mat-form-field>
+                        <mat-label>Seleccionar</mat-label>
+                        <mat-select [(value)]="selectedProductoServicio" formControlName="producto_servicio" >
+                            <mat-option *ngFor="let productoServicio of productoServicioList" [value]="productoServicio">{{ productoServicio.key }} - {{ productoServicio.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <div *ngIf="submitted && f['producto_servicio'].errors" class="invalid-feedback">
+                        <div *ngIf="f['producto_servicio'].errors['required']">Este campo requerido</div>
+                    </div>
                 </div>
-
                 <div class="form-field">
-                    <mat-form-field class="example-full-width">
-                        <mat-label>Unidad de medida</mat-label>
-                        <input type="text" matInput formControlName="unidad_medida" [matAutocomplete]="autoUnidadMedida" placeholder="Buscar unidad de medida" required>
-                        <mat-autocomplete autoActiveFirstOption #autoUnidadMedida="matAutocomplete" [displayWith]="displayFnUnidadMedida">
-                          <mat-option *ngFor="let option of filteredUnidadMedida| async" [value]="option">
-                            {{ option.key }} - {{ option.name }}
-                          </mat-option>
-                        </mat-autocomplete>
-                      </mat-form-field>
-                </div>
+                    <mat-label class="text-1">Unidad de medida *</mat-label>
+                    <mat-form-field>
+                        <mat-label>Seleccionar</mat-label>
+                        <mat-select [(value)]="selectedProductoServicio" formControlName="unidadMedida" >
+                            <mat-option *ngFor="let productoServicio of productoServicioList" [value]="productoServicio">{{ productoServicio.key }} - {{ productoServicio.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <div *ngIf="submitted && f['unidadMedida'].errors" class="invalid-feedback">
+                        <div *ngIf="f['unidadMedida'].errors['required']">Este campo requerido</div>
+                    </div>
+                </div>-->
             </div>
 
             <div style="position: absolute; bottom: 55px;" *ngIf="submitted && f['precio_venta'].errors" class="invalid-feedback">
@@ -177,7 +178,6 @@
             <div style="position: absolute; bottom: 15px;" *ngIf="submitted && f['qty'].errors" class="invalid-feedback">
                 <div *ngIf="f['qty'].errors['min']">Debe seleccionar por lo menos 1 articulo</div>
             </div>
-
             <div class="toolbar-bottom">
                 <button mat-flat-button class="btn secundary" type="button" (click)="onCancel()">Cancelar</button>
                 <button mat-flat-button *ngIf="(isDespachar == false)" class="btn" type="submit">{{action}}</button>

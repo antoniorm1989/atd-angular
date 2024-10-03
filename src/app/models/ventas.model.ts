@@ -45,12 +45,12 @@ export class VentaArticuloModel {
   descuento: float | undefined;
   cantidad: number | undefined;
   numero_identificacion_fiscal: string | undefined;
-  unidad_medida: string | undefined;
+  unidad_medida_p_s: string | undefined;
   comentarios: string | undefined;
   created_at: Date | undefined;
   updated_at: Date | undefined;
   producto_servicio: CatalogoProductoServicioModel | undefined;
-  unidadMedida: CatalogoUnidadMedidaModel | undefined;
+  unidad_medida: CatalogoUnidadMedidaModel | undefined;
   almacen: InventoryAlmacenModel | undefined;
   sucursal : InventorySucursalModel | undefined;
   inventory_almacen_id: number | undefined;
