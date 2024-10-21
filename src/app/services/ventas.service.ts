@@ -49,6 +49,10 @@ export class VentaService {
     return this.http.post<void>(`${environment.apiUrl}/api/facturacion/timbrar`, { id: ventaId }, this.getHeaders());
   }
 
+  getVentaById(id: number): Observable<VentaModel> {
+    return this.http.get<VentaModel>(`${environment.apiUrl}/api/ventas/getVentaById/${id}`);
+  }
+
   private getHeaders() {
     return {
       headers: {

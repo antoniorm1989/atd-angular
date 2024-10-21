@@ -3,3 +3,11 @@ export enum environmentEnum {
     staging,
     production
 }
+
+export enum tipoVentaEstatusEnum {
+    ParcialmenteDespachada,
+    Despachada,
+    Cancelada,
+    Facturada,
+    CanceladaSAT
+}

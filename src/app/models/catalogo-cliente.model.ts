@@ -30,6 +30,8 @@ export class CatalogoClienteModel {
 
   articulos: ClienteArticuloModel[] | undefined;
 
+  full_direction: string | undefined;
+
   constructor(id?: number) {
     this.id = id;
   }

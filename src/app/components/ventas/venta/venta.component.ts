@@ -17,6 +17,7 @@ import { UserService } from 'src/app/services/user.service';
 import { VentaService } from 'src/app/services/ventas.service';
 import { environment } from 'src/environments/environment';
 import { DialogSuccessComponent } from '../../genericos/dialogSuccess.component';
+import { FacturaModel } from 'src/app/models/factura.model';
 
 @Component({
   selector: 'app-venta',
@@ -658,6 +659,20 @@ export class VentaComponent {
     return !date || date <= currentDate;
   }
 
+  previewFactura() {
+    const dialogRef = this.dialog.open(PreviewFacturaModalComponent, {
+      height: '900px',
+      width: '1100px',
+      data: {
+        ventaId: this.id
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(ventaArticuloModel => {
+      
+    });
+  }
+
   timbrarVenta() {
     this.ventaService.timbrar(this.id).subscribe({
       next: (data) => {
@@ -722,6 +737,51 @@ export class ArticuloVentaModalComponent {
   onAgregarArticulo(ventaArticuloModel: VentaArticuloModel) {
     try {
       this.dialogRef.close(ventaArticuloModel);
+    } catch (error) {
+      console.error('An error occurred in onAgregarArticulo:', error);
+    }
+  }
+}
+
+
+@Component({
+  selector: 'dialog-component-preview-factura',
+  template: `<span mat-dialog-title>Confirmación de dato factura</span>
+            <mat-dialog-content class="mat-typography">
+              <app-preview-factura [ventaId]="ventaId" (cancel)="onCancelar()" (add)="onTimbrar($event)" #appPreviewFacturaComponent></app-preview-factura>
+            </mat-dialog-content>`,
+  styles: [
+  ]
+})
+export class PreviewFacturaModalComponent {
+  @ViewChild('appVentaArticuloComponent') appPreviewFacturaComponent: any;
+  ventaId!: number;
+
+  constructor(
+    public dialogRef: MatDialogRef<PreviewFacturaModalComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    dialogRef.disableClose = true;
+
+    if (Object.keys(data).length > 0) {
+      if (data.ventaId != undefined) {
+        this.ventaId = data.ventaId;
+      }
+    }
+
+  }
+
+  onCancelar() {
+    try {
+      this.dialogRef.close();
+    } catch (error) {
+      console.error('An error occurred in onAgregarArticulo:', error);
+    }
+  }
+
+  onTimbrar(facturaModel: FacturaModel) {
+    try {
+      this.dialogRef.close(facturaModel);
     } catch (error) {
       console.error('An error occurred in onAgregarArticulo:', error);
     }

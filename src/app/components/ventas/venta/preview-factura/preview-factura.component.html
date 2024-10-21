@@ -1,0 +1,140 @@
+<div class="preview-factura">
+
+    <div class="separator"></div>
+
+    <div class="container" style="margin-top: 24px;">
+        <div class="form-row" style="grid-template-columns: 1fr">
+            <!--FACTURA-->
+            <div style="display: grid; grid-template-columns: 1fr 1fr;">
+                <img src="../../assets/images/logotipo-negro.svg" alt="Image" class="logo-image">
+                <div style="grid-template-columns: 1fr">
+                    <div class="title">Factura</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px;">
+                        <div class="etiquieta" style="text-align: end;">Tipo de Comprobante</div>
+                        <div class="texto">I - Ingreso</div>
+                        <div class="etiquieta" style="text-align: end;">Folio Físcal</div>
+                        <div class="texto">bb501c95-ceded-rfrf-xwxcfrbfgb</div>
+                        <div class="etiquieta" style="text-align: end;">Fecha de expedición</div>
+                        <div class="texto">1 ingreso</div>
+                        <div style="display: grid; grid-template-columns: 170px 1fr; column-gap: 8px;">
+                            <div class="etiquieta" style="text-align: end;">Lugar de expedición</div>
+                            <div class="texto">45079</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 100px 1fr; column-gap: 8px;">
+                            <div class="etiquieta" style="text-align: end;">Exportación</div>
+                            <div class="texto">No aplica</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--EMISOR-->
+            <div style="height: 24px;"></div>
+            <div class="title">Datos emisor</div>
+            <div style="height: 8px;"></div>
+            <div style="margin-left: 12px; font-weight: bold;" class="texto">ATD TOOLS</div>
+
+            <div style="height: 8px;"></div>
+            <div style="margin-left: 12px;" class="etiquieta">RFC</div>
+            <div style="margin-left: 12px;" class="texto">ATO2202016X3</div>
+
+            <div style="height: 8px;"></div>
+            <div style="margin-left: 12px;" class="etiquieta">DOMICILIO FISCAL</div>
+            <div style="margin-left: 12px;" class="texto">BRASIL 2378 Col. ALIANZA PARA LA PRODUCCIÓN, C.P. 21229, Mexicali, Baja California, México</div>
+
+            <div style="height: 8px;"></div>
+            <div style="margin-left: 12px;" class="etiquieta">RÉGIME FISCAL</div>
+            <div style="margin-left: 12px;" class="texto">General de Ley Personas Morales</div>
+
+
+            <!--RECEPTOR-->
+            <div style="height: 24px;"></div>
+            <div class="title">Datos receptor</div>
+            <div style="height: 8px;"></div>
+            <div style="margin-left: 12px; font-weight: bold;" class="texto">{{factura?.receptor?.nombre}}</div>
+
+            <div style="height: 8px;"></div>
+            <div style="margin-left: 12px;" class="etiquieta">USO CFDI</div>
+            <div style="margin-left: 12px;" class="texto">Este no lo capturamos.....G01- Adquisicion de mercancias</div>
+
+            <div style="height: 8px;"></div>
+            <div style="margin-left: 12px;" class="etiquieta">RFC</div>
+            <div style="margin-left: 12px;" class="texto">{{factura?.receptor?.rfc}}</div>
+
+            <div style="height: 8px;"></div>
+            <div style="margin-left: 12px;" class="etiquieta">DOMICILIO FISCAL</div>
+            <div style="margin-left: 12px;" class="texto">{{factura?.receptor?.domicilio_fiscal}}</div>
+
+            <div style="height: 8px;"></div>
+            <div style="margin-left: 12px;" class="etiquieta">RÉGIME FISCAL</div>
+            <div style="margin-left: 12px;" class="texto">{{factura?.receptor?.regimen_fiscal}}</div>
+
+            <!--TABLA-->
+            <div style="height: 24px;"></div>
+            <table class="table" mat-table [dataSource]="dataSourceArticulos">
+
+                <ng-container matColumnDef="unidad">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Unidad</th>
+                    <td mat-cell *matCellDef="let element" class="center-column">{{element.unidad}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="producto_servicio">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">C.Prod/Ser</th>
+                    <td mat-cell *matCellDef="let element" class="center-column">{{element.producto_servicio}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="cantidad">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Cantidad</th>
+                    <td mat-cell *matCellDef="let element" class="center-column">{{element.cantidad}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="descripcion">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Descripción</th>
+                    <td mat-cell *matCellDef="let element" class="center-column">{{element.descripcion}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="p_unitario">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">P.Unitario</th>
+                    <td mat-cell *matCellDef="let element" class="center-column">{{element.p_unitario}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="importe">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Importe</th>
+                    <td mat-cell *matCellDef="let element" class="center-column">{{element.importe}}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <!--TOTALES-->
+            <div style="height: 24px;"></div>
+            <div style="font-weight: bold; text-align: end;" class="texto">SUBTOTAL: {{factura?.subTotal}}</div>
+            <div style="font-weight: bold; text-align: end;" class="texto">+ IVA (16%): {{factura?.subTotalIva}}</div>
+            <div style="font-weight: bold; text-align: end;" class="texto">TOTAL: {{factura?.total}}</div>
+
+            <div style="display: grid; grid-template-columns: 1fr auto; column-gap: 12px;">
+                <div class="etiquieta" style="text-align: end;">Forma de Pago</div>
+                <div class="texto">{{factura?.formaPago}}</div>
+
+                <div class="etiquieta" style="text-align: end;">Metodo de Pago</div>
+                <div class="texto">{{factura?.metodoPago}}</div>
+
+                <div style="display: grid; grid-template-columns: auto 1fr; column-gap: 12px;">
+                    <div class="etiquieta" style="text-align: end;">Fecha de impresión</div>
+                    <div class="texto">{{getFormattedDate()}}</div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr auto; column-gap: 12px;">
+                    <div class="etiquieta" style="text-align: end;">Moneda</div>
+                    <div class="texto">{{factura?.moneda}}</div>
+                </div>
+            </div>
+
+        </div>
+        <div style="height: 24px;"></div>
+        <div class="toolbar-bottom">
+            <button mat-flat-button class="btn secundary" type="button" (click)="onCancel()">Regresar</button>
+            <button mat-flat-button class="btn" type="submit">Si, Timbrar</button>
+        </div>
+    </div>
+</div>

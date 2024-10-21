@@ -53,7 +53,7 @@ import { CatalogoClientesListComponent } from './components/catalogos/clientes/c
 import { ArticuloClienteModalComponent, CatalogoClientesComponent } from './components/catalogos/clientes/cliente/catalogo-clientes.component';
 import { BarcodeScannerComponent } from './components/genericos/barcodesScanner.component';
 import { VentasListComponent } from './components/ventas/ventas-list.component';
-import { ArticuloVentaModalComponent, VentaComponent } from './components/ventas/venta/venta.component';
+import { ArticuloVentaModalComponent, PreviewFacturaModalComponent, VentaComponent } from './components/ventas/venta/venta.component';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule, NativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
@@ -69,6 +69,7 @@ import { ChangePasswordComponent } from './components/login/changepassword/chang
 import { OrdenesCompraListComponent } from './components/ordenes-compra/orden-compra-list.component';
 import { ArticuloOrdenCompraModalComponent, OrdenCompraComponent } from './components/ordenes-compra/orden-compra/orden-compra.component';
 import { OrdenCompraArticuloComponent } from './components/ordenes-compra/orden-compra/articulo/orden-compra-articulo.component';
+import { PreviewFacturaComponent } from './components/ventas/venta/preview-factura/preview-factura.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -115,7 +116,9 @@ export function tokenGetter() {
     OrdenesCompraListComponent,
     OrdenCompraComponent,
     ArticuloOrdenCompraModalComponent,
-    OrdenCompraArticuloComponent
+    OrdenCompraArticuloComponent,
+    PreviewFacturaModalComponent,
+    PreviewFacturaComponent
   ],
   imports: [
     BrowserModule,

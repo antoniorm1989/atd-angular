@@ -204,7 +204,6 @@ export class VentasListComponent {
   }
 
   timbrarVenta(ventaId: number) {
-    debugger;
     this.ventaService.timbrar(ventaId).subscribe({
       next: (data) => {
         //this.factura = data;

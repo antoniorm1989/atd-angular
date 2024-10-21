@@ -57,6 +57,8 @@ export class VentaArticuloModel {
   backorder: number | undefined;
   user: User | undefined;
   ventaId: number | undefined;
+  producto_servicio_id: number | undefined;
+  articulo_descripcion: string | undefined
 }
 
 export class VentaEstatusModel {
