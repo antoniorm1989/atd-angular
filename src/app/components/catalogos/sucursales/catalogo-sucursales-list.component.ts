@@ -50,15 +50,15 @@ export class CatalogoSucursalesListComponent{
   }
 
   onNew(){
-    this.router.navigate(['catalogos/sucursales/detail']);
+    this.router.navigate(['configuracion/catalogos/sucursales/detail']);
   }
 
   onView(id: string){
-    this.router.navigate(['catalogos/sucursales/detail', id]);
+    this.router.navigate(['configuracion/catalogos/sucursales/detail', id]);
   }
 
   onEdit(id: string){
-    this.router.navigate(['catalogos/sucursales/detail', id], {
+    this.router.navigate(['configuracion/catalogos/sucursales/detail', id], {
       queryParams: { action: 'edit' },
     });
   }

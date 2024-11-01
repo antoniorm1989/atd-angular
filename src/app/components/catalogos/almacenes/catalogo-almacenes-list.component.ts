@@ -50,15 +50,15 @@ export class CatalogoAlmacenesListComponent{
   }
 
   onNew(){
-    this.router.navigate(['catalogos/almacenes/detail']);
+    this.router.navigate(['almacenes/catalogos/almacenes/detail']);
   }
 
   onView(id: string){
-    this.router.navigate(['catalogos/almacenes/detail', id]);
+    this.router.navigate(['almacenes/catalogos/almacenes/detail', id]);
   }
 
   onEdit(id: string){
-    this.router.navigate(['catalogos/almacenes/detail', id], {
+    this.router.navigate(['almacenes/catalogos/almacenes/detail', id], {
       queryParams: { action: 'edit' },
     });
   }

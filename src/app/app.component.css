@@ -10,14 +10,14 @@
 
 
 .logged mat-sidenav {
-  overflow-y: auto; 
+  overflow-y: auto;
   position: absolute;
-  height: calc(100vh - 80px); 
+  height: calc(100vh - 80px);
 }
 
 .logged mat-sidenav-content {
-  overflow-y: auto; 
-  height: calc(100vh - 80px); 
+  overflow-y: auto;
+  height: calc(100vh - 80px);
 }
 
 
@@ -78,20 +78,53 @@ h1.example-app-name {
 }
 
 .menu-option i {
-  margin-left: 12px;
+  margin-left: 40px;
 }
 
 .menu-option .menu-item-text {
   margin-left: 8px;
 }
 
-.menu-option.active {
+.mat-expansion-panel{
+  border-radius: 0px;
+}
+
+.mat-expansion-panel-header {
+  padding: 8px 16px 8px 0px !important;
+  height: 24px !important;
+  cursor: pointer;
+  border-radius: 0px;
+}
+
+.parent-active .mat-expansion-panel-header {
   background-color: #BA940066;
 }
+
+.parent-active .mat-expansion-panel-header .menu-space {
+  background-color: #BA9400;
+}
+
+.mat-expansion-panel-header .menu-space {
+  width: 12px;
+  height: 40px;
+}
+
+.mat-expansion-panel-header {
+  border-radius: 0px
+}
+
+.mat-expansion-panel-header {
+  padding: 0 24px 0px 0px;
+}
+
 
 .menu-option .menu-space {
   width: 12px;
   height: 40px;
+}
+
+.menu-option.active {
+  color: #BA9400;
 }
 
 .menu-option.active .menu-space {
@@ -133,18 +166,22 @@ h1.example-app-name {
   letter-spacing: 0.01em;
 }
 
-.mat-sidenav-menu-hide{
+.mat-sidenav-menu-hide {
   display: none;
 }
 
+.example-container .mat-expansion-panel-body {
+  padding: 0px !important;
+}
 
 @media only screen and (max-width: 1200px) {}
 
 @media only screen and (max-width: 1000px) {}
 
 @media only screen and (max-width: 768px) {
+
   .toolbar-calendar,
-  .user-name-label{
+  .user-name-label {
     display: none;
   }
 }

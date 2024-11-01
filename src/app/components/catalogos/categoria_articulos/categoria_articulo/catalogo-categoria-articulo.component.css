@@ -52,7 +52,6 @@
 }
 
 .catalogo-articulos .toolbar .toolbar-breadcrumb {
-    display: flex;
     justify-content: flex-start;
     align-items: center;
 }

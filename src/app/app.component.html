@@ -30,25 +30,25 @@
         <mat-sidenav class="mat-sidenav-menu" [ngClass]="{ 'mat-sidenav-menu-hide': !isTokenValid }" #snav
             [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches"
             [opened]="!this.mobileQuery.matches">
+
+            <mat-expansion-panel *ngFor="let nav of fillerNavWithSubmenu" [ngClass]="{'parent-active': isSubmenuActive(nav.subItems)}">
+                <mat-expansion-panel-header>
+                  <div class="menu-space"></div>
+                  <i class="{{ nav.icon }}"></i>
+                  <span class="menu-item-text">{{ nav.text }}</span>
+                </mat-expansion-panel-header>
+                <mat-nav-list>
+                    <div routerLinkActive="active" *ngFor="let subItem of nav.subItems" class="menu-option" [routerLink]="[subItem.href]">
+                        <i class="{{subItem.icon}}"></i>
+                        <span class="menu-item-text">{{subItem.text}}</span>
+                    </div>
+                </mat-nav-list>
+            </mat-expansion-panel>
+
             <mat-nav-list class="mat-nav-menu">
-                <div routerLinkActive="active" *ngFor="let nav of fillerNav" class="menu-option"
-                    [routerLink]="[nav.href]">
+                <div class="menu-option" (click)="snav.toggle(); logout();" style="position: absolute; bottom: 0px;">
                     <div class="menu-space"></div>
-                    <i class="{{nav.icon}}"></i>
-                    <span class="menu-item-text">{{nav.text}}</span>
-                </div>
-
-                <div class="menu-option" style="flex: 1;"></div>
-
-                <div routerLinkActive="active" *ngFor="let nav of fillerNavEnd" class="menu-option"
-                    [routerLink]="[nav.href]">
-                    <div class="menu-space"></div>
-                    <i class="{{nav.icon}}"></i>
-                    <span class="menu-item-text">{{nav.text}}</span>
-                </div>
-                <div class="menu-option" (click)="snav.toggle(); logout();">
-                    <div class="menu-space"></div>
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <i class="fa-solid fa-arrow-right-from-bracket" style="margin-left: 12px;"></i>
                     <span class="menu-item-text">Cerrar sesión</span>
                 </div>
             </mat-nav-list>

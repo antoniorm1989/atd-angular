@@ -50,15 +50,15 @@ export class CatalogoClientesListComponent{
   }
 
   onNew(){
-    this.router.navigate(['catalogos/clientes/detail']);
+    this.router.navigate(['venta/catalogos/clientes/detail']);
   }
 
   onView(id: string){
-    this.router.navigate(['catalogos/clientes/detail', id]);
+    this.router.navigate(['venta/catalogos/clientes/detail', id]);
   }
 
   onEdit(id: string){
-    this.router.navigate(['catalogos/clientes/detail', id], {
+    this.router.navigate(['venta/catalogos/clientes/detail', id], {
       queryParams: { action: 'edit' },
     });
   }

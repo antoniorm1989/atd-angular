@@ -186,3 +186,20 @@ input[type=number] {
     overflow: hidden;
     margin: auto;
 }
+
+.example-container .mat-expansion-panel-body{
+    padding: 0px !important;
+}
+
+.example-container .mat-expansion-panel-header .mat-content{
+    align-items: center; 
+}
+
+.example-container .mat-expansion-panel-header .mat-content i{
+    margin-right: 8px;
+    margin-left: 8px;
+}
+
+.mat-expansion-panel:not([class*=mat-elevation-z]){
+    box-shadow: unset !important;
+}

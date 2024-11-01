@@ -35,11 +35,11 @@ export class CatalogoUsuariosListComponent {
   }
 
   onNew() {
-    this.router.navigate(['catalogos/usuarios/detail']);
+    this.router.navigate(['configuracion/catalogos/usuarios/detail']);
   }
 
   onView(id: string | undefined){
-    this.router.navigate(['catalogos/usuarios/detail', id]);
+    this.router.navigate(['configuracion/catalogos/usuarios/detail', id]);
   }
 
   navigate(route: string) {

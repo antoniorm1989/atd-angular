@@ -53,15 +53,15 @@ export class CatalogoArticuloListComponent {
   }
 
   onNew() {
-    this.router.navigate(['catalogos/articulos/detail']);
+    this.router.navigate(['almacenes/catalogos/articulos/detail']);
   }
 
   onView(id: string) {
-    this.router.navigate(['catalogos/articulos/detail', id]);
+    this.router.navigate(['almacenes/catalogos/articulos/detail', id]);
   }
 
   onViewCategory(categoryId: string) {
-    this.router.navigate(['catalogos/categoria-articulos/detail', categoryId]);
+    this.router.navigate(['almacenes/catalogos/categoria-articulos/detail', categoryId]);
   }
 
   onEdit(id: string) {

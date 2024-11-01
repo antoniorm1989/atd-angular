@@ -63,7 +63,7 @@ export class OrdenesCompraListComponent {
   }
 
   onNew() {
-    this.router.navigate(['ocmpras/detail']);
+    this.router.navigate(['compras/detail']);
   }
 
   onView(id: string) {

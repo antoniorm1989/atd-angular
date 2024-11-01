@@ -50,15 +50,15 @@ export class CatalogoProveedoresListComponent{
   }
 
   onNew(){
-    this.router.navigate(['catalogos/proveedores/detail']);
+    this.router.navigate(['compras/catalogos/proveedores/detail']);
   }
 
   onView(id: string){
-    this.router.navigate(['catalogos/proveedores/detail', id]);
+    this.router.navigate(['compras/catalogos/proveedores/detail', id]);
   }
 
   onEdit(id: string){
-    this.router.navigate(['catalogos/proveedores/detail', id], {
+    this.router.navigate(['compras/catalogos/proveedores/detail', id], {
       queryParams: { action: 'edit' },
     });
   }

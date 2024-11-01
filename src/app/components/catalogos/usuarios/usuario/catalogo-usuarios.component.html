@@ -5,8 +5,10 @@
             <span class="title">Catálogo usuarios</span>
         </div>
         <div class="toolbar-breadcrumb">
-            <span class="link-breadcrumb" (click)="navigate('catalogos')"> Catálogos </span> /
-            <span class="link-breadcrumb" (click)="navigate('catalogos/usuarios')"> Catálogo usuarios </span> /
+            <span class="link-breadcrumb" (click)="navigate('configuracion/catalogos')">Configuración / Catálogos</span>
+            <span> / </span>
+            <span class="link-breadcrumb" (click)="navigate('configuracion/catalogos/usuarios')">Catálogo usuarios</span>
+            <span> / </span>
             <span class="breadcrumb-item">{{title}}</span>
             <div style="margin: auto;"></div>
             <button *ngIf="isReadOnly && !isCurrentUser()" mat-button class="btn" (click)="openEditarPasswordModalComponent()">

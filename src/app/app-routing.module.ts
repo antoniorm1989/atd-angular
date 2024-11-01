@@ -34,48 +34,62 @@ import { OrdenesCompraListComponent } from './components/ordenes-compra/orden-co
 const routes: Routes = [
   { path: '', redirectTo: '/inventario-almacen', pathMatch: 'full' }, // Redirect to login by default
   { path: 'login', component: LoginComponent, canActivate: [AuthGuard]}, // Login route
+  { path: 'login/change-password', component: ChangePasswordComponent, canActivate: [AuthGuard]},
+  
+  //{ path: 'inventario-sucursal', component: InventorySucursalListComponent, canActivate: [AuthGuard] },
+  //{ path: 'inventario-sucursal/entrada/:sucursalId', component: EntradaSucursalComponent, canActivate: [AuthGuard] },
+  //{ path: 'inventario-sucursal/entrada/:sucursalId/:articuloId', component: EntradaSucursalComponent, canActivate: [AuthGuard] },
+  //{ path: 'inventario-sucursal/historial-sucursal/:id', component: HistorialSucursalComponent, canActivate: [AuthGuard] },
+  //{ path: 'sucursales', component: SuscursalesComponent, canActivate: [AuthGuard] },
+
+  // Alamacenes
   { path: 'inventario-almacen', component: InventoryAlmacenListComponent, canActivate: [AuthGuard] },
   { path: 'inventario-almacen/entrada/:almacenId', component: EntradaAlmacenComponent, canActivate: [AuthGuard]},
   { path: 'inventario-almacen/entrada/:almacenId/:articuloId', component: EntradaAlmacenComponent, canActivate: [AuthGuard] },
   { path: 'inventario-almacen/historial-almacen/:id', component: HistorialAlmacenComponent, canActivate: [AuthGuard] },
-  { path: 'inventario-sucursal', component: InventorySucursalListComponent, canActivate: [AuthGuard] },
-  { path: 'inventario-sucursal/entrada/:sucursalId', component: EntradaSucursalComponent, canActivate: [AuthGuard] },
-  { path: 'inventario-sucursal/entrada/:sucursalId/:articuloId', component: EntradaSucursalComponent, canActivate: [AuthGuard] },
-  { path: 'inventario-sucursal/historial-sucursal/:id', component: HistorialSucursalComponent, canActivate: [AuthGuard] },
-  { path: 'sucursales', component: SuscursalesComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos', component: CatalogosComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/sucursales', component: CatalogoSucursalesListComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/sucursales/detail', component: CatalogoSucursalesComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/sucursales/detail/:id', component: CatalogoSucursalesComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/almacenes', component: CatalogoAlmacenesListComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/almacenes/detail', component: CatalogoAlmacenesComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/almacenes/detail/:id', component: CatalogoAlmacenesComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/roles', component: CatalogoRolesListComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/roles/detail', component: CatalogoRolesComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/roles/detail/:id', component: CatalogoRolesComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/categoria-articulos', component: CatalogoCategoriaArticuloListComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/categoria-articulos/detail', component: CatalogoCategoriaArticuloComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/categoria-articulos/detail/:id', component: CatalogoCategoriaArticuloComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/articulos', component: CatalogoArticuloListComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/articulos/detail', component: CatalogoArticuloComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/articulos/detail/:id', component: CatalogoArticuloComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/clientes', component: CatalogoClientesListComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/clientes/detail', component: CatalogoClientesComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/clientes/detail/:id', component: CatalogoClientesComponent, canActivate: [AuthGuard] },
+  // Alamecens Catalogos
+  { path: 'almacenes/catalogos', component: CatalogosComponent, canActivate: [AuthGuard] },
+  { path: 'almacenes/catalogos/almacenes', component: CatalogoAlmacenesListComponent, canActivate: [AuthGuard] },
+  { path: 'almacenes/catalogos/almacenes/detail', component: CatalogoAlmacenesComponent, canActivate: [AuthGuard] },
+  { path: 'almacenes/catalogos/almacenes/detail/:id', component: CatalogoAlmacenesComponent, canActivate: [AuthGuard] },
+  { path: 'almacenes/catalogos/categoria-articulos', component: CatalogoCategoriaArticuloListComponent, canActivate: [AuthGuard] },
+  { path: 'almacenes/catalogos/categoria-articulos/detail', component: CatalogoCategoriaArticuloComponent, canActivate: [AuthGuard] },
+  { path: 'almacenes/catalogos/categoria-articulos/detail/:id', component: CatalogoCategoriaArticuloComponent, canActivate: [AuthGuard] },
+  { path: 'almacenes/catalogos/articulos', component: CatalogoArticuloListComponent, canActivate: [AuthGuard] },
+  { path: 'almacenes/catalogos/articulos/detail', component: CatalogoArticuloComponent, canActivate: [AuthGuard] },
+  { path: 'almacenes/catalogos/articulos/detail/:id', component: CatalogoArticuloComponent, canActivate: [AuthGuard] },
+
+  // Ventas
   { path: 'ventas', component: VentasListComponent, canActivate: [AuthGuard] },
   { path: 'ventas/detail', component: VentaComponent, canActivate: [AuthGuard]},
   { path: 'ventas/detail/:ventaId', component: VentaComponent, canActivate: [AuthGuard]},
-  { path: 'catalogos/proveedores', component: CatalogoProveedoresListComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/proveedores/detail', component: CatalogoProveedoresComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/proveedores/detail/:id', component: CatalogoProveedoresComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/usuarios', component: CatalogoUsuariosListComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/usuarios/detail', component: CatalogoUsuariosComponent, canActivate: [AuthGuard] },
-  { path: 'catalogos/usuarios/detail/:id', component: CatalogoUsuariosComponent, canActivate: [AuthGuard] },
-  { path: 'login/change-password', component: ChangePasswordComponent, canActivate: [AuthGuard]},
+  // Ventas Catalogos
+  { path: 'venta/catalogos', component: CatalogosComponent, canActivate: [AuthGuard] },
+  { path: 'venta/catalogos/clientes', component: CatalogoClientesListComponent, canActivate: [AuthGuard] },
+  { path: 'venta/catalogos/clientes/detail', component: CatalogoClientesComponent, canActivate: [AuthGuard] },
+  { path: 'venta/catalogos/clientes/detail/:id', component: CatalogoClientesComponent, canActivate: [AuthGuard] },
+
+  // Ordens de compra
   { path: 'compras', component: OrdenesCompraListComponent, canActivate: [AuthGuard] },
   { path: 'compras/detail', component: VentaComponent, canActivate: [AuthGuard]},
   { path: 'compras/detail/:ordenesCompraId', component: VentaComponent, canActivate: [AuthGuard]},
+  // Catalogos compras
+  { path: 'compras/catalogos', component: CatalogosComponent, canActivate: [AuthGuard] },
+  { path: 'compras/catalogos/proveedores', component: CatalogoProveedoresListComponent, canActivate: [AuthGuard] },
+  { path: 'compras/catalogos/proveedores/detail', component: CatalogoProveedoresComponent, canActivate: [AuthGuard] },
+  { path: 'compras/catalogos/proveedores/detail/:id', component: CatalogoProveedoresComponent, canActivate: [AuthGuard] },
 
+  // Catalogos configuraciones
+  { path: 'configuracion/catalogos', component: CatalogosComponent, canActivate: [AuthGuard] },
+  { path: 'configuracion/catalogos/sucursales', component: CatalogoSucursalesListComponent, canActivate: [AuthGuard] },
+  { path: 'configuracion/catalogos/sucursales/detail', component: CatalogoSucursalesComponent, canActivate: [AuthGuard] },
+  { path: 'configuracion/catalogos/sucursales/detail/:id', component: CatalogoSucursalesComponent, canActivate: [AuthGuard] },
+  { path: 'configuracion/catalogos/roles', component: CatalogoRolesListComponent, canActivate: [AuthGuard] },
+  { path: 'configuracion/catalogos/roles/detail', component: CatalogoRolesComponent, canActivate: [AuthGuard] },
+  { path: 'configuracion/catalogos/roles/detail/:id', component: CatalogoRolesComponent, canActivate: [AuthGuard] },
+  { path: 'configuracion/catalogos/usuarios', component: CatalogoUsuariosListComponent, canActivate: [AuthGuard] },
+  { path: 'configuracion/catalogos/usuarios/detail', component: CatalogoUsuariosComponent, canActivate: [AuthGuard] },
+  { path: 'configuracion/catalogos/usuarios/detail/:id', component: CatalogoUsuariosComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({

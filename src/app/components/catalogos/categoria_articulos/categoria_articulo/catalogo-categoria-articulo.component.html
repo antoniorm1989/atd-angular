@@ -5,8 +5,10 @@
             <span class="title">Catálogo categoría de artículos</span>
         </div>
         <div class="toolbar-breadcrumb">
-            <span class="link-breadcrumb" (click)="navigate('catalogos')"> Catálogos </span> /
-            <span class="link-breadcrumb" (click)="navigate('catalogos/categoria-articulos')"> Catálogo categoría de artículos </span> /
+            <span class="link-breadcrumb" (click)="navigate('almacenes/catalogos')">Almacenes / Catálogos</span>
+            <span> / </span>
+            <span class="link-breadcrumb" (click)="navigate('almacenes/catalogos/categoria-articulos')">Catálogo categoría de artículos</span>
+            <span> / </span>
             <span class="breadcrumb-item">{{title}}</span>
 
             <button *ngIf="isReadOnly" mat-button class="btn" (click)="makeEditMode()"><mat-icon>edit</mat-icon>Editar información</button>

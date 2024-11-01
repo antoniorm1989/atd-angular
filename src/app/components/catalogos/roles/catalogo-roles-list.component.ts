@@ -52,15 +52,15 @@ export class CatalogoRolesListComponent{
   }
 
   onNew(){
-    this.router.navigate(['catalogos/roles/detail']);
+    this.router.navigate(['configuracion/catalogos/roles/detail']);
   }
 
   onView(id: string){
-    this.router.navigate(['catalogos/roles/detail', id]);
+    this.router.navigate(['configuracion/catalogos/roles/detail', id]);
   }
 
   onEdit(id: string){
-    this.router.navigate(['catalogos/roles/detail', id], {
+    this.router.navigate(['configuracion/catalogos/roles/detail', id], {
       queryParams: { action: 'edit' },
     });
   }

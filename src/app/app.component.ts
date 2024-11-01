@@ -16,23 +16,72 @@ export class AppComponent implements OnDestroy {
 
   title = 'atd-app';
   mobileQuery: MediaQueryList;
-  fillerNav = [
+  fillerNavWithSubmenu = [
     {
-      text: 'Almacen', icon: 'fa-brands fa-dropbox', href: 'inventario-almacen'
-    },
-    {
-      text: 'Sucursales', icon: 'fa-solid fa-clipboard-check', href: 'inventario-sucursal'
-    },
-    {
-      text: 'Ventas', icon: 'fa-solid fa-cash-register', href: 'ventas'
-    },
-    {
-      text: 'Compras', icon: 'fa-solid fa-dolly', href: 'compras'
-    }
-  ];
-  fillerNavEnd = [
-    {
-      text: 'Catálogos', icon: 'fa-solid fa-book', href: 'catalogos'
+      text: 'Almacenes',
+      icon: 'fa-brands fa-dropbox',
+      subItems: [
+        {
+          text: 'Catálogos',
+          icon: 'fa-solid fa-book',
+          href: 'almacenes/catalogos'
+        },
+        {
+          text: 'Invenarios',
+          icon: 'fa-brands fa-dropbox',
+          href: 'inventario-almacen',
+        }
+      ]
+    },{
+      text: 'Ventas',
+      icon: 'fa-brands fa-dropbox',
+      subItems: [
+        {
+          text: 'Catálogos',
+          icon: 'fa-solid fa-book',
+          href: 'venta/catalogos'
+        },
+        {
+          text: 'Cotizaciones',
+          icon: 'fa-brands fa-dropbox',
+          href: 'xxx',
+        },
+        {
+          text: 'Facturación',
+          icon: 'fa-brands fa-dropbox',
+          href: 'ventas',
+        }
+      ]
+    },{
+      text: 'Compras',
+      icon: 'fa-brands fa-dropbox',
+      subItems: [
+        {
+          text: 'Catálogos',
+          icon: 'fa-solid fa-book',
+          href: 'compras/catalogos'
+        },
+        {
+          text: 'Orden de compra',
+          icon: 'fa-brands fa-dropbox',
+          href: 'compras',
+        }
+      ]
+    },{
+      text: 'Configuración',
+      icon: 'fa-brands fa-dropbox',
+      subItems: [
+        {
+          text: 'Catálogos',
+          icon: 'fa-solid fa-book',
+          href: 'configuracion/catalogos'
+        },
+        {
+          text: 'Plantillas',
+          icon: 'fa-brands fa-dropbox',
+          href: 'xx',
+        }
+      ]
     }
   ];
   userInitials: string = "";
@@ -95,7 +144,7 @@ export class AppComponent implements OnDestroy {
 
   public get isTokenValid(): boolean {
     let userData = JSON.parse(localStorage.getItem('user_data') || '{"isPasswordTemp":0}');
-    return this.userService.isTokenValid()&& userData.isPasswordTemp == 0;
+    return this.userService.isTokenValid() && userData.isPasswordTemp == 0;
   }
 
   get userName(): string {
@@ -109,12 +158,16 @@ export class AppComponent implements OnDestroy {
 
   updateMenu() {
     this.sidenav.close();
-    if(!this.mobileQuery.matches)
+    if (!this.mobileQuery.matches)
       this.sidenav.open();
   }
 
   getUrlPhoto(): string {
     let userData = JSON.parse(localStorage.getItem('user_data') || '{"photo":""}');
     return `${environment.apiUrl}/images/users/${userData.photo}`;
+  }
+
+  isSubmenuActive(subItems: any[]): boolean {
+    return subItems.some(subItem => this.router.isActive(subItem.href, false));
   }
 }
