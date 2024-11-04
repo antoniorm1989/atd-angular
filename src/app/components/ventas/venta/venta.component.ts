@@ -153,12 +153,12 @@ export class VentaComponent {
                   switch (params['action']) {
                     case undefined:
                       this.action = 'view';
-                      this.title = 'Consultar venta';
+                      this.title = 'Consultar factura';
                       //this.form.disable();
                       break;
                     case 'edit':
                       this.action = 'edit';
-                      this.title = 'Editar venta';
+                      this.title = 'Editar factura';
                       break;
                   }
                 });
@@ -168,7 +168,7 @@ export class VentaComponent {
             });
           } else {
             this.action = 'new';
-            this.title = 'Crear venta';
+            this.title = 'Crear factura';
             this.loadSelectData();
           }
         });
@@ -673,6 +673,21 @@ export class VentaComponent {
     });
   }
 
+  cancelarFactura() {
+    const dialogRef = this.dialog.open(CancelarFacturaModalComponent, {
+      height: '500px',
+      width: '800px',
+      data: {
+        ventaId: this.id,
+        venta: this.editData
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(ventaArticuloModel => {
+      
+    });
+  }
+
   timbrarVenta() {
     this.ventaService.timbrar(this.id).subscribe({
       next: (data) => {
@@ -784,6 +799,55 @@ export class PreviewFacturaModalComponent {
       this.dialogRef.close(facturaModel);
     } catch (error) {
       console.error('An error occurred in onAgregarArticulo:', error);
+    }
+  }
+}
+
+
+@Component({
+  selector: 'dialog-component-cancelar-factura',
+  template: `<span mat-dialog-title>Cancelar Factura</span>
+            <mat-dialog-content class="mat-typography">
+              <app-cancelar-factura [ventaId]="ventaId" (regresar)="onRegresar()" (cancelar)="onCancelar()" #appCancelarFacturaComponent [venta]="venta"></app-cancelar-factura>
+            </mat-dialog-content>`,
+  styles: [
+  ]
+})
+export class CancelarFacturaModalComponent {
+  @ViewChild('appCancelarFacturaComponent') appCancelarFacturaComponent: any;
+  ventaId!: number;
+  venta!: VentaModel;
+
+  constructor(
+    public dialogRef: MatDialogRef<PreviewFacturaModalComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    dialogRef.disableClose = true;
+
+    if (Object.keys(data).length > 0) {
+      if (data.ventaId != undefined) {
+        this.ventaId = data.ventaId;
+      }
+      if (data.venta != undefined) {
+        this.venta = data.venta;
+      }
+    }
+
+  }
+
+  onRegresar() {
+    try {
+      this.dialogRef.close();
+    } catch (error) {
+      console.error('An error occurred in regesar:', error);
+    }
+  }
+
+  onCancelar() {
+    try {
+      this.dialogRef.close();
+    } catch (error) {
+      console.error('An error occurred in cancelar factura:', error);
     }
   }
 }

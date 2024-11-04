@@ -187,7 +187,7 @@ input[type=number] {
     margin: auto;
 }
 
-.example-container .mat-expansion-panel-body{
+.example-container .mat-sidenav-menu .mat-expansion-panel-body{
     padding: 0px !important;
 }
 

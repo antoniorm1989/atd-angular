@@ -1,18 +1,18 @@
 <div class="ventas-list">
     <div class="toolbar">
         <div class="toolbar-title">
-            <i class="icon fa-solid fa-cash-register"></i>
-            <span class="title">Ventas</span>
+            <i class="icon fa-solid fa-money-bill"></i>
+            <span class="title">Facturación Ventas</span>
         </div>
         <div>
-            <span class="breadcrumb-item">Ventas</span>
+            <span class="breadcrumb-item">Facturación</span>
         </div>
     </div>
     <div class="container">
         <div *ngIf="!hasRecords" class="container-empty">
             <img src="../../assets/images/empty-list.png" alt="empty logo" class="img">
             <span class="text">Aún no tienes ventas registradas, para poder ver información favor de agregar una venta.</span>
-            <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Agregar venta</button>
+            <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Nueva Factura</button>
         </div>
         <div *ngIf="hasRecords" class="container-list">
 
@@ -67,7 +67,7 @@
                     </div>
                 </form>
 
-                <button mat-flat-button class="btn btn-agregar" (click)="onNew()" type="button"><mat-icon>add</mat-icon>Agregar venta</button>
+                <button mat-flat-button class="btn btn-agregar" (click)="onNew()" type="button"><mat-icon>add</mat-icon>Nueva Factura</button>
             </div>
 
             <table class="table" mat-table [dataSource]="dataSource">

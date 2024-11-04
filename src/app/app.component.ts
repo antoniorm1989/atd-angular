@@ -34,7 +34,7 @@ export class AppComponent implements OnDestroy {
       ]
     },{
       text: 'Ventas',
-      icon: 'fa-brands fa-dropbox',
+      icon: 'fa-solid fa-cash-register',
       subItems: [
         {
           text: 'Catálogos',
@@ -43,18 +43,18 @@ export class AppComponent implements OnDestroy {
         },
         {
           text: 'Cotizaciones',
-          icon: 'fa-brands fa-dropbox',
+          icon: 'fa-solid fa-file-invoice-dollar',
           href: 'xxx',
         },
         {
           text: 'Facturación',
-          icon: 'fa-brands fa-dropbox',
+          icon: 'fa-solid fa-money-bill',
           href: 'ventas',
         }
       ]
     },{
       text: 'Compras',
-      icon: 'fa-brands fa-dropbox',
+      icon: 'fa-solid fa-money-check-dollar',
       subItems: [
         {
           text: 'Catálogos',
@@ -63,13 +63,13 @@ export class AppComponent implements OnDestroy {
         },
         {
           text: 'Orden de compra',
-          icon: 'fa-brands fa-dropbox',
+          icon: 'fa-solid fa-tag',
           href: 'compras',
         }
       ]
     },{
       text: 'Configuración',
-      icon: 'fa-brands fa-dropbox',
+      icon: 'fa-solid fa-gear',
       subItems: [
         {
           text: 'Catálogos',
@@ -78,7 +78,7 @@ export class AppComponent implements OnDestroy {
         },
         {
           text: 'Plantillas',
-          icon: 'fa-brands fa-dropbox',
+          icon: 'fa-regular fa-file-lines',
           href: 'xx',
         }
       ]

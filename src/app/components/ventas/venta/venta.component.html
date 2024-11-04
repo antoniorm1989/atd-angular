@@ -2,7 +2,7 @@
     <div class="toolbar">
         <div class="toolbar-title">
             <i class="icon fa-solid fa-cash-register"></i>
-            <span class="title">Ventas</span>
+            <span class="title">Facturación</span>
         </div>
         <div class="toolbar-breadcrumb">
             <span class="link-breadcrumb" (click)="navigate('ventas')">Ventas</span>
@@ -12,7 +12,7 @@
             <!--<button *ngIf="isReadOnly" mat-button class="btn" (click)="makeEditMode()"><mat-icon>edit</mat-icon>Editar
                 información
             </button>-->
-            <button type="button" mat-button class="btn" (click)="previewFactura()" ><mat-icon>add</mat-icon>Facturar</button>
+            <button *ngIf="isReadOnly" type="button" mat-button class="btn" (click)="cancelarFactura()" ><mat-icon>cancel</mat-icon>Cancelar factura</button>
         </div>
     </div>
     <div class="container">
