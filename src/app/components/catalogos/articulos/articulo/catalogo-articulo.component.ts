@@ -40,14 +40,14 @@ export class CatalogoArticuloComponent {
       cost: '',
       category: '',
       show_admin_users: '',
-      status: '',
+      status: true,
       created_at: '',
       selectedCategory: [null, Validators.required],
       photo: null,
     });
 
     this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url.includes('/catalogos/articulos/detail')) {
+      if (event instanceof NavigationEnd && event.url.includes('/almacenes/catalogos/articulos/detail')) {
 
         this.route.params.subscribe(params => {
           this.id = params['id'];
@@ -160,7 +160,7 @@ export class CatalogoArticuloComponent {
             this.uploadPhoto(data.id).subscribe({
               next: () => {
                 this.openMessageSnack();
-                this.router.navigate(['catalogos/articulos']);
+                this.router.navigate(['almacenes/catalogos/articulos']);
               },
               error: (e) => {
                 console.log(e);
@@ -168,7 +168,7 @@ export class CatalogoArticuloComponent {
             });
           else {
             this.openMessageSnack();
-            this.router.navigate(['catalogos/articulos']);
+            this.router.navigate(['almacenes/catalogos/articulos']);
           }
         },
         error: (e) => {
@@ -185,7 +185,7 @@ export class CatalogoArticuloComponent {
             this.uploadPhoto(data.id).subscribe({
               next: () => {
                 this.openMessageSnack();
-                this.router.navigate(['catalogos/articulos']);
+                this.router.navigate(['almacenes/catalogos/articulos']);
               },
               error: (e) => {
                 console.log(e);
@@ -193,7 +193,7 @@ export class CatalogoArticuloComponent {
             });
           else {
             this.openMessageSnack();
-            this.router.navigate(['catalogos/articulos']);
+            this.router.navigate(['almacenes/catalogos/articulos']);
           }
         },
         error: (e) => {

@@ -64,7 +64,7 @@ export class AppComponent implements OnDestroy {
         {
           text: 'Orden de compra',
           icon: 'fa-solid fa-tag',
-          href: 'compras',
+          href: 'orden-compra',
         }
       ]
     },{
@@ -111,6 +111,7 @@ export class AppComponent implements OnDestroy {
   }
 
   ngOnInit(): void {
+    debugger;
     let userData = JSON.parse(localStorage.getItem('user_data') || '{"photo":""}');
 
     if (userData.photo == '' || userData.photo == null || userData.photo == undefined || userData.photo == 'null')

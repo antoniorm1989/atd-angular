@@ -35,7 +35,7 @@ export class CatalogoUsuariosComponent {
   constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private userService: UserService, private router: Router, private _snackBar: MatSnackBar, private catalogoRolesService: CatalogoRolesService, private dialog: MatDialog) {
 
     this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url.includes('/catalogos/usuarios/detail')) {
+      if (event instanceof NavigationEnd && event.url.includes('/configuracion/catalogos/usuarios/detail')) {
         this.route.params.subscribe(params => {
           this.id = params['id'];
           if (this.id != undefined) {
@@ -162,7 +162,7 @@ export class CatalogoUsuariosComponent {
               next: () => {
                 this.openMessageSnack();
                 setTimeout(() => {
-                  this.router.navigate(['catalogos/usuarios']).then(() => {
+                  this.router.navigate(['configuracion/catalogos/usuarios']).then(() => {
                     this.router.events.subscribe(event => {
                       window.location.href = window.location.href;
                     });
@@ -175,7 +175,7 @@ export class CatalogoUsuariosComponent {
             });
           else {
             this.openMessageSnack();
-            this.router.navigate(['catalogos/usuarios']);
+            this.router.navigate(['configuracion/catalogos/usuarios']);
           }
         },
         error: (e) => {
@@ -189,7 +189,7 @@ export class CatalogoUsuariosComponent {
             this.uploadPhoto(id).subscribe({
               next: () => {
                 this.openMessageSnack();
-                this.router.navigate(['catalogos/usuarios']).then(() => {
+                this.router.navigate(['configuracion/catalogos/usuarios']).then(() => {
                   this.router.events.subscribe(event => {
                     window.location.href = window.location.href;
                   });
@@ -202,7 +202,7 @@ export class CatalogoUsuariosComponent {
           }
           else {
             this.openMessageSnack();
-            this.router.navigate(['catalogos/usuarios']);
+            this.router.navigate(['configuracion/catalogos/usuarios']);
           }
         },
         error: (e) => {

@@ -18,7 +18,7 @@ export class CatalogoUsuariosListComponent {
 
   constructor(private userService: UserService, private router: Router) {
     this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url == '/catalogos/usuarios' && !this.dataLoaded) {
+      if (event instanceof NavigationEnd && event.url == '/configuracion/catalogos/usuarios' && !this.dataLoaded) {
         this.userService.getAll().subscribe({
           next: (data) => {
             if (data.length > 0) {

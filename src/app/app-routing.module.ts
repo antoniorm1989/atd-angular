@@ -70,9 +70,9 @@ const routes: Routes = [
   { path: 'venta/catalogos/clientes/detail/:id', component: CatalogoClientesComponent, canActivate: [AuthGuard] },
 
   // Ordens de compra
-  { path: 'compras', component: OrdenesCompraListComponent, canActivate: [AuthGuard] },
-  { path: 'compras/detail', component: VentaComponent, canActivate: [AuthGuard]},
-  { path: 'compras/detail/:ordenesCompraId', component: VentaComponent, canActivate: [AuthGuard]},
+  { path: 'orden-compra', component: OrdenesCompraListComponent, canActivate: [AuthGuard] },
+  { path: 'orden-compra/detail', component: VentaComponent, canActivate: [AuthGuard]},
+  { path: 'orden-compra/detail/:ordenesCompraId', component: VentaComponent, canActivate: [AuthGuard]},
   // Catalogos compras
   { path: 'compras/catalogos', component: CatalogosComponent, canActivate: [AuthGuard] },
   { path: 'compras/catalogos/proveedores', component: CatalogoProveedoresListComponent, canActivate: [AuthGuard] },

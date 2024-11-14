@@ -10,7 +10,6 @@
             <span class="link-breadcrumb" (click)="navigate('almacenes/catalogos/articulos')">Catálogo artículos</span>
             <span> / </span>
             <span class="breadcrumb-item">{{title}}</span>
-
             <button *ngIf="isReadOnly" mat-button class="btn" (click)="makeEditMode()"><mat-icon>edit</mat-icon>Editar
                 información
             </button>
@@ -158,9 +157,9 @@
             </mat-accordion>
 
             <div class="toolbar-bottom">
-                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('catalogos/articulos')"
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('almacenes/catalogos/articulos')"
                     *ngIf="isReadOnly">Regresar</button>
-                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('catalogos/articulos')"
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('almacenes/catalogos/articulos')"
                     *ngIf="!isReadOnly">Cancelar</button>
                 <button mat-flat-button class="btn" type="submit" *ngIf="!isReadOnly">{{title}}</button>
             </div>

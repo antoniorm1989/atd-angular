@@ -22,7 +22,7 @@ export class CatalogoArticuloListComponent {
 
   constructor(private catalogoArticuloService: CatalogoArticuloService, private router: Router) {
     this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url == '/catalogos/articulos' && !this.dataLoaded) {
+      if (event instanceof NavigationEnd && event.url == '/almacenes/catalogos/articulos' && !this.dataLoaded) {
         this.catalogoArticuloService.getAll().subscribe({
           next: (data) => {
             if (data.length > 0) {

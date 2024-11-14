@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, ViewChild, Input } from '@angular/core';
 import { Router, NavigationEnd, Event } from '@angular/router';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -9,9 +9,8 @@ import { CatalogoClienteModel } from 'src/app/models/catalogo-cliente.model';
 import { Observable, fromEvent, map, startWith } from 'rxjs';
 import { CatalogoClientesService } from 'src/app/services/catalogo-cliente.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { DateAdapter } from '@angular/material/core';
 import { DialogSuccessComponent } from '../genericos/dialogSuccess.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-ventas-list',
@@ -216,6 +215,10 @@ export class VentasListComponent {
     });
   }
 
+  verFactura(ventaId: number) {
+    
+  }
+
   openDialogSuccess(comment: string): void {
     const dialogRef = this.dialog.open(DialogSuccessComponent, {
       width: '710px',
@@ -227,5 +230,50 @@ export class VentasListComponent {
       this.onLoadVentas();
     });
   }
-
 }
+
+/*import { PreviewFacturaComponent } from './venta/preview-factura/preview-factura.component';
+@Component({
+  selector: 'dialog-component-preview-factura',
+  template: `<span mat-dialog-title>Confirmación de dato factura</span>
+            <mat-dialog-content class="mat-typography">
+              <app-preview-factura [venta]="venta" (cancel)="onCancelar()" (timbrar)="onTimbrar()" #appPreviewFacturaComponent></app-preview-factura>
+            </mat-dialog-content>`,
+  styles: [
+  ]
+})
+export class PreviewFacturaModalComponent {
+  @ViewChild('appVentaArticuloComponent') appPreviewFacturaComponent: any;
+  venta!: VentaModel;
+
+  constructor(
+    public dialogRef: MatDialogRef<PreviewFacturaModalComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    dialogRef.disableClose = true;
+
+    if (Object.keys(data).length > 0) {
+      if (data.venta != undefined) {
+        this.venta = data.venta;
+      }
+    }
+
+  }
+
+  onCancelar() {
+    try {
+      this.dialogRef.close();
+    } catch (error) {
+      console.error('An error occurred in onAgregarArticulo:', error);
+    }
+  }
+
+  onTimbrar() {
+    try {
+      this.dialogRef.close(true);
+    } catch (error) {
+      console.error('An error occurred in onAgregarArticulo:', error);
+    }
+  }
+}
+*/

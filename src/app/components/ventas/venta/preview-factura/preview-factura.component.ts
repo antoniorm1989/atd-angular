@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { float } from '@zxing/library/esm/customTypings';
 import { FacturaModel, ReceptorModel } from 'src/app/models/factura.model';
-import { VentaArticuloModel } from 'src/app/models/ventas.model';
+import { VentaArticuloModel, VentaModel } from 'src/app/models/ventas.model';
 import { VentaService } from 'src/app/services/ventas.service';
 
 
@@ -16,8 +16,8 @@ import { VentaService } from 'src/app/services/ventas.service';
 export class PreviewFacturaComponent implements OnInit, OnDestroy {
 
   @Output() cancel = new EventEmitter();
-  @Output() add = new EventEmitter<FacturaModel>();
-  @Input() ventaId: number = 0;
+  @Output() timbrar = new EventEmitter();
+  @Input() venta: VentaModel | undefined;
   factura: FacturaModel | undefined;
 
 
@@ -29,7 +29,32 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     try {
-      this.ventaService.getVentaById(this.ventaId).subscribe({
+          this.factura = new FacturaModel();
+          this.factura.receptor = new ReceptorModel();
+          this.factura.receptor.nombre = this.venta?.cliente?.nombre_fiscal;
+          this.factura.receptor.rfc = this.venta?.cliente?.rfc;
+          this.factura.receptor.domicilio_fiscal = this.venta?.cliente?.full_direction;
+          this.factura.receptor.regimen_fiscal = this.venta?.cliente?.regimen_fiscal?.name;
+          this.dataSourceArticulos.data = this.venta?.articulos?.map((a) => {
+            return {
+              unidad: a.unidad_medida?.name,
+              producto_servicio: a.producto_servicio_id,
+              cantidad: a.cantidad,
+              descripcion: a.articulo_descripcion,
+              p_unitario: `$${(a.precio_venta ?? 0).toFixed(2)}`,
+              p_unitario_number: a.precio_venta,
+              importe: `$${((a.cantidad ?? 0) * (a.precio_venta ?? 0)).toFixed(2)}`,
+            }
+          }) || [];
+          this.factura.subTotal = `$${this.calcularSubTotal().toFixed(2)}`,
+          this.factura.subTotalIva = `$${this.calcularIva().toFixed(2)}`;
+          this.factura.total = `$${this.calcularTotal().toFixed(2)}`;
+          this.factura.formaPago = this.venta?.forma_pago?.name;
+          this.factura.metodoPago = this.venta?.metodo_pago?.name;
+          this.factura.moneda = this.venta?.moneda
+          
+
+      /*this.ventaService.getVentaById(this.ventaId).subscribe({
         next: (data) => {
           this.factura = new FacturaModel();
           this.factura.receptor = new ReceptorModel();
@@ -60,6 +85,7 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
           console.error("Error al obtener la venta en el preview de la factura...")
         }
       });
+      */
     } catch (error) {
       console.error('An error occurred in ngOnInit:', error);
     }
@@ -78,6 +104,14 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
   onCancel() {
     try {
       this.cancel.emit();
+    } catch (error) {
+      console.error('An error occurred in onSubmit:', error);
+    }
+  }
+
+  onTimbrar() {
+    try {
+      this.timbrar.emit();
     } catch (error) {
       console.error('An error occurred in onSubmit:', error);
     }

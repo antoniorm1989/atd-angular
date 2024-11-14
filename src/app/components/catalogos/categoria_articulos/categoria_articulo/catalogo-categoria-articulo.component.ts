@@ -105,7 +105,7 @@ export class CatalogoCategoriaArticuloComponent {
       this.CatalogoCategoriaArticuloService.create(articulo).subscribe({
         next: (data) => {
           this.openMessageSnack();
-          this.router.navigate(['catalogos/categoria-articulos']);
+          this.router.navigate(['almacenes/catalogos/categoria-articulos']);
         },
         error: (e) => {
         }
@@ -114,7 +114,7 @@ export class CatalogoCategoriaArticuloComponent {
       this.CatalogoCategoriaArticuloService.update(articulo).subscribe({
         next: (data) => {
           this.openMessageSnack();
-          this.router.navigate(['catalogos/categoria-articulos']);
+          this.router.navigate(['almacenes/catalogos/categoria-articulos']);
         },
         error: (e) => {
         }

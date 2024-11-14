@@ -17,7 +17,6 @@ import { UserService } from 'src/app/services/user.service';
 import { VentaService } from 'src/app/services/ventas.service';
 import { environment } from 'src/environments/environment';
 import { DialogSuccessComponent } from '../../genericos/dialogSuccess.component';
-import { FacturaModel } from 'src/app/models/factura.model';
 
 @Component({
   selector: 'app-venta',
@@ -236,17 +235,7 @@ export class VentaComponent {
     venta.retiene_iva_porcentaje = parseFloat(this.f['retiene_iva_porcentaje'].value);
     venta.articulos = this.dataSourceArticulos.data;
 
-    if (this.action == 'new') {
-      this.ventaService.create(venta).subscribe({
-        next: (data) => {
-          this.openDialogSuccess(`Se ha creado con éxito la venta #${data.id},  podrás visualizarlo desde tu listado ventas.`)
-          this.router.navigate(['ventas']);
-        },
-        error: (e) => {
-          console.log(e);
-        }
-      });
-    }
+    this.previewFactura(venta);
   }
 
   openDialogSuccess(comment: string): void {
@@ -659,17 +648,27 @@ export class VentaComponent {
     return !date || date <= currentDate;
   }
 
-  previewFactura() {
+  previewFactura(venta: VentaModel) {
     const dialogRef = this.dialog.open(PreviewFacturaModalComponent, {
       height: '900px',
       width: '1100px',
       data: {
-        ventaId: this.id
+        venta: venta
       }
     });
 
-    dialogRef.afterClosed().subscribe(ventaArticuloModel => {
-      
+    dialogRef.afterClosed().subscribe(facturar => {
+      if (facturar) {
+        this.ventaService.create(venta).subscribe({
+          next: (data) => {
+            this.openDialogSuccess(`Se ha creado con éxito la venta #${data.id},  podrás visualizarlo desde tu listado ventas.`)
+            this.router.navigate(['ventas']);
+          },
+          error: (e) => {
+            console.log(e);
+          }
+        });
+      }
     });
   }
 
@@ -763,14 +762,14 @@ export class ArticuloVentaModalComponent {
   selector: 'dialog-component-preview-factura',
   template: `<span mat-dialog-title>Confirmación de dato factura</span>
             <mat-dialog-content class="mat-typography">
-              <app-preview-factura [ventaId]="ventaId" (cancel)="onCancelar()" (add)="onTimbrar($event)" #appPreviewFacturaComponent></app-preview-factura>
+              <app-preview-factura [venta]="venta" (cancel)="onCancelar()" (timbrar)="onTimbrar()" #appPreviewFacturaComponent></app-preview-factura>
             </mat-dialog-content>`,
   styles: [
   ]
 })
 export class PreviewFacturaModalComponent {
   @ViewChild('appVentaArticuloComponent') appPreviewFacturaComponent: any;
-  ventaId!: number;
+  venta!: VentaModel;
 
   constructor(
     public dialogRef: MatDialogRef<PreviewFacturaModalComponent>,
@@ -779,8 +778,8 @@ export class PreviewFacturaModalComponent {
     dialogRef.disableClose = true;
 
     if (Object.keys(data).length > 0) {
-      if (data.ventaId != undefined) {
-        this.ventaId = data.ventaId;
+      if (data.venta != undefined) {
+        this.venta = data.venta;
       }
     }
 
@@ -794,9 +793,9 @@ export class PreviewFacturaModalComponent {
     }
   }
 
-  onTimbrar(facturaModel: FacturaModel) {
+  onTimbrar() {
     try {
-      this.dialogRef.close(facturaModel);
+      this.dialogRef.close(true);
     } catch (error) {
       console.error('An error occurred in onAgregarArticulo:', error);
     }

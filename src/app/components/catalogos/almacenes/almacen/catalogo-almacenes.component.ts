@@ -198,7 +198,7 @@ export class CatalogoAlmacenesComponent {
       this.catalogoAlmacenesService.create(almacen).subscribe({
         next: (data) => {
           this.openMessageSnack();
-          this.router.navigate(['catalogos/almacenes']);
+          this.router.navigate(['almacenes/catalogos/almacenes']);
         },
         error: (e) => {
         }
@@ -207,7 +207,7 @@ export class CatalogoAlmacenesComponent {
       this.catalogoAlmacenesService.update(almacen).subscribe({
         next: (data) => {
           this.openMessageSnack();
-          this.router.navigate(['catalogos/almacenes']);
+          this.router.navigate(['almacenes/catalogos/almacenes']);
         },
         error: (e) => {
         }
