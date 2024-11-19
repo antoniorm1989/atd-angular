@@ -165,9 +165,9 @@
             </mat-accordion>
 
             <div class="toolbar-bottom">
-                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('catalogos/sucursales')"
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('configuracion/catalogos/sucursales')"
                     *ngIf="isReadOnly">Regresar</button>
-                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('catalogos/sucursales')"
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('configuracion/catalogos/sucursales')"
                     *ngIf="!isReadOnly">Cancelar</button>
                 <button mat-flat-button class="btn" type="submit" *ngIf="!isReadOnly">{{title}}</button>
             </div>

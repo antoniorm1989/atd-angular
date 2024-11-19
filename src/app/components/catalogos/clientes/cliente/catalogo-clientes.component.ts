@@ -305,7 +305,7 @@ export class CatalogoClientesComponent {
       this.catalogoClientesService.create(cliente).subscribe({
         next: (data) => {
           this.openMessageSnack();
-          this.router.navigate(['catalogos/clientes']);
+          this.router.navigate(['venta/catalogos/clientes']);
         },
         error: (e) => {
           if (e.error.error == 'Ya existe un cliente registrado con el mismo RFC')
@@ -318,7 +318,7 @@ export class CatalogoClientesComponent {
       this.catalogoClientesService.update(cliente).subscribe({
         next: (data) => {
           this.openMessageSnack();
-          this.router.navigate(['catalogos/clientes']);
+          this.router.navigate(['venta/catalogos/clientes']);
         },
         error: (e) => {
           if (e.error.error == 'Ya existe un cliente registrado con el mismo RFC')

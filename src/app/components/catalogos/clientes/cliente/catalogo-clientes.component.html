@@ -349,7 +349,7 @@
 
                             <ng-container matColumnDef="categoria">
                                 <th mat-header-cell *matHeaderCellDef style="text-align: center;">Categoría</th>
-                                <td mat-cell *matCellDef="let element" style="text-align: center;">${{element.articulo.part_number}}</td>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.articulo.category.name}}</td>
                             </ng-container>
 
                             <ng-container matColumnDef="costo">
@@ -359,7 +359,7 @@
 
                             <ng-container matColumnDef="descuento">
                                 <th mat-header-cell *matHeaderCellDef style="text-align: center;">Descuento</th>
-                                <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.descuento}}</td>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">${{element.descuento}}</td>
                             </ng-container>
 
                             <ng-container matColumnDef="actions">
@@ -406,9 +406,9 @@
             </mat-accordion>
 
             <div class="toolbar-bottom">
-                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('catalogos/clientes')"
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('venta/catalogos/clientes')"
                     *ngIf="isReadOnly">Regresar</button>
-                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('catalogos/clientes')"
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('venta/catalogos/clientes')"
                     *ngIf="!isReadOnly">Cancelar</button>
                 <button mat-flat-button class="btn" type="submit" *ngIf="!isReadOnly">{{title}}</button>
             </div>

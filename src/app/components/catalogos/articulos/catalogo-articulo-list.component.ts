@@ -65,7 +65,7 @@ export class CatalogoArticuloListComponent {
   }
 
   onEdit(id: string) {
-    this.router.navigate(['catalogos/articulos/detail', id], {
+    this.router.navigate(['almacenes/catalogos/articulos/detail', id], {
       queryParams: { action: 'edit' },
     });
   }

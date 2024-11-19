@@ -78,7 +78,6 @@
                                 <mat-form-field *ngIf="!isReadOnly" required>
                                     <mat-label>Seleccionar categoria</mat-label>
                                     <mat-select formControlName="selectedCategory">
-                                        <mat-option>None</mat-option>
                                         <mat-option *ngFor="let category of categories" [value]="category">{{
                                             category.name }}
                                         </mat-option>

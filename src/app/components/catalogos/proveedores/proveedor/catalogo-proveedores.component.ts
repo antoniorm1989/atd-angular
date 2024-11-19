@@ -227,7 +227,7 @@ export class CatalogoProveedoresComponent {
       this.catalogoProveedoresService.create(proveedor).subscribe({
         next: (data) => {
           this.openMessageSnack();
-          this.router.navigate(['catalogos/proveedores']);
+          this.router.navigate(['compras/catalogos/proveedores']);
         },
         error: (e) => {
           if (e.error.error == 'Ya existe un proveedor registrado con el mismo RFC')
@@ -240,7 +240,7 @@ export class CatalogoProveedoresComponent {
       this.catalogoProveedoresService.update(proveedor).subscribe({
         next: (data) => {
           this.openMessageSnack();
-          this.router.navigate(['catalogos/proveedores']);
+          this.router.navigate(['compras/catalogos/proveedores']);
         },
         error: (e) => {
           if (e.error.error == 'Ya existe un proveedor registrado con el mismo RFC')

@@ -135,7 +135,7 @@ export class CatalogoRolesComponent {
       this.catalogoRolesService.create(rol).subscribe({
         next: (data) => {
           this.openMessageSnack();
-          this.router.navigate(['catalogos/roles']);
+          this.router.navigate(['configuracion/catalogos/roles']);
         },
         error: (e) => {
         }
@@ -144,7 +144,7 @@ export class CatalogoRolesComponent {
       this.catalogoRolesService.update(rol).subscribe({
         next: (data) => {
           this.openMessageSnack();
-          this.router.navigate(['catalogos/roles']);
+          this.router.navigate(['configuracion/catalogos/roles']);
         },
         error: (e) => {
         }

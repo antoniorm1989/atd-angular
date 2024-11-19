@@ -165,7 +165,7 @@ export class CatalogoSucursalesComponent {
       this.catalogoSucursalesService.create(sucursal).subscribe({
         next: (data) => {
           this.openMessageSnack();
-          this.router.navigate(['catalogos/sucursales']);
+          this.router.navigate(['configuracion/catalogos/sucursales']);
         },
         error: (e) => {
         }
@@ -174,7 +174,7 @@ export class CatalogoSucursalesComponent {
       this.catalogoSucursalesService.update(sucursal).subscribe({
         next: (data) => {
           this.openMessageSnack();
-          this.router.navigate(['catalogos/sucursales']);
+          this.router.navigate(['configuracion/catalogos/sucursales']);
         },
         error: (e) => {
         }
