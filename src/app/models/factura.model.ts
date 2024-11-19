@@ -7,12 +7,18 @@ export class FacturaModel {
   emisor: EmisorModel | undefined;
   receptor: ReceptorModel | undefined;
   articulo: FacturaArticuloModel | undefined;
-  subTotal: string | undefined;
-  subTotalIva: string | undefined;
-  total: string | undefined;
   formaPago: string | undefined;
   metodoPago: string | undefined;
   moneda: string | undefined;
+  uso_cfdi: string | undefined;
+
+  porcentajeIva: number = 0;
+  porcentajeRetiene: number = 0;
+  subTotal: number | undefined;
+  descuento: number = 0;  
+  iva: number | undefined;
+  retiene: number | undefined;
+  total: number | undefined;
 }
 
 export class EmisorModel {

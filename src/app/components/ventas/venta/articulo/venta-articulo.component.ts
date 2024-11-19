@@ -188,6 +188,9 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         this.f['sucursal'].disable();
         this.f['producto_servicio'].disable();
         this.f['unidad_medida'].disable();
+
+        this.form.controls['precio_venta'].enable();
+        this.form.controls['descuento'].enable();
       }
 
       this.catalogosService.getProductoServicio().subscribe({
@@ -231,7 +234,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
           producto_servicio: ventaArticuloModel.producto_servicio,
           unidad_medida: ventaArticuloModel.unidad_medida
         });
-        this.onOptionSelected(ventaArticuloModel.almacen?.articulo?.part_number);
+        //this.onOptionSelected(ventaArticuloModel.almacen?.articulo?.part_number);
         this.calcularBackOrder();
       }
   }

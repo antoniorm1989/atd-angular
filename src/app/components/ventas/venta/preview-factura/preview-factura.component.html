@@ -55,7 +55,7 @@
 
             <div style="height: 8px;"></div>
             <div style="margin-left: 12px;" class="etiquieta">USO CFDI</div>
-            <div style="margin-left: 12px;" class="texto">Este no lo capturamos.....G01- Adquisicion de mercancias</div>
+            <div style="margin-left: 12px;" class="texto">{{factura?.uso_cfdi}}</div>
 
             <div style="height: 8px;"></div>
             <div style="margin-left: 12px;" class="etiquieta">RFC</div>
@@ -109,9 +109,11 @@
 
             <!--TOTALES-->
             <div style="height: 24px;"></div>
-            <div style="font-weight: bold; text-align: end;" class="texto">SUBTOTAL: {{factura?.subTotal}}</div>
-            <div style="font-weight: bold; text-align: end;" class="texto">+ IVA (16%): {{factura?.subTotalIva}}</div>
-            <div style="font-weight: bold; text-align: end;" class="texto">TOTAL: {{factura?.total}}</div>
+            <div style="font-weight: bold; text-align: end;" class="texto">SUBTOTAL: {{formatearComoMoneda(factura?.subTotal)}}</div>
+            <div *ngIf="ocultarDescuento" style="font-weight: bold; text-align: end;" class="texto">DESCUENTO: {{formatearComoMoneda(factura?.descuento)}}</div>
+            <div *ngIf="ocultarIva" style="font-weight: bold; text-align: end;" class="texto">+ IVA (%{{porcentajeIva}}): {{formatearComoMoneda(factura?.iva)}}</div>
+            <div *ngIf="ocultarRetiene"  style="font-weight: bold; text-align: end;" class="texto">- RETENCION (%{{porcentajeRetiene}}): {{formatearComoMoneda(factura?.retiene)}}</div>
+            <div style="font-weight: bold; text-align: end;" class="texto">TOTAL: {{formatearComoMoneda(factura?.total)}}</div>
 
             <div style="display: grid; grid-template-columns: 1fr auto; column-gap: 12px;">
                 <div class="etiquieta" style="text-align: end;">Forma de Pago</div>

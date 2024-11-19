@@ -215,10 +215,14 @@ export class VentaComponent {
     venta.id = this.id;
     venta.fecha_compra_cliente = this.f['fecha_compra_cliente'].value;
     venta.cliente = this.f['cliente'].value;
+    if (venta.cliente) {
+      venta.cliente.regimen_fiscal = this.f['regimen_fiscal'].value;
+    }
     venta.vendedor = this.vendedores.find(x => (x.name + ' ' + x.lastname) == this.f['vendedor'].value);
     venta.uso_cfdi = this.f['usoCfdi'].value;
     venta.comentarios = this.f['comentarios'].value;
     venta.responsable = user;
+    venta.uso_cfdi = this.f['usoCfdi'].value;
     // forma pago
     venta.condicion_pago = this.f['condicion_pago'].value;
     venta.tiene_dias_credito = this.f['tiene_dias_credito'].value;
