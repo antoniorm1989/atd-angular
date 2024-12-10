@@ -287,6 +287,16 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
   clearAutocompleteInput() {
     try {
       this.f['selectedArticle'].reset();
+      this.imageUrl = null;
+      this.form.controls['precio_venta'].reset();
+      this.form.controls['descuento'].reset();
+      this.form.controls['qty'].reset();
+      this.form.controls['comentarios'].reset();
+      this.form.controls['numero_identificacion_fiscal'].reset();
+      this.form.controls['unidad_medida_p_s'].reset();
+      this.form.controls['backorder'].reset();
+      this.hasBackOrder = false;
+
     } catch (error) {
       console.error('An error occurred in clearAutocompleteInput:', error);
     }

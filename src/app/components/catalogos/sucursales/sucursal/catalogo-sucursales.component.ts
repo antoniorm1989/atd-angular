@@ -40,7 +40,7 @@ export class CatalogoSucursalesComponent {
       internal_number: [''],
       postal_code: [''],
       show_admin_users: [''],
-      status: [''],
+      status: true,
       city_key: [''],
       state_key: [''],
       created_at: ['created_at']
@@ -65,7 +65,7 @@ export class CatalogoSucursalesComponent {
                   internal_number: [data.internal_number],
                   postal_code: [data.postal_code],
                   show_admin_users: [data.show_admin_users],
-                  status: [data.status],
+                  status: data.status,
                   state_key: [data.state_key],
                   city_key: [data.city_key],
                   created_at: [data.created_at]

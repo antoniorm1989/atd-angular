@@ -69,7 +69,7 @@ export class CatalogoClientesComponent {
       numero_interior: [''],
       cp: ['', [Validators.required]],
       rf: [''],
-      status: ['true']
+      status: true
     });
 
     this.router.events.subscribe((event: Event) => {

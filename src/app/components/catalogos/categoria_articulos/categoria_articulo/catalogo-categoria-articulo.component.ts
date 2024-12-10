@@ -27,7 +27,7 @@ export class CatalogoCategoriaArticuloComponent {
       name: ['', [Validators.required]],
       description: [''],
       show_admin_users: [''],
-      status: [''],
+      status: true,
       created_at: ['created_at']
     });
 
@@ -44,7 +44,7 @@ export class CatalogoCategoriaArticuloComponent {
                   name: [data.name],
                   description: [data.description],
                   show_admin_users: [data.show_admin_users],
-                  status: [data.status],
+                  status: data.status,
                   created_at: [data.created_at]
                 });
 

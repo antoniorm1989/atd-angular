@@ -56,7 +56,7 @@ export class CatalogoProveedoresComponent {
       numero_exterior: [''],
       numero_interior: [''],
       cp: [''],
-      status: ['true']
+      status: true
     });
 
     this.router.events.subscribe((event: Event) => {

@@ -568,7 +568,7 @@ export class VentaComponent {
   despacharArticuloVentaModalComponent(ventaArticuloModel: VentaArticuloModel) {
     ventaArticuloModel.ventaId = this.id;
     const dialogRef = this.dialog.open(ArticuloVentaModalComponent, {
-      height: '550px',
+      height: '700px',
       data: {
         articulo: ventaArticuloModel,
         isDespachar: true
@@ -576,7 +576,7 @@ export class VentaComponent {
     });
 
     dialogRef.afterClosed().subscribe(ventaArticuloModel => {
-      this.router.navigate(['ventas']);
+      //this.router.navigate(['ventas']);
     });
   }
 

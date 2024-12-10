@@ -21,7 +21,7 @@ export class CatalogoRolesListComponent{
 
   constructor(private catalogoRolesService: CatalogoRolesService, private router: Router) {
     this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url == '/catalogos/roles' && !this.dataLoaded) {
+      if (event instanceof NavigationEnd && event.url == '/configuracion/catalogos/roles' && !this.dataLoaded) {
         this.catalogoRolesService.getAll().subscribe({
           next: (data) => {
             if (data.length > 0){
