@@ -296,6 +296,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
       this.form.controls['unidad_medida_p_s'].reset();
       this.form.controls['backorder'].reset();
       this.hasBackOrder = false;
+      this.stock = 0;
 
     } catch (error) {
       console.error('An error occurred in clearAutocompleteInput:', error);

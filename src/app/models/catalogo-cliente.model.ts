@@ -1,5 +1,5 @@
 import { float } from "@zxing/library/esm/customTypings";
-import { CatalogoCityModel, CatalogoCountryModel, CatalogoRegimenFiscalModel, CatalogoStateModel } from "./catalogos.model";
+import { CatalogoCityModel, CatalogoCountryModel, CatalogoRegimenFiscalModel, CatalogoStateModel, CatalogoUsoCfdiModel } from "./catalogos.model";
 import { User } from "./user";
 import { CatalogoArticuloModel } from "./catalogo-articulo.model";
 import { VentaArticuloModel } from "./ventas.model";
@@ -27,6 +27,7 @@ export class CatalogoClienteModel {
   state: CatalogoStateModel | undefined;
   city: CatalogoCityModel | undefined;
   regimen_fiscal: CatalogoRegimenFiscalModel | undefined;
+  uso_cfdi: CatalogoUsoCfdiModel | undefined;
 
   articulos: ClienteArticuloModel[] | undefined;
 

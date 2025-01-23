@@ -17,6 +17,7 @@ import { UserService } from 'src/app/services/user.service';
 import { VentaService } from 'src/app/services/ventas.service';
 import { environment } from 'src/environments/environment';
 import { DialogSuccessComponent } from '../../genericos/dialogSuccess.component';
+import { DialogErrorComponent } from '../../genericos/dialogError.component';
 
 @Component({
   selector: 'app-venta',
@@ -253,6 +254,17 @@ export class VentaComponent {
     });
   }
 
+  openDialogError(comment: string): void {
+    const dialogRef = this.dialog.open(DialogErrorComponent, {
+      width: '710px',
+      data: { title: '¡ Error !', content: comment }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('Dialog closed');
+    });
+  }
+
   navigate(route: string) {
     this.router.navigate([route]);
   }
@@ -444,10 +456,10 @@ export class VentaComponent {
   private _filter(value: any): CatalogoClienteModel[] {
     let filterValue = "";
     if (value.cliente) {
-      filterValue = value.cliente.nombre_fiscal || value.cliente;
+      filterValue = value.cliente.cliente || value.cliente;
       filterValue = filterValue.toLowerCase();
     }
-    return this.clientes.filter(option => option.nombre_fiscal!.toLowerCase().includes(filterValue));
+    return this.clientes.filter(option => option.cliente!.toLowerCase().includes(filterValue));
   }
 
   private _filterVendedores(value: any): User[] {
@@ -669,6 +681,8 @@ export class VentaComponent {
             this.router.navigate(['ventas']);
           },
           error: (e) => {
+            debugger;
+            this.openDialogError(`Hubo un error al crear la factura: ${e.error.detalles}`)
             console.log(e);
           }
         });

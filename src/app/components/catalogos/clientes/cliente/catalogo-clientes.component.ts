@@ -7,7 +7,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router, NavigationEnd, Event } from '@angular/router';
 import { MessageComponent } from 'src/app/components/genericos/snack-message.component';
 import { CatalogoClienteModel, ClienteArticuloModel } from 'src/app/models/catalogo-cliente.model';
-import { CatalogoCityModel, CatalogoCountryModel, CatalogoRegimenFiscalModel, CatalogoStateModel } from 'src/app/models/catalogos.model';
+import { CatalogoCityModel, CatalogoCountryModel, CatalogoRegimenFiscalModel, CatalogoStateModel, CatalogoUsoCfdiModel } from 'src/app/models/catalogos.model';
 import { User } from 'src/app/models/user';
 import { CatalogoClientesService } from 'src/app/services/catalogo-cliente.service';
 import { CatalogosService } from 'src/app/services/catalogos.service';
@@ -41,6 +41,9 @@ export class CatalogoClientesComponent {
   regimenesFiscales: CatalogoRegimenFiscalModel[] = [];
   selectedRegimenFiscal!: CatalogoRegimenFiscalModel;
 
+  usoCfdiList: CatalogoUsoCfdiModel[] = [];
+  selectedUsoCfdi!: CatalogoUsoCfdiModel;
+
   id = 0;
 
   isRfcDuplicate: boolean = false;
@@ -69,6 +72,7 @@ export class CatalogoClientesComponent {
       numero_interior: [''],
       cp: ['', [Validators.required]],
       rf: [''],
+      usoCfdi: [''],
       status: true
     });
 
@@ -102,7 +106,7 @@ export class CatalogoClientesComponent {
                     next: (dataCountries) => {
                       this.countries = dataCountries;
                       this.selectedCountry = dataCountries.filter(function (country) {
-                        return data.country && data.country.id == country.id;
+                        return data.country && data.country.key == country.key;
                       })[0];
 
                       if (this.selectedCountry.key) {
@@ -176,6 +180,29 @@ export class CatalogoClientesComponent {
                   }
                 });
 
+
+                this.catalogosService.getUsoCfdi().subscribe({
+                  next: (dataUsoCfdi) => {
+                    this.usoCfdiList = dataUsoCfdi;
+
+                    if (data.uso_cfdi && data.uso_cfdi.key) {
+                      this.selectedUsoCfdi = dataUsoCfdi.filter(function (usoCfdi) {
+                        return data.uso_cfdi && data.uso_cfdi.key == usoCfdi.key;
+                      })[0];
+
+                      if (this.selectedUsoCfdi.key) {
+                        this.form.patchValue({
+                          usoCfdi: this.selectedUsoCfdi
+                        });
+                      }
+                    }
+                  },
+                  error: (e) => {
+                    console.log(e);
+                  }
+                });
+
+
                 if (data.tipo == 'Extranjero') {
                   this.removeValidations();
                 }
@@ -222,6 +249,19 @@ export class CatalogoClientesComponent {
                 console.log(e);
               }
             });
+
+            this.catalogosService.getUsoCfdi().subscribe({
+              next: (data) => {
+                if (data.length > 0) {
+                  this.usoCfdiList = data;
+                  this.selectedUsoCfdi = data[0];
+                }
+              },
+              error: (e) => {
+              }
+            });
+
+
           }
         });
       }
@@ -296,6 +336,7 @@ export class CatalogoClientesComponent {
     cliente.numero_interior = this.f['numero_interior'].value;
     cliente.cp = this.f['cp'].value;
     cliente.regimen_fiscal = this.f['rf'].value;
+    cliente.uso_cfdi = this.f['usoCfdi'].value;
     cliente.status = this.f['status'].value || '0';
     cliente.user = user;
 

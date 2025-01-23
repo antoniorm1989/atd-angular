@@ -31,7 +31,7 @@
                         </mat-panel-description>
                     </mat-expansion-panel-header>
 
-                    <div class="form-row two-col">
+                    <div class="form-row two-col" style="grid-template-columns: 1fr 2fr;">
                         <div>
                             <div class="form-field">
                                 <mat-label class="text-1" *ngIf="isReadOnly">Fecha compra cliente</mat-label>
@@ -87,7 +87,7 @@
                                         </button>
                                         <mat-autocomplete requireSelection autoActiveFirstOption #auto="matAutocomplete">
                                             <ng-container *ngFor="let cliente of filteredClientes | async; track cliente">
-                                                <mat-option [value]="cliente" (onSelectionChange)="onClienteSelectionChange($event)">{{cliente.nombre_fiscal}}</mat-option>
+                                                <mat-option [value]="cliente" (onSelectionChange)="onClienteSelectionChange($event)">{{cliente.cliente}}</mat-option>
                                             </ng-container>
                                         </mat-autocomplete>
                                     </mat-form-field>
@@ -105,7 +105,19 @@
                                     <mat-label *ngIf="!isReadOnly" class="text-1-regular">{{ this.f['cliente'].value != null ? this.f['cliente'].value.rfc : 'Selecciona un cliente' }}</mat-label>
                                 </div>
                             </div>
-                            <div class="form-row one-col">
+                            <div class="form-row two-col">
+                                <div class="form-field">
+                                    <mat-label class="text-1">Razón social</mat-label>
+                                    <mat-label *ngIf="isReadOnly && editData != null" class="text-1-regular">{{this.editData.cliente?.nombre_fiscal}}</mat-label>
+                                    <mat-label *ngIf="!isReadOnly" class="text-1-regular">{{ this.f['cliente'].value != null ? this.f['cliente'].value.nombre_fiscal : 'Selecciona un cliente' }}</mat-label>
+                                </div>
+                                <div class="form-field">
+                                    <mat-label class="text-1">Regimen físcal</mat-label>
+                                    <mat-label *ngIf="isReadOnly && editData != null" class="text-1-regular">{{this.editData.cliente?.regimen_fiscal}}</mat-label>
+                                    <mat-label *ngIf="!isReadOnly" class="text-1-regular">{{ this.f['cliente'].value != null ? (this.f['cliente'].value.regimen_fiscal.key + " " + this.f['cliente'].value.regimen_fiscal.name) : 'Selecciona un cliente' }}</mat-label>
+                                </div>
+                            </div>
+                            <!--<div class="form-row one-col">
                                 <div class="form-field">
                                     <mat-label class="text-1"  *ngIf="isReadOnly">Razón social</mat-label>
                                     <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['nombre_fiscal'].value}}</mat-label>
@@ -130,7 +142,7 @@
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                 </mat-expansion-panel>

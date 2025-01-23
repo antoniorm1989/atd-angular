@@ -95,7 +95,6 @@
 }
 
 .catalogo-clientes .container .form-row {
-    justify-content: space-between;
     display: grid;
     gap: 40px;
 }

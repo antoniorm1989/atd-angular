@@ -14,7 +14,7 @@ import { environment } from 'src/environments/environment';
 export class CatalogoClientesListComponent{
 
   hasRecords = false;
-  displayedColumns: string[] = ['cliente', 'rfc', 'correo', 'telefono', 'created', 'modified', 'user', 'status', 'actions'];
+  displayedColumns: string[] = ['alias', 'cliente', 'rfc', 'correo', 'telefono', 'created', 'modified', 'user', 'status', 'actions'];
   dataSource = new MatTableDataSource<CatalogoClienteModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 

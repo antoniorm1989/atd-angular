@@ -62,20 +62,47 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-row two-col">
-                    <div class="form-field cliente">
-                        <mat-label class="text-1"  *ngIf="isReadOnly">Alias</mat-label>
-                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['cliente'].value}}</mat-label>
 
-                        <mat-label class="text-1"  *ngIf="!isReadOnly">Alias*</mat-label>
+                <div class="form-row three-col">
+                    <div class="form-row">
+                        <div class="form-field cliente">
+                            <mat-label class="text-1"  *ngIf="isReadOnly">Alias</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['cliente'].value}}</mat-label>
+    
+                            <mat-label class="text-1"  *ngIf="!isReadOnly">Alias*</mat-label>
+                            <mat-form-field *ngIf="!isReadOnly">
+                                <input matInput placeholder="Escribe el cliente" formControlName="cliente" [ngClass]="{ 'is-invalid': submitted && f['cliente'].errors }" required>
+                            </mat-form-field>
+                            <div *ngIf="submitted && f['cliente'].errors" class="invalid-feedback">
+                                <div *ngIf="f['cliente'].errors['required']">Este campo requerido</div>
+                            </div>
+                        </div>
+                        <div></div>
+                    </div>
+                    <div class="form-field">
+                        <mat-label class="text-1" *ngIf="isReadOnly">Uso CFDI</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['usoCfdi'].value?.name}}</mat-label>
+                        <mat-label class="text-1" *ngIf="!isReadOnly">Uso CFDI*</mat-label>
                         <mat-form-field *ngIf="!isReadOnly">
-                            <input matInput placeholder="Escribe el cliente" formControlName="cliente" [ngClass]="{ 'is-invalid': submitted && f['cliente'].errors }" required>
+                            <mat-select [(value)]="selectedUsoCfdi" formControlName="usoCfdi" >
+                                <mat-option *ngFor="let usoCfdi of usoCfdiList" [value]="usoCfdi">{{ usoCfdi.key }} - {{ usoCfdi.name }}</mat-option>
+                            </mat-select>
                         </mat-form-field>
-                        <div *ngIf="submitted && f['cliente'].errors" class="invalid-feedback">
-                            <div *ngIf="f['cliente'].errors['required']">Este campo requerido</div>
+                        <div *ngIf="submitted && f['usoCfdi'].errors" class="invalid-feedback">
+                            <div *ngIf="f['usoCfdi'].errors['required']">Este campo requerido</div>
                         </div>
                     </div>
-                    <div></div>
+                    <div class="form-field rf">
+                        <mat-label class="text-1" *ngIf="isReadOnly">Regimen físcal</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['rf'].value.key}} - {{this.f['rf'].value.name}}</mat-label>
+                        <mat-label class="text-1" *ngIf="!isReadOnly">Regimen físcal*</mat-label>
+                        <mat-form-field *ngIf="!isReadOnly">
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['rf'].value}} </mat-label>
+                            <mat-select [(value)]="selectedRegimenFiscal" formControlName="rf" >
+                                <mat-option *ngFor="let regimenFiscal of regimenesFiscales" [value]="regimenFiscal">{{ regimenFiscal.key }} - {{ regimenFiscal.name }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
                 </div>
             </div>
 
@@ -196,6 +223,22 @@
                                 <div *ngIf="f['city'].errors['required']">Este campo requerido</div>
                             </div>
                         </div>
+
+                        <div class="form-field cp">
+                            <mat-label class="text-1"  *ngIf="isReadOnly">CP</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['cp'].value}}</mat-label>
+                            <mat-label class="text-1" *ngIf="!isReadOnly && f['tipoCliente'].value == 'Nacional'">CP*</mat-label>
+                            <mat-label class="text-1" *ngIf="!isReadOnly && f['tipoCliente'].value == 'Extranjero'">CP</mat-label>
+                            <mat-form-field *ngIf="!isReadOnly">
+                                <input matInput type="number" placeholder="Escribir código postal" min="10000" max="99999" formControlName="cp" [ngClass]="{ 'is-invalid': submitted && f['cp'].errors }">
+                            </mat-form-field>
+                            <div *ngIf="submitted && f['cp'].errors" class="invalid-feedback">
+                                <div *ngIf="f['cp'].errors['required']">Este campo requerido</div>
+                                <div *ngIf="f['cp'].errors['min'] || f['cp'].errors['max']">
+                                    El código postal debe contener 5 dígitos
+                                  </div>
+                            </div>
+                        </div>
     
                         <div class="form-field calle">
                             <mat-label class="text-1"  *ngIf="isReadOnly">Calle</mat-label>
@@ -246,22 +289,6 @@
                             </mat-form-field>
                         </div>
     
-                        <div class="form-field cp">
-                            <mat-label class="text-1"  *ngIf="isReadOnly">CP</mat-label>
-                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['cp'].value}}</mat-label>
-                            <mat-label class="text-1" *ngIf="!isReadOnly && f['tipoCliente'].value == 'Nacional'">CP*</mat-label>
-                            <mat-label class="text-1" *ngIf="!isReadOnly && f['tipoCliente'].value == 'Extranjero'">CP</mat-label>
-                            <mat-form-field *ngIf="!isReadOnly">
-                                <input matInput type="number" placeholder="Escribir código postal" min="10000" max="99999" formControlName="cp" [ngClass]="{ 'is-invalid': submitted && f['cp'].errors }">
-                            </mat-form-field>
-                            <div *ngIf="submitted && f['cp'].errors" class="invalid-feedback">
-                                <div *ngIf="f['cp'].errors['required']">Este campo requerido</div>
-                                <div *ngIf="f['cp'].errors['min'] || f['cp'].errors['max']">
-                                    El código postal debe contener 5 dígitos
-                                  </div>
-                            </div>
-                        </div>
-    
                     </div>
 
                 </mat-expansion-panel>
@@ -275,27 +302,15 @@
                         <mat-panel-title style="min-width: 200px;">
                             Información Fiscal
                         </mat-panel-title>
-                        <mat-panel-description>
-                            (opcional)
-                        </mat-panel-description>
                     </mat-expansion-panel-header>
 
                     <div class="form-row two-col">
-                        <div class="form-field rf">
-                            <mat-label class="text-1" *ngIf="isReadOnly">Regimen físcal</mat-label>
-                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['rf'].value.key}} - {{this.f['rf'].value.name}}</mat-label>
-                            <mat-label class="text-1" *ngIf="!isReadOnly">Regimen físcal</mat-label>
-                            <mat-form-field *ngIf="!isReadOnly">
-                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['rf'].value}} </mat-label>
-                                <mat-select [(value)]="selectedRegimenFiscal" formControlName="rf" >
-                                    <mat-option *ngFor="let regimenFiscal of regimenesFiscales" [value]="regimenFiscal">{{ regimenFiscal.key }} - {{ regimenFiscal.name }}</mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
+                        
                     </div>
 
                 </mat-expansion-panel>
             </mat-accordion>
+            
 
             <div style="height: 24px;"></div>
 
