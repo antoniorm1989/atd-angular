@@ -5,14 +5,12 @@
             <span class="title">Facturación</span>
         </div>
         <div class="toolbar-breadcrumb">
-            <span class="link-breadcrumb" (click)="navigate('ventas')">Ventas</span>
+            <span class="link-breadcrumb" (click)="navigate('ventas')">Facturación</span>
             <span> / </span>
-            <span class="breadcrumb-item">{{title}}</span>
+            <span class="breadcrumb-item" style="margin-right: auto;">{{title}}</span>
 
-            <!--<button *ngIf="isReadOnly" mat-button class="btn" (click)="makeEditMode()"><mat-icon>edit</mat-icon>Editar
-                información
-            </button>-->
-            <button *ngIf="isReadOnly" type="button" mat-button class="btn" (click)="cancelarFactura()" ><mat-icon>cancel</mat-icon>Cancelar factura</button>
+            <button style="margin-left: unset;" *ngIf="isReadOnly" type="button" mat-button class="btn" (click)="descargarFactura()" ><mat-icon>file_download</mat-icon>Factura</button>
+            <button style="margin-left: unset;" *ngIf="isReadOnly" type="button" mat-button class="btn" (click)="cancelarFactura()" ><mat-icon>cancel</mat-icon>Cancelar factura</button>
         </div>
     </div>
     <div class="container">
@@ -112,10 +110,14 @@
                                     <mat-label *ngIf="!isReadOnly" class="text-1-regular">{{ this.f['cliente'].value != null ? this.f['cliente'].value.nombre_fiscal : 'Selecciona un cliente' }}</mat-label>
                                 </div>
                                 <div class="form-field">
-                                    <mat-label class="text-1">Regimen físcal</mat-label>
-                                    <mat-label *ngIf="isReadOnly && editData != null" class="text-1-regular">{{this.editData.cliente?.regimen_fiscal}}</mat-label>
-                                    <mat-label *ngIf="!isReadOnly" class="text-1-regular">{{ this.f['cliente'].value != null ? (this.f['cliente'].value.regimen_fiscal.key + " " + this.f['cliente'].value.regimen_fiscal.name) : 'Selecciona un cliente' }}</mat-label>
-                                </div>
+                                    <mat-label class="text-1">Régimen fiscal</mat-label>
+                                    <mat-label *ngIf="isReadOnly && editData?.cliente?.regimen_fiscal" class="text-1-regular">
+                                      {{ editData?.cliente?.regimen_fiscal?.key }} {{ editData?.cliente?.regimen_fiscal?.name }}
+                                    </mat-label>
+                                    <mat-label *ngIf="!isReadOnly" class="text-1-regular">
+                                      {{ f['cliente'].value?.regimen_fiscal ? (f['cliente'].value.regimen_fiscal.key + ' ' + f['cliente'].value.regimen_fiscal.name) : 'Selecciona un cliente' }}
+                                    </mat-label>
+                                  </div>
                             </div>
                             <!--<div class="form-row one-col">
                                 <div class="form-field">

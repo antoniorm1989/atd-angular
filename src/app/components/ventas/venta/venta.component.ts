@@ -68,7 +68,8 @@ export class VentaComponent {
   retencion: number = 0;
   total: number = 0;
 
-  editData!: VentaModel;
+  editData: VentaModel| null = null;
+  
 
   factura: any;
 
@@ -321,7 +322,7 @@ export class VentaComponent {
             map(value => this._filter(value || '')),
           );
           if (this.editData != undefined)
-            this.form.patchValue({ cliente: this.clientes.find(x => x.id == this.editData.cliente?.id) });
+            this.form.patchValue({ cliente: this.clientes.find(x => x.id == this.editData?.cliente?.id) });
         }
       },
       error: (e) => {
@@ -337,7 +338,7 @@ export class VentaComponent {
             map(value => this._filterVendedores(value || '')),
           );
           if (this.editData != undefined)
-            this.form.patchValue({ vendedor: this.vendedores.find(x => x.id == this.editData.vendedor?.id)?.name + ' ' + this.vendedores.find(x => x.id == this.editData.vendedor?.id)?.lastname });
+            this.form.patchValue({ vendedor: this.vendedores.find(x => x.id == this.editData?.vendedor?.id)?.name + ' ' + this.vendedores.find(x => x.id == this.editData?.vendedor?.id)?.lastname });
         }
       },
       error: (e) => {
@@ -349,7 +350,7 @@ export class VentaComponent {
         if (data.length > 0) {
           this.usoCfdiList = data;
           if (this.editData != undefined) {
-            let selectedUsoCfdi = data.find(x => x.id == this.editData.uso_cfdi?.id);
+            let selectedUsoCfdi = data.find(x => x.id == this.editData?.uso_cfdi?.id);
             if (selectedUsoCfdi != undefined)
               this.form.patchValue({ usoCfdi: selectedUsoCfdi });
           }
@@ -366,7 +367,7 @@ export class VentaComponent {
         if (data.length > 0) {
           this.regimenesFiscales = data;
           if (this.editData != undefined) {
-            let selectedRegimenFiscal = data.find(x => x.id == this.editData.cliente?.regimen_fiscal?.id);
+            let selectedRegimenFiscal = data.find(x => x.id == this.editData?.cliente?.regimen_fiscal?.id);
             if (selectedRegimenFiscal != undefined)
               this.form.patchValue({ regimen_fiscal: selectedRegimenFiscal });
           }
@@ -384,7 +385,7 @@ export class VentaComponent {
         if (data.length > 0) {
           this.metodoPagoList = data;
           if (this.editData != undefined) {
-            let selectedMetodoPago = data.find(x => x.id == this.editData.metodo_pago?.id);
+            let selectedMetodoPago = data.find(x => x.id == this.editData?.metodo_pago?.id);
             if (selectedMetodoPago != undefined)
               this.form.patchValue({ metodo_pago: selectedMetodoPago });
           }
@@ -402,7 +403,7 @@ export class VentaComponent {
         if (data.length > 0) {
           this.objetoImpuestoList = data;
           if (this.editData != undefined) {
-            let selectedObjetoImpuesto = data.find(x => x.id == this.editData.objeto_impuesto?.id);
+            let selectedObjetoImpuesto = data.find(x => x.id == this.editData?.objeto_impuesto?.id);
             if (selectedObjetoImpuesto != undefined)
               this.form.patchValue({ objeto_impuesto: selectedObjetoImpuesto });
           }
@@ -439,7 +440,7 @@ export class VentaComponent {
         if (data.length > 0) {
           this.formaPagoList = data;
           if (this.editData != undefined) {
-            let selectedFormaPago = data.find(x => x.id == this.editData.forma_pago?.id);
+            let selectedFormaPago = data.find(x => x.id == this.editData?.forma_pago?.id);
             if (selectedFormaPago != undefined)
               this.form.patchValue({ forma_pago: selectedFormaPago });
           }
@@ -681,7 +682,6 @@ export class VentaComponent {
             this.router.navigate(['ventas']);
           },
           error: (e) => {
-            debugger;
             this.openDialogError(`Hubo un error al crear la factura: ${e.error.detalles}`)
             console.log(e);
           }
@@ -704,6 +704,27 @@ export class VentaComponent {
       
     });
   }
+
+  descargarFactura() {
+    this.ventaService.descargarFactura(this.editData?.factura_cfdi_uid).subscribe({
+        next: (data) => {
+            const blob = new Blob([data], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+
+            // Descarga el archivo en lugar de abrirlo
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `factura_${this.id}.pdf`;
+            link.click();
+
+            window.URL.revokeObjectURL(url);
+        },
+        error: (e) => {
+            console.log(e);
+        }
+    });
+}
+
 
   timbrarVenta() {
     this.ventaService.timbrar(this.id).subscribe({

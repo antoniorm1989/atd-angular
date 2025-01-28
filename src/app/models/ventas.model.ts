@@ -34,6 +34,12 @@ export class VentaModel {
 
   articulos: VentaArticuloModel[] | undefined;
   estatus: VentaEstatusModel[] | undefined;
+  
+  // Factura
+  factura_cfdi_uid: string | undefined;
+  factura_error: string | undefined;
+  factura_estatus: FacturaStatus | undefined;
+
   constructor(id?: number) {
     this.id = id;
   }
@@ -67,3 +73,11 @@ export class VentaEstatusModel {
   fecha_estatus: Date | undefined;
   updated_at: Date | undefined;
 }
+
+export class FacturaStatus{
+  id: number | undefined;
+  estatus: string | undefined;
+  fecha_estatus: Date | undefined;
+  updated_at: Date | undefined;
+}
+

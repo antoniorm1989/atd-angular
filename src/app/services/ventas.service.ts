@@ -53,6 +53,12 @@ export class VentaService {
     return this.http.get<VentaModel>(`${environment.apiUrl}/api/ventas/getVentaById/${id}`);
   }
 
+  descargarFactura(facturaId: string | undefined): Observable<Blob> {
+    return this.http.get(`${environment.apiUrl}/api/facturacion/descargar/${facturaId}`, {
+      responseType: 'blob' // Especifica que esperas un archivo binario como respuesta
+    });
+  }
+
   private getHeaders() {
     return {
       headers: {
