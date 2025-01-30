@@ -190,15 +190,23 @@
     width: 9px;
     margin-bottom: 3px;
 }
-.ventas-list .container-list .table .estatus-icon.timbrada{
+
+.ventas-list .container-list .table .estatus-icon.despachada,
+.ventas-list .container-list .table .estatus-icon.pagada{
     background-color: #5BD26E;
 }
 .ventas-list .container-list .table .estatus-icon.parcialmente-despachada{
     background-color: #BA9400;
 }
+.ventas-list .container-list .table .estatus-icon.pre-cancelada{
+    background-color: #FF8B38;
+}
 .ventas-list .container-list .table .estatus-icon.cancelada{
     background-color: #FF0000;
 }
-.ventas-list .container-list .table .estatus-icon.despachada{
-    background-color: #71A8F8;
+.ventas-list .container-list .table .estatus-icon.por-pagar{
+    background-color: #71B7F8;
+}
+.ventas-list .container-list .table .estatus-icon.no-facturada{
+    background-color: gray;
 }

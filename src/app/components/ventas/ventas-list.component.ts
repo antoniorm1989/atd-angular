@@ -11,6 +11,7 @@ import { CatalogoClientesService } from 'src/app/services/catalogo-cliente.servi
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DialogSuccessComponent } from '../genericos/dialogSuccess.component';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-ventas-list',
@@ -21,7 +22,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 export class VentasListComponent {
 
   hasRecords = false;
-  displayedColumns: string[] = ['id', 'estatus', 'backorder', 'creacion', 'cliente', 'importe', 'fecha_sat', 'responsable', 'actions'];
+  displayedColumns: string[] = ['estatusFactura', 'id', 'estatus', 'backorder', 'creacion', 'cliente', 'importe', 'responsable', 'actions'];
   dataSource = new MatTableDataSource<VentaModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   private dataLoaded = false;
@@ -33,11 +34,12 @@ export class VentasListComponent {
   filteredClientes!: Observable<CatalogoClienteModel[]>;
 
   constructor(
-    private formBuilder: FormBuilder, 
-    private ventaService: VentaService, 
-    private router: Router, 
+    private formBuilder: FormBuilder,
+    private ventaService: VentaService,
+    private router: Router,
     private catalogoClientesService: CatalogoClientesService,
-    private dialog: MatDialog) {
+    private dialog: MatDialog,
+    private _snackBar: MatSnackBar) {
 
     this.form = this.formBuilder.group({
       cliente: null,
@@ -215,8 +217,28 @@ export class VentasListComponent {
     });
   }
 
-  verFactura(ventaId: number) {
-    
+  descargarFactura(factura_cfdi_uid: string, ventaId: number) {
+    if (factura_cfdi_uid == undefined || factura_cfdi_uid == "") {
+      this.openSnackBarError('No se ha generado la factura aún.');
+    } else {
+      this.ventaService.descargarFactura(factura_cfdi_uid).subscribe({
+        next: (data) => {
+          const blob = new Blob([data], { type: 'application/pdf' });
+          const url = window.URL.createObjectURL(blob);
+
+          // Descarga el archivo en lugar de abrirlo
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `cfdi_${ventaId}.pdf`;
+          link.click();
+
+          window.URL.revokeObjectURL(url);
+        },
+        error: (e) => {
+          console.log(e);
+        }
+      });
+    }
   }
 
   openDialogSuccess(comment: string): void {
@@ -228,6 +250,15 @@ export class VentasListComponent {
     dialogRef.afterClosed().subscribe(result => {
       console.log('Dialog closed');
       this.onLoadVentas();
+    });
+  }
+
+  openSnackBarError(message: string) {
+    this._snackBar.open(message, 'cerrar', {
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: ['snackbar-error'],
+      duration: 5000,
     });
   }
 }

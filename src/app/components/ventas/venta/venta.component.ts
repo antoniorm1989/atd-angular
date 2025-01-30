@@ -68,8 +68,8 @@ export class VentaComponent {
   retencion: number = 0;
   total: number = 0;
 
-  editData: VentaModel| null = null;
-  
+  editData: VentaModel | null = null;
+
 
   factura: any;
 
@@ -701,29 +701,33 @@ export class VentaComponent {
     });
 
     dialogRef.afterClosed().subscribe(ventaArticuloModel => {
-      
+
     });
   }
 
   descargarFactura() {
-    this.ventaService.descargarFactura(this.editData?.factura_cfdi_uid).subscribe({
+    if (this.editData?.factura_cfdi_uid == undefined || this.editData?.factura_cfdi_uid == "") {
+      this.openSnackBarError('No se ha generado la factura aún.');
+    } else {
+      this.ventaService.descargarFactura(this.editData?.factura_cfdi_uid).subscribe({
         next: (data) => {
-            const blob = new Blob([data], { type: 'application/pdf' });
-            const url = window.URL.createObjectURL(blob);
+          const blob = new Blob([data], { type: 'application/pdf' });
+          const url = window.URL.createObjectURL(blob);
 
-            // Descarga el archivo en lugar de abrirlo
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `factura_${this.id}.pdf`;
-            link.click();
+          // Descarga el archivo en lugar de abrirlo
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `cfdi_${this.id}.pdf`;
+          link.click();
 
-            window.URL.revokeObjectURL(url);
+          window.URL.revokeObjectURL(url);
         },
         error: (e) => {
-            console.log(e);
+          console.log(e);
         }
-    });
-}
+      });
+    }
+  }
 
 
   timbrarVenta() {

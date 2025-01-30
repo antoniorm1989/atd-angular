@@ -72,14 +72,26 @@
 
             <table class="table" mat-table [dataSource]="dataSource">
 
+                <ng-container matColumnDef="estatusFactura">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Estatus Factura</th>
+                    <td mat-cell *matCellDef="let element">
+                        <span *ngIf="element.factura_estatus.estatus === 'Por-pagar'" class="estatus-icon por-pagar"></span>
+                        <span *ngIf="element.factura_estatus.estatus === 'Cancelada'" class="estatus-icon cancelada"></span>
+                        <span *ngIf="element.factura_estatus.estatus === 'Pre-Cancelada'" class="estatus-icon pre-cancelada"></span>
+                        <span *ngIf="element.factura_estatus.estatus === 'Pagada'" class="estatus-icon pagada"></span>
+                        <span *ngIf="!element.factura_estatus.estatus" class="estatus-icon no-facturada"></span>
+                        <span>{{element.factura_estatus.estatus || "No facturada"}}</span>
+                    </td>
+                </ng-container>
+
                 <ng-container matColumnDef="id">
-                    <th mat-header-cell *matHeaderCellDef class="center-column">Venta</th>
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Folio</th>
                     <td mat-cell *matCellDef="let element" class="center-column"><span (click)="onView(element.id)"
-                            class="title-grid">{{element.id}}</span></td>
+                            class="title-grid">CFDI {{element.id}}</span></td>
                 </ng-container>
                 
                 <ng-container matColumnDef="estatus">
-                    <th mat-header-cell *matHeaderCellDef class="center-column">Estatus</th>
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Estatus venta</th>
                     <td mat-cell *matCellDef="let element">
                         <span *ngIf="capitalizeWords(element.estatus.estatus) === 'Timbrada'" class="estatus-icon timbrada"></span>
                         <span *ngIf="capitalizeWords(element.estatus.estatus) === 'Parcialmente Despachada'" class="estatus-icon parcialmente-despachada"></span>
@@ -95,7 +107,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="creacion">
-                    <th mat-header-cell *matHeaderCellDef class="center-column">Creación</th>
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Fecha Creación</th>
                     <td mat-cell *matCellDef="let element" class="center-column">{{formatDate(element.created_at)}}</td>
                 </ng-container>
 
@@ -107,11 +119,6 @@
                 <ng-container matColumnDef="importe">
                     <th mat-header-cell *matHeaderCellDef class="center-column">Importe</th>
                     <td mat-cell *matCellDef="let element" class="center-column"><span>{{formatearComoMoneda(element.importe)}} {{element.moneda}}</span></td>
-                </ng-container>
-
-                <ng-container matColumnDef="fecha_sat">
-                    <th mat-header-cell *matHeaderCellDef class="center-column">Fecha SAT</th>
-                    <td mat-cell *matCellDef="let element" class="center-column">{{formatDate(element.estatus.created_at)}}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="responsable">
@@ -136,8 +143,9 @@
                             <mat-icon>more_vert</mat-icon>
                         </button>
                         <mat-menu #menu="matMenu">
-                            <button mat-menu-item (click)="verFactura(element.id)">
-                                <span>Ver factura</span>
+                            <button mat-menu-item (click)="descargarFactura(element.factura_cfdi_uid, element.id)">
+                                <mat-icon>file_download</mat-icon>
+                                <span>Descargar factura</span>
                             </button>
                         </mat-menu>
                     </td>
