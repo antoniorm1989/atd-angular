@@ -3,6 +3,24 @@
         <div class="toolbar-title">
             <i class="icon fa-solid fa-cash-register"></i>
             <span class="title">Facturación</span>
+            <div style="margin-left: auto; margin-bottom: auto; margin-top: auto; display: flex;">
+                <div>
+                    <span style="font-size: large;">Factura:</span>
+                    <span style="margin-left: 12px;" *ngIf="editData && editData.factura_estatus && editData.factura_estatus.estatus === 'Por-pagar'" class="estatus-icon por-pagar"></span>
+                    <span style="margin-left: 12px;" *ngIf="editData && editData.factura_estatus && editData.factura_estatus.estatus === 'Cancelada'" class="estatus-icon cancelada"></span>
+                    <span style="margin-left: 12px;" *ngIf="editData && editData.factura_estatus && editData.factura_estatus.estatus === 'Pre-Cancelada'" class="estatus-icon pre-cancelada"></span>
+                    <span style="margin-left: 12px;" *ngIf="editData && editData.factura_estatus && editData.factura_estatus.estatus === 'Pagada'" class="estatus-icon pagada"></span>
+                    <span style="margin-left: 12px;" *ngIf="editData && editData.factura_estatus && editData.factura_estatus.estatus == undefined" class="estatus-icon no-facturada"></span>
+                    <span style="font-size: large; font-weight: 500;">{{editData && editData.factura_estatus && editData.factura_estatus.estatus || "No facturada"}}</span>
+                </div>
+                <div>
+                    <span style="margin-left: 24px; font-size: large;">Venta:</span>
+                    <span style="margin-left: 12px;" *ngIf="editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '') === 'Parcialmente Despachada'" class="estatus-icon parcialmente-despachada"></span>
+                    <span style="margin-left: 12px;" *ngIf="editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '') === 'Cancelada'" class="estatus-icon cancelada"></span>
+                    <span style="margin-left: 12px;" *ngIf="editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '') === 'Despachada'" class="estatus-icon despachada"></span>
+                    <span style="font-size: large; font-weight: 500;">{{editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '')}}</span>
+                </div>
+            </div>
         </div>
         <div class="toolbar-breadcrumb">
             <span class="link-breadcrumb" (click)="navigate('ventas')">Facturación</span>

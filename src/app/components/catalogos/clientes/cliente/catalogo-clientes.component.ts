@@ -60,7 +60,8 @@ export class CatalogoClientesComponent {
       tipoCliente: ['Nacional', [Validators.required]],
       rfc: ['', [Validators.required]],
       nombreFiscal: ['', [Validators.required]],
-      nombre: ['', [Validators.required]],
+      nombre: [''],
+      apellidos: [''],
       correo: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}')]],
       telefono: [''],
       country: ['', [Validators.required]],
@@ -91,6 +92,7 @@ export class CatalogoClientesComponent {
                   rfc: data.rfc,
                   nombreFiscal: data.nombre_fiscal,
                   nombre: data.nombre,
+                  apellidos: data.apellidos,
                   correo: data.correo,
                   telefono: data.telefono,
                   calle: data.calle,
@@ -325,6 +327,7 @@ export class CatalogoClientesComponent {
     cliente.rfc = this.f['rfc'].value;
     cliente.nombre_fiscal = this.f['nombreFiscal'].value;
     cliente.nombre = this.f['nombre'].value;
+    cliente.apellidos = this.f['apellidos'].value;
     cliente.correo = this.f['correo'].value;
     cliente.telefono = this.f['telefono'].value;
     cliente.country = this.f['country'].value;

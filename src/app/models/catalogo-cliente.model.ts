@@ -11,6 +11,7 @@ export class CatalogoClienteModel {
   rfc: string | undefined;
   nombre_fiscal: string | undefined;
   nombre: string | undefined;
+  apellidos: string | undefined;
   correo: boolean | undefined;
   telefono: string | undefined;
   calle: string | undefined;

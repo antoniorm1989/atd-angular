@@ -33,7 +33,7 @@ export class VentaModel {
   retiene_iva_porcentaje: float | undefined;
 
   articulos: VentaArticuloModel[] | undefined;
-  estatus: VentaEstatusModel[] | undefined;
+  estatus: VentaEstatusModel | undefined;
   
   // Factura
   factura_cfdi_uid: string | undefined;

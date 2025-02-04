@@ -328,6 +328,38 @@ mat-panel-description {
     padding: 0 6px 0 6px;
 }
 
+
+/*estilos de estatus*/
+.venta .estatus-icon{
+    border-radius: 9px;
+    display: inline-block;
+    vertical-align: middle;
+    height: 9px;
+    margin-right: 8px;
+    width: 9px;
+    margin-bottom: 3px;
+}
+.venta .estatus-icon.despachada,
+.venta .estatus-icon.pagada{
+    background-color: #5BD26E;
+}
+.venta .estatus-icon.parcialmente-despachada{
+    background-color: #BA9400;
+}
+.venta .estatus-icon.pre-cancelada{
+    background-color: #FF8B38;
+}
+.venta .estatus-icon.cancelada{
+    background-color: #FF0000;
+}
+.venta .estatus-icon.por-pagar{
+    background-color: #71B7F8;
+}
+.venta .estatus-icon.no-facturada{
+    background-color: gray;
+}
+
+
 @media only screen and (max-width: 1084px) {
     .venta .container .form-row.four-col {
         grid-template-columns: repeat(3, 1fr);
