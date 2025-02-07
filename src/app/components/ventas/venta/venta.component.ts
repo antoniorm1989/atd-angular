@@ -683,6 +683,7 @@ export class VentaComponent {
           },
           error: (e) => {
             this.openDialogError(`Hubo un error al crear la factura: ${e.error.detalles}`)
+            this.router.navigate(['ventas']);
             console.log(e);
           }
         });
@@ -705,11 +706,11 @@ export class VentaComponent {
     });
   }
 
-  descargarFactura() {
+  descargarFacturaPDF() {
     if (this.editData?.factura_cfdi_uid == undefined || this.editData?.factura_cfdi_uid == "") {
       this.openSnackBarError('No se ha generado la factura aún.');
     } else {
-      this.ventaService.descargarFactura(this.editData?.factura_cfdi_uid).subscribe({
+      this.ventaService.descargarFactura(this.editData?.factura_cfdi_uid, 'pdf').subscribe({
         next: (data) => {
           const blob = new Blob([data], { type: 'application/pdf' });
           const url = window.URL.createObjectURL(blob);
@@ -729,18 +730,28 @@ export class VentaComponent {
     }
   }
 
+  descargarFacturaXML() {
+    if (this.editData?.factura_cfdi_uid == undefined || this.editData?.factura_cfdi_uid == "") {
+      this.openSnackBarError('No se ha generado la factura aún.');
+    } else {
+      this.ventaService.descargarFactura(this.editData?.factura_cfdi_uid, 'xml').subscribe({
+        next: (data) => {
+          const blob = new Blob([data], { type: 'application/xml' });
+          const url = window.URL.createObjectURL(blob);
 
-  timbrarVenta() {
-    this.ventaService.timbrar(this.id).subscribe({
-      next: (data) => {
-        this.factura = data;
-        this.openDialogSuccess(`Se ha timbrado con éxito la venta #${this.id}, podrás visualizarlo desde tu listado ventas.`)
-        //this.router.navigate(['ventas']);
-      },
-      error: (e) => {
-        console.log(e);
-      }
-    });
+          // Descarga el archivo en lugar de abrirlo
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `cfdi_${this.id}.xml`;
+          link.click();
+
+          window.URL.revokeObjectURL(url);
+        },
+        error: (e) => {
+          console.log(e);
+        }
+      });
+    }
   }
 
   capitalizeWords(str: string): string {

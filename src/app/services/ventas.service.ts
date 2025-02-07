@@ -45,16 +45,12 @@ export class VentaService {
     return this.http.post<void>(`${environment.apiUrl}/api/ventas/despachar`, articulo, this.getHeaders());
   }
 
-  timbrar(ventaId: number): Observable<any> {
-    return this.http.post<void>(`${environment.apiUrl}/api/facturacion/timbrar`, { id: ventaId }, this.getHeaders());
-  }
-
   getVentaById(id: number): Observable<VentaModel> {
     return this.http.get<VentaModel>(`${environment.apiUrl}/api/ventas/getVentaById/${id}`);
   }
 
-  descargarFactura(facturaId: string | undefined): Observable<Blob> {
-    return this.http.get(`${environment.apiUrl}/api/facturacion/descargar/${facturaId}`, {
+  descargarFactura(facturaId: string | undefined, format: string): Observable<Blob> {
+    return this.http.get(`${environment.apiUrl}/api/facturacion/descargar/${format}/${facturaId}`, {
       responseType: 'blob' // Especifica que esperas un archivo binario como respuesta
     });
   }

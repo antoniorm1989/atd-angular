@@ -7,7 +7,7 @@ export class User {
     email: string | undefined;
     token: string | undefined;
     photo: string | undefined;
-    movil: string | undefined;
+    celular: string | undefined;
     isAdmin: boolean | undefined;
     notifications: boolean | undefined;
     active: boolean | undefined;

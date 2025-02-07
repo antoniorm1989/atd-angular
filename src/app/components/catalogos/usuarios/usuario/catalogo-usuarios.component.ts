@@ -47,7 +47,7 @@ export class CatalogoUsuariosComponent {
                   name: data.name,
                   lastname: data.lastname,
                   email: data.email,
-                  movil: data.movil,
+                  celular: data.celular,
                   isAdmin: data.isAdmin,
                   notifications: data.notifications,
                   active: data.active,
@@ -119,7 +119,7 @@ export class CatalogoUsuariosComponent {
             notifications: [true, [Validators.required]],
             active: [true, [Validators.required]],
             rol: [null, [Validators.required]],
-            movil: [''],
+            celular: [''],
             photo: null
           });
         });
@@ -147,7 +147,7 @@ export class CatalogoUsuariosComponent {
     usuario.name = this.f['name'].value;
     usuario.lastname = this.f['lastname'].value;
     usuario.email = this.f['email'].value;
-    usuario.movil = this.f['movil'].value;
+    usuario.celular = this.f['celular'].value;
     usuario.isAdmin = this.f['isAdmin'].value;
     usuario.notifications = this.f['notifications'].value;
     usuario.active = this.f['active'].value;

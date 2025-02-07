@@ -204,24 +204,11 @@ export class VentasListComponent {
     return `${environment.apiUrl}/images/users/${photo}`;
   }
 
-  timbrarVenta(ventaId: number) {
-    this.ventaService.timbrar(ventaId).subscribe({
-      next: (data) => {
-        //this.factura = data;
-        this.openDialogSuccess(`Se ha timbrado con éxito la venta #${ventaId}.`)
-        //this.router.navigate(['ventas']);
-      },
-      error: (e) => {
-        console.log(e);
-      }
-    });
-  }
-
-  descargarFactura(factura_cfdi_uid: string, ventaId: number) {
+  descargarFacturaPDF(factura_cfdi_uid: string, ventaId: number) {
     if (factura_cfdi_uid == undefined || factura_cfdi_uid == "") {
       this.openSnackBarError('No se ha generado la factura aún.');
     } else {
-      this.ventaService.descargarFactura(factura_cfdi_uid).subscribe({
+      this.ventaService.descargarFactura(factura_cfdi_uid, 'pdf').subscribe({
         next: (data) => {
           const blob = new Blob([data], { type: 'application/pdf' });
           const url = window.URL.createObjectURL(blob);
@@ -230,6 +217,30 @@ export class VentasListComponent {
           const link = document.createElement('a');
           link.href = url;
           link.download = `cfdi_${ventaId}.pdf`;
+          link.click();
+
+          window.URL.revokeObjectURL(url);
+        },
+        error: (e) => {
+          console.log(e);
+        }
+      });
+    }
+  }
+
+  descargarFacturaXML(factura_cfdi_uid: string, ventaId: number) {
+    if (factura_cfdi_uid == undefined || factura_cfdi_uid == "") {
+      this.openSnackBarError('No se ha generado la factura aún.');
+    } else {
+      this.ventaService.descargarFactura(factura_cfdi_uid, 'xml').subscribe({
+        next: (data) => {
+          const blob = new Blob([data], { type: 'application/xml' });
+          const url = window.URL.createObjectURL(blob);
+
+          // Descarga el archivo en lugar de abrirlo
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `cfdi_${ventaId}.xml`;
           link.click();
 
           window.URL.revokeObjectURL(url);
@@ -262,49 +273,3 @@ export class VentasListComponent {
     });
   }
 }
-
-/*import { PreviewFacturaComponent } from './venta/preview-factura/preview-factura.component';
-@Component({
-  selector: 'dialog-component-preview-factura',
-  template: `<span mat-dialog-title>Confirmación de dato factura</span>
-            <mat-dialog-content class="mat-typography">
-              <app-preview-factura [venta]="venta" (cancel)="onCancelar()" (timbrar)="onTimbrar()" #appPreviewFacturaComponent></app-preview-factura>
-            </mat-dialog-content>`,
-  styles: [
-  ]
-})
-export class PreviewFacturaModalComponent {
-  @ViewChild('appVentaArticuloComponent') appPreviewFacturaComponent: any;
-  venta!: VentaModel;
-
-  constructor(
-    public dialogRef: MatDialogRef<PreviewFacturaModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
-    dialogRef.disableClose = true;
-
-    if (Object.keys(data).length > 0) {
-      if (data.venta != undefined) {
-        this.venta = data.venta;
-      }
-    }
-
-  }
-
-  onCancelar() {
-    try {
-      this.dialogRef.close();
-    } catch (error) {
-      console.error('An error occurred in onAgregarArticulo:', error);
-    }
-  }
-
-  onTimbrar() {
-    try {
-      this.dialogRef.close(true);
-    } catch (error) {
-      console.error('An error occurred in onAgregarArticulo:', error);
-    }
-  }
-}
-*/

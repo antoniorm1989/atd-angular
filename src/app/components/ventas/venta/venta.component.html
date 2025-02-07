@@ -15,7 +15,7 @@
                 </div>
                 <div>
                     <span style="margin-left: 24px; font-size: large;">Venta:</span>
-                    <span style="margin-left: 12px;" *ngIf="editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '') === 'Parcialmente Despachada'" class="estatus-icon parcialmente-despachada"></span>
+                    <span style="margin-left: 12px;" *ngIf="editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '') === 'Parcialmente'" class="estatus-icon parcialmente-despachada"></span>
                     <span style="margin-left: 12px;" *ngIf="editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '') === 'Cancelada'" class="estatus-icon cancelada"></span>
                     <span style="margin-left: 12px;" *ngIf="editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '') === 'Despachada'" class="estatus-icon despachada"></span>
                     <span style="font-size: large; font-weight: 500;">{{editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '')}}</span>
@@ -27,8 +27,9 @@
             <span> / </span>
             <span class="breadcrumb-item" style="margin-right: auto;">{{title}}</span>
 
-            <button style="margin-left: unset;" *ngIf="isReadOnly" type="button" mat-button class="btn" (click)="descargarFactura()" ><mat-icon>file_download</mat-icon>Factura</button>
-            <button style="margin-left: unset;" *ngIf="isReadOnly" type="button" mat-button class="btn" (click)="cancelarFactura()" ><mat-icon>cancel</mat-icon>Cancelar factura</button>
+            <button style="margin-left: unset;" *ngIf="isReadOnly" type="button" mat-button class="btn" (click)="descargarFacturaPDF()" ><mat-icon>file_download</mat-icon>Factur PDF</button>
+            <button style="margin-left: unset;" *ngIf="isReadOnly" type="button" mat-button class="btn" (click)="descargarFacturaXML()" ><mat-icon>file_download</mat-icon>Factur XML</button>
+            <!-- <button style="margin-left: unset;" *ngIf="isReadOnly" type="button" mat-button class="btn" (click)="cancelarFactura()" ><mat-icon>cancel</mat-icon>Cancelar factura</button> -->
         </div>
     </div>
     <div class="container">
