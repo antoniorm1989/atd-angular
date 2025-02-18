@@ -22,7 +22,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class VentasListComponent {
 
   hasRecords = false;
-  displayedColumns: string[] = ['estatusFactura', 'id', 'estatus', 'backorder', 'creacion', 'cliente', 'importe', 'responsable', 'actions'];
+  displayedColumns: string[] = ['id', 'estatusFactura', 'folio_factura', 'estatus', 'backorder', 'creacion', 'cliente', 'importe', 'responsable', 'actions'];
   dataSource = new MatTableDataSource<VentaModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   private dataLoaded = false;
@@ -272,4 +272,9 @@ export class VentasListComponent {
       duration: 5000,
     });
   }
+
+  formatNumber(input: number): string {
+    return input.toString().padStart(4, '0');
+  }
+  
 }

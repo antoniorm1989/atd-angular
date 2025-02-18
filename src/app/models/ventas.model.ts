@@ -17,6 +17,7 @@ export class VentaModel {
   updated_at: Date | undefined;
   responsable: User | undefined;
   importe: float | undefined;
+
   // Forma pago
   condicion_pago: string | undefined;
   tiene_dias_credito: boolean | undefined;
@@ -25,6 +26,7 @@ export class VentaModel {
   tipo_cambio: float | undefined;
   forma_pago: CatalogoFormaPagoModel | undefined;
   metodo_pago: CatalogoMetodoPagoModel | undefined;
+  
   // Articulos
   objeto_impuesto: CatalogoObjetoImpuestoModel | undefined
   translada_iva: boolean | undefined;
@@ -39,6 +41,8 @@ export class VentaModel {
   factura_cfdi_uid: string | undefined;
   factura_error: string | undefined;
   factura_estatus: FacturaStatus | undefined;
+  factura_fecha_timbrado: Date | undefined;
+  factura_folio: string | undefined;
 
   constructor(id?: number) {
     this.id = id;
@@ -64,7 +68,7 @@ export class VentaArticuloModel {
   user: User | undefined;
   ventaId: number | undefined;
   producto_servicio_id: number | undefined;
-  articulo_descripcion: string | undefined
+  articulo_descripcion: string | undefined;
 }
 
 export class VentaEstatusModel {

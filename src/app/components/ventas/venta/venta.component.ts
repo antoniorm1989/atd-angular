@@ -270,14 +270,19 @@ export class VentaComponent {
     this.router.navigate([route]);
   }
 
-  formatDate(stringDate: string): string {
-    const date = new Date(stringDate);
+  formatDate(dateInput: string | Date | undefined): string {
+    if (!dateInput) return "N/A"; // Handle undefined or empty values
+  
+    const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
+  
+    if (isNaN(date.getTime())) return "Invalid Date"; // Handle invalid date cases
+  
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear().toString();
-
+  
     return `${month}/${day}/${year}`;
-  }
+  }  
 
   makeEditMode() {
     this.action = 'edit';

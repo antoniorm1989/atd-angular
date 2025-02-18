@@ -400,44 +400,63 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
   onOptionSelected(partNumber: string) {
     try {
       this.selectedArticle = this.getArticuloByPartNumber(partNumber);
-      if (this.selectedArticle != undefined) {
-        if (!this.isDespachar) {
-          this.form.controls['precio_venta'].enable();
-          this.form.controls['descuento'].enable();
-        }
-
-        if (this.selectedArticle.photo)
-          this.imageUrl = `${environment.apiUrl}/images/articulos/${this.selectedArticle.photo}`;
-
-        this.form.patchValue({
-          precio_venta: this.isEditing ? this.ventaArticuloModel?.precio_venta : this.selectedArticle.precio_venta
-        });
-
-        this.calcularSubTotal();
-        this.inventoryAlmacenService.getInventoryByAlmacenByArticulo(this.selectedAlmacen?.id, this.selectedArticle.id).subscribe({
-          next: (data) => {
-            if (data && data.id) {
-              this.inventory_almacen_id = data.id;
-              if (data.inventory_transaction && data.inventory_transaction.length > 0) {
-                this.stock = data.inventory_transaction[0]?.stock;
-              } else
-                this.stock = 0;
-            } else {
-              this.stock = 0;
-            }
-            this.calcularBackOrder();
-          }
-        });
-      } else {
+  
+      if (!this.selectedArticle) {
         this.form.controls['precio_venta'].disable();
         this.form.controls['descuento'].disable();
+        return;
+      }
+  
+      if (!this.isDespachar) {
+        this.form.controls['precio_venta'].enable();
+        this.form.controls['descuento'].enable();
+      }
+  
+      if (this.selectedArticle.photo) {
+        this.imageUrl = `${environment.apiUrl}/images/articulos/${this.selectedArticle.photo}`;
+      }
+  
+      this.calcularSubTotal();
+  
+      if (this.clienteId !== 0 && this.selectedAlmacen?.id) {
+        this.catalogoArticuloService.getAllGroupedByCategoryByAlmacen(this.selectedAlmacen.id, this.clienteId).subscribe({
+          next: (data) => {
+            if (data?.length > 0) {
+              const articulos = data[0].articulos || [];
+              const articuloEncontrado = articulos.find(art => art.id === this.selectedArticle?.id);
+              if (articuloEncontrado) {
+                this.selectedArticle = articuloEncontrado;
+                this.actualizarDatosArticulo();
+              }
+            }
+          },
+          error: (error) => console.error('Error obteniendo artículos:', error)
+        });
+      } else {
+        this.actualizarDatosArticulo();
       }
     } catch (error) {
-      console.error('An error occurred in onOptionSelected:', error);
+      console.error('Error en onOptionSelected:', error);
     }
   }
+  
+  private actualizarDatosArticulo() {
+    this.form.patchValue({
+      precio_venta: this.isEditing ? this.ventaArticuloModel?.precio_venta : this.selectedArticle?.precio_venta
+    });
+    this.inventoryAlmacenService.getInventoryByAlmacenByArticulo(this.selectedAlmacen?.id, this.selectedArticle?.id).subscribe({
+      next: (data) => {
+        this.inventory_almacen_id = data?.id ?? 0;
+        this.stock = data?.inventory_transaction?.[0]?.stock ?? 0;
+        this.calcularBackOrder();
+      },
+      error: (error) => console.error('Error obteniendo inventario:', error)
+    });
+  }
+  
 
   getArticuloByPartNumber(partNumber: string): CatalogoArticuloModel | undefined {
+
     try {
       for (const group of this.articuloGroups) {
         const foundArticulo = group.articulos!.find(articulo => articulo.part_number === partNumber);

@@ -63,12 +63,6 @@ h1.example-app-name {
   width: 180px;
 }
 
-.mat-nav-menu {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
 .menu-option {
   display: flex;
   align-items: center;

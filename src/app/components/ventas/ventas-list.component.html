@@ -72,6 +72,15 @@
 
             <table class="table" mat-table [dataSource]="dataSource">
 
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Id</th>
+                    <td mat-cell *matCellDef="let element" class="center-column">
+                        <span (click)="onView(element.id)" class="title-grid">
+                            {{formatNumber(element.id)}}
+                        </span>
+                    </td>
+                </ng-container>
+
                 <ng-container matColumnDef="estatusFactura">
                     <th mat-header-cell *matHeaderCellDef class="center-column">Estatus Factura</th>
                     <td mat-cell *matCellDef="let element">
@@ -84,10 +93,10 @@
                     </td>
                 </ng-container>
 
-                <ng-container matColumnDef="id">
-                    <th mat-header-cell *matHeaderCellDef class="center-column">Folio</th>
+                <ng-container matColumnDef="folio_factura">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Folio factura</th>
                     <td mat-cell *matCellDef="let element" class="center-column"><span (click)="onView(element.id)"
-                            class="title-grid">CFDI {{element.id}}</span></td>
+                            class="title-grid">{{element.folio_factura}}</span></td>
                 </ng-container>
                 
                 <ng-container matColumnDef="estatus">

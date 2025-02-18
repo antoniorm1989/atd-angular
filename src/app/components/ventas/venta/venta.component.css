@@ -359,6 +359,46 @@ mat-panel-description {
     background-color: gray;
 }
 
+.venta .numero-parte-container{
+    background-color: #fff6d1;
+    border-radius: 10px;
+    padding: 12px 18px;
+}
+.venta .numero-parte-container .text-1{
+    font-weight: 700;
+    font-size: 18px;
+}
+.venta .numero-parte-container .text-1-regular{
+    background-color: #fff;
+    padding: 6px 12px;
+    margin-top: 8px;
+    display: flex;
+}
+
+.venta .saldo{
+    background-color: lightgray;
+    border-radius: 4px;
+    padding: 11px;
+    display: flex;
+    margin: 10px 0px;
+}
+.venta .saldo .text-1-regular{
+    margin-left: auto;
+    font-size: 18px;
+}
+.venta .saldo-red{
+    background-color: #FF00006B;
+}
+
+.venta .mdc-tab-indicator .mdc-tab-indicator__content--underline {
+    border-top-width: 4px;
+}
+.venta .mdc-tab__text-label{
+    color: black;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 21.6px;
+}
 
 @media only screen and (max-width: 1084px) {
     .venta .container .form-row.four-col {
