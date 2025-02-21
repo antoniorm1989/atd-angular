@@ -8,25 +8,53 @@
                 <mat-card appearance="outlined" style="border: 1px solid #959595; border-radius: 10px; margin-right: 12px; background-color: transparent;">
                     <mat-card-content>
                         <span style="margin-left: 24px; font-size: large;">Venta:</span>
-                        <span style="margin-left: 12px;" *ngIf="editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '') === 'Parcialmente'" class="estatus-icon parcialmente-despachada"></span>
-                        <span style="margin-left: 12px;" *ngIf="editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '') === 'Cancelada'" class="estatus-icon cancelada"></span>
-                        <span style="margin-left: 12px;" *ngIf="editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '') === 'Despachada'" class="estatus-icon despachada"></span>
+                        <span style="margin-left: 12px;" *ngIf="editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '') === 'Parcialmente'" class="estatus-icon  v-parcialmente"></span>
+                        <span style="margin-left: 12px;" *ngIf="editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '') === 'Cancelada'" class="estatus-icon  v-cancelada"></span>
+                        <span style="margin-left: 12px;" *ngIf="editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '') === 'Despachada'" class="estatus-icon v-despachada"></span>
                         <span style="font-size: large; font-weight: 500;">{{editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '')}}</span>
                     </mat-card-content>
                 </mat-card>
                 <mat-card appearance="outlined" style="border: 1px solid #959595; border-radius: 10px; margin-left: 12px; background-color: transparent;">
                     <mat-card-content>
                         <span style="font-size: large;">Factura:</span>
-                        <span style="margin-left: 12px;" *ngIf="editData && editData.factura_estatus && editData.factura_estatus.estatus === 'Por-pagar'" class="estatus-icon por-pagar"></span>
-                        <span style="margin-left: 12px;" *ngIf="editData && editData.factura_estatus && editData.factura_estatus.estatus === 'Cancelada'" class="estatus-icon cancelada"></span>
+                        <span style="margin-left: 12px;" *ngIf="editData && editData.factura_estatus && (editData.factura_estatus.estatus === 'Por-facturar' || editData.factura_estatus.estatus === '')" class="estatus-icon f-por-facturar"></span>
+                        <span style="margin-left: 12px;" *ngIf="editData && editData.factura_estatus && editData.factura_estatus.estatus === 'Cancelada'" class="estatus-icon f-cancelada"></span>
                         <span style="margin-left: 12px;" *ngIf="editData && editData.factura_estatus && editData.factura_estatus.estatus === 'Pre-Cancelada'" class="estatus-icon pre-cancelada"></span>
-                        <span style="margin-left: 12px;" *ngIf="editData && editData.factura_estatus && editData.factura_estatus.estatus === 'Pagada'" class="estatus-icon pagada"></span>
-                        <span style="margin-left: 12px;" *ngIf="editData && editData.factura_estatus && editData.factura_estatus.estatus == undefined" class="estatus-icon no-facturada"></span>
+                        <span style="margin-left: 12px;" *ngIf="editData && editData.factura_estatus && editData.factura_estatus.estatus === 'Facturada'" class="estatus-icon f-facturada"></span>
                         <span style="font-size: large; font-weight: 500;">{{editData && editData.factura_estatus && editData.factura_estatus.estatus || "No facturada"}}</span>
                     </mat-card-content>
                 </mat-card>
             </div>
         </div>
+
+
+        <ng-container matColumnDef="estatusFactura">
+            <th mat-header-cell *matHeaderCellDef class="center-column">Estatus Factura</th>
+            <td mat-cell *matCellDef="let element">
+                <span *ngIf="element.factura_estatus.estatus === 'Por-facturar'" class="estatus-icon f-por-facturar"></span>
+                <span *ngIf="element.factura_estatus.estatus === 'Cancelada'" class="estatus-icon f-cancelada"></span>
+                <span *ngIf="element.factura_estatus.estatus === 'Pre-Cancelada'" class="estatus-icon f-pre-cancelada"></span>
+                <span *ngIf="element.factura_estatus.estatus === 'Facturada'" class="estatus-icon f-facturada"></span>
+                <span>{{element.factura_estatus.estatus}}</span>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="factura_folio">
+            <th mat-header-cell *matHeaderCellDef class="center-column">Folio factura</th>
+            <td mat-cell *matCellDef="let element" class="center-column">{{ element.factura_folio }}</td>
+        </ng-container>
+        
+        <ng-container matColumnDef="estatus">
+            <th mat-header-cell *matHeaderCellDef class="center-column">Estatus venta</th>
+            <td mat-cell *matCellDef="let element">
+                <span *ngIf="capitalizeWords(element.estatus.estatus) === 'Parcialmente'" class="estatus-icon v-parcialmente"></span>
+                <span *ngIf="capitalizeWords(element.estatus.estatus) === 'Cancelada'" class="estatus-icon v-cancelada"></span>
+                <span *ngIf="capitalizeWords(element.estatus.estatus) === 'Despachada'" class="estatus-icon v-despachada"></span>
+                <span>{{capitalizeWords(element.estatus.estatus)}}</span>
+            </td>
+        </ng-container>
+
+
         <div class="toolbar-breadcrumb">
             <span class="link-breadcrumb" (click)="navigate('ventas')">Facturación</span>
             <span> / </span>
@@ -222,8 +250,53 @@
                             </mat-tab>
                             <mat-tab label="Notas de crédito">Notas de crédito</mat-tab>
                             <mat-tab label="Pagos y Abonos">Pagos y Abonos</mat-tab>
-                            <mat-tab label="Documentos">Documentos</mat-tab>
-                            <mat-tab label="Comentarios">Comentarios</mat-tab>
+                            <mat-tab label="Documentos">
+                                <input type="file" #fileInput (change)="subirDocumento($event)" hidden>
+                                <button mat-button class="btn" (click)="fileInput.click()">
+                                    <mat-icon>file_upload</mat-icon> Subir documento
+                                </button>
+
+                                <table *ngIf="hasRecordsDocumentos" class="table" mat-table [dataSource]="dataSourceDocumentos" style="margin-top: 24px;">
+                                    <ng-container matColumnDef="nombre">
+                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Documento</th>
+                                        <td mat-cell *matCellDef="let documento" style="text-align: center;">{{documento.nombre}}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="fecha_creacion">
+                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Fecha creación</th>
+                                        <td mat-cell *matCellDef="let documento" style="text-align: center;">{{formatDate(documento.created_at)}}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="acciones">
+                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Acciones</th>
+                                        <td mat-cell *matCellDef="let documento">
+                                            <button mat-button (click)="descargarDocumento(documento)">
+                                                <mat-icon>file_download</mat-icon>
+                                                <span>Descargar</span>
+                                            </button>
+                                            <button mat-button (click)="eliminarDocumento(documento)">
+                                                <mat-icon>delete</mat-icon>
+                                                <span>Eliminar</span>
+                                            </button>
+                                        </td>
+                                    </ng-container>
+        
+                                    <tr mat-header-row *matHeaderRowDef="displayedColumnsDocumentos"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: displayedColumnsDocumentos;"></tr>
+                                </table>
+                            </mat-tab>
+                            <mat-tab label="Comentarios">
+                                <div class="form-field">
+                                    <mat-label class="text-1">Comentarios</mat-label>
+                                    <mat-form-field>
+                                        <mat-label>Comentarios</mat-label>
+                                        <textarea matInput rows="5" [(ngModel)]="comentario" (ngModelChange)="checkChanges()"></textarea>
+                                    </mat-form-field>    
+                                </div>
+                                <button type="button" mat-raised-button (click)="onUpdateComentario()" [disabled]="!comentarioHasChanged" style="margin-left: auto; display: flex;">
+                                    Actualizar comentario
+                                </button>
+                            </mat-tab>
                             <mat-tab label="Cancelar">Cancelar</mat-tab>
                         </mat-tab-group>
                     </div>
@@ -616,9 +689,8 @@
                             <textarea matInput formControlName="comentarios" rows="5"></textarea>
                         </mat-form-field>    
                     </div>
-                    <div>
-                    </div>
-                    <div class="form-row two-col" style="width: 300px; grid-column-gap: 8px; grid-row-gap: 10px;">
+
+                    <div class="form-row two-col" style="width: 300px; grid-column-gap: 8px; grid-row-gap: 10px; margin-left: auto;">
                         <span class="resumen-label">Subtotal</span>
                         <div class="resumen-value">{{ formatearComoMoneda(subTotal) }}</div>
     

@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { VentaArticuloModel, VentaModel } from '../models/ventas.model';
+import { VentaArticuloModel, VentaModel, VentaDocumentoModel } from '../models/ventas.model';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +53,31 @@ export class VentaService {
     return this.http.get(`${environment.apiUrl}/api/facturacion/descargar/${format}/${facturaId}`, {
       responseType: 'blob' // Especifica que esperas un archivo binario como respuesta
     });
+  }
+
+  updateComentario(ventaId: number, comentarios: string): Observable<any> {
+    return this.http.post<void>(`${environment.apiUrl}/api/ventas/updateComentario/${ventaId}`, { comentarios }, this.getHeaders());
+  }
+
+  getDocumentos(ventaId: number): Observable<Array<VentaDocumentoModel>> {
+    return this.http.get<Array<VentaDocumentoModel>>(
+      `${environment.apiUrl}/api/ventas/getFiles/${ventaId}`
+    );
+  }
+
+  uploadFile(ventaId: number, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('documento', file);
+    return this.http.post<void>(`${environment.apiUrl}/api/ventas/uploadFile/${ventaId}`, formData);
+  }
+
+  descargarDocumento(documentoId: number): Observable<Blob> {
+    const url = `${environment.apiUrl}/api/ventas/downloadFile/${documentoId}`;
+    return this.http.get(url, { responseType: 'blob' });
+  }
+
+  eliminarDocumento(documentoId: number): Observable<any> {
+    return this.http.delete(`${environment.apiUrl}/api/ventas/deleteFile/${documentoId}`);
   }
 
   private getHeaders() {

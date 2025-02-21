@@ -85,3 +85,11 @@ export class FacturaStatus{
   updated_at: Date | undefined;
 }
 
+export class VentaDocumentoModel{
+  id: number | undefined;
+  venta_id: number | undefined;
+  nombre: string | undefined;
+  tipo: string | undefined;
+  created_at: Date | undefined;
+
+}

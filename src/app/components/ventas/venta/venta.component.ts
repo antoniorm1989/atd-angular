@@ -10,7 +10,7 @@ import { MessageComponent } from 'src/app/components/genericos/snack-message.com
 import { CatalogoClienteModel } from 'src/app/models/catalogo-cliente.model';
 import { CatalogoFormaPagoModel, CatalogoObjetoImpuestoModel, CatalogoRegimenFiscalModel, CatalogoUsoCfdiModel } from 'src/app/models/catalogos.model';
 import { User } from 'src/app/models/user';
-import { VentaArticuloModel, VentaModel } from 'src/app/models/ventas.model';
+import { VentaArticuloModel, VentaModel, VentaDocumentoModel } from 'src/app/models/ventas.model';
 import { CatalogoClientesService } from 'src/app/services/catalogo-cliente.service';
 import { CatalogosService } from 'src/app/services/catalogos.service';
 import { UserService } from 'src/app/services/user.service';
@@ -62,6 +62,11 @@ export class VentaComponent {
   dataSourceArticulos = new MatTableDataSource<VentaArticuloModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+  hasRecordsDocumentos = false;
+  displayedColumnsDocumentos: string[] = ['nombre', 'fecha_creacion', 'acciones'];
+  dataSourceDocumentos = new MatTableDataSource<any>([]);
+  @ViewChild(MatPaginator) paginatorDocumentos!: MatPaginator;
+
   subTotal: number = 0;
   descuento: number = 0;
   iva: number = 0;
@@ -72,6 +77,10 @@ export class VentaComponent {
 
 
   factura: any;
+
+  comentario: string = "";
+  originalComentario: string = "";
+  comentarioHasChanged: boolean = false;
 
   constructor(public route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -120,6 +129,9 @@ export class VentaComponent {
                 var venta = data;
                 this.editData = venta;
 
+                this.comentario = venta.comentarios || "";
+                this.originalComentario = this.comentario;
+
                 this.form.patchValue({
                   // Datos generales
                   fecha_compra_cliente: venta.fecha_compra_cliente,
@@ -149,6 +161,8 @@ export class VentaComponent {
                 this.calcularTotales();
 
                 this.loadSelectData();
+
+                this.obtenerDocumentos();
 
                 this.route.queryParams.subscribe(params => {
                   switch (params['action']) {
@@ -244,6 +258,35 @@ export class VentaComponent {
     this.previewFactura(venta);
   }
 
+  checkChanges() {
+    this.comentarioHasChanged = this.comentario !== this.originalComentario;
+  }
+
+  onUpdateComentario() {
+    this.ventaService.updateComentario(this.id, this.comentario).subscribe({
+      next: () => {
+        this.openSnackBarError('Comentario actualizado correctamente.');
+        this.originalComentario = this.comentario; // Guarda el nuevo valor como base
+        this.comentarioHasChanged = false;
+      },
+      error: (e) => {
+        this.openSnackBarError('Hubo un error al actualizar el comentario.');
+      }
+    });
+  }
+
+  subirDocumento(event: any) {
+    const file = event.target.files[0];
+    debugger;
+    if (file) {
+      this.ventaService.uploadFile(this.id, file).subscribe({
+        next: () => {
+          this.openSnackBarError('Archivo subido correctamente.');
+        }
+      });
+    }
+  }
+
   openDialogSuccess(comment: string): void {
     const dialogRef = this.dialog.open(DialogSuccessComponent, {
       width: '710px',
@@ -272,17 +315,17 @@ export class VentaComponent {
 
   formatDate(dateInput: string | Date | undefined): string {
     if (!dateInput) return "N/A"; // Handle undefined or empty values
-  
+
     const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
-  
+
     if (isNaN(date.getTime())) return "Invalid Date"; // Handle invalid date cases
-  
+
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear().toString();
-  
+
     return `${month}/${day}/${year}`;
-  }  
+  }
 
   makeEditMode() {
     this.action = 'edit';
@@ -766,6 +809,65 @@ export class VentaComponent {
       .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(' ');
   }
+
+  descargarDocumento(documento: VentaDocumentoModel) {
+    if (documento.id) {
+      this.ventaService.descargarDocumento(documento.id).subscribe({
+        next: (data) => {
+          const blob = new Blob([data], { type: documento.tipo });
+          const url = window.URL.createObjectURL(blob);
+
+          // Crear enlace de descarga
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = documento.nombre || `documento_${documento.id}`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          // Liberar URL
+          window.URL.revokeObjectURL(url);
+        },
+        error: (e) => {
+          console.error('Error al descargar el documento:', e);
+        }
+      });
+    }
+    else {
+      this.openSnackBarError('No se ha generado el documento aún.');
+    }
+  }
+
+  eliminarDocumento(documento: VentaDocumentoModel) {
+    if (documento.id) {
+      this.ventaService.eliminarDocumento(documento.id).subscribe({
+        next: () => {
+          this.dataSourceDocumentos.data = this.dataSourceDocumentos.data.filter(x => x.id !== documento.id);
+          this.dataSourceDocumentos._updateChangeSubscription();
+          this.hasRecordsDocumentos = this.dataSourceDocumentos.data.length > 0;
+        },
+        error: (e) => {
+          console.error('Error al eliminar el documento:', e);
+        }
+      });
+    } else {
+      this.openSnackBarError('No se ha generado el documento aún.');
+    }
+  }
+
+  obtenerDocumentos() {
+    this.ventaService.getDocumentos(this.id).subscribe({
+      next: (data) => {
+        this.dataSourceDocumentos.data = data;
+        this.dataSourceDocumentos._updateChangeSubscription();
+        this.hasRecordsDocumentos = this.dataSourceDocumentos.data.length > 0;
+      },
+      error: (e) => {
+        console.error('Error al obtener los documentos:', e);
+      }
+    });
+  }
+
 }
 
 @Component({

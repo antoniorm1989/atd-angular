@@ -339,25 +339,31 @@ mat-panel-description {
     width: 9px;
     margin-bottom: 3px;
 }
-.venta .estatus-icon.despachada,
-.venta .estatus-icon.pagada{
-    background-color: #5BD26E;
-}
-.venta .estatus-icon.parcialmente-despachada{
-    background-color: #BA9400;
-}
-.venta .estatus-icon.pre-cancelada{
-    background-color: #FF8B38;
-}
-.venta .estatus-icon.cancelada{
-    background-color: #FF0000;
-}
-.venta .estatus-icon.por-pagar{
-    background-color: #71B7F8;
-}
-.venta .estatus-icon.no-facturada{
+/*estilos de estatus factura*/
+.venta .estatus-icon.f-por-facturar{
     background-color: gray;
 }
+.venta .estatus-icon.f-cancelada{
+    background-color: #FF0000;
+}
+.venta .estatus-icon.f-pre-cancelada{
+    background-color: #FF8B38;
+}
+.venta .estatus-icon.f-facturada{
+    background-color: #5BD26E;
+}
+
+/*estilos de estatus venta*/
+.venta .estatus-icon.v-parcialmente{
+    background-color: #BA9400;
+}
+.venta .estatus-icon.v-cancelada{
+    background-color: #FF0000;
+}
+.venta .estatus-icon.v-despachada{
+    background-color: #5BD26E;
+}
+
 
 .venta .numero-parte-container{
     background-color: #fff6d1;

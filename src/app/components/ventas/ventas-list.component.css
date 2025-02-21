@@ -190,22 +190,29 @@
     width: 9px;
     margin-bottom: 3px;
 }
-.ventas-list .container-list .table .estatus-icon.despachada,
-.ventas-list .container-list .table .estatus-icon.pagada{
-    background-color: #5BD26E;
+
+
+/*estilos de estatus factura*/
+.ventas-list .estatus-icon.f-por-facturar{
+    background-color: gray;
 }
-.ventas-list .container-list .table .estatus-icon.parcialmente-despachada{
-    background-color: #BA9400;
-}
-.ventas-list .container-list .table .estatus-icon.pre-cancelada{
-    background-color: #FF8B38;
-}
-.ventas-list .container-list .table .estatus-icon.cancelada{
+.ventas-list .estatus-icon.f-cancelada{
     background-color: #FF0000;
 }
-.ventas-list .container-list .table .estatus-icon.por-pagar{
-    background-color: #71B7F8;
+.ventas-list .estatus-icon.f-pre-cancelada{
+    background-color: #FF8B38;
 }
-.ventas-list .container-list .table .estatus-icon.no-facturada{
-    background-color: gray;
+.ventas-list .estatus-icon.f-facturada{
+    background-color: #5BD26E;
+}
+
+/*estilos de estatus venta*/
+.ventas-list .estatus-icon.v-parcialmente{
+    background-color: #BA9400;
+}
+.ventas-list .estatus-icon.v-cancelada{
+    background-color: #FF0000;
+}
+.ventas-list .estatus-icon.v-despachada{
+    background-color: #5BD26E;
 }
