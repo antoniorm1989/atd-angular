@@ -3,8 +3,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { float } from '@zxing/library/esm/customTypings';
 import { FacturaModel, ReceptorModel } from 'src/app/models/factura.model';
-import { VentaArticuloModel, VentaModel } from 'src/app/models/ventas.model';
+import { VentaModel } from 'src/app/models/ventas.model';
 import { VentaService } from 'src/app/services/ventas.service';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -19,7 +20,6 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
   @Output() timbrar = new EventEmitter();
   @Input() venta: VentaModel | undefined;
   factura: FacturaModel | undefined;
-
 
   displayedColumns: string[] = ['unidad', 'producto_servicio', 'cantidad', 'descripcion', 'p_unitario', 'importe'];
   dataSourceArticulos = new MatTableDataSource<any>([]);
@@ -205,5 +205,25 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     }).format(valor);
+  }
+
+  getEnvEmisorNombre(): string {
+    return environment.emisorFactura.emisor;
+  }
+
+  getEnvEmisorRfc(): string {
+    return environment.emisorFactura.rfc;
+  }
+
+  getEnvEmisorDomicilioFiscal(): string {
+    return environment.emisorFactura.domicilioFiscal;
+  }
+
+  getEnvEmisorLugarDeExpedicion(): string {
+    return environment.emisorFactura.lugarDeExpidicion;
+  }
+
+  getEnvEmisorRegimenFiscal(): string {
+    return environment.emisorFactura.regimenFiscal;
   }
 }

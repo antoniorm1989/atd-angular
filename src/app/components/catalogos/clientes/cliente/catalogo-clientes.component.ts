@@ -12,6 +12,7 @@ import { User } from 'src/app/models/user';
 import { CatalogoClientesService } from 'src/app/services/catalogo-cliente.service';
 import { CatalogosService } from 'src/app/services/catalogos.service';
 import { environment } from 'src/environments/environment';
+import { LoadingService } from 'src/app/components/genericos/loading/loading.service';
 
 @Component({
   selector: 'app-catalogo-clientes',
@@ -53,7 +54,7 @@ export class CatalogoClientesComponent {
   dataSourceArticulos = new MatTableDataSource<ClienteArticuloModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogosService: CatalogosService, private router: Router, private _snackBar: MatSnackBar, private catalogoClientesService: CatalogoClientesService, private dialog: MatDialog) {
+  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogosService: CatalogosService, private router: Router, private _snackBar: MatSnackBar, private catalogoClientesService: CatalogoClientesService, private dialog: MatDialog, private loadingService: LoadingService) {
 
     this.form = this.formBuilder.group({
       cliente: ['', [Validators.required]],
@@ -345,13 +346,16 @@ export class CatalogoClientesComponent {
 
     cliente.articulos = this.dataSourceArticulos.data;
 
+    this.loadingService.show();
     if (this.action == 'new') {
       this.catalogoClientesService.create(cliente).subscribe({
         next: (data) => {
+          this.loadingService.hide();
           this.openMessageSnack();
           this.router.navigate(['venta/catalogos/clientes']);
         },
         error: (e) => {
+          this.loadingService.hide();
           if (e.error.error == 'Ya existe un cliente registrado con el mismo RFC')
             this.isRfcDuplicate = true;
 
@@ -361,10 +365,12 @@ export class CatalogoClientesComponent {
     } else {
       this.catalogoClientesService.update(cliente).subscribe({
         next: (data) => {
+          this.loadingService.hide();
           this.openMessageSnack();
           this.router.navigate(['venta/catalogos/clientes']);
         },
         error: (e) => {
+          this.loadingService.hide();
           if (e.error.error == 'Ya existe un cliente registrado con el mismo RFC')
             this.isRfcDuplicate = true;
 

@@ -13,16 +13,16 @@
                         <div class="etiquieta" style="text-align: end;">Tipo de Comprobante</div>
                         <div class="texto">I - Ingreso</div>
                         <div class="etiquieta" style="text-align: end;">Folio Físcal</div>
-                        <div class="texto">bb501c95-ceded-rfrf-xwxcfrbfgb</div>
+                        <div class="texto">por generar...</div>
                         <div class="etiquieta" style="text-align: end;">Fecha de expedición</div>
-                        <div class="texto">1 ingreso</div>
+                        <div class="texto">.....</div>
                         <div style="display: grid; grid-template-columns: 170px 1fr; column-gap: 8px;">
                             <div class="etiquieta" style="text-align: end;">Lugar de expedición</div>
                             <div class="texto">45079</div>
                         </div>
                         <div style="display: grid; grid-template-columns: 100px 1fr; column-gap: 8px;">
                             <div class="etiquieta" style="text-align: end;">Exportación</div>
-                            <div class="texto">No aplica</div>
+                            <div class="texto">por generar..</div>
                         </div>
                     </div>
                 </div>
@@ -32,19 +32,23 @@
             <div style="height: 24px;"></div>
             <div class="title">Datos emisor</div>
             <div style="height: 8px;"></div>
-            <div style="margin-left: 12px; font-weight: bold;" class="texto">ATD TOOLS</div>
+            <div style="margin-left: 12px; font-weight: bold;" class="texto">{{getEnvEmisorNombre()}}</div>
 
             <div style="height: 8px;"></div>
             <div style="margin-left: 12px;" class="etiquieta">RFC</div>
-            <div style="margin-left: 12px;" class="texto">ATO2202016X3</div>
+            <div style="margin-left: 12px;" class="texto">{{getEnvEmisorRfc()}}</div>
 
             <div style="height: 8px;"></div>
             <div style="margin-left: 12px;" class="etiquieta">DOMICILIO FISCAL</div>
-            <div style="margin-left: 12px;" class="texto">BRASIL 2378 Col. ALIANZA PARA LA PRODUCCIÓN, C.P. 21229, Mexicali, Baja California, México</div>
+            <div style="margin-left: 12px;" class="texto">{{getEnvEmisorDomicilioFiscal()}}</div>
+
+            <div style="height: 8px;"></div>
+            <div style="margin-left: 12px;" class="etiquieta">LUGAR DE EXPEDICIÓN</div>
+            <div style="margin-left: 12px;" class="texto">{{getEnvEmisorLugarDeExpedicion()}}</div>
 
             <div style="height: 8px;"></div>
             <div style="margin-left: 12px;" class="etiquieta">RÉGIME FISCAL</div>
-            <div style="margin-left: 12px;" class="texto">General de Ley Personas Morales</div>
+            <div style="margin-left: 12px;" class="texto">{{getEnvEmisorRegimenFiscal()}}</div>
 
 
             <!--RECEPTOR-->

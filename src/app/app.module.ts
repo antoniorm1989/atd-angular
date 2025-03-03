@@ -71,6 +71,9 @@ import { ArticuloOrdenCompraModalComponent, OrdenCompraComponent } from './compo
 import { OrdenCompraArticuloComponent } from './components/ordenes-compra/orden-compra/articulo/orden-compra-articulo.component';
 import { PreviewFacturaComponent } from './components/ventas/venta/preview-factura/preview-factura.component';
 import { CancelarFacturaComponent } from './components/ventas/venta/cancelar-factura/cancelar-factura.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { LoadingOverlayComponent } from './components/genericos/loading/loading-overlay.component';
+
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -121,7 +124,8 @@ export function tokenGetter() {
     PreviewFacturaModalComponent,
     PreviewFacturaComponent,
     CancelarFacturaComponent,
-    CancelarFacturaModalComponent
+    CancelarFacturaModalComponent,
+    LoadingOverlayComponent
   ],
   imports: [
     BrowserModule,
@@ -161,7 +165,8 @@ export function tokenGetter() {
     MatDatepickerModule,
     MatRadioModule,
     MatNativeDateModule,
-    MatMenuModule
+    MatMenuModule,
+    MatProgressSpinnerModule
   ],
   providers:[
     { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }

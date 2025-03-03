@@ -18,6 +18,7 @@ import { VentaService } from 'src/app/services/ventas.service';
 import { environment } from 'src/environments/environment';
 import { DialogSuccessComponent } from '../../genericos/dialogSuccess.component';
 import { DialogErrorComponent } from '../../genericos/dialogError.component';
+import { LoadingService } from 'src/app/components/genericos/loading/loading.service';
 
 @Component({
   selector: 'app-venta',
@@ -90,7 +91,8 @@ export class VentaComponent {
     private userService: UserService,
     private _snackBar: MatSnackBar,
     private catalogosService: CatalogosService,
-    private dialog: MatDialog) {
+    private dialog: MatDialog,
+    private loadingService: LoadingService) {
 
     this.form = this.formBuilder.group({
       // Datos generales
@@ -724,12 +726,15 @@ export class VentaComponent {
 
     dialogRef.afterClosed().subscribe(facturar => {
       if (facturar) {
+        this.loadingService.show();
         this.ventaService.create(venta).subscribe({
           next: (data) => {
+            this.loadingService.hide();
             this.openDialogSuccess(`Se ha creado con éxito la venta #${data.id},  podrás visualizarlo desde tu listado ventas.`)
             this.router.navigate(['ventas']);
           },
           error: (e) => {
+            this.loadingService.hide();
             this.openDialogError(`Hubo un error al crear la factura: ${e.error.detalles}`)
             this.router.navigate(['ventas']);
             console.log(e);
