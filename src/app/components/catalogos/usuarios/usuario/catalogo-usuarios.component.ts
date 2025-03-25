@@ -45,7 +45,7 @@ export class CatalogoUsuariosComponent {
 
                 this.form.patchValue({
                   name: data.name,
-                  lastname: data.lastname,
+                  last_name: data.last_name,
                   email: data.email,
                   celular: data.celular,
                   isAdmin: data.isAdmin,
@@ -112,7 +112,7 @@ export class CatalogoUsuariosComponent {
 
           this.form = this.formBuilder.group({
             name: ['', [Validators.required]],
-            lastname: ['', [Validators.required]],
+            last_name: ['', [Validators.required]],
             password: this.isEditMode ? [''] : ['', [Validators.required]],
             email: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}')]],
             isAdmin: [false, [Validators.required]],
@@ -145,7 +145,7 @@ export class CatalogoUsuariosComponent {
     let usuario = new User();
     usuario.id = this.id;
     usuario.name = this.f['name'].value;
-    usuario.lastname = this.f['lastname'].value;
+    usuario.last_name = this.f['last_name'].value;
     usuario.email = this.f['email'].value;
     usuario.celular = this.f['celular'].value;
     usuario.isAdmin = this.f['isAdmin'].value;

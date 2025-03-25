@@ -83,8 +83,8 @@ export class HistorialAlmacenComponent {
     return this.getStock() < (this.inventoryAlmacenModel?.minimum_stock || 0);
   }
 
-  getUserName(name: string, lastname: string): string {
-    return name[0].toUpperCase() + lastname[0].toUpperCase();
+  getUserName(name: string, last_name: string): string {
+    return name[0].toUpperCase() + last_name[0].toUpperCase();
   }
 
   formatDate(stringDate: string): string {

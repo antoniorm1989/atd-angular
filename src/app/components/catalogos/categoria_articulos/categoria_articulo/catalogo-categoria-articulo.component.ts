@@ -89,7 +89,7 @@ export class CatalogoCategoriaArticuloComponent {
     if (this.form!.invalid)
       return;
 
-    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","lastname":""}');
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
     let user = new User();
     user.id = userData.id;
 

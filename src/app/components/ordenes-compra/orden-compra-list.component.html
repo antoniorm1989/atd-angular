@@ -124,7 +124,7 @@
                     <td mat-cell *matCellDef="let element">
                         <div *ngIf="element.responsable.id" class="user-wrapper">
                             <div class="circle-initials" mat-mini-fab color="primary" *ngIf="element.responsable.photo == null">
-                                {{getUserName(element.responsable.name, element.responsable.lastname)}}
+                                {{getUserName(element.responsable.name, element.responsable.last_name)}}
                             </div>
                             <div *ngIf="element.responsable.photo != null" class="container-photo-user">
                                 <img class="photo" [src]="getUrlPhoto(element.responsable.photo)">

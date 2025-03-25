@@ -58,9 +58,9 @@ export class InventorySucursalListComponent {
     });
   }
 
-  getUserName(name: string, lastname: string): string {
-    if (name && lastname)
-      return name[0].toUpperCase() + lastname[0].toUpperCase();
+  getUserName(name: string, last_name: string): string {
+    if (name && last_name)
+      return name[0].toUpperCase() + last_name[0].toUpperCase();
     else return '';
   }
 

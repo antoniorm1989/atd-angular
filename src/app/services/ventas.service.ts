@@ -80,6 +80,22 @@ export class VentaService {
     return this.http.delete(`${environment.apiUrl}/api/ventas/deleteFile/${documentoId}`);
   }
 
+  cancelarVenta(ventaId: number, fechaCancelacion: Date, motivoCancelacion: string, folioSustituto: string, facturaId: String): Observable<any> {
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
+
+    return this.http.post<void>(`${environment.apiUrl}/api/ventas/cancelarVenta/${ventaId}`, { 
+      fechaCancelacion, 
+      motivoCancelacion, 
+      folioSustituto,
+      userId: userData.id,
+      facturaId
+    }, this.getHeaders());
+  }
+
+  obtenerFacturasEstatus(id: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/ventas/getFacturasEstatus/${id}`);
+  }
+
   private getHeaders() {
     return {
       headers: {

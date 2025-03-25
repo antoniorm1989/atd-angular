@@ -27,7 +27,7 @@ export class AppComponent implements OnDestroy {
           href: 'almacenes/catalogos'
         },
         {
-          text: 'Invenarios',
+          text: 'Inventarios',
           icon: 'fa-brands fa-dropbox',
           href: 'inventario-almacen',
         }
@@ -103,9 +103,9 @@ export class AppComponent implements OnDestroy {
 
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
-        let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","lastname":""}');
-        if (userData.name != '' && userData.lastname)
-          this.userInitials = userData.name[0].toUpperCase() + userData.lastname[0].toUpperCase();
+        let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
+        if (userData.name != '' && userData.last_name)
+          this.userInitials = userData.name[0].toUpperCase() + userData.last_name[0].toUpperCase();
       }
     });
   }
@@ -148,8 +148,8 @@ export class AppComponent implements OnDestroy {
   }
 
   get userName(): string {
-    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","lastname":""}');
-    return `${userData.name} ${userData.lastname}`;
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
+    return `${userData.name} ${userData.last_name}`;
   }
 
   logout() {

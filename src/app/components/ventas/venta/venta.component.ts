@@ -8,9 +8,9 @@ import { ActivatedRoute, Router, NavigationEnd, Event } from '@angular/router';
 import { Observable, map, startWith } from 'rxjs';
 import { MessageComponent } from 'src/app/components/genericos/snack-message.component';
 import { CatalogoClienteModel } from 'src/app/models/catalogo-cliente.model';
-import { CatalogoFormaPagoModel, CatalogoObjetoImpuestoModel, CatalogoRegimenFiscalModel, CatalogoUsoCfdiModel } from 'src/app/models/catalogos.model';
+import { CatalogoFormaPagoModel, CatalogoObjetoImpuestoModel, CatalogoRegimenFiscalModel, CatalogoUsoCfdiModel, CatalogoMotivoCancelacionModel } from 'src/app/models/catalogos.model';
 import { User } from 'src/app/models/user';
-import { VentaArticuloModel, VentaModel, VentaDocumentoModel } from 'src/app/models/ventas.model';
+import { VentaArticuloModel, VentaModel, VentaDocumentoModel, FacturaStatus } from 'src/app/models/ventas.model';
 import { CatalogoClientesService } from 'src/app/services/catalogo-cliente.service';
 import { CatalogosService } from 'src/app/services/catalogos.service';
 import { UserService } from 'src/app/services/user.service';
@@ -18,6 +18,7 @@ import { VentaService } from 'src/app/services/ventas.service';
 import { environment } from 'src/environments/environment';
 import { DialogSuccessComponent } from '../../genericos/dialogSuccess.component';
 import { DialogErrorComponent } from '../../genericos/dialogError.component';
+import { DialogWarningComponent } from '../../genericos/dialogWarning.component';
 import { LoadingService } from 'src/app/components/genericos/loading/loading.service';
 
 @Component({
@@ -31,7 +32,10 @@ export class VentaComponent {
   action: string = 'view';
   title: string = '';
   form: FormGroup;
+  formCancelacion: FormGroup;
+
   submitted = false;
+  submittedCancelacion = false;
   id = 0;
 
   clientes: CatalogoClienteModel[] = [];
@@ -43,6 +47,22 @@ export class VentaComponent {
 
   usoCfdiList: CatalogoUsoCfdiModel[] = [];
   selectedUsoCfdi!: CatalogoUsoCfdiModel;
+
+  motivoCancelacionList: CatalogoMotivoCancelacionModel [] = [{
+    clave: '01',
+    motivo: 'Comprobante emitido con errores con relación'
+  },{
+    clave: '02',
+    motivo: 'Comprobante emitido con errores sin relación'
+  },{
+    clave: '03',
+    motivo: 'No se llevó; a cabo la operación'
+  },{
+    clave: '04',
+    motivo: 'Operación nominativa relacionada en la factura global'
+  }];
+  selectedMotivoCancelacion!: CatalogoMotivoCancelacionModel;
+
 
   regimenesFiscales: CatalogoRegimenFiscalModel[] = [];
   selectedRegimenFiscal!: CatalogoRegimenFiscalModel;
@@ -60,6 +80,7 @@ export class VentaComponent {
 
   hasRecords = false;
   displayedColumns: string[] = ['numero_parte', 'descripcion', 'total', 'backorder', 'almacen', 'precio_unitario', 'descuento', 'importe', 'unidad_medida', 'importe_iva', 'importe_retencion', 'actions'];
+  displayedColumnsCancelacion: string[] = ['numero_parte', 'descripcion', 'total', 'backorder', 'almacen'];
   dataSourceArticulos = new MatTableDataSource<VentaArticuloModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -82,6 +103,8 @@ export class VentaComponent {
   comentario: string = "";
   originalComentario: string = "";
   comentarioHasChanged: boolean = false;
+
+  facturaEstatusList: FacturaStatus[] | undefined;
 
   constructor(public route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -117,6 +140,23 @@ export class VentaComponent {
       translada_iva_porcentaje: "0",
       retiene_iva: false,
       retiene_iva_porcentaje: "0",
+    });
+
+    this.formCancelacion = this.formBuilder.group({
+      fecha_cancelacion: [null, Validators.required],
+      motivo_cancelacion: [null, Validators.required],
+      folioSustituto: ['']
+    });
+
+    this.formCancelacion.get('motivo_cancelacion')?.valueChanges.subscribe(value => {
+      const facturaControl = this.formCancelacion.get('folioSustituto');
+
+      if (value === '01') {
+        facturaControl?.setValidators(Validators.required);
+      } else {
+        facturaControl?.clearValidators();
+      }
+      facturaControl?.updateValueAndValidity();
     });
 
     this.router.events.subscribe((event: Event) => {
@@ -166,6 +206,8 @@ export class VentaComponent {
 
                 this.obtenerDocumentos();
 
+                this.obtenerFacturasEstatus();
+
                 this.route.queryParams.subscribe(params => {
                   switch (params['action']) {
                     case undefined:
@@ -208,6 +250,8 @@ export class VentaComponent {
 
   get f() { return this.form!.controls; }
 
+  get fCancelacion() { return this.formCancelacion!.controls; }
+
   get isReadOnly() {
     return this.action == 'view';
   }
@@ -224,7 +268,7 @@ export class VentaComponent {
     if (this.form!.invalid)
       return;
 
-    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","lastname":""}');
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
     let user = new User();
     user.id = userData.id;
 
@@ -236,7 +280,7 @@ export class VentaComponent {
     if (venta.cliente) {
       venta.cliente.regimen_fiscal = this.f['regimen_fiscal'].value;
     }
-    venta.vendedor = this.vendedores.find(x => (x.name + ' ' + x.lastname) == this.f['vendedor'].value);
+    venta.vendedor = this.vendedores.find(x => (x.name + ' ' + x.last_name) == this.f['vendedor'].value);
     venta.uso_cfdi = this.f['usoCfdi'].value;
     venta.comentarios = this.f['comentarios'].value;
     venta.responsable = user;
@@ -268,7 +312,7 @@ export class VentaComponent {
     this.ventaService.updateComentario(this.id, this.comentario).subscribe({
       next: () => {
         this.openSnackBarError('Comentario actualizado correctamente.');
-        this.originalComentario = this.comentario; // Guarda el nuevo valor como base
+        this.originalComentario = this.comentario;
         this.comentarioHasChanged = false;
       },
       error: (e) => {
@@ -279,7 +323,6 @@ export class VentaComponent {
 
   subirDocumento(event: any) {
     const file = event.target.files[0];
-    debugger;
     if (file) {
       this.ventaService.uploadFile(this.id, file).subscribe({
         next: () => {
@@ -311,6 +354,39 @@ export class VentaComponent {
     });
   }
 
+  onSubmitCancelacion() {
+    this.submittedCancelacion = true;
+
+    if (this.formCancelacion!.invalid)
+      return;
+
+    this.openDialogWarning(`Cuando se cancela una factura, todos los artículos que ya se habían marcado como salida volverán a entrar y estarán disponibles en stock. Esta acción no podrá ser reversible.`)
+  }
+
+  openDialogWarning(comment: string): void {
+    const dialogRef = this.dialog.open(DialogWarningComponent, {
+      width: '710px',
+      data: { title: '¡ Espera !', content: comment }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result == 'ok'){
+        this.loadingService.show();
+        this.ventaService.cancelarVenta(this.id, this.fCancelacion['fecha_cancelacion'].value, this.fCancelacion['motivo_cancelacion'].value, this.fCancelacion['folioSustituto'].value, this.editData?.factura_cfdi_uid || "").subscribe({
+          next: () => {
+            this.loadingService.hide();
+            this.openSnackBarError('Venta cancelada correctamente.');
+            this.router.navigate(['ventas']);
+          },
+          error: (e) => {
+            this.loadingService.hide();
+            this.openDialogError(`Hubo un error al crear la factura: ${e.error.detalles}`)
+          }
+        });
+      }
+    });
+  }
+
   navigate(route: string) {
     this.router.navigate([route]);
   }
@@ -327,6 +403,27 @@ export class VentaComponent {
     const year = date.getFullYear().toString();
 
     return `${month}/${day}/${year}`;
+  }
+
+  formatTime(dateInput: string | Date | undefined): string {
+    if (!dateInput) return "N/A"; // Handle undefined or empty values
+  
+    const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
+  
+    if (isNaN(date.getTime())) return "Invalid Time"; // Handle invalid date cases
+  
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+  
+    return `${hours}:${minutes}`; // e.g., 12:44
+  }
+
+  getUrlPhoto(photo: string): string {
+    return `${environment.apiUrl}/images/users/${photo}`;
+  }
+
+  getUserName(name: string, last_name: string): string {
+    return name[0].toUpperCase() + last_name[0].toUpperCase();
   }
 
   makeEditMode() {
@@ -388,7 +485,7 @@ export class VentaComponent {
             map(value => this._filterVendedores(value || '')),
           );
           if (this.editData != undefined)
-            this.form.patchValue({ vendedor: this.vendedores.find(x => x.id == this.editData?.vendedor?.id)?.name + ' ' + this.vendedores.find(x => x.id == this.editData?.vendedor?.id)?.lastname });
+            this.form.patchValue({ vendedor: this.vendedores.find(x => x.id == this.editData?.vendedor?.id)?.name + ' ' + this.vendedores.find(x => x.id == this.editData?.vendedor?.id)?.last_name });
         }
       },
       error: (e) => {
@@ -744,21 +841,6 @@ export class VentaComponent {
     });
   }
 
-  cancelarFactura() {
-    const dialogRef = this.dialog.open(CancelarFacturaModalComponent, {
-      height: '500px',
-      width: '800px',
-      data: {
-        ventaId: this.id,
-        venta: this.editData
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(ventaArticuloModel => {
-
-    });
-  }
-
   descargarFacturaPDF() {
     if (this.editData?.factura_cfdi_uid == undefined || this.editData?.factura_cfdi_uid == "") {
       this.openSnackBarError('No se ha generado la factura aún.');
@@ -873,6 +955,32 @@ export class VentaComponent {
     });
   }
 
+  obtenerFacturasEstatus() {
+    this.ventaService.obtenerFacturasEstatus(this.id).subscribe({
+      next: (data) => {
+        this.facturaEstatusList = data;
+      },
+      error: (e) => {
+        console.error('Error al obtener los estatus de las facturas:', e);
+      }
+    });
+  }
+
+  isFacturada(): boolean {
+    if(this.editData && this.editData.factura_estatus && (this.editData.factura_estatus.estatus === 'Facturada'))
+      return true;
+    return false;
+  }
+
+  isCancelada(): boolean {
+    if(this.editData && this.editData.factura_estatus && (this.editData.factura_estatus.estatus === 'Cancelada' || this.editData.factura_estatus.estatus === 'Pre-Cancelada'))
+      return true;
+    return false;
+  }
+
+  formatNumber(input: number): string {
+    return input.toString().padStart(4, '0');
+  }
 }
 
 @Component({
@@ -975,55 +1083,3 @@ export class PreviewFacturaModalComponent {
     }
   }
 }
-
-
-@Component({
-  selector: 'dialog-component-cancelar-factura',
-  template: `<span mat-dialog-title>Cancelar Factura</span>
-            <mat-dialog-content class="mat-typography">
-              <app-cancelar-factura [ventaId]="ventaId" (regresar)="onRegresar()" (cancelar)="onCancelar()" #appCancelarFacturaComponent [venta]="venta"></app-cancelar-factura>
-            </mat-dialog-content>`,
-  styles: [
-  ]
-})
-export class CancelarFacturaModalComponent {
-  @ViewChild('appCancelarFacturaComponent') appCancelarFacturaComponent: any;
-  ventaId!: number;
-  venta!: VentaModel;
-
-  constructor(
-    public dialogRef: MatDialogRef<PreviewFacturaModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
-    dialogRef.disableClose = true;
-
-    if (Object.keys(data).length > 0) {
-      if (data.ventaId != undefined) {
-        this.ventaId = data.ventaId;
-      }
-      if (data.venta != undefined) {
-        this.venta = data.venta;
-      }
-    }
-
-  }
-
-  onRegresar() {
-    try {
-      this.dialogRef.close();
-    } catch (error) {
-      console.error('An error occurred in regesar:', error);
-    }
-  }
-
-  onCancelar() {
-    try {
-      this.dialogRef.close();
-    } catch (error) {
-      console.error('An error occurred in cancelar factura:', error);
-    }
-  }
-}
-
-
-

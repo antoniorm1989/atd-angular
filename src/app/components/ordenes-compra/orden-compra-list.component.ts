@@ -58,8 +58,8 @@ export class OrdenesCompraListComponent {
     return `${month}/${day}/${year}`;
   }
 
-  getUserName(name: string, lastname: string): string {
-    return name[0].toUpperCase() + lastname[0].toUpperCase();
+  getUserName(name: string, last_name: string): string {
+    return name[0].toUpperCase() + last_name[0].toUpperCase();
   }
 
   onNew() {

@@ -52,7 +52,7 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
               producto_servicio: a.producto_servicio?.name,
               cantidad: a.cantidad,
               descripcion: a.almacen?.articulo?.description,
-              p_unitario: `$${(a.precio_venta ?? 0).toFixed(2)}`,
+              p_unitario: `$${(a.precio_venta ?? 0)}`,
               p_unitario_number: a.precio_venta,
               importe: `$${((a.cantidad ?? 0) * (a.precio_venta ?? 0)).toFixed(2)}`,
             }

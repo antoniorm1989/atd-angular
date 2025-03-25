@@ -38,7 +38,7 @@
 
 .catalogo-usuarios .toolbar .title {
     font-size: 36px;
-    font-weight: 700;
+    font-weight: 500;
     line-height: 54px;
     letter-spacing: 0.01em;
     margin-left: 12px;
@@ -88,7 +88,7 @@
 
 .catalogo-usuarios .container .form-container .title {
     font-size: 24px;
-    font-weight: 700;
+    font-weight: 500;
     line-height: 36px;
     letter-spacing: 0em;
 }
@@ -130,7 +130,7 @@
 
 mat-panel-title {
     font-size: 24px;
-    font-weight: 700;
+    font-weight: 500;
     line-height: 36px;
     letter-spacing: 0em;
 }

@@ -85,7 +85,7 @@
                         <span *ngIf="element.inventory_transaction[0].id == null">Sin transacciones</span>
                         <div *ngIf="element.inventory_transaction[0].id != null" class="user-wrapper">
                             <div class="circle-initials" mat-mini-fab color="primary" *ngIf="element.inventory_transaction[0].user.photo == null">
-                                {{getUserName(element.inventory_transaction[0].user.name, element.inventory_transaction[0].user.lastname)}}
+                                {{getUserName(element.inventory_transaction[0].user.name, element.inventory_transaction[0].user.last_name)}}
                             </div>
                             <div *ngIf="element.inventory_transaction[0].user.photo != null" class="container-photo-user">
                                 <img class="photo" [src]="getUrlPhoto(element.inventory_transaction[0].user.photo)">

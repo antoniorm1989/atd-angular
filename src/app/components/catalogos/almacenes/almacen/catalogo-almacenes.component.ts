@@ -173,7 +173,7 @@ export class CatalogoAlmacenesComponent {
     if (this.form!.invalid)
       return;
 
-    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","lastname":""}');
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
     let user = new User();
     user.id = userData.id;
 
@@ -244,16 +244,16 @@ export class CatalogoAlmacenesComponent {
     return city.length > 0 ? city[0].name ?? '' : '';
   }
 
-  getUserName(name: string, lastname: string): string {
-    return name[0].toUpperCase() + lastname[0].toUpperCase();
+  getUserName(name: string, last_name: string): string {
+    return name[0].toUpperCase() + last_name[0].toUpperCase();
   }
 
   addSucursal() {
-    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","lastname":""}');
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
     let user = new User();
     user.id = userData.id;
     user.name = userData.name;
-    user.lastname = userData.lastname;
+    user.last_name = userData.last_name;
 
     let newSucursal = new CatalogoAlmacenSucursalModel();
     newSucursal.id = this.selectedSucursal?.id

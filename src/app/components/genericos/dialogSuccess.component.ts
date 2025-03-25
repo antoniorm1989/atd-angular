@@ -21,13 +21,13 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
               .dialog-image{
                 font-family: Roboto;
                 font-size: 24px;
-                font-weight: 700;
+                font-weight: 500;
                 line-height: 28.13px;
               }
               .dialog-title{
                 font-family: Roboto;
                 font-size: 24px;
-                font-weight: 700;
+                font-weight: 500;
                 line-height: 28.13px;
               }
               .dialog-content{

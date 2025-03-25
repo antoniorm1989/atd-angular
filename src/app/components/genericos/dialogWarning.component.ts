@@ -2,14 +2,15 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'dialog-error-component',
+  selector: 'dialog-warning-component',
   template: `
     <div class="dialog-wrapper">
-      <img class="dialog-image" src="../../assets/images/error-svgrepo-com.svg" alt="Error Image" />
+      <img class="dialog-image" src="../../assets/images/warning-dialog.png" alt="Error Image" />
       <p>
         <span class="dialog-title" mat-dialog-title>{{ data.title }}</span>
         <div class="dialog-content" mat-dialog-content>{{ data.content }}</div>
-        <button class="dialog-button" (click)="onClose()">Cerrar</button>
+        <button class="dialog-button dialog-cancel" (click)="onClose()" style="margin-right: 24px;">Regresar</button>
+        <button class="dialog-button" (click)="onOk()" style="margin-left: 24px;">Aceptar</button>
     </div>
   `,
   styles: [`
@@ -28,7 +29,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
       font-size: 24px;
       font-weight: 500;
       line-height: 28px;
-      color: #D32F2F; /* Rojo para indicar error */
+      color: black;
     }
     .dialog-content {
       font-family: Roboto;
@@ -37,7 +38,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
       line-height: 25px;
       text-align: center;
       color: #333333;
-      margin: 20px 0px;
+      margin: 30px 12px;
       height: 100px;
       overflow-y: auto;
     }
@@ -45,25 +46,33 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
       width: 300px;
       height: 48px;
       border-radius: 8px;
-      border: 1px solid #D32F2F;
+      border: 1px solid #BA9400;
       color: #FFFFFF;
-      background-color: #D32F2F;
+      background-color: #BA9400;
       cursor: pointer;
+      font-weight: 600;
+      font-size: large;
+      width: 200px;
     }
-    .dialog-button:hover {
-      background-color: #B71C1C;
+    .dialog-button.dialog-cancel {
+      color: #BA9400;
+      background-color: #FFFFFF;
     }
   `],
 })
 
-export class DialogErrorComponent {
+export class DialogWarningComponent {
 
   constructor(
-    public dialogRef: MatDialogRef<DialogErrorComponent>,
+    public dialogRef: MatDialogRef<DialogWarningComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { title: string, content: string }
   ) { }
 
   onClose(): void {
     this.dialogRef.close();
+  }
+
+  onOk(): void {
+    this.dialogRef.close("ok");
   }
 }

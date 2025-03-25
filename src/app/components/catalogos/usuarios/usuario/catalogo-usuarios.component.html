@@ -61,14 +61,14 @@
                                     <mat-label class="text-1"  *ngIf="isReadOnly">Apellidos</mat-label>
                                     <mat-label class="text-1"  *ngIf="!isReadOnly">Apellidos*</mat-label>
                                     <mat-label class="text-1-regular"
-                                        *ngIf="isReadOnly">{{this.f['lastname'].value}}</mat-label>
+                                        *ngIf="isReadOnly">{{this.f['last_name'].value}}</mat-label>
                                     <mat-form-field *ngIf="!isReadOnly">
                                         <input matInput placeholder="Escribir apellidos"
-                                            formControlName="lastname"
-                                            [ngClass]="{ 'is-invalid': submitted && f['lastname'].errors }" required>
+                                            formControlName="last_name"
+                                            [ngClass]="{ 'is-invalid': submitted && f['last_name'].errors }" required>
                                     </mat-form-field>
-                                    <div *ngIf="submitted && f['lastname'].errors" class="invalid-feedback">
-                                        <div *ngIf="f['lastname'].errors['required']">Este campo requerido</div>
+                                    <div *ngIf="submitted && f['last_name'].errors" class="invalid-feedback">
+                                        <div *ngIf="f['last_name'].errors['required']">Este campo requerido</div>
                                     </div>
                                 </div>
                                 <div class="form-field">

@@ -66,3 +66,8 @@ export class CatCmpraVentaEstatus {
   name: string | undefined;
 };
 
+export class CatalogoMotivoCancelacionModel{
+  clave: string | undefined;
+  motivo: string | undefined;
+}
+
