@@ -71,3 +71,9 @@ export class CatalogoMotivoCancelacionModel{
   motivo: string | undefined;
 }
 
+export class CatalogoMonedaModel {
+  id: number | undefined;
+  moneda: string | undefined;
+  datosJson: string | undefined;
+}
+

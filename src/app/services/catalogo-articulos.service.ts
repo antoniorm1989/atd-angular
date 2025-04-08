@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ArticuloGroup, CatalogoArticuloModel } from '../models/catalogo-articulo.model';
 import { environment } from 'src/environments/environment';
+import { CatalogoMonedaModel } from '../models/catalogos.model';
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +43,10 @@ export class CatalogoArticuloService {
 
   getAllGroupedByCategoryByAlmacen(almacenId: number, clienteId: number): Observable<ArticuloGroup[]> {
     return this.http.get<ArticuloGroup[]>(`${environment.apiUrl}/api/articulo/getAllGroupedByCategoryByAlmacen/${almacenId}/${clienteId}`);
+  }
+
+  getMonedas(): Observable<CatalogoMonedaModel[]> {
+    return this.http.get<CatalogoMonedaModel[]>(`${environment.apiUrl}/api/articulo/getCatalogoMonedas`);
   }
 
   private getHeaders() {

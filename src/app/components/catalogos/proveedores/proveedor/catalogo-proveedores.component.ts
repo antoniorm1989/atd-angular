@@ -46,7 +46,7 @@ export class CatalogoProveedoresComponent {
       celular: [''],
       telefono: [''],
       cuentaBancaria: [''],
-      rfc: ['', [Validators.required]],
+      rfc: [''],
       descripcion: [''],
       correo: ['', [Validators.pattern('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}')]],
       state: [''],

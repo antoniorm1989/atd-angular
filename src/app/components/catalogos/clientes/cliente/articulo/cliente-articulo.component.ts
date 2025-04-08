@@ -1,23 +1,13 @@
 import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { InventoryAlmacenService } from 'src/app/services/inventory.service';
-import { CatalogoAlmacenesService } from 'src/app/services/catalogo-almacenes.service';
 import { ArticuloGroup, CatalogoArticuloModel } from 'src/app/models/catalogo-articulo.model';
-import { CatalogoAlmacenModel } from 'src/app/models/catalogo-almacen.model';
 import { environment } from 'src/environments/environment';
-import { InventoryAlmacenModel } from 'src/app/models/inventory-almacen.model';
 import { Observable, map, startWith } from 'rxjs';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { BarcodeScannerComponent } from 'src/app/components/genericos/barcodesScanner.component';
-import { MatRadioChange } from '@angular/material/radio';
-import { CatalogoSucursalModel } from 'src/app/models/catalogo-sucursal.model';
-import { CatalogoSucursalesService } from 'src/app/services/catalogo-sucursales.service';
-import { CatalogoProductoServicioModel } from 'src/app/models/catalogos.model';
-import { CatalogosService } from 'src/app/services/catalogos.service';
 import { CatalogoArticuloService } from 'src/app/services/catalogo-articulos.service';
-import { InventorySucursalModel } from 'src/app/models/inventory-sucursal.model';
 import { ClienteArticuloModel } from 'src/app/models/catalogo-cliente.model';
 
 
@@ -286,7 +276,7 @@ export class ClienteArticuloComponent implements OnInit, OnDestroy {
   onAdd() {
     try {
       this.submitted = true;
-      if (this.form!.invalid == false) {
+      if (this.form!.invalid == false && this.isTotalConDescuentoValid()) {
         let clienteArticuloModel = new ClienteArticuloModel();
         clienteArticuloModel.precio = this.f['precio_cliente'].value;
         clienteArticuloModel.descuento = this.f['descuento'].value;
@@ -294,7 +284,6 @@ export class ClienteArticuloComponent implements OnInit, OnDestroy {
         clienteArticuloModel.articulo = this.selectedArticle;
         this.add.emit(clienteArticuloModel);
       }
-
     } catch (error) {
       console.error('An error occurred in onSubmit:', error);
     }
@@ -307,6 +296,20 @@ export class ClienteArticuloComponent implements OnInit, OnDestroy {
       console.error('An error occurred in onSubmit:', error);
     }
   }
+
+  calcularTotalConDescuento(): string {
+    const precio = this.form.get('precio_cliente')?.value || 0;
+    const descuento = this.form.get('descuento')?.value || 0;
+    const total = precio - descuento;
+    return total.toFixed(2); // Mostrar solo 2 decimales
+  }
+
+  isTotalConDescuentoValid(): boolean {
+    const precio = this.form.get('precio_cliente')?.value || 0;
+    const descuento = this.form.get('descuento')?.value || 0;
+    return precio >= descuento;
+  }
+  
 }
 
 @Component({

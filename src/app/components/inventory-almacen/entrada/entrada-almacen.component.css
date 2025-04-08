@@ -307,7 +307,7 @@ mat-panel-description {
 .entrada-almacen .container-datos-articulo {
     display: grid;
     grid-template-rows: 1fr auto;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 25px;
     margin: auto auto auto 0;
 }

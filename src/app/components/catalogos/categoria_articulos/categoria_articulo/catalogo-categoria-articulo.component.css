@@ -118,10 +118,6 @@
     margin-top: 20px;
 }
 
-.form-field.name {
-    grid-column: span 2;
-}
-
 .accordion-address {
     margin-bottom: 24px;
 }
@@ -189,9 +185,6 @@ mat-panel-description {
 @media only screen and (max-width: 835px) {
     .catalogo-articulos .container .form-row.four-col {
         grid-template-columns: repeat(2, 1fr);
-    }
-    .form-field.phone {
-        grid-column: span 2;
     }
 }
 

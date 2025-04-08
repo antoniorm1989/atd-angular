@@ -23,26 +23,42 @@
                     <span *ngIf="action != 'new'" class="id"><b>ID</b> {{id}}</span>
                 </div>
 
-                <div class="form-row one-col">
+                <div class="form-row four-col" style="grid-template-columns: 1fr 1fr 250px 250px;">
                     <div class="form-field name">
                         <mat-label class="text-1"  *ngIf="isReadOnly">Categoría de artículo</mat-label>
                         <mat-label class="text-1"  *ngIf="!isReadOnly">Categoría de artículo*</mat-label>
                         <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['name'].value}}</mat-label>
                         <mat-form-field *ngIf="!isReadOnly">
-                            <input matInput placeholder="Escribir nombre de la articulo" formControlName="name" [ngClass]="{ 'is-invalid': submitted && f['name'].errors }" required>
+                            <input matInput placeholder="Nombre del articulo" formControlName="name" [ngClass]="{ 'is-invalid': submitted && f['name'].errors }" required>
                         </mat-form-field>
                         <div *ngIf="submitted && f['name'].errors" class="invalid-feedback">
                             <div *ngIf="f['name'].errors['required']">Este campo requerido</div>
                         </div>
                     </div>
-                </div>
-                <div class="form-row one-col">
                     <div class="form-field description">
                         <mat-label class="text-1">Descripción</mat-label>
                         <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['description'].value}}</mat-label>
                         <mat-form-field *ngIf="!isReadOnly">
-                            <input matInput placeholder="Escribir la descripción de la articulo"
+                            <input matInput placeholder="Descripción de la articulo"
                                 formControlName="description">
+                        </mat-form-field>
+                    </div>
+                    <div class="form-field costo_importado_porcentaje">
+                        <mat-label class="text-1">Porcentaje costo de importación</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly"> {{ this.f['costo_importado_porcentaje'].value }}%
+                        </mat-label>
+                        <mat-form-field *ngIf="!isReadOnly">
+                            <input matInput type="number" placeholder="Porcentaje importación" formControlName="costo_importado_porcentaje" min="0" max="100" step="0.01">
+                            <span matSuffix>%</span>
+                        </mat-form-field>
+                    </div>
+                    <div class="form-field precio_venta_porcentaje">
+                        <mat-label class="text-1">Porcentaje costo de venta</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly"> {{ this.f['precio_venta_porcentaje'].value }}%
+                        </mat-label>
+                        <mat-form-field *ngIf="!isReadOnly">
+                            <input matInput type="number" placeholder="Porcentaje por venta" formControlName="precio_venta_porcentaje" min="0" max="100" step="0.01">
+                            <span matSuffix>%</span>
                         </mat-form-field>
                     </div>
                 </div>
@@ -76,10 +92,8 @@
             </mat-accordion>
 
             <div class="toolbar-bottom">
-                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('almacenes/catalogos/articulos')"
-                    *ngIf="isReadOnly">Regresar</button>
-                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('almacenes/catalogos/articulos')"
-                    *ngIf="!isReadOnly">Cancelar</button>
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('almacenes/catalogos/categoria-articulos')" *ngIf="isReadOnly">Regresar</button>
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('almacenes/catalogos/categoria-articulos')" *ngIf="!isReadOnly">Cancelar</button>
                 <button mat-flat-button class="btn" type="submit" *ngIf="!isReadOnly">{{title}}</button>
             </div>
         </form>

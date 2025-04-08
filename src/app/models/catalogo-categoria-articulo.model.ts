@@ -1,4 +1,5 @@
 import { User } from "./user";
+import { float } from "@zxing/library/esm/customTypings";
 
 export class CatalogoCategoriaArticuloModel {
   id: number | undefined;
@@ -9,6 +10,10 @@ export class CatalogoCategoriaArticuloModel {
   created_at: Date | undefined;
   updated_at: Date | undefined;
   user: User | undefined;
+  costo_importado_porcentaje: float | undefined;
+  precio_venta_porcentaje: float | undefined;
+
+
 
   constructor(
     id?: number,

@@ -38,7 +38,7 @@
                         </div>
                     </div>
                     <div class="column">
-                        <div class="form-row three-col">
+                        <div class="form-row three-col" style="grid-template-columns: 1fr 2fr 1fr;">
                             <div class="form-field part_number">
                                 <mat-label class="text-1" *ngIf="isReadOnly">Número de parte</mat-label>
                                 <mat-label class="text-1" *ngIf="!isReadOnly">Número de parte*</mat-label>
@@ -73,13 +73,12 @@
                             <div class="form-field">
                                 <mat-label class="text-1" *ngIf="isReadOnly">Categoría</mat-label>
                                 <mat-label class="text-1" *ngIf="!isReadOnly">Categoría*</mat-label>
-                                <mat-label class="text-1-regular"
-                                    *ngIf="isReadOnly">{{this.f['selectedCategory'].value?.name}}</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['selectedCategory'].value?.name}}</mat-label>
                                 <mat-form-field *ngIf="!isReadOnly" required>
                                     <mat-label>Seleccionar categoria</mat-label>
-                                    <mat-select formControlName="selectedCategory">
-                                        <mat-option *ngFor="let category of categories" [value]="category">{{
-                                            category.name }}
+                                    <mat-select [(value)]="selectedCategory" (selectionChange)="onCategoryChange($event)" formControlName="selectedCategory" >
+                                        <mat-option *ngFor="let category of categories" [value]="category">
+                                            {{category.name }}
                                         </mat-option>
                                     </mat-select>
                                 </mat-form-field>
@@ -89,30 +88,67 @@
                             </div>
                         </div>
 
-                        <div class="form-row three-col">
+                        <div class="form-row four-col">
+                            <div class="form-field">
+                                <mat-label class="text-1" *ngIf="isReadOnly">Moneda</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['moneda'].value?.moneda  ==  'MXN' ? 'Pesos' : 'Dolares'}}</mat-label>
+                                <mat-label class="text-1" *ngIf="!isReadOnly">Moneda*</mat-label>
+                                <mat-form-field *ngIf="!isReadOnly">
+                                    <mat-select formControlName="moneda">
+                                      <mat-option *ngFor="let moneda of monedas" [value]="moneda">
+                                        {{ moneda.moneda === 'MXN' ? 'Pesos' : 'Dólares' }}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
+                                <div *ngIf="submitted && f['moneda'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['moneda'].errors['required']">Este campo requerido</div>
+                                </div>
+                            </div>
+
+                            <div class="form-field costo_proveedor">
+                                <mat-label class="text-1"  *ngIf="isReadOnly">Costo del Proveedor </mat-label>
+                                <mat-label class="text-1"  *ngIf="!isReadOnly">Costo del Proveedor *</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{ formatearComoMoneda(this.f['costo_proveedor'].value) }}</mat-label>
+                                <mat-form-field floatLabel="always" *ngIf="!isReadOnly">
+                                    <input matInput type="text" formControlName="costo_proveedor" min="0" step="0.01" (keypress)="validarDecimal($event)" (blur)="validarFinal('costo_proveedor')" placeholder="0.00">
+                                    <span matTextPrefix>$&nbsp;</span>
+                                </mat-form-field>
+                                <div *ngIf="submitted && f['costo_proveedor'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['costo_proveedor'].errors['required']">Este campo requerido</div>
+                                    <div *ngIf="f['costo_proveedor'].errors['pattern']">Formato inválido (hasta 2 decimales)</div>
+                                </div>
+                            </div>
+
+                            <div class="form-field costo_importado">
+                                <mat-label class="text-1" *ngIf="isReadOnly">Costo en México</mat-label>
+                                <mat-label class="text-1" *ngIf="!isReadOnly">Costo en México*</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{ formatearComoMoneda(this.f['costo_importado'].value) }}</mat-label>
+                                <mat-form-field floatLabel="always" *ngIf="!isReadOnly">
+                                    <input matInput type="text" formControlName="costo_importado" min="0" step="0.01" (keypress)="validarDecimal($event)" (blur)="validarFinal('costo_proveedor')" placeholder="0.00" (input)="costoImportadoManual = true">
+                                    <span matTextPrefix>$&nbsp;</span>
+                                </mat-form-field>
+                                <div *ngIf="submitted && f['costo_importado'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['costo_importado'].errors['required']">Este campo requerido</div>
+                                    <div *ngIf="f['costo_importado'].errors['pattern']">Formato inválido (hasta 2 decimales)</div>
+                                </div>
+                            </div>
+
                             <div class="form-field precio_venta">
-                                <mat-label class="text-1"  *ngIf="isReadOnly">Precio venta</mat-label>
-                                <mat-label class="text-1"  *ngIf="!isReadOnly">Precio venta*</mat-label>
+                                <mat-label class="text-1" *ngIf="isReadOnly">Precio venta</mat-label>
+                                <mat-label class="text-1" *ngIf="!isReadOnly">Precio venta*</mat-label>
                                 <mat-label class="text-1-regular" *ngIf="isReadOnly">{{ formatearComoMoneda(this.f['precio_venta'].value) }}</mat-label>
                                 <mat-form-field floatLabel="always" *ngIf="!isReadOnly">
-                                    <input matInput type="number" placeholder="0" formControlName="precio_venta" min="0" step="0.01" (keypress)="validarDecimal($event)">
+                                    <input matInput type="text" formControlName="precio_venta" min="0" step="0.01" (keypress)="validarDecimal($event)" (blur)="validarFinal('costo_proveedor')" placeholder="0.00" (input)="precioVentaManual = true">
                                     <span matTextPrefix>$&nbsp;</span>
                                 </mat-form-field>
                                 <div *ngIf="submitted && f['precio_venta'].errors" class="invalid-feedback">
                                     <div *ngIf="f['precio_venta'].errors['required']">Este campo requerido</div>
+                                    <div *ngIf="f['precio_venta'].errors['pattern']">Formato inválido (hasta 2 decimales)</div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="form-field cost">
-                                <mat-label class="text-1">Costo unitario</mat-label>
-                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{ formatearComoMoneda(this.f['cost'].value) }}</mat-label>
-
-                                <mat-form-field *ngIf="!isReadOnly">
-                                    <input matInput type="number" placeholder="0" formControlName="cost" min="0" step="0.01" (keypress)="validarDecimal($event)">
-                                    <span matTextPrefix>$&nbsp;</span>
-                                </mat-form-field>
-                            </div>
-
+                        <div class="form-row one-col">
                             <div class="form-field comment">
                                 <mat-label class="text-1">Comentarios</mat-label>
                                 <mat-label class="text-1-regular"
@@ -133,6 +169,79 @@
                 <mat-expansion-panel [expanded]="true">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
+                            Datos Fiscales CFDI
+                        </mat-panel-title>
+                        <mat-panel-description>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div class="form-row" style="grid-template-columns: 1fr 1fr 2fr 2fr;">
+                         <div class="form-field numero_identificacion_fiscal">
+                            <mat-label class="text-1">No. Identificación</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{ f['numero_identificacion_fiscal'].value }}</mat-label>
+                            <mat-form-field *ngIf="!isReadOnly">
+                              <input matInput formControlName="numero_identificacion_fiscal"
+                                     placeholder="Ingresar número de identificación">
+                            </mat-form-field>
+                          </div>
+                        
+                          <div class="form-field unidad_medida">
+                            <mat-label class="text-1">Unidad de medida</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">{{ f['unidad_medida'].value }}</mat-label>
+                            <mat-form-field *ngIf="!isReadOnly">
+                              <mat-label>Seleccionar</mat-label>
+                              <mat-select formControlName="unidad_medida">
+                                <mat-option value="producto">Producto</mat-option>
+                                <mat-option value="servicio">Servicio</mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                          </div>
+                        
+                          <div class="form-field producto_servicio_id">
+                            <mat-label class="text-1">Producto o servicio</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">
+                                {{ f['producto_servicio_id'].value?.key }} - {{ f['producto_servicio_id'].value?.name }}
+                            </mat-label>
+                            <mat-form-field class="example-full-width" *ngIf="!isReadOnly">
+                              <mat-label>Buscar producto o servicio</mat-label>
+                              <input type="text" matInput formControlName="producto_servicio_id"
+                                     [matAutocomplete]="autoProductoServicio"
+                                     placeholder="Buscar producto o servicio">
+                              <mat-autocomplete autoActiveFirstOption #autoProductoServicio="matAutocomplete" [displayWith]="displayFn">
+                                <mat-option *ngFor="let option of filteredProductoServicio | async" [value]="option">
+                                  {{ option.key }} - {{ option.name }}
+                                </mat-option>
+                              </mat-autocomplete>
+                            </mat-form-field>
+                          </div>
+                        
+                          <div class="form-field unidad_medida_id">
+                            <mat-label class="text-1">Unidad de medida</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isReadOnly">
+                                {{ f['unidad_medida_id'].value?.key }} - {{ f['unidad_medida_id'].value?.name }}
+                            </mat-label>
+                            <mat-form-field class="example-full-width" *ngIf="!isReadOnly">
+                              <mat-label>Buscar unidad de medida</mat-label>
+                              <input type="text" matInput formControlName="unidad_medida_id"
+                                     [matAutocomplete]="autoUnidadMedida"
+                                     placeholder="Buscar unidad de medida">
+                              <mat-autocomplete autoActiveFirstOption #autoUnidadMedida="matAutocomplete" [displayWith]="displayFnUnidadMedida">
+                                <mat-option *ngFor="let option of filteredUnidadMedida | async" [value]="option">
+                                  {{ option.key }} - {{ option.name }}
+                                </mat-option>
+                              </mat-autocomplete>
+                            </mat-form-field>
+                          </div>
+
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div style="height: 24px;"></div>
+
+            <mat-accordion>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
                             Configuración
                         </mat-panel-title>
                         <mat-panel-description>
@@ -141,14 +250,17 @@
                     <div class="form-row four-col">
                         <div class="form-field num-ext">
                             <mat-slide-toggle formControlName="show_admin_users" color="primary">Mostrar al gestionar
-                                usuarios</mat-slide-toggle>
+                                usuarios
+                            </mat-slide-toggle>
                         </div>
 
                         <div class="form-field num-ext">
                             <mat-slide-toggle formControlName="status" color="primary">Activo</mat-slide-toggle>
                         </div>
 
-                        <div class="form-field empty"></div>
+                        <div class="form-field num-ext">
+                            <mat-slide-toggle formControlName="es_inventariado" color="primary">Es inventariado</mat-slide-toggle>
+                        </div>
 
                         <div class="form-field empty"></div>
                     </div>

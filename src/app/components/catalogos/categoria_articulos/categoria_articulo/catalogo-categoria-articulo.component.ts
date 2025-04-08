@@ -28,7 +28,9 @@ export class CatalogoCategoriaArticuloComponent {
       description: [''],
       show_admin_users: [''],
       status: true,
-      created_at: ['created_at']
+      created_at: ['created_at'],
+      costo_importado_porcentaje: 0,
+      precio_venta_porcentaje: 0,
     });
 
     this.router.events.subscribe((event: Event) => {
@@ -45,7 +47,9 @@ export class CatalogoCategoriaArticuloComponent {
                   description: [data.description],
                   show_admin_users: [data.show_admin_users],
                   status: data.status,
-                  created_at: [data.created_at]
+                  created_at: [data.created_at],
+                  costo_importado_porcentaje: [data.costo_importado_porcentaje],
+                  precio_venta_porcentaje: [data.precio_venta_porcentaje],
                 });
 
                 this.route.queryParams.subscribe(params => {
@@ -100,6 +104,8 @@ export class CatalogoCategoriaArticuloComponent {
     articulo.show_admin_users = this.f['show_admin_users'].value == true;
     articulo.status = this.f['status'].value || '0';
     articulo.user = user;
+    articulo.costo_importado_porcentaje = this.f['costo_importado_porcentaje'].value;
+    articulo.precio_venta_porcentaje = this.f['precio_venta_porcentaje'].value;
 
     if (this.action == 'new') {
       this.CatalogoCategoriaArticuloService.create(articulo).subscribe({
