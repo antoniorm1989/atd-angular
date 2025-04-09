@@ -205,3 +205,27 @@ input[type=number] {
 .mat-expansion-panel:not([class*=mat-elevation-z]){
     box-shadow: unset !important;
 }
+
+/* make app upper case */
+/* Aplica a todos los inputs de texto */
+input[type="text"],
+textarea,
+.mat-input-element {
+  text-transform: uppercase !important;
+}
+
+/* También puedes aplicarlo a todos los textos si quieres */
+.uppercase-text,
+label,
+span,
+p,
+.mat-label {
+  text-transform: uppercase !important;
+}
+
+
+/* Aplica mayúsculas visuales a todo el texto */
+body, input, textarea, select, button,
+.mat-label, .mat-input-element, .mat-form-field-label {
+  text-transform: uppercase !important;
+}
