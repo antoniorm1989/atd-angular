@@ -219,7 +219,8 @@ textarea,
 label,
 span,
 p,
-.mat-label {
+.mat-label,
+td {
   text-transform: uppercase !important;
 }
 
@@ -228,4 +229,9 @@ p,
 body, input, textarea, select, button,
 .mat-label, .mat-input-element, .mat-form-field-label {
   text-transform: uppercase !important;
+}
+
+
+input[formControlName="password"] {
+    text-transform: none !important;
 }
