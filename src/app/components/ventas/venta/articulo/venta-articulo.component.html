@@ -6,11 +6,7 @@
         <form [formGroup]="form"  (ngSubmit)="onAdd()">
             <div class="form-row" style="grid-template-columns: 1fr 150px;">
                 <div class="form-row one-col">
-                    <div class="form-row" style="grid-template-columns: 230px 1fr;">
-                        <mat-radio-group (change)="onRadioChange($event)" [value]="'almacen'" style="padding: 25px 0px;" formControlName="tipoAlmacen"> 
-                            <mat-radio-button value="almacen">Almacen</mat-radio-button>
-                            <mat-radio-button value="sucursal">Sucursal</mat-radio-button>
-                        </mat-radio-group>
+                    <div class="form-row" style="grid-template-columns: 1fr;">
                         <div style="padding: 0px 32px 0px 0px;">
                             <mat-label class="text-1">{{ isAlmacen ? 'Almacén' : 'Sucursal'}}</mat-label><br/>
                             <mat-form-field *ngIf="isAlmacen" style="width: 100%;">
@@ -108,7 +104,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-row" style="grid-template-columns: 55px 1fr; column-gap: 8px;">
+            <div class="form-row" style="grid-template-columns: max-content 1fr; column-gap: 12px;">
                 <span style="height: 0px;padding: 8px 0px;" class="text-1">Subtotal</span>
                 <div class="resumen-value">{{formatearComoMoneda(subtotal)}}</div>
             </div>
@@ -120,7 +116,7 @@
                 </mat-form-field>    
             </div>
 
-            <div *ngIf="(isDespachar == false)" class="separator-title" style="margin-top: 12px;">
+            <div *ngIf="(isDespachar == false)" class="separator-title" style="margin-top: 34px;">
                 <span>Datos Fiscales CFDI</span>
                 <div class="separator" style="margin-top: 10px; background-color: #C2CFE0;"></div>
             </div>
@@ -135,7 +131,7 @@
                     <mat-label class="text-1">Unidad de medida*</mat-label>
                     <mat-form-field>
                         <mat-label>Seleccionar</mat-label>
-                        <mat-select formControlName="unidad_medida_p_s" value="producto">
+                        <mat-select formControlName="unidad_medida" value="producto">
                           <mat-option value="producto">Producto</mat-option>
                           <mat-option value="servicio">Servicio</mat-option>
                         </mat-select>
@@ -146,7 +142,7 @@
                 <div class="form-field">
                     <mat-form-field class="example-full-width">
                         <mat-label>Producto o servicio</mat-label>
-                        <input type="text" matInput formControlName="producto_servicio" [matAutocomplete]="autoProductoServicio" placeholder="Buscar producto o servicio" required>
+                        <input type="text" matInput formControlName="producto_servicio_model" [matAutocomplete]="autoProductoServicio" placeholder="Buscar producto o servicio" required>
                         <mat-autocomplete autoActiveFirstOption #autoProductoServicio="matAutocomplete" [displayWith]="displayFn">
                           <mat-option *ngFor="let option of filteredProductoServicio | async" [value]="option">
                             {{ option.key }} - {{ option.name }}
@@ -157,7 +153,7 @@
                 <div class="form-field">
                     <mat-form-field class="example-full-width">
                         <mat-label>Unidad de medida</mat-label>
-                        <input type="text" matInput formControlName="unidad_medida" [matAutocomplete]="autoUnidadMedida" placeholder="Buscar unidad de medida" required>
+                        <input type="text" matInput formControlName="unidad_medida_model" [matAutocomplete]="autoUnidadMedida" placeholder="Buscar unidad de medida" required>
                         <mat-autocomplete autoActiveFirstOption #autoUnidadMedida="matAutocomplete" [displayWith]="displayFnUnidadMedida">
                           <mat-option *ngFor="let option of filteredUnidadMedida| async" [value]="option">
                             {{ option.key }} - {{ option.name }}

@@ -245,7 +245,7 @@ mat-panel-description {
 }
 
 .venta .container .container-list .toolbar .btn {
-    width: 190px;
+    width: auto;
     height: 40px;
     border-radius: 8px;
     background-color: #BA9400;

@@ -48,8 +48,8 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
           this.dataSourceArticulos.data = this.venta?.articulos?.map((a) => {
             descuento += a.descuento ?? 0;
             return {
-              unidad: a.unidad_medida?.name,
-              producto_servicio: a.producto_servicio?.name,
+              unidad: a.unidad_medida_model?.name,
+              producto_servicio: a.producto_servicio_model?.name,
               cantidad: a.cantidad,
               descripcion: a.almacen?.articulo?.description,
               p_unitario: `$${(a.precio_venta ?? 0)}`,
@@ -93,7 +93,7 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
           this.dataSourceArticulos.data = data.articulos?.map((a) => {
             return {
               unidad: a.unidad_medida?.name,
-              producto_servicio: a.producto_servicio_id,
+              producto_servicio: a.producto_servicio_model,
               cantidad: a.cantidad,
               descripcion: a.articulo_descripcion,
               p_unitario: `$${(a.precio_venta ?? 0).toFixed(2)}`,

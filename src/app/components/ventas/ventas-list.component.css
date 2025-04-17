@@ -53,7 +53,7 @@
 }
 
 .ventas-list .container .container-empty .btn {
-    width: 170px;
+    width: auto;
     height: 40px;
     border-radius: 8px;
     background-color: #BA9400;
@@ -80,7 +80,7 @@
 }
 
 .ventas-list .container .container-list .toolbar .btn {
-    width: 170px;
+    width: auto;
     height: 40px;
     border-radius: 8px;
     background-color: #BA9400;
@@ -182,13 +182,12 @@
 }
 
 .ventas-list .container-list .table .estatus-icon{
+    margin: auto;
     border-radius: 9px;
     display: inline-block;
     vertical-align: middle;
     height: 9px;
-    margin-right: 8px;
     width: 9px;
-    margin-bottom: 3px;
 }
 
 

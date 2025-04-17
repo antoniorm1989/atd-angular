@@ -62,8 +62,8 @@ export class CatalogoArticuloComponent {
       moneda: [null, Validators.required],
       numero_identificacion_fiscal: [''],
       unidad_medida: [''],
-      producto_servicio_id: [null, [this.validarProductoServicio.bind(this)]],
-      unidad_medida_id: [null, [this.validarUnidadMedida.bind(this)]],
+      producto_servicio_model: [null, [this.validarProductoServicio.bind(this)]],
+      unidad_medida_model: [null, [this.validarUnidadMedida.bind(this)]],
     });
 
     this.router.events.subscribe((event: Event) => {
@@ -95,8 +95,8 @@ export class CatalogoArticuloComponent {
                   moneda: [null, Validators.required],
                   numero_identificacion_fiscal: data.numero_identificacion_fiscal,
                   unidad_medida: data.unidad_medida,
-                  producto_servicio_id: data.producto_servicio_id,
-                  unidad_medida_id: data.unidad_medida_id,
+                  producto_servicio_model: data.producto_servicio_model,
+                  unidad_medida_model: data.unidad_medida_model,
                 });
 
                 if (data.photo)
@@ -174,12 +174,12 @@ export class CatalogoArticuloComponent {
       this.onCostoProveedorChange(value);
     });
 
-    this.filteredProductoServicio = this.form.controls['producto_servicio_id'].valueChanges.pipe(
+    this.filteredProductoServicio = this.form.controls['producto_servicio_model'].valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value))
     );
 
-    this.filteredUnidadMedida = this.form.controls['unidad_medida_id'].valueChanges.pipe(
+    this.filteredUnidadMedida = this.form.controls['unidad_medida_model'].valueChanges.pipe(
       startWith(''),
       map(value => this._filterUnidadMedida(value))
     );
@@ -187,10 +187,10 @@ export class CatalogoArticuloComponent {
     this.catalogosService.getProductoServicio().subscribe({
       next: (data) => {
         this.productoServicioList = data;
-        if(this.f['producto_servicio_id'].value){
-          var productoServicio = data.filter(p => p.key == this.f['producto_servicio_id'].value)
+        if(this.f['producto_servicio_model'].value){
+          var productoServicio = data.filter(p => p.key == this.f['producto_servicio_model'].value.key)
           if (productoServicio.length > 0)
-            this.f['producto_servicio_id'].setValue(productoServicio[0]);
+            this.f['producto_servicio_model'].setValue(productoServicio[0]);
         }
       },
       error: (e) => {
@@ -201,10 +201,10 @@ export class CatalogoArticuloComponent {
     this.catalogosService.getUnidadMedida().subscribe({
       next: (data) => {
         this.unidadMedidaList = data;
-        if(this.f['unidad_medida_id'].value){
-          var unidadMedida = data.filter(p => p.key == this.f['unidad_medida_id'].value)
+        if(this.f['unidad_medida_model'].value){
+          var unidadMedida = data.filter(p => p.key == this.f['unidad_medida_model'].value.key)
           if (unidadMedida.length > 0)
-            this.f['unidad_medida_id'].setValue(unidadMedida[0]);
+            this.f['unidad_medida_model'].setValue(unidadMedida[0]);
         }
       },
       error: (e) => {
@@ -212,7 +212,6 @@ export class CatalogoArticuloComponent {
       }
     });
   }
-
 
   validarProductoServicio(control: AbstractControl): ValidationErrors | null {
     const valor = control.value;
@@ -278,8 +277,8 @@ export class CatalogoArticuloComponent {
     
     articulo.numero_identificacion_fiscal = this.f['numero_identificacion_fiscal'].value;
     articulo.unidad_medida = this.f['unidad_medida'].value;
-    articulo.producto_servicio_id = this.f['producto_servicio_id'].value;
-    articulo.unidad_medida_id = this.f['unidad_medida_id'].value;
+    articulo.producto_servicio_model = this.f['producto_servicio_model'].value;
+    articulo.unidad_medida_model = this.f['unidad_medida_model'].value;
 
     if (this.action == 'new') {
       this.catalogoArticuloService.create(articulo).subscribe({
@@ -444,21 +443,24 @@ export class CatalogoArticuloComponent {
 
   onCostoProveedorChange(value: string) {
     const costoProveedor = parseFloat(value);
-
-    if (isNaN(costoProveedor) || costoProveedor <= 0) return;
-
-    const costo_importado_porcentaje = this.selectedCategory?.costo_importado_porcentaje || 0;
-    const precio_venta_porcentaje = this.selectedCategory?.precio_venta_porcentaje || 0;
-
-    const costo_importado = costoProveedor * (1 + costo_importado_porcentaje / 100);
-    const precio_venta = costo_importado * (1 + precio_venta_porcentaje / 100);
-
-    if (!this.costoImportadoManual) {
-      this.form.get('costo_importado')?.setValue(costo_importado.toFixed(2), { emitEvent: false });
-    }
-
-    if (!this.precioVentaManual) {
-      this.form.get('precio_venta')?.setValue(precio_venta.toFixed(2), { emitEvent: false });
+    if (isNaN(costoProveedor) || costoProveedor <= 0) {
+      this.form.get('costo_importado')?.setValue(0);
+      this.form.get('precio_venta')?.setValue(0);
+      return;
+    }else{
+      const costo_importado_porcentaje = this.selectedCategory?.costo_importado_porcentaje || 0;
+      const precio_venta_porcentaje = this.selectedCategory?.precio_venta_porcentaje || 0;
+  
+      const costo_importado = costoProveedor * (1 + costo_importado_porcentaje / 100);
+      const precio_venta = costo_importado * (1 + precio_venta_porcentaje / 100);
+  
+      if (!this.costoImportadoManual) {
+        this.form.get('costo_importado')?.setValue(costo_importado.toFixed(2), { emitEvent: false });
+      }
+  
+      if (!this.precioVentaManual) {
+        this.form.get('precio_venta')?.setValue(precio_venta.toFixed(2), { emitEvent: false });
+      }
     }
   }
 

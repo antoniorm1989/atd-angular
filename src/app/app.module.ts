@@ -10,6 +10,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -54,7 +55,7 @@ import { ArticuloClienteModalComponent, CatalogoClientesComponent } from './comp
 import { BarcodeScannerComponent } from './components/genericos/barcodesScanner.component';
 import { VentasListComponent } from './components/ventas/ventas-list.component';
 import { ArticuloVentaModalComponent, PreviewFacturaModalComponent, VentaComponent } from './components/ventas/venta/venta.component';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule, NativeDateAdapter } from '@angular/material/core';
+import { MAT_DATE_LOCALE, MatNativeDateModule, NativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
 import { VentaArticuloComponent } from './components/ventas/venta/articulo/venta-articulo.component';
@@ -72,7 +73,6 @@ import { OrdenCompraArticuloComponent } from './components/ordenes-compra/orden-
 import { PreviewFacturaComponent } from './components/ventas/venta/preview-factura/preview-factura.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoadingOverlayComponent } from './components/genericos/loading/loading-overlay.component';
-
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -145,6 +145,7 @@ export function tokenGetter() {
     MatBadgeModule,
     MatPaginatorModule,
     MatSlideToggleModule,
+    MatButtonToggleModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,

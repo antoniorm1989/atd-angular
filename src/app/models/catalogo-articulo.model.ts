@@ -25,8 +25,8 @@ export class CatalogoArticuloModel {
 
   numero_identificacion_fiscal: string | undefined;
   unidad_medida: string | undefined;
-  producto_servicio_id: string | undefined;
-  unidad_medida_id: CatalogoProductoServicioModel | undefined;
+  producto_servicio_model: CatalogoUnidadMedidaModel | undefined;
+  unidad_medida_model: CatalogoProductoServicioModel | undefined;
 
   constructor(id?: number) {
     this.id = id;

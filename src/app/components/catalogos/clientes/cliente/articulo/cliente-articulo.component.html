@@ -34,24 +34,32 @@
                             <mat-icon>photo_camera</mat-icon>
                         </button>
                     </div>
-                    <div class="form-row" style="grid-template-columns: 1fr 1fr auto; gap: 20px;">
-                        <div class="form-field" style="margin-top: 0px; width: 190px;">
+                    <div class="form-row" style="grid-template-columns: 200px 200px auto auto; gap: 20px;">
+                        <div class="form-field" style="margin-top: 0px;">
                             <mat-label class="text-1" >Precio Venta*</mat-label>
                             <mat-form-field floatLabel="always">
                                 <input matInput type="number" class="example-right-align" placeholder="0" formControlName="precio_cliente" min="0" step="0.01" (keypress)="validarDecimal($event)">
                                 <span matTextPrefix>$&nbsp;</span>
                             </mat-form-field>
                         </div>
-                        <div class="form-field" style="margin-top: 0px; width: 190px;">
-                            <mat-label class="text-1" >Descuento (opcional)</mat-label>
-                            <mat-form-field floatLabel="always">
+                        <div style="display: grid; grid-template-columns: 1fr 80px; grid-column-gap: 8px;">
+                            <div class="form-field" style="margin-top: 0px; width: 120px;">
+                              <mat-label class="text-1">Descuento</mat-label>
+                              <mat-form-field floatLabel="always">
                                 <input matInput type="number" class="example-right-align" placeholder="0" formControlName="descuento" min="0" step="0.01" (keypress)="validarDecimal($event)">
-                                <span matTextPrefix>$&nbsp;</span>
-                            </mat-form-field>
+                                <span matTextPrefix *ngIf="form.get('tipoDescuento')?.value === 'fijo'">$&nbsp;</span>
+                                <span matSuffix *ngIf="form.get('tipoDescuento')?.value === 'porcentaje'">%</span>
+                              </mat-form-field>
+                            </div>
+                            <mat-button-toggle-group formControlName="tipoDescuento" name="tipoDescuento" aria-label="Tipo de Descuento" class="tipo-descuento-toggle" style="height: 48px; margin: auto; transform: none;">
+                              <mat-button-toggle value="fijo" style="width: 40px;">$</mat-button-toggle>
+                              <mat-button-toggle value="porcentaje" style="width: 40px;">%</mat-button-toggle>
+                            </mat-button-toggle-group>
                         </div>
-                        <div *ngIf="form.get('descuento')?.value" style="margin-top: 0px; width: 190px;">
-                            <span class="text-1">Total con descuento:</span><br/>
-                            <strong>${{ calcularTotalConDescuento() }}</strong>
+                        <div></div>
+                        <div *ngIf="form.get('descuento')?.value" style="margin-top: 0px; display: grid;; grid-template-rows: 30px 30px; grid-row-gap: 12px;">
+                            <span class="text-1">Total con descuento</span>
+                            <span style="text-align: end; padding-right: 30px;">${{ calcularTotalConDescuento() }}</span>
                         </div>
                     </div>
                 </div>

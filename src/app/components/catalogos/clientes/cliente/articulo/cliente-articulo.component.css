@@ -40,12 +40,12 @@ mat-sidenav-content {
     flex-direction: column;
 }
 
-.form-field.name {
-    grid-column: span 2;
-}
-
 .accordion-address {
     margin-bottom: 24px;
+}
+
+.cliente-articulo .mat-button-toggle {
+    height: 48px !important;
 }
 
 

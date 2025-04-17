@@ -97,12 +97,12 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
       precio_venta: [0, [Validators.required, Validators.min(0.01)]],
       descuento: 0,
       comentarios: '',
-      unidad_medida_p_s: ['producto'],
-      numero_identificacion_fiscal: [''],
       articulosCliente: false,
       backorder: 0,
-      producto_servicio: [null, Validators.required, [this.validarProductoServicio.bind(this)]],
-      unidad_medida: [null, Validators.required, [this.validarUnidadMedida.bind(this)]]
+      numero_identificacion_fiscal: [''],
+      unidad_medida: ['producto'],
+      producto_servicio_model: [null, Validators.required, [this.validarProductoServicio.bind(this)]],
+      unidad_medida_model: [null, Validators.required, [this.validarUnidadMedida.bind(this)]]
     });
 
     this.form.controls['precio_venta'].disable();
@@ -169,12 +169,12 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         this.onOptionSelected(newValue);
       });
 
-      this.filteredProductoServicio = this.form.controls['producto_servicio'].valueChanges.pipe(
+      this.filteredProductoServicio = this.form.controls['producto_servicio_model'].valueChanges.pipe(
         startWith(''),
         map(value => this._filter(value))
       );
 
-      this.filteredUnidadMedida = this.form.controls['unidad_medida'].valueChanges.pipe(
+      this.filteredUnidadMedida = this.form.controls['unidad_medida_model'].valueChanges.pipe(
         startWith(''),
         map(value => this._filterUnidadMedida(value))
       );
@@ -186,8 +186,8 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         this.f['tipoAlmacen'].disable();
         this.f['almacen'].disable();
         this.f['sucursal'].disable();
-        this.f['producto_servicio'].disable();
-        this.f['unidad_medida'].disable();
+        this.f['producto_servicio_model'].disable();
+        this.f['unidad_medida_model'].disable();
 
         this.form.controls['precio_venta'].enable();
         this.form.controls['descuento'].enable();
@@ -228,11 +228,11 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
           qty: this.isDespachar ? 0 : ventaArticuloModel.cantidad,
           descuento: ventaArticuloModel.descuento,
           comentarios: ventaArticuloModel.comentarios,
-          unidad_medida_p_s: ventaArticuloModel.unidad_medida_p_s,
-          numero_identificacion_fiscal: ventaArticuloModel.numero_identificacion_fiscal,
           backorder: 0,
-          producto_servicio: ventaArticuloModel.producto_servicio,
-          unidad_medida: ventaArticuloModel.unidad_medida
+          numero_identificacion_fiscal: ventaArticuloModel.numero_identificacion_fiscal,
+          unidad_medida: ventaArticuloModel.unidad_medida,
+          producto_servicio_model: ventaArticuloModel.producto_servicio_model,
+          unidad_medida_model: ventaArticuloModel.unidad_medida_model
         });
         //this.onOptionSelected(ventaArticuloModel.almacen?.articulo?.part_number);
         this.calcularBackOrder();
@@ -293,8 +293,10 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
       this.form.controls['qty'].reset();
       this.form.controls['comentarios'].reset();
       this.form.controls['numero_identificacion_fiscal'].reset();
-      this.form.controls['unidad_medida_p_s'].reset();
+      this.form.controls['unidad_medida'].reset();
       this.form.controls['backorder'].reset();
+      this.form.controls['producto_servicio_model'].reset();
+      this.form.controls['unidad_medida_model'].reset();
       this.hasBackOrder = false;
       this.stock = 0;
 
@@ -400,24 +402,22 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
   onOptionSelected(partNumber: string) {
     try {
       this.selectedArticle = this.getArticuloByPartNumber(partNumber);
-  
+
       if (!this.selectedArticle) {
         this.form.controls['precio_venta'].disable();
         this.form.controls['descuento'].disable();
         return;
       }
-  
+
       if (!this.isDespachar) {
         this.form.controls['precio_venta'].enable();
         this.form.controls['descuento'].enable();
       }
-  
+
       if (this.selectedArticle.photo) {
         this.imageUrl = `${environment.apiUrl}/images/articulos/${this.selectedArticle.photo}`;
       }
-  
-      this.calcularSubTotal();
-  
+
       if (this.clienteId !== 0 && this.selectedAlmacen?.id) {
         this.catalogoArticuloService.getAllGroupedByCategoryByAlmacen(this.selectedAlmacen.id, this.clienteId).subscribe({
           next: (data) => {
@@ -429,31 +429,19 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
                 this.actualizarDatosArticulo();
               }
             }
+
+            this.calcularSubTotal();
           },
           error: (error) => console.error('Error obteniendo artículos:', error)
         });
       } else {
         this.actualizarDatosArticulo();
+        this.calcularSubTotal();
       }
     } catch (error) {
       console.error('Error en onOptionSelected:', error);
     }
   }
-  
-  private actualizarDatosArticulo() {
-    this.form.patchValue({
-      precio_venta: this.isEditing ? this.ventaArticuloModel?.precio_venta : this.selectedArticle?.precio_venta
-    });
-    this.inventoryAlmacenService.getInventoryByAlmacenByArticulo(this.selectedAlmacen?.id, this.selectedArticle?.id).subscribe({
-      next: (data) => {
-        this.inventory_almacen_id = data?.id ?? 0;
-        this.stock = data?.inventory_transaction?.[0]?.stock ?? 0;
-        this.calcularBackOrder();
-      },
-      error: (error) => console.error('Error obteniendo inventario:', error)
-    });
-  }
-  
 
   getArticuloByPartNumber(partNumber: string): CatalogoArticuloModel | undefined {
 
@@ -498,35 +486,6 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
     }
   }
 
-  private calcularBackOrder() {
-    if (!this.isDespachar)
-      this.form.patchValue({
-        backorder: this.f['qty'].value > (this.stock || 0) ? (((this.stock || 0) - this.f['qty'].value) * -1) : 0
-      });
-    else
-      if (this.ventaArticuloModel != undefined && this.ventaArticuloModel.backorder != undefined)
-        this.form.patchValue({
-          backorder: this.ventaArticuloModel.backorder - this.f['qty'].value
-        });
-
-    this.hasBackOrder = this.f['backorder'].value > 0
-  }
-
-  private _filterGroup(value: string): ArticuloGroup[] {
-    try {
-      if (value) {
-        return this.articuloGroups
-          .map(group => ({ categoria: group.categoria, articulos: _filter(group.articulos!, value) }))
-          .filter(group => group.articulos.length > 0);
-      }
-
-      return this.articuloGroups;
-    } catch (error) {
-      console.error('An error occurred in _filterGroup:', error);
-      return [];
-    }
-  }
-
   onAdd() {
     try {
       this.submitted = true;
@@ -536,12 +495,13 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         ventaArticuloModel.precio_venta = this.f['precio_venta'].value;
         ventaArticuloModel.descuento = this.f['descuento'].value;
         ventaArticuloModel.cantidad = this.f['qty'].value;
-        ventaArticuloModel.numero_identificacion_fiscal = this.f['numero_identificacion_fiscal'].value;
-        ventaArticuloModel.unidad_medida_p_s = this.f['unidad_medida_p_s'].value;
-        ventaArticuloModel.comentarios = this.f['comentarios'].value;
         ventaArticuloModel.backorder = this.f['backorder'].value;
-        ventaArticuloModel.producto_servicio = this.f['producto_servicio'].value;
+        ventaArticuloModel.comentarios = this.f['comentarios'].value;
+
+        ventaArticuloModel.numero_identificacion_fiscal = this.f['numero_identificacion_fiscal'].value;
         ventaArticuloModel.unidad_medida = this.f['unidad_medida'].value;
+        ventaArticuloModel.producto_servicio_model = this.f['producto_servicio_model'].value;
+        ventaArticuloModel.unidad_medida_model = this.f['unidad_medida_model'].value;
 
         if (this.selectedAlmacen) {
           let inventoryAlmacenModel = new InventoryAlmacenModel();
@@ -597,33 +557,116 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
     }
   }
 
-  private _filter(value: any): any[] {
-    if (typeof value == 'object')
-      value = value.name;
+  private actualizarDatosArticulo() {
 
-    // Solo filtra cuando la longitud del valor es mayor a 3
+    this.form.patchValue({
+      precio_venta: this.isEditing ? this.ventaArticuloModel?.precio_venta : this.selectedArticle?.precio_venta,
+      numero_identificacion_fiscal: this.isEditing ? this.ventaArticuloModel?.numero_identificacion_fiscal : this.selectedArticle?.numero_identificacion_fiscal,
+      unidad_medida: this.isEditing ? this.ventaArticuloModel?.unidad_medida : this.selectedArticle?.unidad_medida,
+      producto_servicio_model: this.isEditing ? this.ventaArticuloModel?.producto_servicio_model : this.selectedArticle?.producto_servicio_model,
+      unidad_medida_model: this.isEditing ? this.ventaArticuloModel?.unidad_medida_model : this.selectedArticle?.unidad_medida_model,
+    });
+
+    if (this.isEditing) {
+      var productoServicio = this.productoServicioList.filter(p => p.key == this.f['producto_servicio_model'].value.key)
+      if (productoServicio.length > 0)
+        this.f['producto_servicio_model'].setValue(productoServicio[0]);
+
+      var unidadMedida = this.unidadMedidaList.filter(p => p.key == this.f['unidad_medida_model'].value.key)
+      if (unidadMedida.length > 0)
+        this.f['unidad_medida_model'].setValue(unidadMedida[0]);
+    } else {
+
+      if (this.f['unidad_medida_model'].value && this.f['unidad_medida_model'].value.key) {
+        var unidadMedida = this.unidadMedidaList.filter(p => p.key == this.f['unidad_medida_model'].value.key)
+        if (unidadMedida.length > 0)
+          this.f['unidad_medida_model'].setValue(unidadMedida[0]);
+      } else
+        this.f['unidad_medida_model'].setValue(null);
+
+      if (this.f['producto_servicio_model'].value && this.f['producto_servicio_model'].value.key) {
+        var productoServicio = this.productoServicioList.filter(p => p.key == this.f['producto_servicio_model'].value.key)
+        if (productoServicio.length > 0)
+          this.f['producto_servicio_model'].setValue(productoServicio[0]);
+      } else
+        this.f['producto_servicio_model'].setValue(null);
+    }
+
+    this.inventoryAlmacenService.getInventoryByAlmacenByArticulo(this.selectedAlmacen?.id, this.selectedArticle?.id).subscribe({
+      next: (data) => {
+        this.inventory_almacen_id = data?.id ?? 0;
+        this.stock = data?.inventory_transaction?.[0]?.stock ?? 0;
+        this.calcularBackOrder();
+      },
+      error: (error) => console.error('Error obteniendo inventario:', error)
+    });
+
+  }
+
+  private calcularBackOrder() {
+    if (!this.isDespachar)
+      this.form.patchValue({
+        backorder: this.f['qty'].value > (this.stock || 0) ? (((this.stock || 0) - this.f['qty'].value) * -1) : 0
+      });
+    else
+      if (this.ventaArticuloModel != undefined && this.ventaArticuloModel.backorder != undefined)
+        this.form.patchValue({
+          backorder: this.ventaArticuloModel.backorder - this.f['qty'].value
+        });
+
+    this.hasBackOrder = this.f['backorder'].value > 0
+  }
+
+  private _filterGroup(value: string): ArticuloGroup[] {
+    try {
+      if (value) {
+        return this.articuloGroups
+          .map(group => ({ categoria: group.categoria, articulos: _filter(group.articulos!, value) }))
+          .filter(group => group.articulos.length > 0);
+      }
+
+      return this.articuloGroups;
+    } catch (error) {
+      console.error('An error occurred in _filterGroup:', error);
+      return [];
+    }
+  }
+
+  private _filter(value: any): any[] {
+    if (!value) {
+      return [];
+    }
+
+    if (typeof value === 'object') {
+      value = value.name ?? '';
+    }
+
     if (value.length < 3) {
       return [];
     }
 
     const filterValue = value.toLowerCase();
     return this.productoServicioList.filter(option =>
-      option.name!.toLowerCase().includes(filterValue)
+      option.name?.toLowerCase().includes(filterValue)
     );
   }
 
   private _filterUnidadMedida(value: any): any[] {
-    if (typeof value == 'object')
-      value = value.name;
+    if (!value) {
+      return [];
+    }
 
-    // Solo filtra cuando la longitud del valor es mayor a 3
+    if (typeof value === 'object') {
+      value = value.name ?? '';
+    }
+
     if (value.length < 3) {
       return [];
     }
 
     const filterValue = value.toLowerCase();
     return this.unidadMedidaList.filter(option =>
-      option.name!.toLowerCase().includes(filterValue)
+      option.name?.toLowerCase().includes(filterValue)
     );
   }
 }

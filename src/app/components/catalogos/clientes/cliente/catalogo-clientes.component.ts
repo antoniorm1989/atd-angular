@@ -50,7 +50,7 @@ export class CatalogoClientesComponent {
   isRfcDuplicate: boolean = false;
 
   hasRecords = false;
-  displayedColumns: string[] = ['numero_parte', 'descripcion', 'categoria', 'costo', 'descuento', 'actions'];
+  displayedColumns: string[] = ['numero_parte', 'descripcion', 'categoria', 'costo', 'descuento', 'totalConDescuento', 'actions'];
   dataSourceArticulos = new MatTableDataSource<ClienteArticuloModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 

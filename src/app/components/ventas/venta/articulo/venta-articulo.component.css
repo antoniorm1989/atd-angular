@@ -3,7 +3,7 @@ mat-sidenav-content {
 }
 
 .venta-articulo{
-    width: 800px;
+    width: 850px;
 }
 .venta-articulo .container .form-row {
     justify-content: space-between;
@@ -38,10 +38,6 @@ mat-sidenav-content {
 .form-field {
     display: flex;
     flex-direction: column;
-}
-
-.form-field.name {
-    grid-column: span 2;
 }
 
 .accordion-address {
@@ -139,7 +135,7 @@ mat-panel-description {
 }
 
 .venta-articulo .stock_indicator .title-stock {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 500;
 }
 
@@ -308,7 +304,7 @@ mat-panel-description {
 
 .venta-articulo .separator-title{
     display: grid;
-    grid-template-columns: 1fr 4fr;
+    grid-template-columns: max-content 4fr;
     gap: 8px;
 }
 

@@ -54,21 +54,22 @@ export class VentaArticuloModel {
   precio_venta: float | undefined;
   descuento: float | undefined;
   cantidad: number | undefined;
-  numero_identificacion_fiscal: string | undefined;
-  unidad_medida_p_s: string | undefined;
   comentarios: string | undefined;
   created_at: Date | undefined;
   updated_at: Date | undefined;
-  producto_servicio: CatalogoProductoServicioModel | undefined;
-  unidad_medida: CatalogoUnidadMedidaModel | undefined;
+ 
   almacen: InventoryAlmacenModel | undefined;
   sucursal : InventorySucursalModel | undefined;
   inventory_almacen_id: number | undefined;
   backorder: number | undefined;
   user: User | undefined;
   ventaId: number | undefined;
-  producto_servicio_id: number | undefined;
   articulo_descripcion: string | undefined;
+  
+  numero_identificacion_fiscal: string | undefined;
+  unidad_medida: string | undefined;
+  producto_servicio_model: CatalogoUnidadMedidaModel | undefined;
+  unidad_medida_model: CatalogoProductoServicioModel | undefined;
 }
 
 export class VentaEstatusModel {

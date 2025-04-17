@@ -121,10 +121,6 @@
     margin-top: 20px;
 }
 
-.form-field.name {
-    grid-column: span 2;
-}
-
 .accordion-address {
     margin-bottom: 24px;
 }
@@ -210,7 +206,7 @@ mat-panel-description {
 }
 
 .catalogo-clientes .container .container-list .toolbar .btn {
-    width: 190px;
+    width: auto;
     height: 40px;
     border-radius: 8px;
     background-color: #BA9400;

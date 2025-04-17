@@ -363,7 +363,7 @@
                                                 <div *ngIf="fCancelacion['folioSustituto'].errors['required']">Este campo requerido</div>
                                             </div>
                                         </div>
-                                        <button mat-flat-button class="btn" type="submit" style="height: 50px; width: 200px; margin-top: 24px;">Cancelar factura</button>
+                                        <button mat-flat-button class="btn" type="submit" style="height: 50px; width: auto; margin-top: 24px;">Cancelar factura</button>
                                     </form>
                                     <div class="form-row two-col" style="display: block;">
                                         <mat-label class="text-1" style="font-size: large;">Artículos asociados a la venta</mat-label>
@@ -643,7 +643,7 @@
                                             <button type="button" matSuffix mat-icon-button aria-label="Clear" *ngIf="route.snapshot.paramMap.get('ventaId') == undefined && this.f['cliente'].value != undefined" (click)="clearAutocompleteInput()">
                                                 <mat-icon>close</mat-icon>
                                             </button>
-                                            <mat-autocomplete requireSelection autoActiveFirstOption #auto="matAutocomplete">
+                                            <mat-autocomplete requireSelection autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayClienteFn">
                                                 <ng-container *ngFor="let cliente of filteredClientes | async; track cliente">
                                                     <mat-option [value]="cliente" (onSelectionChange)="onClienteSelectionChange($event)">{{cliente.cliente}}</mat-option>
                                                 </ng-container>
@@ -848,7 +848,7 @@
                                     </mat-form-field>
                                 </div>
                             </div>
-                            <button *ngIf="!isReadOnly" type="button" style="width: 200px; margin: 50px auto;" mat-flat-button class="btn" (click)="openArticuloVentaModalComponent()" ><mat-icon>add</mat-icon>Agregar artículo</button>
+                            <button *ngIf="!isReadOnly" type="button" style="width: auto; margin: 50px auto;" mat-flat-button class="btn" (click)="openArticuloVentaModalComponent()" ><mat-icon>add</mat-icon>Agregar artículo</button>
                         </div>
     
                         <div class="form-row one-col">

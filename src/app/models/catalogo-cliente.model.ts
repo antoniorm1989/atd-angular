@@ -43,6 +43,8 @@ export class ClienteArticuloModel {
   id: number | undefined;
   precio: float | undefined;
   descuento: float | undefined;
+  tipoDescuento: string | undefined;
+  totalConDescuento: float | undefined;
   comentarios: string | undefined;
   created_at: Date | undefined;
   updated_at: Date | undefined;

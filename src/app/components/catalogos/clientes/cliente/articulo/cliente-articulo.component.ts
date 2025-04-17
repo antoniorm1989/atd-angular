@@ -55,7 +55,8 @@ export class ClienteArticuloComponent implements OnInit, OnDestroy {
       selectedArticle: [null, Validators.required],
       precio_cliente: [0, [Validators.required, Validators.min(0.01)]],
       descuento: 0,
-      comentarios: '',
+      tipoDescuento: ['fijo'],
+      comentarios: ''
     });
   }
 
@@ -73,7 +74,7 @@ export class ClienteArticuloComponent implements OnInit, OnDestroy {
       }
 
       this.loadArticulos();
-      
+
     } catch (error) {
       console.error('An error occurred in ngOnInit:', error);
     }
@@ -89,6 +90,7 @@ export class ClienteArticuloComponent implements OnInit, OnDestroy {
         selectedArticle: clienteArticuloModel.articulo?.part_number,
         precio_cliente: clienteArticuloModel.precio,
         descuento: clienteArticuloModel.descuento,
+        tipoDescuento: clienteArticuloModel.tipoDescuento,
         comentarios: clienteArticuloModel.comentarios,
       });
       this.onOptionSelected(clienteArticuloModel.articulo?.part_number);
@@ -235,7 +237,9 @@ export class ClienteArticuloComponent implements OnInit, OnDestroy {
           this.imageUrl = `${environment.apiUrl}/images/articulos/${this.selectedArticle.photo}`;
 
         this.form.patchValue({
-          precio_cliente: this.isEditing ? this.clienteArticuloModel?.precio : this.selectedArticle.precio_venta
+          precio_cliente: this.isEditing ? this.clienteArticuloModel?.precio : this.selectedArticle.precio_venta,
+          descuento: this.isEditing ? this.clienteArticuloModel?.descuento : 0,
+          tipoDescuento: this.isEditing ? this.clienteArticuloModel?.tipoDescuento : 'fijo',
         });
       }
     } catch (error) {
@@ -280,7 +284,9 @@ export class ClienteArticuloComponent implements OnInit, OnDestroy {
         let clienteArticuloModel = new ClienteArticuloModel();
         clienteArticuloModel.precio = this.f['precio_cliente'].value;
         clienteArticuloModel.descuento = this.f['descuento'].value;
+        clienteArticuloModel.tipoDescuento = this.f['tipoDescuento'].value;
         clienteArticuloModel.comentarios = this.f['comentarios'].value;
+        clienteArticuloModel.totalConDescuento = this.calcularTotalConDescuento();
         clienteArticuloModel.articulo = this.selectedArticle;
         this.add.emit(clienteArticuloModel);
       }
@@ -297,19 +303,43 @@ export class ClienteArticuloComponent implements OnInit, OnDestroy {
     }
   }
 
-  calcularTotalConDescuento(): string {
+  calcularTotalConDescuento(): number {
     const precio = this.form.get('precio_cliente')?.value || 0;
     const descuento = this.form.get('descuento')?.value || 0;
-    const total = precio - descuento;
-    return total.toFixed(2); // Mostrar solo 2 decimales
+    const tipoDescuento = this.form.get('tipoDescuento')?.value || 'fijo';
+  
+    let total = precio;
+  
+    if (tipoDescuento === 'fijo') {
+      total = precio - descuento;
+    } else if (tipoDescuento === 'porcentaje') {
+      total = precio - (precio * (descuento / 100));
+    }
+  
+    return parseFloat(total.toFixed(2));
   }
+  
 
   isTotalConDescuentoValid(): boolean {
     const precio = this.form.get('precio_cliente')?.value || 0;
     const descuento = this.form.get('descuento')?.value || 0;
-    return precio >= descuento;
-  }
+    const tipoDescuento = this.form.get('tipoDescuento')?.value || 'fijo';
   
+    let total = precio;
+  
+    if (tipoDescuento === 'fijo') {
+      total = precio - descuento;
+    } else if (tipoDescuento === 'porcentaje') {
+      total = precio - (precio * (descuento / 100));
+    }
+  
+    return total >= 0;
+  }
+
+  debugTipoDescuento(event: any) {
+    console.log('tipoDescuento seleccionado:', event);
+  }
+
 }
 
 @Component({

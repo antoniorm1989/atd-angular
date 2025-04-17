@@ -682,7 +682,7 @@ export class VentaComponent {
 
   openArticuloVentaModalComponent() {
     const dialogRef = this.dialog.open(ArticuloVentaModalComponent, {
-      height: '850px',
+      height: '880px',
       data: {
         articulos: this.dataSourceArticulos.data,
         clienteId: this.f['cliente'].value ? this.f['cliente'].value.id : 0
@@ -702,7 +702,7 @@ export class VentaComponent {
   editArticuloVentaModalComponent(ventaArticuloModel: VentaArticuloModel) {
     ventaArticuloModel.ventaId = this.id;
     const dialogRef = this.dialog.open(ArticuloVentaModalComponent, {
-      height: '850px',
+      height: '880px',
       data: {
         articulo: ventaArticuloModel,
         clienteId: this.f['cliente'].value ? this.f['cliente'].value.id : 0
@@ -728,7 +728,7 @@ export class VentaComponent {
   despacharArticuloVentaModalComponent(ventaArticuloModel: VentaArticuloModel) {
     ventaArticuloModel.ventaId = this.id;
     const dialogRef = this.dialog.open(ArticuloVentaModalComponent, {
-      height: '700px',
+      height: '880px',
       data: {
         articulo: ventaArticuloModel,
         isDespachar: true
@@ -981,6 +981,11 @@ export class VentaComponent {
   formatNumber(input: number): string {
     return input.toString().padStart(4, '0');
   }
+
+  displayClienteFn(cliente: any): string {
+    return cliente && cliente.cliente ? cliente.cliente : '';
+  }
+  
 }
 
 @Component({

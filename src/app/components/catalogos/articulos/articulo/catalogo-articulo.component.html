@@ -168,7 +168,7 @@
             <mat-accordion>
                 <mat-expansion-panel [expanded]="true">
                     <mat-expansion-panel-header>
-                        <mat-panel-title>
+                        <mat-panel-title style="display: contents;">
                             Datos Fiscales CFDI
                         </mat-panel-title>
                         <mat-panel-description>
@@ -196,14 +196,14 @@
                             </mat-form-field>
                           </div>
                         
-                          <div class="form-field producto_servicio_id">
+                          <div class="form-field producto_servicio_model">
                             <mat-label class="text-1">Producto o servicio</mat-label>
                             <mat-label class="text-1-regular" *ngIf="isReadOnly">
-                                {{ f['producto_servicio_id'].value?.key }} - {{ f['producto_servicio_id'].value?.name }}
+                                {{ f['producto_servicio_model'].value?.key }} - {{ f['producto_servicio_model'].value?.name }}
                             </mat-label>
                             <mat-form-field class="example-full-width" *ngIf="!isReadOnly">
                               <mat-label>Buscar producto o servicio</mat-label>
-                              <input type="text" matInput formControlName="producto_servicio_id"
+                              <input type="text" matInput formControlName="producto_servicio_model"
                                      [matAutocomplete]="autoProductoServicio"
                                      placeholder="Buscar producto o servicio">
                               <mat-autocomplete autoActiveFirstOption #autoProductoServicio="matAutocomplete" [displayWith]="displayFn">
@@ -214,14 +214,14 @@
                             </mat-form-field>
                           </div>
                         
-                          <div class="form-field unidad_medida_id">
+                          <div class="form-field unidad_medida_model">
                             <mat-label class="text-1">Unidad de medida</mat-label>
                             <mat-label class="text-1-regular" *ngIf="isReadOnly">
-                                {{ f['unidad_medida_id'].value?.key }} - {{ f['unidad_medida_id'].value?.name }}
+                                {{ f['unidad_medida_model'].value?.key }} - {{ f['unidad_medida_model'].value?.name }}
                             </mat-label>
                             <mat-form-field class="example-full-width" *ngIf="!isReadOnly">
                               <mat-label>Buscar unidad de medida</mat-label>
-                              <input type="text" matInput formControlName="unidad_medida_id"
+                              <input type="text" matInput formControlName="unidad_medida_model"
                                      [matAutocomplete]="autoUnidadMedida"
                                      placeholder="Buscar unidad de medida">
                               <mat-autocomplete autoActiveFirstOption #autoUnidadMedida="matAutocomplete" [displayWith]="displayFnUnidadMedida">

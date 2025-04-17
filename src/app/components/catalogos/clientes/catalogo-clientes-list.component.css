@@ -53,7 +53,7 @@
 }
 
 .catalogo-clientes-list .container .container-empty .btn {
-    width: 190px;
+    width: auto;
     height: 40px;
     border-radius: 8px;
     background-color: #BA9400;
@@ -86,7 +86,7 @@
 }
 
 .catalogo-clientes-list .container .container-list .toolbar .btn {
-    width: 190px;
+    width: auto;
     height: 40px;
     border-radius: 8px;
     background-color: #BA9400;

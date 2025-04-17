@@ -370,7 +370,7 @@
                         </div>
                         <div class="form-row two-col">
                         </div>
-                        <button *ngIf="!isReadOnly" type="button" style="width: 200px; justify-self: end;"
+                        <button *ngIf="!isReadOnly" type="button" style="width: auto; justify-self: end;"
                             mat-flat-button class="btn"
                             (click)="openArticuloClienteModalComponent()"><mat-icon>add</mat-icon>Agregar
                             artículo</button>
@@ -422,7 +422,15 @@
                             <ng-container matColumnDef="descuento">
                                 <th mat-header-cell *matHeaderCellDef style="text-align: center;">Descuento</th>
                                 <td mat-cell *matCellDef="let element" style="text-align: center;">
-                                    ${{element.descuento}}</td>
+                                    {{element.descuento ? (element.tipoDescuento == 'fijo' ? ('$' + element.descuento) : ('%' + element.descuento)) : 'Sin descuento'}}
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="totalConDescuento">
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Total con descuento</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">
+                                    ${{ element.descuento ?  element.totalConDescuento : element.precio }}
+                                </td>
                             </ng-container>
 
                             <ng-container matColumnDef="actions">
