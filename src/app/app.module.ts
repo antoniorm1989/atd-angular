@@ -73,6 +73,7 @@ import { OrdenCompraArticuloComponent } from './components/ordenes-compra/orden-
 import { PreviewFacturaComponent } from './components/ventas/venta/preview-factura/preview-factura.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoadingOverlayComponent } from './components/genericos/loading/loading-overlay.component';
+import { MatChipInputEvent, MatChipsModule} from '@angular/material/chips';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -164,7 +165,8 @@ export function tokenGetter() {
     MatRadioModule,
     MatNativeDateModule,
     MatMenuModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatChipsModule
   ],
   providers:[
     { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }

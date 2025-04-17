@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy, inject, signal} from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, NavigationEnd, Event } from '@angular/router';
@@ -12,6 +12,7 @@ import { CatalogoArticuloService } from 'src/app/services/catalogo-articulos.ser
 import { CatalogoCategoriaArticuloService } from 'src/app/services/catalogo-categoria-articulos.service';
 import { environment } from 'src/environments/environment';
 import { CatalogosService } from 'src/app/services/catalogos.service';
+import { MatChipInputEvent } from '@angular/material/chips';
 
 @Component({
   selector: 'app-articulo',
@@ -42,6 +43,9 @@ export class CatalogoArticuloComponent {
 
   filteredProductoServicio: Observable<any[]> | undefined;
   filteredUnidadMedida: Observable<any[]> | undefined;
+
+  readonly templateKeywords = signal(['angular', 'how-to', 'tutorial', 'accessibility']);
+  announcer = inject(LiveAnnouncer);
 
   constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogoArticuloService: CatalogoArticuloService, private router: Router, private catalogoCategoriaArticuloService: CatalogoCategoriaArticuloService, private _snackBar: MatSnackBar, private catalogosService: CatalogosService,) {
 
@@ -462,6 +466,30 @@ export class CatalogoArticuloComponent {
         this.form.get('precio_venta')?.setValue(precio_venta.toFixed(2), { emitEvent: false });
       }
     }
+  }
+
+  removeTemplateKeyword(keyword: string) {
+    this.templateKeywords.update(keywords => {
+      const index = keywords.indexOf(keyword);
+      if (index < 0) {
+        return keywords;
+      }
+
+      keywords.splice(index, 1);
+      this.announcer.announce(`removed ${keyword} from template form`);
+      return [...keywords];
+    });
+  }
+
+  addTemplateKeyword(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+
+    if (value) {
+      this.templateKeywords.update(keywords => [...keywords, value]);
+      this.announcer.announce(`added ${value} to template form`);
+    }
+
+    event.chipInput!.clear();
   }
 
   private _filter(value: any): any[] {
