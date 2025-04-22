@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CatalogoCategoriaArticuloModel } from '../models/catalogo-categoria-articulo.model';
 import { environment } from 'src/environments/environment';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,12 @@ export class CatalogoCategoriaArticuloService {
   constructor(private http: HttpClient) {
   }
 
-  getAll(): Observable<Array<CatalogoCategoriaArticuloModel>> {
-    return this.http.get<Array<CatalogoCategoriaArticuloModel>>(`${environment.apiUrl}/api/catArticulo/getAll`);
+  getAll(page: number, limit: number): Observable<{ data: Array<CatalogoCategoriaArticuloModel>, total: number }> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+  
+    return this.http.get<{ data: Array<CatalogoCategoriaArticuloModel>, total: number }>(`${environment.apiUrl}/api/catArticulo/getAll`, { params });
   }
 
   getById(id: number): Observable<CatalogoCategoriaArticuloModel> {

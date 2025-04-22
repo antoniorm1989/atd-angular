@@ -99,9 +99,9 @@ export class EntradaSucursalComponent {
             if (articulo.photo)
               this.imageUrl = `${environment.apiUrl}/images/articulos/${articulo.photo}`;
 
-            this.catalogoCategoriaArticuloService.getAll().subscribe({
+            this.catalogoCategoriaArticuloService.getAll(0,1000).subscribe({
               next: (data) => {
-                this.categories = data;
+                this.categories = data.data;
                 var category = this.categories.filter(c => c.id == articulo.cat_articulo_id)
                 if (category.length > 0) {
                   this.f['selectedCategory'].setValue(category[0]);
@@ -125,9 +125,9 @@ export class EntradaSucursalComponent {
         });
 
       } else {
-        this.catalogoCategoriaArticuloService.getAll().subscribe({
+        this.catalogoCategoriaArticuloService.getAll(0, 1000).subscribe({
           next: (data) => {
-            this.categories = data;
+            this.categories = data.data;
           }
         });
       }

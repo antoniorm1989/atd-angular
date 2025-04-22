@@ -1,8 +1,8 @@
-import { Component, ViewChild } from '@angular/core';
-import { Router, NavigationEnd, Event } from '@angular/router';
+import { Component, ViewChild, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { CatalogoArticuloService } from 'src/app/services/catalogo-articulos.service';
 import { CatalogoArticuloModel } from 'src/app/models/catalogo-articulo.model';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { environment } from 'src/environments/environment';
 
@@ -12,31 +12,39 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./catalogo-articulo-list.component.css']
 })
 
-export class CatalogoArticuloListComponent {
+export class CatalogoArticuloListComponent implements OnInit {
 
   hasRecords = false;
   displayedColumns: string[] = ['part_number', 'description', 'cat_articulo_id', 'created', 'modified', 'user', 'status', 'actions'];
   dataSource = new MatTableDataSource<CatalogoArticuloModel>([]);
+  totalItems = 0;
+  pageSize = 10;
+  pageIndex = 0;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  private dataLoaded = false;
 
-  constructor(private catalogoArticuloService: CatalogoArticuloService, private router: Router) {
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url == '/almacenes/catalogos/articulos' && !this.dataLoaded) {
-        this.catalogoArticuloService.getAll().subscribe({
-          next: (data) => {
-            if (data.length > 0) {
-              this.hasRecords = true;
-              this.dataSource = new MatTableDataSource<CatalogoArticuloModel>(data);
-              this.dataSource.paginator = this.paginator;
-              this.dataLoaded = true;
-            }
-          },
-          error: (e) => {
-          }
-        });
+  constructor(private catalogoArticuloService: CatalogoArticuloService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.loadArticulos(this.pageIndex + 1, this.pageSize);
+  }
+
+  loadArticulos(page: number, limit: number) {
+    this.catalogoArticuloService.getAll(page, limit).subscribe({
+      next: (res) => {
+        this.hasRecords = res.data.length > 0;
+        this.dataSource = new MatTableDataSource<CatalogoArticuloModel>(res.data);
+        this.totalItems = res.total;
+      },
+      error: (e) => {
+        console.error('Error cargando artículos', e);
       }
     });
+  }
+  
+  onPageChange(event: PageEvent) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadArticulos(this.pageIndex + 1, this.pageSize);
   }
 
   formatDate(stringDate: string): string {

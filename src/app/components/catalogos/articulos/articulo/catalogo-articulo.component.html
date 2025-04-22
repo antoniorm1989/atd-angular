@@ -151,13 +151,33 @@
                         <div class="form-row one-col">
                             <div class="form-field comment">
                                 <mat-label class="text-1">Comentarios</mat-label>
-                                <mat-label class="text-1-regular"
-                                    *ngIf="isReadOnly">{{this.f['comment'].value}}</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['comment'].value}}</mat-label>
                                 <mat-form-field *ngIf="!isReadOnly">
                                     <input matInput placeholder="Escribe el comentario del artículo"
                                         formControlName="comment">
                                 </mat-form-field>
                             </div>
+                        </div>
+
+                        <div class="form-row one-col" style="gap: 8px; margin-top: 12px;">
+                           <mat-label class="text-1">Etiquetas</mat-label>
+                           <mat-label class="text-1-regular" *ngIf="isReadOnly">
+                                <span *ngFor="let keyword of templateKeywords; let last = last">
+                                    {{ keyword }}<span *ngIf="!last">, </span>
+                                </span>
+                                <span *ngIf="templateKeywords.length == 0">No hay etiquetas</span>
+                            </mat-label>
+                           <mat-form-field *ngIf="!isReadOnly">
+                                <mat-chip-grid #templateChipGrid aria-label="Ingresa palabras clave" [(ngModel)]="templateKeywords" name="keywords">
+                                <mat-chip-row  *ngFor="let keyword of templateKeywords; trackBy: trackByKeyword" (removed)="removeTemplateKeyword(keyword)">
+                                    {{ keyword }}
+                                    <button matChipRemove [attr.aria-label]="'Eliminar palabra: ' + keyword">
+                                    <mat-icon>cancel</mat-icon>
+                                    </button>
+                                </mat-chip-row>
+                                </mat-chip-grid>
+                                <input placeholder="Agrega etiquetas al articulo..." [matChipInputFor]="templateChipGrid" [matChipInputAddOnBlur]="true" [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="addTemplateKeyword($event)" />
+                            </mat-form-field>
                         </div>
                     </div>
                 </div>

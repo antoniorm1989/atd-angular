@@ -4,6 +4,11 @@ import { User } from "./user";
 import { CatalogoUnidadMedidaModel, CatalogoProductoServicioModel } from "./catalogos.model";
 
 
+export interface ArticuloTag {
+  tag: string;
+  datosjson: any | null;
+}
+
 export class CatalogoArticuloModel {
   id: number | undefined;
   part_number: string | undefined;
@@ -27,6 +32,8 @@ export class CatalogoArticuloModel {
   unidad_medida: string | undefined;
   producto_servicio_model: CatalogoUnidadMedidaModel | undefined;
   unidad_medida_model: CatalogoProductoServicioModel | undefined;
+
+  tags: ArticuloTag[] | undefined;
 
   constructor(id?: number) {
     this.id = id;

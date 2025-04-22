@@ -5,10 +5,10 @@ export const environment = {
     apiUrl: 'https://portal.atdtools.com.mx:3000',
     fileFolder: '/Users/antonio.rosales/files/development',
     emisorFactura: {
-        emisor: 'AZUCENA DEL ROCIO ORTIZ BEDOLLA',
-        rfc: 'OIBA910426F38',
-        domicilioFiscal: 'caninas 421 Int: SN Col. Privada Campestre, C.P. 21383, Mexicali, Baja California, México',
-        lugarDeExpidicion: '45079 México',
-        regimenFiscal: '612 - Personas Físicas con Actividades Empresariales y Profesionales'
+        emisor: 'ATD TOOLS',
+        rfc: 'ATO2202016X3',
+        domicilioFiscal: 'BRASIL 2378 Col. ALIANZA PARA LA PRODUCCIÓN, C.P. 21229, Mexicali, Baja California, México',
+        lugarDeExpidicion: '21229',
+        regimenFiscal: '601 - General de Ley Personas Morales'
     }
 };

@@ -138,6 +138,14 @@
     margin-right: 24px;
 }
 
+.catalogo-articulos .mat-mdc-chip.mat-mdc-chip-row{
+    background-color: #BA9400;
+}
+.catalogo-articulos .mat-mdc-chip.mat-mdc-chip-row .mat-mdc-chip-action-label,
+.catalogo-articulos .mat-mdc-chip.mat-mdc-chip-row .mat-icon{
+    color: #fff;
+}
+
 mat-panel-title {
     font-size: 24px;
     font-weight: 500;

@@ -13,8 +13,9 @@ export class CatalogoArticuloService {
   constructor(private http: HttpClient) {
   }
 
-  getAll(): Observable<Array<CatalogoArticuloModel>> {
-    return this.http.get<Array<CatalogoArticuloModel>>(`${environment.apiUrl}/api/articulo/getAll`);
+  getAll(page: number, limit: number): Observable<{ data: CatalogoArticuloModel[], total: number }> {
+    const url = `${environment.apiUrl}/api/articulo/getAll?page=${page}&limit=${limit}`;
+    return this.http.get<{ data: CatalogoArticuloModel[], total: number }>(url);
   }
 
   getAllByCategory(categoryId: number): Observable<Array<CatalogoArticuloModel>> {

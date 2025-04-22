@@ -235,3 +235,9 @@ body, input, textarea, select, button,
 input[formControlName="password"] {
     text-transform: none !important;
 }
+
+
+.mdc-circular-progress__indeterminate-container circle{
+    stroke: #b79200 !important;
+}
+  

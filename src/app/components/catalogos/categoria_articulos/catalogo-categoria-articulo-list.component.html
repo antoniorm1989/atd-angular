@@ -11,8 +11,8 @@
     <div class="container">
         <div *ngIf="!hasRecords" class="container-empty">
             <img src="../../assets/images/empty-list.png" alt="empty logo" class="img">
-            <span class="text">Aún no tienes articulos en el catálogo, para poder ver información favor de agregar una
-                articulo.</span>
+            <span class="text">Aún no tienes artículos en el catálogo, para poder ver información favor de agregar una
+                artículo.</span>
             <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Agregar categoría</button>
         </div>
         <div *ngIf="hasRecords" class="container-list">
@@ -78,8 +78,8 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
 
-            <mat-paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons
-                aria-label="Select page of periodic elements">
+            <mat-paginator [pageSizeOptions]="[10, 20, 50]" [length]="totalItems" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                (page)="onPageChange($event)" showFirstLastButtons>
             </mat-paginator>
         </div>
     </div>

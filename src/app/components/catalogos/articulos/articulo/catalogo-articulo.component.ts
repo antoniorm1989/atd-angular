@@ -13,6 +13,7 @@ import { CatalogoCategoriaArticuloService } from 'src/app/services/catalogo-cate
 import { environment } from 'src/environments/environment';
 import { CatalogosService } from 'src/app/services/catalogos.service';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-articulo',
@@ -44,8 +45,9 @@ export class CatalogoArticuloComponent {
   filteredProductoServicio: Observable<any[]> | undefined;
   filteredUnidadMedida: Observable<any[]> | undefined;
 
-  readonly templateKeywords = signal(['angular', 'how-to', 'tutorial', 'accessibility']);
-  announcer = inject(LiveAnnouncer);
+  templateKeywords: string[] = [];
+
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private catalogoArticuloService: CatalogoArticuloService, private router: Router, private catalogoCategoriaArticuloService: CatalogoCategoriaArticuloService, private _snackBar: MatSnackBar, private catalogosService: CatalogosService,) {
 
@@ -103,6 +105,8 @@ export class CatalogoArticuloComponent {
                   unidad_medida_model: data.unidad_medida_model,
                 });
 
+                this.templateKeywords = (data.tags || []).map(tag => tag.tag);
+
                 if (data.photo)
                   this.imageUrl = `${environment.apiUrl}/images/articulos/${data.photo}`;
 
@@ -120,13 +124,17 @@ export class CatalogoArticuloComponent {
                   }
                 });
 
-                this.catalogoCategoriaArticuloService.getAll().subscribe({
+                this.catalogoCategoriaArticuloService.getAll(0, 1000).subscribe({
                   next: (data) => {
-                    if (data.length > 0) {
-                      this.categories = data;
-                      var category = data.filter(c => c.id == articulo.cat_articulo_id)
-                      if (category.length > 0)
+                    console.log("carga data");
+                    if (data.total > 0) {
+                      console.log("mayor a 0");
+                      this.categories = data.data;
+                      var category = data.data.filter(c => c.id == articulo.cat_articulo_id)
+                      if (category.length > 0){
+                        console.log("category", category);
                         this.f['selectedCategory'].setValue(category[0]);
+                      }
                     }
                   },
                   error: (e) => {
@@ -142,6 +150,34 @@ export class CatalogoArticuloComponent {
                   }
                 });
 
+                this.catalogosService.getProductoServicio().subscribe({
+                  next: (data) => {
+
+                    this.productoServicioList = data;
+                    if(this.f['producto_servicio_model'].value){
+                      var productoServicio = data.filter(p => p.key == this.f['producto_servicio_model'].value.key)
+                      if (productoServicio.length > 0)
+                        this.f['producto_servicio_model'].setValue(productoServicio[0]);
+                    }
+                  },
+                  error: (e) => {
+                    console.error(e);
+                  }
+                });
+            
+                this.catalogosService.getUnidadMedida().subscribe({
+                  next: (data) => {
+                    this.unidadMedidaList = data;
+                    if(this.f['unidad_medida_model'].value){
+                      var unidadMedida = data.filter(p => p.key == this.f['unidad_medida_model'].value.key)
+                      if (unidadMedida.length > 0)
+                        this.f['unidad_medida_model'].setValue(unidadMedida[0]);
+                    }
+                  },
+                  error: (e) => {
+                    console.error(e);
+                  }
+                });
               },
               error: (e) => {
               }
@@ -149,10 +185,10 @@ export class CatalogoArticuloComponent {
           } else {
             this.action = 'new';
             this.title = 'Agregar artículo';
-            this.catalogoCategoriaArticuloService.getAll().subscribe({
+            this.catalogoCategoriaArticuloService.getAll(0, 1000).subscribe({
               next: (data) => {
-                if (data.length > 0) {
-                  this.categories = data;
+                if (data.total > 0) {
+                  this.categories = data.data;
                 }
               },
               error: (e) => {
@@ -163,6 +199,23 @@ export class CatalogoArticuloComponent {
               next: (data) => {
                 this.monedas = data;
                 this.f['moneda'].setValue(data[0]);
+              }
+            });
+
+            this.catalogosService.getProductoServicio().subscribe({
+              next: (data) => {
+                this.productoServicioList = data;
+              },
+              error: (e) => {
+                console.error(e);
+              }
+            });
+            this.catalogosService.getUnidadMedida().subscribe({
+              next: (data) => {
+                this.unidadMedidaList = data;
+              }
+              , error: (e) => {
+                console.error(e);
               }
             });
 
@@ -187,34 +240,6 @@ export class CatalogoArticuloComponent {
       startWith(''),
       map(value => this._filterUnidadMedida(value))
     );
-
-    this.catalogosService.getProductoServicio().subscribe({
-      next: (data) => {
-        this.productoServicioList = data;
-        if(this.f['producto_servicio_model'].value){
-          var productoServicio = data.filter(p => p.key == this.f['producto_servicio_model'].value.key)
-          if (productoServicio.length > 0)
-            this.f['producto_servicio_model'].setValue(productoServicio[0]);
-        }
-      },
-      error: (e) => {
-        console.error(e);
-      }
-    });
-
-    this.catalogosService.getUnidadMedida().subscribe({
-      next: (data) => {
-        this.unidadMedidaList = data;
-        if(this.f['unidad_medida_model'].value){
-          var unidadMedida = data.filter(p => p.key == this.f['unidad_medida_model'].value.key)
-          if (unidadMedida.length > 0)
-            this.f['unidad_medida_model'].setValue(unidadMedida[0]);
-        }
-      },
-      error: (e) => {
-        console.error(e);
-      }
-    });
   }
 
   validarProductoServicio(control: AbstractControl): ValidationErrors | null {
@@ -283,6 +308,11 @@ export class CatalogoArticuloComponent {
     articulo.unidad_medida = this.f['unidad_medida'].value;
     articulo.producto_servicio_model = this.f['producto_servicio_model'].value;
     articulo.unidad_medida_model = this.f['unidad_medida_model'].value;
+    articulo.tags = this.templateKeywords.map(tag => ({
+      tag: tag,
+      datosjson: null
+    }));
+    
 
     if (this.action == 'new') {
       this.catalogoArticuloService.create(articulo).subscribe({
@@ -468,28 +498,24 @@ export class CatalogoArticuloComponent {
     }
   }
 
-  removeTemplateKeyword(keyword: string) {
-    this.templateKeywords.update(keywords => {
-      const index = keywords.indexOf(keyword);
-      if (index < 0) {
-        return keywords;
-      }
-
-      keywords.splice(index, 1);
-      this.announcer.announce(`removed ${keyword} from template form`);
-      return [...keywords];
-    });
-  }
-
   addTemplateKeyword(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
-
-    if (value) {
-      this.templateKeywords.update(keywords => [...keywords, value]);
-      this.announcer.announce(`added ${value} to template form`);
+    if (value && !this.templateKeywords.includes(value)) {
+      this.templateKeywords.push(value);
     }
 
     event.chipInput!.clear();
+  }
+
+  removeTemplateKeyword(keyword: string): void {
+    const index = this.templateKeywords.indexOf(keyword);
+    if (index >= 0) {
+      this.templateKeywords.splice(index, 1);
+    }
+  }
+
+  trackByKeyword(index: number, keyword: string): string {
+    return keyword;
   }
 
   private _filter(value: any): any[] {
