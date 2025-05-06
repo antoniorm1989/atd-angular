@@ -26,7 +26,6 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
 
   ocultarIva = true;
   ocultarRetiene = true;
-  ocultarDescuento = true;
 
   porcentajeIva = 0;
   porcentajeRetiene = 0;
@@ -36,50 +35,45 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     try {
-          this.factura = new FacturaModel();
-          this.factura.receptor = new ReceptorModel();
-          this.factura.receptor.nombre = this.venta?.cliente?.nombre_fiscal;
-          this.factura.receptor.rfc = this.venta?.cliente?.rfc;
-          this.factura.receptor.domicilio_fiscal = `${this.venta?.cliente?.calle} Col. ${this.venta?.cliente?.colonia}, C.P. ${this.venta?.cliente?.cp}, ${this.venta?.cliente?.city?.name}, ${this.venta?.cliente?.state?.name}, ${this.venta?.cliente?.country?.name}`;
-          this.factura.receptor.regimen_fiscal = this.venta?.cliente?.regimen_fiscal?.name;
+      this.factura = new FacturaModel();
+      this.factura.receptor = new ReceptorModel();
+      this.factura.receptor.nombre = this.venta?.cliente?.nombre_fiscal;
+      this.factura.receptor.rfc = this.venta?.cliente?.rfc;
+      this.factura.receptor.domicilio_fiscal = `${this.venta?.cliente?.calle} Col. ${this.venta?.cliente?.colonia}, C.P. ${this.venta?.cliente?.cp}, ${this.venta?.cliente?.city?.name}, ${this.venta?.cliente?.state?.name}, ${this.venta?.cliente?.country?.name}`;
+      this.factura.receptor.regimen_fiscal = this.venta?.cliente?.regimen_fiscal?.name;
 
-          
-          let descuento = 0;
-          this.dataSourceArticulos.data = this.venta?.articulos?.map((a) => {
-            descuento += a.descuento ?? 0;
-            return {
-              unidad: a.unidad_medida_model?.name,
-              producto_servicio: a.producto_servicio_model?.name,
-              cantidad: a.cantidad,
-              descripcion: a.almacen?.articulo?.description,
-              p_unitario: `$${(a.precio_venta ?? 0)}`,
-              p_unitario_number: a.precio_venta,
-              importe: `$${((a.cantidad ?? 0) * (a.precio_venta ?? 0)).toFixed(2)}`,
-            }
-          }) || [];
-          this.factura.formaPago = this.venta?.forma_pago?.name;
-          this.factura.metodoPago = this.venta?.metodo_pago?.name;
-          this.factura.moneda = this.venta?.moneda
-          this.factura.uso_cfdi = this.venta?.uso_cfdi?.name;
 
-          // Totales
-          this.factura.descuento = descuento;
-          this.ocultarDescuento = descuento != 0;
+      this.dataSourceArticulos.data = this.venta?.articulos?.map((a) => {
+        return {
+          unidad: a.unidad_medida_model?.name,
+          producto_servicio: a.producto_servicio_model?.name,
+          cantidad: a.cantidad,
+          descripcion: a.almacen?.articulo?.description,
+          p_unitario: `$${(a.totalConDescuento ?? 0)}`,
+          p_unitario_number: a.totalConDescuento,
+          importe: `$${((a.cantidad ?? 0) * (a.totalConDescuento ?? 0)).toFixed(2)}`,
+        }
+      }) || [];
+      this.factura.formaPago = this.venta?.forma_pago?.name;
+      this.factura.metodoPago = this.venta?.metodo_pago?.name;
+      this.factura.moneda = this.venta?.moneda
+      this.factura.uso_cfdi = this.venta?.uso_cfdi?.name;
 
-          this.factura.porcentajeIva = this.venta?.translada_iva ? (this.venta.translada_iva_porcentaje ?? 0) : 0;
-          this.porcentajeIva = this.factura.porcentajeIva * 100;
-          if(this.factura.porcentajeIva == 0)
-            this.ocultarIva = false;
+      // Totales
+      this.factura.porcentajeIva = this.venta?.translada_iva ? (this.venta.translada_iva_porcentaje ?? 0) : 0;
+      this.porcentajeIva = this.factura.porcentajeIva * 100;
+      if (this.factura.porcentajeIva == 0)
+        this.ocultarIva = false;
 
-          this.factura.porcentajeRetiene = this.venta?.retiene_iva ? (this.venta.retiene_iva_porcentaje ?? 0) : 0;
-          this.porcentajeRetiene = this.factura.porcentajeRetiene * 100;
-          if(this.factura.porcentajeRetiene == 0)
-            this.ocultarRetiene = false;
+      this.factura.porcentajeRetiene = this.venta?.retiene_iva ? (this.venta.retiene_iva_porcentaje ?? 0) : 0;
+      this.porcentajeRetiene = this.factura.porcentajeRetiene * 100;
+      if (this.factura.porcentajeRetiene == 0)
+        this.ocultarRetiene = false;
 
-          this.factura.iva = this.calcularIva();
-          this.factura.retiene = this.calcularRetiene();
-          this.factura.subTotal = this.calcularSubTotal();
-          this.factura.total = this.calcularTotal();
+      this.factura.iva = this.calcularIva();
+      this.factura.retiene = this.calcularRetiene();
+      this.factura.subTotal = this.calcularSubTotal();
+      this.factura.total = this.calcularTotal();
 
 
       /*this.ventaService.getVentaById(this.ventaId).subscribe({
@@ -145,7 +139,7 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
     }
   }
 
-  calcularSubTotal(): float{
+  calcularSubTotal(): float {
     let subTotal = 0;
     this.dataSourceArticulos.data.forEach(articulo => {
       subTotal += (articulo.p_unitario_number ?? 0) * (articulo.cantidad ?? 0);
@@ -180,7 +174,7 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
   }
 
   calcularTotal(): float {
-    return (this.factura?.subTotal ?? 0) - (this.factura?.descuento ?? 0) + (this.factura?.iva ?? 0) - (this.factura?.retiene ?? 0);
+    return (this.factura?.subTotal ?? 0) + (this.factura?.iva ?? 0) - (this.factura?.retiene ?? 0);
   }
 
   getFormattedDate(): string {

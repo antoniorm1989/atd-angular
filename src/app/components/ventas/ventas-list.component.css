@@ -163,7 +163,7 @@
     background-color: #ffffff;
     padding: 0px 24px;
     display: grid;
-    grid-template-columns: 30px 200px 1fr 180px 180px 120px;
+    grid-template-columns: 30px 200px 200px 1fr 150px 150px 150px;
     column-gap: 12px;
 }
 

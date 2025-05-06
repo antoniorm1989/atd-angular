@@ -20,15 +20,31 @@
                 <form [formGroup]="form" class="filters">
                     <i class="icon-filter fa-solid fa-filter"></i>
                     <div class="form-field">
-                        <mat-label class="text-1">Estatus</mat-label>
+                        <mat-label class="text-1">Estatus Factura</mat-label>
                         <mat-form-field style="width: 100%;" class="mini">
-                            <mat-select formControlName="estatus" (selectionChange)="onSelectChangeEstatus($event)">
+                            <mat-select formControlName="factura_estatus" (selectionChange)="onSelectChangeFacturaEstatus($event)">
                                 <mat-select-trigger>
-                                    <span>{{ this.f['estatus'].value }}</span>
-                                    <mat-icon style="position: absolute; right: 16px;" matSuffix *ngIf="this.f['estatus'].value" (click)="clearSelectionEstatus()">clear</mat-icon>
+                                    <span>{{ facturaEstatusLabels[this.f['factura_estatus'].value] || '' }}</span>
+                                    <mat-icon style="position: absolute; right: 16px;" matSuffix *ngIf="this.f['factura_estatus'].value" (click)="clearSelectionFacturaEstatus()">clear</mat-icon>
                                 </mat-select-trigger>
-                                <mat-option value="creada">Creada</mat-option>
-                                <mat-option value="timbrada">Timbrada</mat-option>
+                                <mat-option value="1">Por-facturar</mat-option>
+                                <mat-option value="4">Facturada</mat-option>
+                                <mat-option value="3">Pre-Cancelada</mat-option>
+                                <mat-option value="2">Cancelada</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="form-field">
+                        <mat-label class="text-1">Estatus venta	</mat-label>
+                        <mat-form-field style="width: 100%;" class="mini">
+                            <mat-select formControlName="venta_estatus" (selectionChange)="onSelectChangeVentaEstatus($event)">
+                                <mat-select-trigger>
+                                    <span>{{ ventaEstatusLabels[this.f['venta_estatus'].value] || '' }}</span>
+                                    <mat-icon style="position: absolute; right: 16px;" matSuffix *ngIf="this.f['venta_estatus'].value" (click)="clearSelectionVentaEstatus()">clear</mat-icon>
+                                </mat-select-trigger>
+                                <mat-option value="1">Parcialmente</mat-option>
+                                <mat-option value="3">Despachada</mat-option>
+                                <mat-option value="2">Cancelada</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>
@@ -62,8 +78,8 @@
                             <mat-datepicker #picker2></mat-datepicker>
                         </mat-form-field>
                     </div>
-                    <div class="form-field">
-                        <mat-slide-toggle formControlName="backOrder" (change)="onToggleChange($event)">Back Order</mat-slide-toggle>
+                    <div class="form-field" style="display: contents;">
+                        <mat-slide-toggle formControlName="backOrder" (change)="onToggleChange($event)" style="margin: auto;">Back Order</mat-slide-toggle>
                     </div>
                 </form>
 

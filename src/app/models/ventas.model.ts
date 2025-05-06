@@ -53,6 +53,8 @@ export class VentaArticuloModel {
   id: number | undefined;
   precio_venta: float | undefined;
   descuento: float | undefined;
+  tipoDescuento: string | undefined;
+  totalConDescuento: float | undefined;
   cantidad: number | undefined;
   comentarios: string | undefined;
   created_at: Date | undefined;

@@ -48,16 +48,16 @@ export class VentaComponent {
   usoCfdiList: CatalogoUsoCfdiModel[] = [];
   selectedUsoCfdi!: CatalogoUsoCfdiModel;
 
-  motivoCancelacionList: CatalogoMotivoCancelacionModel [] = [{
+  motivoCancelacionList: CatalogoMotivoCancelacionModel[] = [{
     clave: '01',
     motivo: 'Comprobante emitido con errores con relación'
-  },{
+  }, {
     clave: '02',
     motivo: 'Comprobante emitido con errores sin relación'
-  },{
+  }, {
     clave: '03',
     motivo: 'No se llevó; a cabo la operación'
-  },{
+  }, {
     clave: '04',
     motivo: 'Operación nominativa relacionada en la factura global'
   }];
@@ -79,7 +79,7 @@ export class VentaComponent {
   selectedCondicionPago = "contado";
 
   hasRecords = false;
-  displayedColumns: string[] = ['numero_parte', 'descripcion', 'total', 'backorder', 'almacen', 'precio_unitario', 'descuento', 'importe', 'unidad_medida', 'importe_iva', 'importe_retencion', 'actions'];
+  displayedColumns: string[] = ['almacen', 'numero_parte', 'descripcion', 'backorder', 'total', 'totalConDescuento', 'importe', 'unidad_medida', 'importe_iva', 'importe_retencion', 'actions'];
   displayedColumnsCancelacion: string[] = ['numero_parte', 'descripcion', 'total', 'backorder', 'almacen'];
   dataSourceArticulos = new MatTableDataSource<VentaArticuloModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -90,7 +90,6 @@ export class VentaComponent {
   @ViewChild(MatPaginator) paginatorDocumentos!: MatPaginator;
 
   subTotal: number = 0;
-  descuento: number = 0;
   iva: number = 0;
   retencion: number = 0;
   total: number = 0;
@@ -105,6 +104,7 @@ export class VentaComponent {
   comentarioHasChanged: boolean = false;
 
   facturaEstatusList: FacturaStatus[] | undefined;
+  ventaEstatusList: FacturaStatus[] | undefined;
 
   constructor(public route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -207,6 +207,8 @@ export class VentaComponent {
                 this.obtenerDocumentos();
 
                 this.obtenerFacturasEstatus();
+
+                this.obtenerVentasEstatus();
 
                 this.route.queryParams.subscribe(params => {
                   switch (params['action']) {
@@ -332,7 +334,7 @@ export class VentaComponent {
     }
   }
 
-  openDialogSuccess(comment: string): void {
+  openDialogSuccess(comment: string, callbackFunction: () => void = () => { }): void {
     const dialogRef = this.dialog.open(DialogSuccessComponent, {
       width: '710px',
       data: { title: '¡ En hora buena !', content: comment }
@@ -340,6 +342,7 @@ export class VentaComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('Dialog closed');
+      callbackFunction();
     });
   }
 
@@ -370,7 +373,7 @@ export class VentaComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result == 'ok'){
+      if (result == 'ok') {
         this.loadingService.show();
         this.ventaService.cancelarVenta(this.id, this.fCancelacion['fecha_cancelacion'].value, this.fCancelacion['motivo_cancelacion'].value, this.fCancelacion['folioSustituto'].value, this.editData?.factura_cfdi_uid || "").subscribe({
           next: () => {
@@ -380,7 +383,7 @@ export class VentaComponent {
           },
           error: (e) => {
             this.loadingService.hide();
-            this.openDialogError(`Hubo un error al crear la factura: ${e.error.detalles}`)
+            this.openDialogError(`Hubo un error al crear la factura: ${e.error.error}`)
           }
         });
       }
@@ -407,14 +410,14 @@ export class VentaComponent {
 
   formatTime(dateInput: string | Date | undefined): string {
     if (!dateInput) return "N/A"; // Handle undefined or empty values
-  
+
     const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
-  
+
     if (isNaN(date.getTime())) return "Invalid Time"; // Handle invalid date cases
-  
+
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
-  
+
     return `${hours}:${minutes}`; // e.g., 12:44
   }
 
@@ -646,20 +649,20 @@ export class VentaComponent {
       this.hasRecords = false;
   }
 
-  calcularImporteByArticulo(costo: number, cantidad: number, descuento: number): string {
-    return this.formatearComoMoneda((costo * cantidad) - descuento);
+  calcularImporteByArticulo(costo: number, cantidad: number): string {
+    return this.formatearComoMoneda(costo * cantidad);
   }
 
-  calcularImporteByArticuloIva(costo: number, cantidad: number, descuento: number): string {
+  calcularImporteByArticuloIva(costo: number, cantidad: number): string {
     if (this.f['translada_iva'].value == true) {
-      return this.formatearComoMoneda((((costo * cantidad) - descuento)) * this.f['translada_iva_porcentaje'].value);
+      return this.formatearComoMoneda(((costo * cantidad)) * this.f['translada_iva_porcentaje'].value);
     } else
       return this.formatearComoMoneda(0);
   }
 
-  calcularImporteByArticuloRetencion(costo: number, cantidad: number, descuento: number): string {
+  calcularImporteByArticuloRetencion(costo: number, cantidad: number): string {
     if (this.f['retiene_iva'].value == true) {
-      return this.formatearComoMoneda((((costo * cantidad) - descuento)) * this.f['retiene_iva_porcentaje'].value);
+      return this.formatearComoMoneda((costo * cantidad) * this.f['retiene_iva_porcentaje'].value);
     } else
       return this.formatearComoMoneda(0);
   }
@@ -682,7 +685,8 @@ export class VentaComponent {
 
   openArticuloVentaModalComponent() {
     const dialogRef = this.dialog.open(ArticuloVentaModalComponent, {
-      height: '880px',
+      height: '900px',
+      width: '1100px',
       data: {
         articulos: this.dataSourceArticulos.data,
         clienteId: this.f['cliente'].value ? this.f['cliente'].value.id : 0
@@ -702,7 +706,8 @@ export class VentaComponent {
   editArticuloVentaModalComponent(ventaArticuloModel: VentaArticuloModel) {
     ventaArticuloModel.ventaId = this.id;
     const dialogRef = this.dialog.open(ArticuloVentaModalComponent, {
-      height: '880px',
+      height: '900px',
+      width: '1100px',
       data: {
         articulo: ventaArticuloModel,
         clienteId: this.f['cliente'].value ? this.f['cliente'].value.id : 0
@@ -728,7 +733,7 @@ export class VentaComponent {
   despacharArticuloVentaModalComponent(ventaArticuloModel: VentaArticuloModel) {
     ventaArticuloModel.ventaId = this.id;
     const dialogRef = this.dialog.open(ArticuloVentaModalComponent, {
-      height: '880px',
+      height: '600px',
       data: {
         articulo: ventaArticuloModel,
         isDespachar: true
@@ -736,13 +741,16 @@ export class VentaComponent {
     });
 
     dialogRef.afterClosed().subscribe(ventaArticuloModel => {
-      //this.router.navigate(['ventas']);
+      if (ventaArticuloModel != undefined && ventaArticuloModel != "") {
+        this.openDialogSuccess(`Se ha despachado el artículo con éxito.`, () => {
+          document.location.reload();
+        });
+      }
     });
   }
 
   calcularTotales() {
     this.calcularSubTotal();
-    this.calcularDescuento();
     this.calcularIva();
     this.calcularRetencion();
     this.calcularTotal();
@@ -751,14 +759,7 @@ export class VentaComponent {
   calcularSubTotal() {
     this.subTotal = 0;
     this.dataSourceArticulos.data.forEach(articulo => {
-      this.subTotal += (articulo.precio_venta ?? 0) * (articulo.cantidad ?? 0);
-    });
-  }
-
-  calcularDescuento() {
-    this.descuento = 0;
-    this.dataSourceArticulos.data.forEach(articulo => {
-      this.descuento += articulo.descuento ?? 0;
+      this.subTotal += (articulo.totalConDescuento ?? 0) * (articulo.cantidad ?? 0);
     });
   }
 
@@ -766,7 +767,7 @@ export class VentaComponent {
     this.iva = 0;
     if (this.f['translada_iva'].value == true)
       this.dataSourceArticulos.data.forEach(articulo => {
-        this.iva += ((articulo.precio_venta ?? 0) * (articulo.cantidad ?? 0)) * this.f['translada_iva_porcentaje'].value;
+        this.iva += ((articulo.totalConDescuento ?? 0) * (articulo.cantidad ?? 0)) * this.f['translada_iva_porcentaje'].value;
       });
   }
 
@@ -774,12 +775,12 @@ export class VentaComponent {
     this.retencion = 0;
     if (this.f['retiene_iva'].value == true)
       this.dataSourceArticulos.data.forEach(articulo => {
-        this.retencion += ((articulo.precio_venta ?? 0) * (articulo.cantidad ?? 0)) * this.f['retiene_iva_porcentaje'].value;
+        this.retencion += ((articulo.totalConDescuento ?? 0) * (articulo.cantidad ?? 0)) * this.f['retiene_iva_porcentaje'].value;
       });
   }
 
   calcularTotal() {
-    this.total = this.subTotal - this.descuento + this.iva - this.retencion;
+    this.total = this.subTotal + this.iva - this.retencion;
   }
 
   onClienteSelectionChange(event: any) {
@@ -966,14 +967,25 @@ export class VentaComponent {
     });
   }
 
+  obtenerVentasEstatus() {
+    this.ventaService.obtenerVentaEstatus(this.id).subscribe({
+      next: (data) => {
+        this.ventaEstatusList = data;
+      },
+      error: (e) => {
+        console.error('Error al obtener los estatus de las ventas:', e);
+      }
+    });
+  }
+
   isFacturada(): boolean {
-    if(this.editData && this.editData.factura_estatus && (this.editData.factura_estatus.estatus === 'Facturada'))
+    if (this.editData && this.editData.factura_estatus && (this.editData.factura_estatus.estatus === 'Facturada'))
       return true;
     return false;
   }
 
   isCancelada(): boolean {
-    if(this.editData && this.editData.factura_estatus && (this.editData.factura_estatus.estatus === 'Cancelada' || this.editData.factura_estatus.estatus === 'Pre-Cancelada'))
+    if (this.editData && this.editData.factura_estatus && (this.editData.factura_estatus.estatus === 'Cancelada' || this.editData.factura_estatus.estatus === 'Pre-Cancelada'))
       return true;
     return false;
   }
@@ -985,7 +997,7 @@ export class VentaComponent {
   displayClienteFn(cliente: any): string {
     return cliente && cliente.cliente ? cliente.cliente : '';
   }
-  
+
 }
 
 @Component({

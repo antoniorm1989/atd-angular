@@ -86,7 +86,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
     private catalogosService: CatalogosService,
     private catalogoArticuloService: CatalogoArticuloService,
     private dialog: MatDialog,
-    private ventaService: VentaService,) {
+    private ventaService: VentaService) {
 
     this.form = this.formBuilder.group({
       tipoAlmacen: ['almacen'],
@@ -102,7 +102,8 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
       numero_identificacion_fiscal: [''],
       unidad_medida: ['producto'],
       producto_servicio_model: [null, Validators.required, [this.validarProductoServicio.bind(this)]],
-      unidad_medida_model: [null, Validators.required, [this.validarUnidadMedida.bind(this)]]
+      unidad_medida_model: [null, Validators.required, [this.validarUnidadMedida.bind(this)]],
+      tipoDescuento: ['fijo'],
     });
 
     this.form.controls['precio_venta'].disable();
@@ -143,6 +144,24 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     try {
+      this.catalogosService.getProductoServicio().subscribe({
+        next: (data) => {
+          this.productoServicioList = data;
+        },
+        error: (e) => {
+          console.error(e);
+        }
+      });
+
+      this.catalogosService.getUnidadMedida().subscribe({
+        next: (data) => {
+          this.unidadMedidaList = data;
+        },
+        error: (e) => {
+          console.error(e);
+        }
+      });
+
       this.catalogoAlmacenesService.getAll().subscribe({
         next: (data) => {
           this.almacenes = data;
@@ -189,26 +208,12 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         this.f['producto_servicio_model'].disable();
         this.f['unidad_medida_model'].disable();
 
-        this.form.controls['precio_venta'].enable();
-        this.form.controls['descuento'].enable();
+        this.form.controls['precio_venta'].disable();
+        this.form.controls['descuento'].disable();
       }
 
-      this.catalogosService.getProductoServicio().subscribe({
-        next: (data) => {
-          this.productoServicioList = data;
-        },
-        error: (e) => {
-          console.error(e);
-        }
-      });
-
-      this.catalogosService.getUnidadMedida().subscribe({
-        next: (data) => {
-          this.unidadMedidaList = data;
-        },
-        error: (e) => {
-          console.error(e);
-        }
+      this.form.get('tipoDescuento')?.valueChanges.subscribe(value => {
+        this.calcularSubTotal();
       });
 
     } catch (error) {
@@ -330,7 +335,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
   }
 
   calcularSubTotal() {
-    this.subtotal = ((this.f['precio_venta'].value * this.f['qty'].value) - this.f['descuento'].value);
+    this.subtotal = ((this.calcularTotalConDescuento() * this.f['qty'].value));
   }
 
   onRadioChange(event: MatRadioChange) {
@@ -401,6 +406,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
 
   onOptionSelected(partNumber: string) {
     try {
+
       this.selectedArticle = this.getArticuloByPartNumber(partNumber);
 
       if (!this.selectedArticle) {
@@ -418,11 +424,14 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         this.imageUrl = `${environment.apiUrl}/images/articulos/${this.selectedArticle.photo}`;
       }
 
-      if (this.clienteId !== 0 && this.selectedAlmacen?.id) {
+      this.actualizarDatosArticulo();
+      this.calcularSubTotal();
+
+      /*if (this.clienteId !== 0 && this.selectedAlmacen?.id) {
         this.catalogoArticuloService.getAllGroupedByCategoryByAlmacen(this.selectedAlmacen.id, this.clienteId).subscribe({
           next: (data) => {
             if (data?.length > 0) {
-              const articulos = data[0].articulos || [];
+              const articulos = data.flatMap(group => group.articulos || []);
               const articuloEncontrado = articulos.find(art => art.id === this.selectedArticle?.id);
               if (articuloEncontrado) {
                 this.selectedArticle = articuloEncontrado;
@@ -437,7 +446,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
       } else {
         this.actualizarDatosArticulo();
         this.calcularSubTotal();
-      }
+      }*/
     } catch (error) {
       console.error('Error en onOptionSelected:', error);
     }
@@ -493,7 +502,9 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         let ventaArticuloModel = new VentaArticuloModel();
         ventaArticuloModel.inventory_almacen_id = this.inventory_almacen_id;
         ventaArticuloModel.precio_venta = this.f['precio_venta'].value;
+        ventaArticuloModel.totalConDescuento = this.calcularTotalConDescuento();
         ventaArticuloModel.descuento = this.f['descuento'].value;
+        ventaArticuloModel.tipoDescuento = this.f['tipoDescuento'].value;
         ventaArticuloModel.cantidad = this.f['qty'].value;
         ventaArticuloModel.backorder = this.f['backorder'].value;
         ventaArticuloModel.comentarios = this.f['comentarios'].value;
@@ -502,6 +513,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         ventaArticuloModel.unidad_medida = this.f['unidad_medida'].value;
         ventaArticuloModel.producto_servicio_model = this.f['producto_servicio_model'].value;
         ventaArticuloModel.unidad_medida_model = this.f['unidad_medida_model'].value;
+
 
         if (this.selectedAlmacen) {
           let inventoryAlmacenModel = new InventoryAlmacenModel();
@@ -557,6 +569,22 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
     }
   }
 
+  calcularTotalConDescuento(): number {
+    const precio = this.form.get('precio_venta')?.value || 0;
+    const descuento = this.form.get('descuento')?.value || 0;
+    const tipoDescuento = this.form.get('tipoDescuento')?.value || 'fijo';
+  
+    let total = precio;
+  
+    if (tipoDescuento === 'fijo') {
+      total = precio - descuento;
+    } else if (tipoDescuento === 'porcentaje') {
+      total = precio - (precio * (descuento / 100));
+    }
+  
+    return parseFloat(total.toFixed(2));
+  }
+
   private actualizarDatosArticulo() {
 
     this.form.patchValue({
@@ -565,7 +593,10 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
       unidad_medida: this.isEditing ? this.ventaArticuloModel?.unidad_medida : this.selectedArticle?.unidad_medida,
       producto_servicio_model: this.isEditing ? this.ventaArticuloModel?.producto_servicio_model : this.selectedArticle?.producto_servicio_model,
       unidad_medida_model: this.isEditing ? this.ventaArticuloModel?.unidad_medida_model : this.selectedArticle?.unidad_medida_model,
+      descuento: this.isEditing ? this.ventaArticuloModel?.descuento : this.selectedArticle?.descuento,
+      tipoDescuento: this.isEditing ? this.ventaArticuloModel?.tipoDescuento : this.selectedArticle?.tipoDescuento,
     });
+
 
     if (this.isEditing) {
       var productoServicio = this.productoServicioList.filter(p => p.key == this.f['producto_servicio_model'].value.key)
@@ -576,7 +607,6 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
       if (unidadMedida.length > 0)
         this.f['unidad_medida_model'].setValue(unidadMedida[0]);
     } else {
-
       if (this.f['unidad_medida_model'].value && this.f['unidad_medida_model'].value.key) {
         var unidadMedida = this.unidadMedidaList.filter(p => p.key == this.f['unidad_medida_model'].value.key)
         if (unidadMedida.length > 0)

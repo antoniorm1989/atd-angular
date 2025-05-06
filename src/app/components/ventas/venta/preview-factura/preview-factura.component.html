@@ -114,7 +114,6 @@
             <!--TOTALES-->
             <div style="height: 24px;"></div>
             <div style="font-weight: bold; text-align: end;" class="texto">SUBTOTAL: {{formatearComoMoneda(factura?.subTotal)}}</div>
-            <div *ngIf="ocultarDescuento" style="font-weight: bold; text-align: end;" class="texto">DESCUENTO: {{formatearComoMoneda(factura?.descuento)}}</div>
             <div *ngIf="ocultarIva" style="font-weight: bold; text-align: end;" class="texto">+ IVA (%{{porcentajeIva}}): {{formatearComoMoneda(factura?.iva)}}</div>
             <div *ngIf="ocultarRetiene"  style="font-weight: bold; text-align: end;" class="texto">- RETENCION (%{{porcentajeRetiene}}): {{formatearComoMoneda(factura?.retiene)}}</div>
             <div style="font-weight: bold; text-align: end;" class="texto">TOTAL: {{formatearComoMoneda(factura?.total)}}</div>

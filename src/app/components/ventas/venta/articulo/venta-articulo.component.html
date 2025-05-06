@@ -4,7 +4,7 @@
 
     <div class="container">
         <form [formGroup]="form"  (ngSubmit)="onAdd()">
-            <div class="form-row" style="grid-template-columns: 1fr 150px;">
+            <div class="form-row" style="grid-template-columns: 1fr 150px 150px;">
                 <div class="form-row one-col">
                     <div class="form-row" style="grid-template-columns: 1fr;">
                         <div style="padding: 0px 32px 0px 0px;">
@@ -58,39 +58,8 @@
                     </div>
                     <img class="photo" *ngIf="imageUrl" [src]="imageUrl">
                 </div>
-            </div>
-            <div style="height: 24px;"></div>
-            <div class="form-row" style="grid-template-columns: 180px 180px 200px 2fr; gap: 12px;">
-                <div class="form-field" style="margin-top: 0px;">
-                    <mat-label class="text-1" >Precio venta*</mat-label>
-                    <mat-form-field floatLabel="always">
-                        <input matInput type="number" class="example-right-align" placeholder="0" formControlName="precio_venta" min="0" step="0.01" (keypress)="validarDecimal($event)" (change)="calcularSubTotal()">
-                        <span matTextPrefix>$&nbsp;</span>
-                    </mat-form-field>
-                </div>
-                <div class="form-field" style="margin-top: 0px;">
-                    <mat-label class="text-1" >Descuento</mat-label>
-                    <mat-form-field floatLabel="always">
-                        <input matInput type="number" class="example-right-align" placeholder="0" formControlName="descuento" min="0" step="0.01" (keypress)="validarDecimal($event)" (change)="calcularSubTotal()">
-                        <span matTextPrefix>$&nbsp;</span>
-                    </mat-form-field>
-                </div>
-                <div style="grid-template-columns: 1fr">
-                    <mat-label class="text-1" style="margin-left: 44px;">Cantidad</mat-label>
-                    <div class="container-agregar-retirar">
-                        <button type="button" color="primary" mat-mini-fab (click)="restarQty()">
-                            <mat-icon>remove</mat-icon>
-                        </button>
-                        <mat-form-field>
-                            <input type="number" matInput formControlName="qty" [ngClass]="{ 'is-invalid': submitted && f['qty'].errors }" required (change)="calcularSubTotal()">
-                        </mat-form-field>
-                        <button type="button" color="primary" mat-mini-fab (click)="agregarQty()">
-                            <mat-icon>add</mat-icon>
-                        </button>
-                    </div>
-                </div>
-                <div style="display: flex; grid-column-gap: 4px; position: relative; justify-content: center; align-items: center;">
-                    <div class="stock_indicator" style="max-width: 100px;">
+                <div style="display: grid; grid-template-columns: 1fr; align-items: center; margin: auto; width: 100%; height: 100%; align-content: center; grid-row-gap: 20px;">
+                    <div class="stock_indicator">
                         <span class="title-stock">Stock</span>
                         <span class="stock">{{stock}}</span>
                     </div>
@@ -104,13 +73,57 @@
                     </div>
                 </div>
             </div>
-            <div class="form-row" style="grid-template-columns: max-content 1fr; column-gap: 12px;">
-                <span style="height: 0px;padding: 8px 0px;" class="text-1">Subtotal</span>
-                <div class="resumen-value">{{formatearComoMoneda(subtotal)}}</div>
-            </div>
+            <div style="height: 24px;"></div>
+            <div class="form-row" style="grid-template-columns: 120px 220px 175px 1fr 150px 176px; grid-column-gap: 39px;">
+                <div class="form-field" style="margin-top: 0px;">
+                    <mat-label class="text-1" >Precio venta*</mat-label>
+                    <mat-form-field floatLabel="always">
+                        <input matInput type="number" class="example-right-align" placeholder="0" formControlName="precio_venta" min="0" step="0.01" (keypress)="validarDecimal($event)" (change)="calcularSubTotal()">
+                        <span matTextPrefix>$&nbsp;</span>
+                    </mat-form-field>
+                </div>
+                <div style="display: grid; grid-template-columns: 128px 80px; grid-column-gap: 12px;">
+                    <div class="form-field" style="margin-top: 0px;">
+                      <mat-label class="text-1">Descuento</mat-label>
+                      <mat-form-field floatLabel="always">
+                        <input matInput type="number" class="example-right-align" placeholder="0" formControlName="descuento" min="0" step="0.01" (keypress)="validarDecimal($event)" (change)="calcularSubTotal()">
+                        <span matTextPrefix *ngIf="form.get('tipoDescuento')?.value === 'fijo'">$&nbsp;</span>
+                        <span matSuffix *ngIf="form.get('tipoDescuento')?.value === 'porcentaje'">%</span>
+                      </mat-form-field>
+                    </div>
+                    <mat-button-toggle-group formControlName="tipoDescuento" name="tipoDescuento" aria-label="Tipo de Descuento" class="tipo-descuento-toggle" style="height: 48px; margin: auto; transform: none;">
+                      <mat-button-toggle value="fijo" style="width: 40px;">$</mat-button-toggle>
+                      <mat-button-toggle value="porcentaje" style="width: 40px;">%</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
+                <div class="form-row" style="grid-template-columns: 1fr; column-gap: 12px;">
+                    <span style="height: 0px;" class="text-1">Total con descuento</span>
+                    <div class="resumen-value">${{ calcularTotalConDescuento() }}</div>
+                </div>   
+                <div></div>
+                <div style="grid-template-columns: 1fr;">
+                    <mat-label class="text-1" style="margin-left: 44px;">Cantidad</mat-label>
+                    <div class="container-agregar-retirar">
+                        <button type="button" color="primary" mat-mini-fab (click)="restarQty()">
+                            <mat-icon>remove</mat-icon>
+                        </button>
+                        <mat-form-field>
+                            <input type="number" matInput formControlName="qty" [ngClass]="{ 'is-invalid': submitted && f['qty'].errors }" required (change)="calcularSubTotal()">
+                        </mat-form-field>
+                        <button type="button" color="primary" mat-mini-fab (click)="agregarQty()">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-row" style="grid-template-columns: 1fr; column-gap: 12px;">
+                    <span style="height: 0px;" class="text-1">Subtotal</span>
+                    <div class="resumen-value">{{formatearComoMoneda(subtotal)}}</div>
+                </div>
+            </div>            
+
             <div style="height: 24px;"></div>
             <div class="form-field">
-                <mat-form-field>
+                <mat-form-field style="height: 100px;">
                     <mat-label>Comentarios</mat-label>
                     <textarea matInput formControlName="comentarios" rows="2"></textarea>
                 </mat-form-field>    
@@ -138,7 +151,7 @@
                     </mat-form-field>
                 </div>
             </div>
-            <div class="form-row one-col">
+            <div *ngIf="(isDespachar == false)" class="form-row one-col">
                 <div class="form-field">
                     <mat-form-field class="example-full-width">
                         <mat-label>Producto o servicio</mat-label>
@@ -150,7 +163,7 @@
                         </mat-autocomplete>
                       </mat-form-field>
                 </div>
-                <div class="form-field">
+                <div *ngIf="(isDespachar == false)" class="form-field">
                     <mat-form-field class="example-full-width">
                         <mat-label>Unidad de medida</mat-label>
                         <input type="text" matInput formControlName="unidad_medida_model" [matAutocomplete]="autoUnidadMedida" placeholder="Buscar unidad de medida" required>

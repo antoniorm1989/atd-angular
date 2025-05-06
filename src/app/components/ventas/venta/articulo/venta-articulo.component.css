@@ -2,9 +2,6 @@ mat-sidenav-content {
     background-color: #F7F7F7;
 }
 
-.venta-articulo{
-    width: 850px;
-}
 .venta-articulo .container .form-row {
     justify-content: space-between;
     display: grid;
@@ -104,8 +101,8 @@ mat-panel-description {
 }
 
 .venta-articulo .column-photo {
-    padding: 8px 0px 0px 8px;
     align-content: center;
+    margin: auto;
 }
 
 .venta-articulo .empty-image-container {
@@ -316,8 +313,8 @@ mat-panel-description {
 .venta-articulo .back-order-info{
     position: absolute;
     line-height: 1px;
-    top: 78px;
-    right: 0px;
+    top: 240px;
+    right: 24px;
     padding: 0px 0px 0px 60px;
     text-align: end;
 }

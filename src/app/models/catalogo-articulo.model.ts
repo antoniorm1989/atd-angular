@@ -27,6 +27,8 @@ export class CatalogoArticuloModel {
   costo_importado: number | undefined;
   precio_venta: number | undefined;
   moneda: CatalogoMonedaModel | undefined;
+  descuento: number | undefined;
+  tipoDescuento: string | undefined;
 
   numero_identificacion_fiscal: string | undefined;
   unidad_medida: string | undefined;

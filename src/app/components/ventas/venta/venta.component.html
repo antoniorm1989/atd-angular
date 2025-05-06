@@ -53,14 +53,13 @@
             </td>
         </ng-container>
 
-
         <div class="toolbar-breadcrumb">
             <span class="link-breadcrumb" (click)="navigate('ventas')">Facturación</span>
             <span> / </span>
             <span class="breadcrumb-item" style="margin-right: auto;">{{title}}</span>
 
-            <button style="margin-left: unset;" *ngIf="isReadOnly && (isFacturada()  || isCancelada())" type="button" mat-button class="btn" (click)="descargarFacturaPDF()" ><mat-icon>file_download</mat-icon>Factur PDF</button>
-            <button style="margin-left: unset;" *ngIf="isReadOnly && (isFacturada()  || isCancelada())" type="button" mat-button class="btn" (click)="descargarFacturaXML()" ><mat-icon>file_download</mat-icon>Factur XML</button>
+            <button style="margin-left: unset;" *ngIf="isReadOnly && (isFacturada()  || isCancelada())" type="button" mat-button class="btn" (click)="descargarFacturaPDF()" ><mat-icon>file_download</mat-icon>Factura PDF</button>
+            <button style="margin-left: unset;" *ngIf="isReadOnly && (isFacturada()  || isCancelada())" type="button" mat-button class="btn" (click)="descargarFacturaXML()" ><mat-icon>file_download</mat-icon>Factura XML</button>
         </div>
     </div>
     <div class="container">
@@ -162,6 +161,11 @@
                                 </div>
                                 <table *ngIf="hasRecords" class="table" mat-table [dataSource]="dataSourceArticulos" style="margin-top: 24px;">
     
+                                    <ng-container matColumnDef="almacen">
+                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Almacen</th>
+                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen.almacen.name}}</td>
+                                    </ng-container>
+    
                                     <ng-container matColumnDef="numero_parte">
                                         <th mat-header-cell *matHeaderCellDef style="text-align: center;">#Parte</th>
                                         <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen.articulo.part_number}}</td>
@@ -179,12 +183,7 @@
                                             </div>
                                         </td>
                                     </ng-container>
-        
-                                    <ng-container matColumnDef="total">
-                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Total</th>
-                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.cantidad}}</td>
-                                    </ng-container>
-        
+    
                                     <ng-container matColumnDef="backorder">
                                         <th mat-header-cell *matHeaderCellDef style="text-align: center;">Back order</th>
                                         <td mat-cell *matCellDef="let element" style="text-align: center;">
@@ -199,24 +198,19 @@
                                         </td>
                                     </ng-container>
         
-                                    <ng-container matColumnDef="almacen">
-                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Almacen</th>
-                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen.almacen.name}}</td>
+                                    <ng-container matColumnDef="total">
+                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Cantidad</th>
+                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.cantidad}}</td>
                                     </ng-container>
         
-                                    <ng-container matColumnDef="precio_unitario">
-                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Precio venta</th>
-                                        <td mat-cell *matCellDef="let element" style="text-align: center;">${{element.precio_venta}}</td>
-                                    </ng-container>
-        
-                                    <ng-container matColumnDef="descuento">
-                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Descuento</th>
-                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.descuento}}</td>
+                                    <ng-container matColumnDef="totalConDescuento">
+                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Precio con Descuento</th>
+                                        <td mat-cell *matCellDef="let element" style="text-align: center;">${{element.totalConDescuento}}</td>
                                     </ng-container>
         
                                     <ng-container matColumnDef="importe">
                                         <th mat-header-cell *matHeaderCellDef style="text-align: center;">Importe</th>
-                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticulo(element.precio_venta, element.cantidad, element.descuento)}}</td>
+                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticulo(element.totalConDescuento, element.cantidad)}}</td>
                                     </ng-container>
         
                                     <ng-container matColumnDef="unidad_medida">
@@ -226,12 +220,12 @@
         
                                     <ng-container matColumnDef="importe_iva">
                                         <th mat-header-cell *matHeaderCellDef style="text-align: center;">Importe IVA</th>
-                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticuloIva(element.precio_venta, element.cantidad, element.descuento)}}</td>
+                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticuloIva(element.totalConDescuento, element.cantidad)}}</td>
                                     </ng-container>
         
                                     <ng-container matColumnDef="importe_retencion">
                                         <th mat-header-cell *matHeaderCellDef style="text-align: center;">Importe Retención</th>
-                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticuloRetencion(element.precio_venta, element.cantidad, element.descuento)}}</td>
+                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticuloRetencion(element.totalConDescuento, element.cantidad)}}</td>
                                     </ng-container>
         
                                     <ng-container matColumnDef="actions">
@@ -368,9 +362,10 @@
                                     <div class="form-row two-col" style="display: block;">
                                         <mat-label class="text-1" style="font-size: large;">Artículos asociados a la venta</mat-label>
                                         <span matTooltip="Cuando se cancela una factura, todos los artículos que ya se habían marcado como salida volverán a entrar y estarán disponibles en stock." matTooltipPosition="above">
-                                            <mat-icon color="primary" style="position: absolute; margin: 12px; color: #b99301;">info</mat-icon>
+                                            <mat-icon color="primary" style="position: absolute; color: #b99301;">info</mat-icon>
                                         </span>
                                     </div>
+
                                     <table class="table" mat-table [dataSource]="dataSourceArticulos" style="margin-top: 24px;">
                                         <ng-container matColumnDef="numero_parte">
                                             <th mat-header-cell *matHeaderCellDef style="text-align: center;">#Parte</th>
@@ -464,108 +459,112 @@
                                     <span>Historial</span>
                                     <div></div>
                                 </div>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; grid-gap: 30px;">
-                                    <mat-list class="list-history-cancelation">
-                                        <mat-list-item *ngFor="let facturaEstatus of facturaEstatusList" style="height: fit-content; margin-top: 12px;">
-                                            <div style="display: grid; grid-template-columns: 40px 1fr; align-items: center; grid-gap: 30px;">
-                                                
-                                                <span *ngIf="facturaEstatus.estatus == 'Facturada'" class="estatus-icon estatus-icon-history f-facturada"></span>
-                                                <span *ngIf="facturaEstatus.estatus == 'Por-facturar'" class="estatus-icon estatus-icon-history f-por-facturar"></span>
-                                                <span *ngIf="facturaEstatus.estatus == 'Pre-Cancelada'" class="estatus-icon estatus-icon-history f-pre-cancelada"></span>
-                                                <span *ngIf="facturaEstatus.estatus == 'Cancelada'" class="estatus-icon estatus-icon-history f-cancelada"></span>
-                                                
-                                                <mat-card appearance="outlined" style="border: 1px solid #959595; border-radius: 10px; background-color: #f2f2f2; width: 150px; height: 50;;">
-                                                    <mat-card-content>
-                                                        <span style="font-size: large;">{{facturaEstatus.estatus}}</span>
-                                                    </mat-card-content>
-                                                </mat-card>
-                                            </div>
-                                            <div style="display: grid; grid-template-columns: 40px 1fr 1fr 1fr; align-items: center; width: fit-content; grid-gap: 30px;">
-                                                <div style="background-color: #BA9400; width: 2px; height: 100%; margin: auto;"></div>
-                                                <div class="form-field">
-                                                    <mat-label class="text-1">Fecha</mat-label>
-                                                    <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; grid-gap: 12px;">
-                                                        <mat-label class="text-1-regular">{{formatDate(facturaEstatus.created_at)}}</mat-label>
-                                                        <i class="fa-regular fa-calendar" style="color:#c2a11f"></i>
-                                                    </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; grid-gap: 30px; align-items: start;">
+                                    <div style="display: grid; grid-template-columns: 1fr;">
+                                        <span class="text-1" style="font-size: large; text-align: center;">Facturas</span> 
+                                        <mat-list class="list-history-cancelation">
+                                            <mat-list-item *ngFor="let facturaEstatus of facturaEstatusList" style="height: fit-content; margin-top: 12px;">
+                                                <div style="display: grid; grid-template-columns: 40px 1fr; align-items: center; grid-gap: 30px;">
+                                                    
+                                                    <span *ngIf="facturaEstatus.estatus == 'Facturada'" class="estatus-icon estatus-icon-history f-facturada"></span>
+                                                    <span *ngIf="facturaEstatus.estatus == 'Por-facturar'" class="estatus-icon estatus-icon-history f-por-facturar"></span>
+                                                    <span *ngIf="facturaEstatus.estatus == 'Pre-Cancelada'" class="estatus-icon estatus-icon-history f-pre-cancelada"></span>
+                                                    <span *ngIf="facturaEstatus.estatus == 'Cancelada'" class="estatus-icon estatus-icon-history f-cancelada"></span>
+                                                    
+                                                    <mat-card appearance="outlined" style="border: 1px solid #959595; border-radius: 10px; background-color: #f2f2f2; width: fit-content; height: 50;;">
+                                                        <mat-card-content>
+                                                            <span style="font-size: large;">{{facturaEstatus.estatus}}</span>
+                                                        </mat-card-content>
+                                                    </mat-card>
                                                 </div>
-                                                <div class="form-field">
-                                                    <mat-label class="text-1">Hora</mat-label>
-                                                    <div style="display: grid; grid-template-columns: 40px 1fr; align-items: center; grid-gap: 10px;">
-                                                        <mat-label class="text-1-regular">{{formatTime(facturaEstatus.created_at)}}</mat-label>
-                                                        <i class="fa-regular fa-clock" style="color:#c2a11f"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="form-field">
-                                                    <mat-label class="text-1">Usuario</mat-label>
-                                                    <div class="user-wrapper">
-                                                        <div class="circle-initials" mat-mini-fab color="primary" *ngIf="facturaEstatus.user?.photo == null">
-                                                            {{getUserName(facturaEstatus.user?.name ?? '', facturaEstatus.user?.last_name ?? '')}}
+                                                <div style="display: grid; grid-template-columns: 40px 1fr 1fr 1fr; align-items: center; width: fit-content; grid-gap: 30px;">
+                                                    <div style="background-color: #BA9400; width: 2px; height: 100%; margin: auto;"></div>
+                                                    <div class="form-field">
+                                                        <mat-label class="text-1">Fecha</mat-label>
+                                                        <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; grid-gap: 12px;">
+                                                            <mat-label class="text-1-regular">{{formatDate(facturaEstatus.created_at)}}</mat-label>
+                                                            <i class="fa-regular fa-calendar" style="color:#c2a11f"></i>
                                                         </div>
-                                                        <div *ngIf="facturaEstatus.user?.photo != null" class="container-photo-user">
-                                                            <img class="photo" [src]="getUrlPhoto(facturaEstatus.user?.photo ?? '')">
+                                                    </div>
+                                                    <div class="form-field">
+                                                        <mat-label class="text-1">Hora</mat-label>
+                                                        <div style="display: grid; grid-template-columns: 40px 1fr; align-items: center; grid-gap: 10px;">
+                                                            <mat-label class="text-1-regular">{{formatTime(facturaEstatus.created_at)}}</mat-label>
+                                                            <i class="fa-regular fa-clock" style="color:#c2a11f"></i>
                                                         </div>
-                                                        <span class="text">{{facturaEstatus.user?.name}} {{facturaEstatus.user?.last_name}}</span>
                                                     </div>
-                                                </div>
-                                            </div>
-                                            <div style="display: grid; grid-template-columns: 40px 1fr; align-items: center; grid-gap: 30px;">
-                                                <span></span>
-                                                <mat-divider></mat-divider>
-                                            </div>
-                                        </mat-list-item>
-                                    </mat-list>
-
-                                    <mat-list class="list-history-cancelation">
-                                        <mat-list-item *ngFor="let facturaEstatus of facturaEstatusList" style="height: fit-content; margin-top: 12px;">
-                                            <div style="display: grid; grid-template-columns: 40px 1fr; align-items: center; grid-gap: 30px;">
-                                                
-                                                <span *ngIf="facturaEstatus.estatus == 'Facturada'" class="estatus-icon estatus-icon-history f-facturada"></span>
-                                                <span *ngIf="facturaEstatus.estatus == 'Por-facturar'" class="estatus-icon estatus-icon-history f-por-facturar"></span>
-                                                <span *ngIf="facturaEstatus.estatus == 'Pre-Cancelada'" class="estatus-icon estatus-icon-history f-pre-cancelada"></span>
-                                                <span *ngIf="facturaEstatus.estatus == 'Cancelada'" class="estatus-icon estatus-icon-history f-cancelada"></span>
-                                                
-                                                <mat-card appearance="outlined" style="border: 1px solid #959595; border-radius: 10px; background-color: #f2f2f2; width: 150px; height: 50;;">
-                                                    <mat-card-content>
-                                                        <span style="font-size: large;">{{facturaEstatus.estatus}}</span>
-                                                    </mat-card-content>
-                                                </mat-card>
-                                            </div>
-                                            <div style="display: grid; grid-template-columns: 40px 1fr 1fr 1fr; align-items: center; width: fit-content; grid-gap: 30px;">
-                                                <div style="background-color: #BA9400; width: 2px; height: 100%; margin: auto;"></div>
-                                                <div class="form-field">
-                                                    <mat-label class="text-1">Fecha</mat-label>
-                                                    <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; grid-gap: 12px;">
-                                                        <mat-label class="text-1-regular">{{formatDate(facturaEstatus.created_at)}}</mat-label>
-                                                        <i class="fa-regular fa-calendar" style="color:#c2a11f"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="form-field">
-                                                    <mat-label class="text-1">Hora</mat-label>
-                                                    <div style="display: grid; grid-template-columns: 40px 1fr; align-items: center; grid-gap: 10px;">
-                                                        <mat-label class="text-1-regular">{{formatTime(facturaEstatus.created_at)}}</mat-label>
-                                                        <i class="fa-regular fa-clock" style="color:#c2a11f"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="form-field">
-                                                    <mat-label class="text-1">Usuario</mat-label>
-                                                    <div class="user-wrapper">
-                                                        <div class="circle-initials" mat-mini-fab color="primary" *ngIf="facturaEstatus.user?.photo == null">
-                                                            {{getUserName(facturaEstatus.user?.name ?? '', facturaEstatus.user?.last_name ?? '')}}
+                                                    <div class="form-field">
+                                                        <mat-label class="text-1">Usuario</mat-label>
+                                                        <div class="user-wrapper">
+                                                            <div class="circle-initials" mat-mini-fab color="primary" *ngIf="facturaEstatus.user?.photo == null">
+                                                                {{getUserName(facturaEstatus.user?.name ?? '', facturaEstatus.user?.last_name ?? '')}}
+                                                            </div>
+                                                            <div *ngIf="facturaEstatus.user?.photo != null" class="container-photo-user">
+                                                                <img class="photo" [src]="getUrlPhoto(facturaEstatus.user?.photo ?? '')">
+                                                            </div>
+                                                            <span class="text">{{facturaEstatus.user?.name}} {{facturaEstatus.user?.last_name}}</span>
                                                         </div>
-                                                        <div *ngIf="facturaEstatus.user?.photo != null" class="container-photo-user">
-                                                            <img class="photo" [src]="getUrlPhoto(facturaEstatus.user?.photo ?? '')">
-                                                        </div>
-                                                        <span class="text">{{facturaEstatus.user?.name}} {{facturaEstatus.user?.last_name}}</span>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div style="display: grid; grid-template-columns: 40px 1fr; align-items: center; grid-gap: 30px;">
-                                                <span></span>
-                                                <mat-divider></mat-divider>
-                                            </div>
-                                        </mat-list-item>
-                                    </mat-list>
+                                                <div style="display: grid; grid-template-columns: 40px 1fr; align-items: center; grid-gap: 30px;">
+                                                    <span></span>
+                                                    <mat-divider></mat-divider>
+                                                </div>
+                                            </mat-list-item>
+                                        </mat-list>
+                                    </div>
+                                    
+                                    <div style="display: grid; grid-template-columns: 1fr;">
+                                        <span class="text-1" style="font-size: large; text-align: center;">Ventas</span>
+                                        <mat-list class="list-history-cancelation">
+                                            <mat-list-item *ngFor="let ventaEstatus of ventaEstatusList" style="height: fit-content; margin-top: 12px;">
+                                                <div style="display: grid; grid-template-columns: 40px 1fr; align-items: center; grid-gap: 30px;">
+                                                    <span *ngIf="ventaEstatus.estatus == 'Cancelada'" class="estatus-icon estatus-icon-history v-cancelada"></span>
+                                                    <span *ngIf="ventaEstatus.estatus == 'Parcialmente'" class="estatus-icon estatus-icon-history v-parcialmente"></span>
+                                                    <span *ngIf="ventaEstatus.estatus == 'Despachada'" class="estatus-icon estatus-icon-history v-despachada"></span>
+                                                    
+                                                    <mat-card appearance="outlined" style="border: 1px solid #959595; border-radius: 10px; background-color: #f2f2f2; width: fit-content; height: 50;;">
+                                                        <mat-card-content>
+                                                            <span style="font-size: large;">{{ventaEstatus.estatus}}</span>
+                                                        </mat-card-content>
+                                                    </mat-card>
+                                                </div>
+                                                <div style="display: grid; grid-template-columns: 40px 1fr 1fr 1fr; align-items: center; width: fit-content; grid-gap: 30px;">
+                                                    <div style="background-color: #BA9400; width: 2px; height: 100%; margin: auto;"></div>
+                                                    <div class="form-field">
+                                                        <mat-label class="text-1">Fecha</mat-label>
+                                                        <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; grid-gap: 12px;">
+                                                            <mat-label class="text-1-regular">{{formatDate(ventaEstatus.created_at)}}</mat-label>
+                                                            <i class="fa-regular fa-calendar" style="color:#c2a11f"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-field">
+                                                        <mat-label class="text-1">Hora</mat-label>
+                                                        <div style="display: grid; grid-template-columns: 40px 1fr; align-items: center; grid-gap: 10px;">
+                                                            <mat-label class="text-1-regular">{{formatTime(ventaEstatus.created_at)}}</mat-label>
+                                                            <i class="fa-regular fa-clock" style="color:#c2a11f"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-field">
+                                                        <mat-label class="text-1">Usuario</mat-label>
+                                                        <div class="user-wrapper">
+                                                            <div class="circle-initials" mat-mini-fab color="primary" *ngIf="ventaEstatus.user?.photo == null">
+                                                                {{getUserName(ventaEstatus.user?.name ?? '', ventaEstatus.user?.last_name ?? '')}}
+                                                            </div>
+                                                            <div *ngIf="ventaEstatus.user?.photo != null" class="container-photo-user">
+                                                                <img class="photo" [src]="getUrlPhoto(ventaEstatus.user?.photo ?? '')">
+                                                            </div>
+                                                            <span class="text">{{ventaEstatus.user?.name}} {{ventaEstatus.user?.last_name}}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div style="display: grid; grid-template-columns: 40px 1fr; align-items: center; grid-gap: 30px;">
+                                                    <span></span>
+                                                    <mat-divider></mat-divider>
+                                                </div>
+                                            </mat-list-item>
+                                        </mat-list>
+                                    </div>
                                 </div>
                                 
                             </mat-tab>
@@ -861,6 +860,11 @@
     
                             <table *ngIf="hasRecords" class="table" mat-table [dataSource]="dataSourceArticulos" style="margin-top: 24px;">
     
+                                <ng-container matColumnDef="almacen">
+                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Almacen</th>
+                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen.almacen.name}}</td>
+                                </ng-container>
+
                                 <ng-container matColumnDef="numero_parte">
                                     <th mat-header-cell *matHeaderCellDef style="text-align: center;">#Parte</th>
                                     <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen.articulo.part_number}}</td>
@@ -878,12 +882,7 @@
                                         </div>
                                     </td>
                                 </ng-container>
-    
-                                <ng-container matColumnDef="total">
-                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Total</th>
-                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.cantidad}}</td>
-                                </ng-container>
-    
+
                                 <ng-container matColumnDef="backorder">
                                     <th mat-header-cell *matHeaderCellDef style="text-align: center;">Back order</th>
                                     <td mat-cell *matCellDef="let element" style="text-align: center;">
@@ -898,24 +897,19 @@
                                     </td>
                                 </ng-container>
     
-                                <ng-container matColumnDef="almacen">
-                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Almacen</th>
-                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen.almacen.name}}</td>
+                                <ng-container matColumnDef="total">
+                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Cantidad</th>
+                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.cantidad}}</td>
                                 </ng-container>
     
-                                <ng-container matColumnDef="precio_unitario">
-                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Precio venta</th>
-                                    <td mat-cell *matCellDef="let element" style="text-align: center;">${{element.precio_venta}}</td>
-                                </ng-container>
-    
-                                <ng-container matColumnDef="descuento">
-                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Descuento</th>
-                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.descuento}}</td>
+                                <ng-container matColumnDef="totalConDescuento">
+                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Precio con Descuento</th>
+                                    <td mat-cell *matCellDef="let element" style="text-align: center;">${{element.totalConDescuento}}</td>
                                 </ng-container>
     
                                 <ng-container matColumnDef="importe">
                                     <th mat-header-cell *matHeaderCellDef style="text-align: center;">Importe</th>
-                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticulo(element.precio_venta, element.cantidad, element.descuento)}}</td>
+                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticulo(element.totalConDescuento, element.cantidad)}}</td>
                                 </ng-container>
     
                                 <ng-container matColumnDef="unidad_medida">
@@ -925,12 +919,12 @@
     
                                 <ng-container matColumnDef="importe_iva">
                                     <th mat-header-cell *matHeaderCellDef style="text-align: center;">Importe IVA</th>
-                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticuloIva(element.precio_venta, element.cantidad, element.descuento)}}</td>
+                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticuloIva(element.totalConDescuento, element.cantidad)}}</td>
                                 </ng-container>
     
                                 <ng-container matColumnDef="importe_retencion">
                                     <th mat-header-cell *matHeaderCellDef style="text-align: center;">Importe Retención</th>
-                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticuloRetencion(element.precio_venta, element.cantidad, element.descuento)}}</td>
+                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticuloRetencion(element.totalConDescuento, element.cantidad)}}</td>
                                 </ng-container>
     
                                 <ng-container matColumnDef="actions">
@@ -966,9 +960,6 @@
                     <div class="form-row two-col" style="width: 300px; grid-column-gap: 8px; grid-row-gap: 10px; margin-left: auto;">
                         <span class="resumen-label">Subtotal</span>
                         <div class="resumen-value">{{ formatearComoMoneda(subTotal) }}</div>
-    
-                        <span class="resumen-label">Descuento</span>
-                        <div class="resumen-value">{{ formatearComoMoneda(descuento) }}</div>
     
                         <span class="resumen-label">IVA</span>
                         <div class="resumen-value">{{ formatearComoMoneda(iva) }}</div>

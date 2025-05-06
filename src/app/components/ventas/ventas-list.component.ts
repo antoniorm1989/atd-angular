@@ -33,6 +33,19 @@ export class VentasListComponent {
   selectedCliente: CatalogoClienteModel | undefined;
   filteredClientes!: Observable<CatalogoClienteModel[]>;
 
+  facturaEstatusLabels: { [key: number]: string } = {
+    1: 'Por-facturar',
+    2: 'Facturada',
+    3: 'Pre-Cancelada',
+    4: 'Cancelada',
+  };
+
+  ventaEstatusLabels: { [key: number]: string } = {
+    1: 'Parcialmente',
+    3: 'Despachada',
+    2: 'Cancelada',
+  };
+
   constructor(
     private formBuilder: FormBuilder,
     private ventaService: VentaService,
@@ -43,7 +56,8 @@ export class VentasListComponent {
 
     this.form = this.formBuilder.group({
       cliente: null,
-      estatus: null,
+      factura_estatus: null,
+      venta_estatus: null,
       fechaDesde: null,
       fechaHasta: null,
       backOrder: false
@@ -128,16 +142,29 @@ export class VentasListComponent {
     }
   }
 
-  clearSelectionEstatus() {
+  clearSelectionFacturaEstatus() {
     try {
-      this.f['estatus'].reset();
+      this.f['factura_estatus'].reset();
       this.onLoadVentas();
     } catch (error) {
       console.error('An error occurred in clearAutocompleteInput:', error);
     }
   }
 
-  onSelectChangeEstatus(event: any) {
+  clearSelectionVentaEstatus() {
+    try {
+      this.f['venta_estatus'].reset();
+      this.onLoadVentas();
+    } catch (error) {
+      console.error('An error occurred in clearAutocompleteInput:', error);
+    }
+  }
+
+  onSelectChangeFacturaEstatus(event: any) {
+    this.onLoadVentas();
+  }
+
+  onSelectChangeVentaEstatus(event: any) {
     this.onLoadVentas();
   }
 
@@ -158,13 +185,14 @@ export class VentasListComponent {
 
   onLoadVentas() {
     let clienteId = this.selectedCliente?.id;
-    let estatus = this.f['estatus'].value;
     let fechaDesde = this.f['fechaDesde'].value;
     let fechaHasta = this.f['fechaHasta'].value;
     let backOrder = this.f['backOrder'].value;
-    let hasFilters = clienteId != undefined || estatus != undefined || fechaDesde != undefined || fechaHasta != undefined || backOrder != false;
+    let facturaEstatus = this.f['factura_estatus'].value;
+    let ventaEstatus = this.f['venta_estatus'].value;
+    let hasFilters = clienteId != undefined || fechaDesde != undefined || fechaHasta != undefined || backOrder != false || facturaEstatus != undefined || ventaEstatus != undefined;
 
-    this.ventaService.getAll(clienteId, estatus, fechaDesde, fechaHasta, backOrder).subscribe({
+    this.ventaService.getAll(clienteId, facturaEstatus, ventaEstatus, fechaDesde, fechaHasta, backOrder).subscribe({
       next: (data) => {
         if (data.length > 0) {
           this.hasRecords = true;

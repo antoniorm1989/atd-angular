@@ -12,13 +12,16 @@ export class VentaService {
   constructor(private http: HttpClient) {
   }
 
-  getAll(clienteId: number | undefined, estatus: number, fechaDesde: Date, fechaHasta: Date, backOrder: boolean): Observable<Array<VentaModel>> {
+  getAll(clienteId: number | undefined, facturaEstatus: number, ventaEstatus: number, fechaDesde: Date, fechaHasta: Date, backOrder: boolean): Observable<Array<VentaModel>> {
     let params = new HttpParams();
     if (clienteId) {
       params = params.set('clienteId', clienteId.toString());
     }
-    if (estatus) {
-      params = params.set('estatus', estatus.toString());
+    if (facturaEstatus) {
+      params = params.set('facturaEstatus', facturaEstatus.toString());
+    }
+    if (ventaEstatus) {
+      params = params.set('ventaEstatus', ventaEstatus.toString());
     }
     if (fechaDesde) {
       params = params.set('fechaDesde', fechaDesde.toISOString());
@@ -94,6 +97,10 @@ export class VentaService {
 
   obtenerFacturasEstatus(id: number): Observable<any> {
     return this.http.get(`${environment.apiUrl}/api/ventas/getFacturasEstatus/${id}`);
+  }
+
+  obtenerVentaEstatus(id: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/ventas/getVentaEstatus/${id}`);
   }
 
   private getHeaders() {
