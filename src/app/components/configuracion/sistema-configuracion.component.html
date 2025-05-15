@@ -1,0 +1,22 @@
+<div class="sistema-configuracion">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-container">
+      <div class="form-container-toolbar">
+        <span class="title">Configuraciones del sistema</span>
+      </div>
+
+      <div class="form-row one-col" *ngFor="let config of configuraciones">
+        <div class="form-field">
+          <mat-label class="text-1">{{ config.name.replace('_', ' ') }}</mat-label>
+          <mat-form-field appearance="outline" class="full-width">
+            <input matInput [formControlName]="config.name" placeholder="Valor de {{ config.name }}">
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <div class="toolbar-bottom">
+      <button mat-flat-button class="btn" type="submit" [disabled]="form.invalid || loading">Guardar</button>
+    </div>
+  </form>
+</div>

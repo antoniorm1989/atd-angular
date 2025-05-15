@@ -80,6 +80,11 @@ export class AppComponent implements OnDestroy {
           text: 'Plantillas',
           icon: 'fa-regular fa-file-lines',
           href: 'xx',
+        },
+        {
+          text: 'Sistema',
+          icon: 'fa-solid fa-cogs',
+          href: 'configuracion/sistema',
         }
       ]
     }
@@ -169,5 +174,16 @@ export class AppComponent implements OnDestroy {
 
   isSubmenuActive(subItems: any[]): boolean {
     return subItems.some(subItem => this.router.isActive(subItem.href, false));
+  }
+
+  getTipoCambio(): number {
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{}');
+    if(userData.configuraciones && userData.configuraciones.length > 0) {
+      let configuracion = userData.configuraciones.find((config: any) => config.name === 'tipo_cambio');
+      if (configuracion) {
+        return configuracion.value;
+      }
+    }
+    return 0;
   }
 }

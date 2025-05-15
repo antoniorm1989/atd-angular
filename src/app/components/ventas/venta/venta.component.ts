@@ -2,11 +2,10 @@ import { Component, Inject, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router, NavigationEnd, Event } from '@angular/router';
 import { Observable, map, startWith } from 'rxjs';
-import { MessageComponent } from 'src/app/components/genericos/snack-message.component';
 import { CatalogoClienteModel } from 'src/app/models/catalogo-cliente.model';
 import { CatalogoFormaPagoModel, CatalogoObjetoImpuestoModel, CatalogoRegimenFiscalModel, CatalogoUsoCfdiModel, CatalogoMotivoCancelacionModel } from 'src/app/models/catalogos.model';
 import { User } from 'src/app/models/user';
@@ -79,7 +78,8 @@ export class VentaComponent {
   selectedCondicionPago = "contado";
 
   hasRecords = false;
-  displayedColumns: string[] = ['almacen', 'numero_parte', 'descripcion', 'backorder', 'total', 'totalConDescuento', 'importe', 'unidad_medida', 'importe_iva', 'importe_retencion', 'actions'];
+  displayedColumns: string[] = ['almacen', 'numero_parte', 'descripcion', 'unidad_medida', 'backorder', 'total', 'totalConDescuento', 'importe_iva', 'importe_retencion', 'importe_total', 'actions'];
+
   displayedColumnsCancelacion: string[] = ['numero_parte', 'descripcion', 'total', 'backorder', 'almacen'];
   dataSourceArticulos = new MatTableDataSource<VentaArticuloModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -117,6 +117,8 @@ export class VentaComponent {
     private dialog: MatDialog,
     private loadingService: LoadingService) {
 
+    let tipoCambioDefault = this.getTipoCambioDefault();
+
     this.form = this.formBuilder.group({
       // Datos generales
       fecha_compra_cliente: new Date(),
@@ -133,7 +135,7 @@ export class VentaComponent {
       moneda: ['MXN'],
       forma_pago: [],
       metodo_pago: [],
-      tipo_cambio: 0,
+      tipo_cambio: tipoCambioDefault,
       // Articulos
       objeto_impuesto: [],
       translada_iva: false,
@@ -248,6 +250,12 @@ export class VentaComponent {
     this.form.controls['retiene_iva_porcentaje'].valueChanges.subscribe((newValue) => {
       this.calcularTotales();
     });
+    this.form.controls['moneda'].valueChanges.subscribe((newValue) => {
+      this.calcularTotales();
+    });
+    this.form.controls['tipo_cambio'].valueChanges.subscribe((newValue) => {
+      this.calcularTotales();
+    });
   }
 
   get f() { return this.form!.controls; }
@@ -313,7 +321,7 @@ export class VentaComponent {
   onUpdateComentario() {
     this.ventaService.updateComentario(this.id, this.comentario).subscribe({
       next: () => {
-        this.openSnackBarError('Comentario actualizado correctamente.');
+        this.openSnackBarSuccess('Comentario actualizado correctamente.');
         this.originalComentario = this.comentario;
         this.comentarioHasChanged = false;
       },
@@ -328,7 +336,8 @@ export class VentaComponent {
     if (file) {
       this.ventaService.uploadFile(this.id, file).subscribe({
         next: () => {
-          this.openSnackBarError('Archivo subido correctamente.');
+          this.openSnackBarSuccess('Archivo subido correctamente.');
+          this.obtenerDocumentos();
         }
       });
     }
@@ -378,7 +387,7 @@ export class VentaComponent {
         this.ventaService.cancelarVenta(this.id, this.fCancelacion['fecha_cancelacion'].value, this.fCancelacion['motivo_cancelacion'].value, this.fCancelacion['folioSustituto'].value, this.editData?.factura_cfdi_uid || "").subscribe({
           next: () => {
             this.loadingService.hide();
-            this.openSnackBarError('Venta cancelada correctamente.');
+            this.openSnackBarSuccess('Venta cancelada correctamente.');
             this.router.navigate(['ventas']);
           },
           error: (e) => {
@@ -433,16 +442,6 @@ export class VentaComponent {
     this.action = 'edit';
     this.title = 'Editar articulo';
     this.form.enable();
-  }
-
-  openMessageSnack() {
-    const config: MatSnackBarConfig = {
-      duration: 5000,
-      data: {
-        html: '✅ <b>¡En hora buena!</b><br/> La acción se ha realizado con éxito',
-      },
-    };
-    this._snackBar.openFromComponent(MessageComponent, config);
   }
 
   validarDecimal(event: any) {
@@ -649,10 +648,6 @@ export class VentaComponent {
       this.hasRecords = false;
   }
 
-  calcularImporteByArticulo(costo: number, cantidad: number): string {
-    return this.formatearComoMoneda(costo * cantidad);
-  }
-
   calcularImporteByArticuloIva(costo: number, cantidad: number): string {
     if (this.f['translada_iva'].value == true) {
       return this.formatearComoMoneda(((costo * cantidad)) * this.f['translada_iva_porcentaje'].value);
@@ -666,6 +661,18 @@ export class VentaComponent {
     } else
       return this.formatearComoMoneda(0);
   }
+
+  calcularImporteTotalByArticulo(costo: number, cantidad: number): string {
+    let total = 0;
+    if (this.f['translada_iva'].value == true) {
+      total += ((costo * cantidad)) * this.f['translada_iva_porcentaje'].value;
+    }
+    if (this.f['retiene_iva'].value == true) {
+      total -= (costo * cantidad) * this.f['retiene_iva_porcentaje'].value;
+    }
+    return this.formatearComoMoneda(total + (costo * cantidad));
+  }
+
 
   formatearComoMoneda(valor: number | undefined): string {
     if (!valor && valor != 0)
@@ -759,7 +766,8 @@ export class VentaComponent {
   calcularSubTotal() {
     this.subTotal = 0;
     this.dataSourceArticulos.data.forEach(articulo => {
-      this.subTotal += (articulo.totalConDescuento ?? 0) * (articulo.cantidad ?? 0);
+      let totalConDescuento = this.obtenerTotalConDescuento(articulo);
+      this.subTotal += (totalConDescuento) * (articulo.cantidad ?? 0);
     });
   }
 
@@ -767,7 +775,7 @@ export class VentaComponent {
     this.iva = 0;
     if (this.f['translada_iva'].value == true)
       this.dataSourceArticulos.data.forEach(articulo => {
-        this.iva += ((articulo.totalConDescuento ?? 0) * (articulo.cantidad ?? 0)) * this.f['translada_iva_porcentaje'].value;
+        this.iva += ((this.obtenerTotalConDescuento(articulo) ?? 0) * (articulo.cantidad ?? 0)) * this.f['translada_iva_porcentaje'].value;
       });
   }
 
@@ -775,12 +783,29 @@ export class VentaComponent {
     this.retencion = 0;
     if (this.f['retiene_iva'].value == true)
       this.dataSourceArticulos.data.forEach(articulo => {
-        this.retencion += ((articulo.totalConDescuento ?? 0) * (articulo.cantidad ?? 0)) * this.f['retiene_iva_porcentaje'].value;
+        this.retencion += ((this.obtenerTotalConDescuento(articulo) ?? 0) * (articulo.cantidad ?? 0)) * this.f['retiene_iva_porcentaje'].value;
       });
   }
 
   calcularTotal() {
     this.total = this.subTotal + this.iva - this.retencion;
+  }
+
+  obtenerTotalConDescuento(articulo: VentaArticuloModel): number {
+    let totalConDescuento = 0;
+    if (this.f['moneda'].value == "MXN") {
+      if (articulo.moneda_nombre == "MXN")
+        totalConDescuento = articulo.totalConDescuento ?? 0;
+      else if (articulo.moneda_nombre == "USD")
+        totalConDescuento = (articulo.totalConDescuento ?? 0) * this.f['tipo_cambio'].value;
+    }
+    else if (this.f['moneda'].value == "USD") {
+      if (articulo.moneda_nombre == "MXN")
+        totalConDescuento = (articulo.totalConDescuento ?? 0) / this.f['tipo_cambio'].value;
+      else if (articulo.moneda_nombre == "USD")
+        totalConDescuento = (articulo.totalConDescuento ?? 0);
+    }
+    return totalConDescuento;
   }
 
   onClienteSelectionChange(event: any) {
@@ -803,6 +828,15 @@ export class VentaComponent {
       horizontalPosition: 'end',
       verticalPosition: 'top',
       panelClass: ['snackbar-error'],
+      duration: 5000,
+    });
+  }
+
+  openSnackBarSuccess(message: string) {
+    this._snackBar.open(message, 'cerrar', {
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: ['snackbar-success'],
       duration: 5000,
     });
   }
@@ -915,6 +949,8 @@ export class VentaComponent {
 
           // Liberar URL
           window.URL.revokeObjectURL(url);
+
+          this.openSnackBarSuccess('Descarga exitosa.');
         },
         error: (e) => {
           console.error('Error al descargar el documento:', e);
@@ -933,6 +969,8 @@ export class VentaComponent {
           this.dataSourceDocumentos.data = this.dataSourceDocumentos.data.filter(x => x.id !== documento.id);
           this.dataSourceDocumentos._updateChangeSubscription();
           this.hasRecordsDocumentos = this.dataSourceDocumentos.data.length > 0;
+
+          this.openSnackBarSuccess('Documento eliminado correctamente.');
         },
         error: (e) => {
           console.error('Error al eliminar el documento:', e);
@@ -996,6 +1034,17 @@ export class VentaComponent {
 
   displayClienteFn(cliente: any): string {
     return cliente && cliente.cliente ? cliente.cliente : '';
+  }
+
+  getTipoCambioDefault(): number {
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{}');
+    if (userData.configuraciones && userData.configuraciones.length > 0) {
+      let configuracion = userData.configuraciones.find((config: any) => config.name === 'tipo_cambio');
+      if (configuracion) {
+        return configuracion.value;
+      }
+    }
+    return 0;
   }
 
 }

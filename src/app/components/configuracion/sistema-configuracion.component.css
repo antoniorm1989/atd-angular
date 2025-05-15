@@ -1,0 +1,35 @@
+.sistema-configuracion {
+  padding: 16px;
+}
+
+.form-container {
+  background-color: #fff;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.form-container-toolbar .title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.form-row {
+  margin-bottom: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.toolbar-bottom {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 24px;
+}
+
+.toolbar-bottom .btn.secundary {
+    margin-right: 24px;
+}

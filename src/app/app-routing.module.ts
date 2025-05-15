@@ -7,7 +7,6 @@ import { CatalogoRolesListComponent } from './components/catalogos/roles/catalog
 import { CatalogoSucursalesListComponent } from './components/catalogos/sucursales/catalogo-sucursales-list.component';
 import { CatalogoSucursalesComponent } from './components/catalogos/sucursales/sucursal/catalogo-sucursales.component';
 import { LoginComponent } from './components/login/login.component';
-import { SuscursalesComponent } from './components/suscursales/suscursales.component';
 import { AuthGuard } from './guards/auth.guard';
 import { CatalogoRolesComponent } from './components/catalogos/roles/rol/catalogo-roles.component';
 import { CatalogoCategoriaArticuloListComponent } from './components/catalogos/categoria_articulos/catalogo-categoria-articulo-list.component';
@@ -17,9 +16,6 @@ import { CatalogoArticuloComponent } from './components/catalogos/articulos/arti
 import { InventoryAlmacenListComponent } from './components/inventory-almacen/inventory-almacen-list.component';
 import { EntradaAlmacenComponent } from './components/inventory-almacen/entrada/entrada-almacen.component';
 import { HistorialAlmacenComponent } from './components/inventory-almacen/historial/historial-almacen.component';
-import { InventorySucursalListComponent } from './components/inventory-sucursal/inventory-sucursal-list.component';
-import { EntradaSucursalComponent } from './components/inventory-sucursal/entrada/entrada-sucursal.component';
-import { HistorialSucursalComponent } from './components/inventory-sucursal/historial/historial-sucursal.component';
 import { CatalogoClientesComponent } from './components/catalogos/clientes/cliente/catalogo-clientes.component';
 import { CatalogoClientesListComponent } from './components/catalogos/clientes/catalogo-clientes-list.component';
 import { VentasListComponent } from './components/ventas/ventas-list.component';
@@ -30,6 +26,7 @@ import { CatalogoUsuariosListComponent } from './components/catalogos/usuarios/c
 import { CatalogoUsuariosComponent } from './components/catalogos/usuarios/usuario/catalogo-usuarios.component';
 import { ChangePasswordComponent } from './components/login/changepassword/changepassword.component';
 import { OrdenesCompraListComponent } from './components/ordenes-compra/orden-compra-list.component';
+import { SistemaConfiguracionComponent } from './components/configuracion/sistema-configuracion.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/inventario-almacen', pathMatch: 'full' }, // Redirect to login by default
@@ -63,6 +60,7 @@ const routes: Routes = [
   { path: 'ventas', component: VentasListComponent, canActivate: [AuthGuard] },
   { path: 'ventas/detail', component: VentaComponent, canActivate: [AuthGuard]},
   { path: 'ventas/detail/:ventaId', component: VentaComponent, canActivate: [AuthGuard]},
+
   // Ventas Catalogos
   { path: 'venta/catalogos', component: CatalogosComponent, canActivate: [AuthGuard] },
   { path: 'venta/catalogos/clientes', component: CatalogoClientesListComponent, canActivate: [AuthGuard] },
@@ -73,6 +71,7 @@ const routes: Routes = [
   { path: 'orden-compra', component: OrdenesCompraListComponent, canActivate: [AuthGuard] },
   { path: 'orden-compra/detail', component: VentaComponent, canActivate: [AuthGuard]},
   { path: 'orden-compra/detail/:ordenesCompraId', component: VentaComponent, canActivate: [AuthGuard]},
+
   // Catalogos compras
   { path: 'compras/catalogos', component: CatalogosComponent, canActivate: [AuthGuard] },
   { path: 'compras/catalogos/proveedores', component: CatalogoProveedoresListComponent, canActivate: [AuthGuard] },
@@ -89,7 +88,10 @@ const routes: Routes = [
   { path: 'configuracion/catalogos/roles/detail/:id', component: CatalogoRolesComponent, canActivate: [AuthGuard] },
   { path: 'configuracion/catalogos/usuarios', component: CatalogoUsuariosListComponent, canActivate: [AuthGuard] },
   { path: 'configuracion/catalogos/usuarios/detail', component: CatalogoUsuariosComponent, canActivate: [AuthGuard] },
-  { path: 'configuracion/catalogos/usuarios/detail/:id', component: CatalogoUsuariosComponent, canActivate: [AuthGuard] }
+  { path: 'configuracion/catalogos/usuarios/detail/:id', component: CatalogoUsuariosComponent, canActivate: [AuthGuard] },
+
+  // Configuracion
+  { path: 'configuracion/sistema', component: SistemaConfiguracionComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({

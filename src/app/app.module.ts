@@ -74,6 +74,7 @@ import { PreviewFacturaComponent } from './components/ventas/venta/preview-factu
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoadingOverlayComponent } from './components/genericos/loading/loading-overlay.component';
 import { MatChipInputEvent, MatChipsModule} from '@angular/material/chips';
+import { SistemaConfiguracionComponent } from './components/configuracion/sistema-configuracion.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -123,7 +124,8 @@ export function tokenGetter() {
     OrdenCompraArticuloComponent,
     PreviewFacturaModalComponent,
     PreviewFacturaComponent,
-    LoadingOverlayComponent
+    LoadingOverlayComponent,
+    SistemaConfiguracionComponent
   ],
   imports: [
     BrowserModule,

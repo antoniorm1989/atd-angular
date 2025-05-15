@@ -37,6 +37,8 @@ export class CatalogoArticuloModel {
 
   tags: ArticuloTag[] | undefined;
 
+  moneda_nombre: string | undefined;
+
   constructor(id?: number) {
     this.id = id;
   }

@@ -41,6 +41,8 @@ export class VentaService {
   }
 
   create(ventaModel: VentaModel): Observable<any> {
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
+    ventaModel.userId = userData.id;
     return this.http.post<void>(`${environment.apiUrl}/api/ventas/create`, ventaModel, this.getHeaders());
   }
 

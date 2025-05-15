@@ -106,6 +106,27 @@ body {
     --mdc-snackbar-container-color: #ff9999 !important; 
 }
 
+.mat-mdc-snack-bar-container.snackbar-success {
+    --mdc-snackbar-container-color: #d4edda !important;
+    --mdc-snackbar-supporting-text-color: #155724 !important;
+    --mdc-snackbar-container-color: #d4edda; /* Color de fondo */
+    --mdc-snackbar-supporting-text-color: #155724 !important; /* Color de texto oscuro */
+    font-weight: bold; /* Texto en negrita */
+    border: 2px solid #28a745; /* Borde verde de 2px */
+    margin: 10px; /* Espaciado externo */
+    border-radius: 5px; /* Bordes redondeados */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
+}
+
+.mat-mdc-snack-bar-container.snackbar-success button .mdc-button__label{
+   color: #28a745 !important;
+}
+
+.mat-mdc-snack-bar-container.snackbar-success:hover {
+    --mdc-snackbar-container-color: #c3e6cb !important; 
+}
+
 .cdk-global-overlay-wrapper{
     justify-content: flex-end !important;
     margin-right: 12px;
@@ -240,4 +261,7 @@ input[formControlName="password"] {
 .mdc-circular-progress__indeterminate-container circle{
     stroke: #b79200 !important;
 }
-  
+
+.mat-expansion-panel-header{
+    background-color: #fff !important;
+}

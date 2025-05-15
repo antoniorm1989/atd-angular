@@ -104,6 +104,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
       producto_servicio_model: [null, Validators.required, [this.validarProductoServicio.bind(this)]],
       unidad_medida_model: [null, Validators.required, [this.validarUnidadMedida.bind(this)]],
       tipoDescuento: ['fijo'],
+      moneda_nombre: ['MXN']
     });
 
     this.form.controls['precio_venta'].disable();
@@ -302,6 +303,9 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
       this.form.controls['backorder'].reset();
       this.form.controls['producto_servicio_model'].reset();
       this.form.controls['unidad_medida_model'].reset();
+      this.form.controls['tipoDescuento'].reset();
+      this.form.controls['moneda_nombre'].reset();
+      this.subtotal = 0;
       this.hasBackOrder = false;
       this.stock = 0;
 
@@ -323,12 +327,14 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
   }
 
   formatearComoMoneda(valor: number | undefined): string {
-    if (!valor && valor != 0)
+    if (valor === undefined || valor === null)
       return 'n/a';
-
-    return new Intl.NumberFormat('en-US', {
+  
+    const moneda = this.form.get('moneda')?.value === 'USD' ? 'USD' : 'MXN';
+  
+    return new Intl.NumberFormat('es-MX', {
       style: 'currency',
-      currency: 'USD',
+      currency: moneda,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     }).format(valor);
@@ -508,12 +514,12 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         ventaArticuloModel.cantidad = this.f['qty'].value;
         ventaArticuloModel.backorder = this.f['backorder'].value;
         ventaArticuloModel.comentarios = this.f['comentarios'].value;
+        ventaArticuloModel.moneda_nombre = this.f['moneda_nombre'].value;
 
         ventaArticuloModel.numero_identificacion_fiscal = this.f['numero_identificacion_fiscal'].value;
         ventaArticuloModel.unidad_medida = this.f['unidad_medida'].value;
         ventaArticuloModel.producto_servicio_model = this.f['producto_servicio_model'].value;
         ventaArticuloModel.unidad_medida_model = this.f['unidad_medida_model'].value;
-
 
         if (this.selectedAlmacen) {
           let inventoryAlmacenModel = new InventoryAlmacenModel();
@@ -595,6 +601,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
       unidad_medida_model: this.isEditing ? this.ventaArticuloModel?.unidad_medida_model : this.selectedArticle?.unidad_medida_model,
       descuento: this.isEditing ? this.ventaArticuloModel?.descuento : this.selectedArticle?.descuento,
       tipoDescuento: this.isEditing ? this.ventaArticuloModel?.tipoDescuento : this.selectedArticle?.tipoDescuento,
+      moneda_nombre: this.isEditing ? this.ventaArticuloModel?.moneda_nombre : this.selectedArticle?.moneda_nombre,
     });
 
 
@@ -621,6 +628,9 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
       } else
         this.f['producto_servicio_model'].setValue(null);
     }
+
+    this.f['qty'].setValue(1);
+    this.f['backorder'].setValue(0);
 
     this.inventoryAlmacenService.getInventoryByAlmacenByArticulo(this.selectedAlmacen?.id, this.selectedArticle?.id).subscribe({
       next: (data) => {

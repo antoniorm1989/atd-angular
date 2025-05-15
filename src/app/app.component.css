@@ -168,6 +168,15 @@ h1.example-app-name {
   padding: 0px !important;
 }
 
+.toolbar-right .tipo-cambio {
+  margin-right: 12px;
+}
+.toolbar-right .tipo-cambio-label {
+  color: green;
+  margin-right: 34px;
+}
+
+
 
 @media only screen and (max-width: 1200px) {}
 

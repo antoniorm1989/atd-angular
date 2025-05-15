@@ -74,20 +74,20 @@
                 </div>
             </div>
             <div style="height: 24px;"></div>
-            <div class="form-row" style="grid-template-columns: 120px 220px 175px 1fr 150px 176px; grid-column-gap: 39px;">
+            <div class="form-row" style="grid-template-columns: 150px 240px 175px 1fr 150px 176px; grid-column-gap: 25px;">
                 <div class="form-field" style="margin-top: 0px;">
                     <mat-label class="text-1" >Precio venta*</mat-label>
                     <mat-form-field floatLabel="always">
                         <input matInput type="number" class="example-right-align" placeholder="0" formControlName="precio_venta" min="0" step="0.01" (keypress)="validarDecimal($event)" (change)="calcularSubTotal()">
-                        <span matTextPrefix>$&nbsp;</span>
+                        <span matTextPrefix>$</span>
                     </mat-form-field>
                 </div>
-                <div style="display: grid; grid-template-columns: 128px 80px; grid-column-gap: 12px;">
+                <div style="display: grid; grid-template-columns: 150px 80px; grid-column-gap: 6px;">
                     <div class="form-field" style="margin-top: 0px;">
                       <mat-label class="text-1">Descuento</mat-label>
                       <mat-form-field floatLabel="always">
                         <input matInput type="number" class="example-right-align" placeholder="0" formControlName="descuento" min="0" step="0.01" (keypress)="validarDecimal($event)" (change)="calcularSubTotal()">
-                        <span matTextPrefix *ngIf="form.get('tipoDescuento')?.value === 'fijo'">$&nbsp;</span>
+                        <span matTextPrefix *ngIf="form.get('tipoDescuento')?.value === 'fijo'">$</span>
                         <span matSuffix *ngIf="form.get('tipoDescuento')?.value === 'porcentaje'">%</span>
                       </mat-form-field>
                     </div>
@@ -98,8 +98,11 @@
                 </div>
                 <div class="form-row" style="grid-template-columns: 1fr; column-gap: 12px;">
                     <span style="height: 0px;" class="text-1">Total con descuento</span>
-                    <div class="resumen-value">${{ calcularTotalConDescuento() }}</div>
-                </div>   
+                    <div class="resumen-value">
+                      <ng-container *ngIf="form.get('moneda_nombre')?.value === 'MXN'"><span style="font-weight: 500;">MXN</span> $</ng-container>
+                      <ng-container *ngIf="form.get('moneda_nombre')?.value === 'USD'"><span style="font-weight: 500;">USD</span> $</ng-container>{{ calcularTotalConDescuento() }}
+                    </div>
+                </div>
                 <div></div>
                 <div style="grid-template-columns: 1fr;">
                     <mat-label class="text-1" style="margin-left: 44px;">Cantidad</mat-label>
@@ -117,7 +120,9 @@
                 </div>
                 <div class="form-row" style="grid-template-columns: 1fr; column-gap: 12px;">
                     <span style="height: 0px;" class="text-1">Subtotal</span>
-                    <div class="resumen-value">{{formatearComoMoneda(subtotal)}}</div>
+                    <div class="resumen-value">
+                      <span style="font-weight: 500;">{{ form.get('moneda_nombre')?.value === 'USD' ? 'USD ' : 'MXN ' }}</span>{{ formatearComoMoneda(subtotal) }}
+                    </div>
                 </div>
             </div>            
 

@@ -111,7 +111,7 @@
                         </div>
                         <div class="form-field">
                             <mat-label class="text-1">Condición de pago</mat-label>
-                            <mat-label class="text-1-regular" style="text-transform: capitalize;">{{ editData?.condicion_pago }}</mat-label>
+                            <mat-label class="text-1-regular">{{ editData?.condicion_pago }}</mat-label>
                         </div>
                         <div class="form-field">
                             <mat-label class="text-1">Días de crédito</mat-label>
@@ -167,7 +167,7 @@
                                     </ng-container>
     
                                     <ng-container matColumnDef="numero_parte">
-                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">#Parte</th>
+                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Número de parte</th>
                                         <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen.articulo.part_number}}</td>
                                     </ng-container>
         
@@ -208,24 +208,24 @@
                                         <td mat-cell *matCellDef="let element" style="text-align: center;">${{element.totalConDescuento}}</td>
                                     </ng-container>
         
-                                    <ng-container matColumnDef="importe">
-                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Importe</th>
-                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticulo(element.totalConDescuento, element.cantidad)}}</td>
-                                    </ng-container>
-        
                                     <ng-container matColumnDef="unidad_medida">
                                         <th mat-header-cell *matHeaderCellDef>Unidad Medida</th>
                                         <td mat-cell *matCellDef="let element">{{element.unidad_medida.name}}</td>
                                     </ng-container>
         
                                     <ng-container matColumnDef="importe_iva">
-                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Importe IVA</th>
+                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">IVA</th>
                                         <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticuloIva(element.totalConDescuento, element.cantidad)}}</td>
                                     </ng-container>
         
                                     <ng-container matColumnDef="importe_retencion">
-                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Importe Retención</th>
+                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Retención</th>
                                         <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticuloRetencion(element.totalConDescuento, element.cantidad)}}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="importe_total">
+                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Total</th>
+                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteTotalByArticulo(element.totalConDescuento, element.cantidad)}}</td>    
                                     </ng-container>
         
                                     <ng-container matColumnDef="actions">
@@ -283,7 +283,7 @@
 
                                     <ng-container matColumnDef="acciones">
                                         <th mat-header-cell *matHeaderCellDef style="text-align: center;">Acciones</th>
-                                        <td mat-cell *matCellDef="let documento">
+                                        <td mat-cell *matCellDef="let documento" style="text-align: center;">
                                             <button mat-button (click)="descargarDocumento(documento)">
                                                 <mat-icon>file_download</mat-icon>
                                                 <span>Descargar</span>
@@ -308,11 +308,10 @@
                                 <div class="form-field">
                                     <mat-label class="text-1">Comentarios</mat-label>
                                     <mat-form-field>
-                                        <mat-label>Comentarios</mat-label>
                                         <textarea matInput rows="5" [(ngModel)]="comentario" (ngModelChange)="checkChanges()"></textarea>
                                     </mat-form-field>    
                                 </div>
-                                <button type="button" mat-raised-button (click)="onUpdateComentario()" [disabled]="!comentarioHasChanged" style="margin-left: auto; display: flex;">
+                                <button type="button" mat-button class="btn" (click)="onUpdateComentario()" [disabled]="!comentarioHasChanged" style="margin-left: auto; display: flex;">
                                     Actualizar comentario
                                 </button>
                             </mat-tab>
@@ -368,7 +367,7 @@
 
                                     <table class="table" mat-table [dataSource]="dataSourceArticulos" style="margin-top: 24px;">
                                         <ng-container matColumnDef="numero_parte">
-                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">#Parte</th>
+                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">Número de parte</th>
                                             <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen.articulo.part_number}}</td>
                                         </ng-container>
             
@@ -866,7 +865,7 @@
                                 </ng-container>
 
                                 <ng-container matColumnDef="numero_parte">
-                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">#Parte</th>
+                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Número de parte</th>
                                     <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen.articulo.part_number}}</td>
                                 </ng-container>
     
@@ -897,19 +896,14 @@
                                     </td>
                                 </ng-container>
     
+                                <ng-container matColumnDef="totalConDescuento">
+                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Precio</th>
+                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.moneda_nombre}} ${{element.totalConDescuento}}</td>
+                                </ng-container>
+
                                 <ng-container matColumnDef="total">
                                     <th mat-header-cell *matHeaderCellDef style="text-align: center;">Cantidad</th>
                                     <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.cantidad}}</td>
-                                </ng-container>
-    
-                                <ng-container matColumnDef="totalConDescuento">
-                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Precio con Descuento</th>
-                                    <td mat-cell *matCellDef="let element" style="text-align: center;">${{element.totalConDescuento}}</td>
-                                </ng-container>
-    
-                                <ng-container matColumnDef="importe">
-                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Importe</th>
-                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticulo(element.totalConDescuento, element.cantidad)}}</td>
                                 </ng-container>
     
                                 <ng-container matColumnDef="unidad_medida">
@@ -918,13 +912,18 @@
                                 </ng-container>
     
                                 <ng-container matColumnDef="importe_iva">
-                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Importe IVA</th>
-                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticuloIva(element.totalConDescuento, element.cantidad)}}</td>
+                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">IVA</th>
+                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.moneda_nombre}} {{calcularImporteByArticuloIva(element.totalConDescuento, element.cantidad)}}</td>
                                 </ng-container>
     
                                 <ng-container matColumnDef="importe_retencion">
-                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Importe Retención</th>
-                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{calcularImporteByArticuloRetencion(element.totalConDescuento, element.cantidad)}}</td>
+                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Retención</th>
+                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.moneda_nombre}} {{calcularImporteByArticuloRetencion(element.totalConDescuento, element.cantidad)}}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="importe_total">
+                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Total</th>
+                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.moneda_nombre}} {{calcularImporteTotalByArticulo(element.totalConDescuento, element.cantidad)}}</td>
                                 </ng-container>
     
                                 <ng-container matColumnDef="actions">
@@ -959,16 +958,16 @@
 
                     <div class="form-row two-col" style="width: 300px; grid-column-gap: 8px; grid-row-gap: 10px; margin-left: auto;">
                         <span class="resumen-label">Subtotal</span>
-                        <div class="resumen-value">{{ formatearComoMoneda(subTotal) }}</div>
+                        <div class="resumen-value">{{ this.f['moneda'].value }} {{ formatearComoMoneda(subTotal) }}</div>
     
                         <span class="resumen-label">IVA</span>
-                        <div class="resumen-value">{{ formatearComoMoneda(iva) }}</div>
+                        <div class="resumen-value">{{ this.f['moneda'].value }} {{ formatearComoMoneda(iva) }}</div>
     
                         <span class="resumen-label">Retención</span>
-                        <div class="resumen-value">{{ formatearComoMoneda(retencion) }}</div>
+                        <div class="resumen-value">{{ this.f['moneda'].value }} {{ formatearComoMoneda(retencion) }}</div>
     
                         <span class="resumen-label"><b>Total</b></span>
-                        <div class="resumen-value"><b>{{ formatearComoMoneda(total) }}</b></div>
+                        <div class="resumen-value"><b>{{ this.f['moneda'].value }} {{ formatearComoMoneda(total) }}</b></div>
                     </div>
                 </div>
     

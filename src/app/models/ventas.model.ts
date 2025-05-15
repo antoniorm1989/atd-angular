@@ -44,6 +44,8 @@ export class VentaModel {
   factura_fecha_timbrado: Date | undefined;
   factura_folio: string | undefined;
 
+  userId: number | undefined;
+
   constructor(id?: number) {
     this.id = id;
   }
@@ -72,6 +74,8 @@ export class VentaArticuloModel {
   unidad_medida: string | undefined;
   producto_servicio_model: CatalogoUnidadMedidaModel | undefined;
   unidad_medida_model: CatalogoProductoServicioModel | undefined;
+
+  moneda_nombre: string | undefined;
 }
 
 export class VentaEstatusModel {
