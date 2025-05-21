@@ -646,6 +646,8 @@ export class VentaComponent {
 
     if (this.dataSourceArticulos.data.length == 0)
       this.hasRecords = false;
+
+    this.calcularTotales();
   }
 
   calcularImporteByArticuloIva(costo: number, cantidad: number): string {
@@ -717,7 +719,7 @@ export class VentaComponent {
       width: '1100px',
       data: {
         articulo: ventaArticuloModel,
-        clienteId: this.f['cliente'].value ? this.f['cliente'].value.id : 0
+        clienteId: 0 // voy a editar, buscar en todos los articulos por si selecciono articulos no relacionados al cliente
       }
     });
 
@@ -859,10 +861,17 @@ export class VentaComponent {
     dialogRef.afterClosed().subscribe(facturar => {
       if (facturar) {
         this.loadingService.show();
+
+        // transformar antes de timbrar al tipo de cambio correcto
+        venta.articulos = venta.articulos?.map(articulo => {
+          articulo.precio_venta = this.obtenerTotalConDescuento(articulo);
+          return articulo;
+        });
+
         this.ventaService.create(venta).subscribe({
           next: (data) => {
             this.loadingService.hide();
-            this.openDialogSuccess(`Se ha creado con éxito la venta #${data.id},  podrás visualizarlo desde tu listado ventas.`)
+            this.openDialogSuccess(`Se ha creado con éxito la venta #${data.id}, podrás visualizarlo desde tu listado ventas.`)
             this.router.navigate(['ventas']);
           },
           error: (e) => {

@@ -3,10 +3,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { float } from '@zxing/library/esm/customTypings';
 import { FacturaModel, ReceptorModel } from 'src/app/models/factura.model';
-import { VentaModel } from 'src/app/models/ventas.model';
+import { VentaModel, VentaArticuloModel } from 'src/app/models/ventas.model';
 import { VentaService } from 'src/app/services/ventas.service';
 import { environment } from 'src/environments/environment';
-
 
 @Component({
   selector: 'app-preview-factura',
@@ -22,13 +21,18 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
   factura: FacturaModel | undefined;
 
   displayedColumns: string[] = ['unidad', 'producto_servicio', 'cantidad', 'descripcion', 'p_unitario', 'importe'];
-  dataSourceArticulos = new MatTableDataSource<any>([]);
+  dataSourceArticulos = new MatTableDataSource<VentaArticuloModel>([]);
 
   ocultarIva = true;
   ocultarRetiene = true;
 
   porcentajeIva = 0;
   porcentajeRetiene = 0;
+
+  subTotal: number = 0;
+  iva: number = 0;
+  retencion: number = 0;
+  total: number = 0;
 
   constructor(private dialog: MatDialog, private ventaService: VentaService) {
   }
@@ -43,21 +47,13 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
       this.factura.receptor.regimen_fiscal = this.venta?.cliente?.regimen_fiscal?.name;
 
 
-      this.dataSourceArticulos.data = this.venta?.articulos?.map((a) => {
-        return {
-          unidad: a.unidad_medida_model?.name,
-          producto_servicio: a.producto_servicio_model?.name,
-          cantidad: a.cantidad,
-          descripcion: a.almacen?.articulo?.description,
-          p_unitario: `$${(a.totalConDescuento ?? 0)}`,
-          p_unitario_number: a.totalConDescuento,
-          importe: `$${((a.cantidad ?? 0) * (a.totalConDescuento ?? 0)).toFixed(2)}`,
-        }
-      }) || [];
+      this.dataSourceArticulos.data = this.venta?.articulos || [];
+
       this.factura.formaPago = this.venta?.forma_pago?.name;
       this.factura.metodoPago = this.venta?.metodo_pago?.name;
       this.factura.moneda = this.venta?.moneda
       this.factura.uso_cfdi = this.venta?.uso_cfdi?.name;
+      this.factura.tipo_cambio = this.venta?.tipo_cambio;
 
       // Totales
       this.factura.porcentajeIva = this.venta?.translada_iva ? (this.venta.translada_iva_porcentaje ?? 0) : 0;
@@ -70,10 +66,10 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
       if (this.factura.porcentajeRetiene == 0)
         this.ocultarRetiene = false;
 
-      this.factura.iva = this.calcularIva();
-      this.factura.retiene = this.calcularRetiene();
-      this.factura.subTotal = this.calcularSubTotal();
-      this.factura.total = this.calcularTotal();
+      this.calcularSubTotal();
+      this.calcularIva();
+      this.calcularRetencion();
+      this.calcularTotal();
 
 
       /*this.ventaService.getVentaById(this.ventaId).subscribe({
@@ -139,42 +135,53 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
     }
   }
 
-  calcularSubTotal(): float {
-    let subTotal = 0;
+  calcularSubTotal() {
+    this.subTotal = 0;
     this.dataSourceArticulos.data.forEach(articulo => {
-      subTotal += (articulo.p_unitario_number ?? 0) * (articulo.cantidad ?? 0);
+      let totalConDescuento = this.obtenerTotalConDescuento(articulo);
+      this.subTotal += (totalConDescuento) * (articulo.cantidad ?? 0);
     });
-    return subTotal;
   }
 
-  calcularIva(): float {
+  calcularIva() {
     if (this.factura?.porcentajeIva == 0 || !this.factura?.porcentajeIva == undefined)
-      return 0;
+      this.iva = 0;
 
-    let iva = 0;
+    this.iva = 0;
     this.dataSourceArticulos.data.forEach(articulo => {
-      if (this.factura && this.factura.porcentajeIva) {
-        iva += ((articulo.p_unitario_number ?? 0) * (articulo.cantidad ?? 0)) * this.factura.porcentajeIva;
-      }
+      this.iva += ((this.obtenerTotalConDescuento(articulo) ?? 0) * (articulo.cantidad ?? 0)) * (this.factura?.porcentajeRetiene || 0);
     });
-    return iva;
   }
 
-  calcularRetiene(): float {
+  calcularRetencion() {
     if (this.factura?.porcentajeRetiene == 0 || !this.factura?.porcentajeRetiene == undefined)
-      return 0;
+      this.retencion = 0;
 
-    let retiene = 0;
+    this.retencion = 0;
     this.dataSourceArticulos.data.forEach(articulo => {
-      if (this.factura && this.factura.porcentajeRetiene) {
-        retiene += ((articulo.p_unitario_number ?? 0) * (articulo.cantidad ?? 0)) * this.factura.porcentajeRetiene;
-      }
+      this.retencion += ((this.obtenerTotalConDescuento(articulo) ?? 0) * (articulo.cantidad ?? 0)) * (this.factura?.porcentajeRetiene || 0);
     });
-    return retiene;
   }
 
-  calcularTotal(): float {
-    return (this.factura?.subTotal ?? 0) + (this.factura?.iva ?? 0) - (this.factura?.retiene ?? 0);
+  calcularTotal() {
+    this.total = this.subTotal + this.iva - this.retencion;
+  }
+
+  obtenerTotalConDescuento(articulo: VentaArticuloModel): number {
+    let totalConDescuento = 0;
+    if (this.factura?.moneda == "MXN") {
+      if (articulo.moneda_nombre == "MXN")
+        totalConDescuento = articulo.totalConDescuento ?? 0;
+      else if (articulo.moneda_nombre == "USD")
+        totalConDescuento = (articulo.totalConDescuento ?? 0) * (this.factura.tipo_cambio || 0);
+    }
+    else if (this.factura?.moneda == "USD") {
+      if (articulo.moneda_nombre == "MXN")
+        totalConDescuento = (articulo.totalConDescuento ?? 0) / (this.factura.tipo_cambio || 0);
+      else if (articulo.moneda_nombre == "USD")
+        totalConDescuento = (articulo.totalConDescuento ?? 0);
+    }
+    return totalConDescuento;
   }
 
   getFormattedDate(): string {

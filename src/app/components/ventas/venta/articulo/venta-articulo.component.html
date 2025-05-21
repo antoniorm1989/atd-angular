@@ -190,6 +190,9 @@
             <div style="position: absolute; bottom: 15px;" *ngIf="submitted && f['qty'].errors" class="invalid-feedback">
                 <div *ngIf="f['qty'].errors['min']">Debe seleccionar por lo menos 1 articulo</div>
             </div>
+            <div style="position: absolute; bottom: 15px;" *ngIf="submitted && f['qty'].errors" class="invalid-feedback">
+                <div *ngIf="f['qty'].errors['max']">Cantidad a despachar excede el stock disponible</div>
+            </div>
 
             <div class="toolbar-bottom">
                 <button mat-flat-button class="btn secundary" type="button" (click)="onCancel()">Cancelar</button>

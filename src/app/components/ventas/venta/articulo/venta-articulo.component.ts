@@ -558,7 +558,8 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
             this.add.emit(ventaArticuloModel);
           },
           error: (e) => {
-            console.log(e);
+            console.error('Error al despachar:', e.error.error);
+            this.form.controls['qty'].setErrors({ max: true });
           }
         });
       }
