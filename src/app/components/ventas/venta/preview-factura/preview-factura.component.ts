@@ -56,12 +56,12 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
       this.factura.tipo_cambio = this.venta?.tipo_cambio;
 
       // Totales
-      this.factura.porcentajeIva = this.venta?.translada_iva ? (this.venta.translada_iva_porcentaje ?? 0) : 0;
+      this.factura.porcentajeIva = this.venta?.translada_iva_porcentaje ?? 0;
       this.porcentajeIva = this.factura.porcentajeIva * 100;
       if (this.factura.porcentajeIva == 0)
         this.ocultarIva = false;
 
-      this.factura.porcentajeRetiene = this.venta?.retiene_iva ? (this.venta.retiene_iva_porcentaje ?? 0) : 0;
+      this.factura.porcentajeRetiene = this.venta?.retiene_iva_porcentaje ?? 0;
       this.porcentajeRetiene = this.factura.porcentajeRetiene * 100;
       if (this.factura.porcentajeRetiene == 0)
         this.ocultarRetiene = false;
@@ -149,7 +149,7 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
 
     this.iva = 0;
     this.dataSourceArticulos.data.forEach(articulo => {
-      this.iva += ((this.obtenerTotalConDescuento(articulo) ?? 0) * (articulo.cantidad ?? 0)) * (this.factura?.porcentajeRetiene || 0);
+      this.iva += ((this.obtenerTotalConDescuento(articulo) ?? 0) * (articulo.cantidad ?? 0)) * (this.factura?.porcentajeIva || 0);
     });
   }
 

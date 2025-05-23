@@ -138,10 +138,8 @@ export class VentaComponent {
       tipo_cambio: tipoCambioDefault,
       // Articulos
       objeto_impuesto: [],
-      translada_iva: false,
       translada_iva_porcentaje: "0",
-      retiene_iva: false,
-      retiene_iva_porcentaje: "0",
+      retiene_iva_porcentaje: "0"
     });
 
     this.formCancelacion = this.formBuilder.group({
@@ -193,9 +191,7 @@ export class VentaComponent {
                   tipo_cambio: venta.tipo_cambio,
                   // Articulos
                   objeto_impuesto: venta.objeto_impuesto,
-                  translada_iva: venta.translada_iva,
                   translada_iva_porcentaje: venta.translada_iva_porcentaje?.toString(),
-                  retiene_iva: venta.retiene_iva,
                   retiene_iva_porcentaje: venta.retiene_iva_porcentaje?.toString(),
                 });
 
@@ -238,13 +234,7 @@ export class VentaComponent {
       }
     });
 
-    this.form.controls['translada_iva'].valueChanges.subscribe((newValue) => {
-      this.calcularTotales();
-    });
     this.form.controls['translada_iva_porcentaje'].valueChanges.subscribe((newValue) => {
-      this.calcularTotales();
-    });
-    this.form.controls['retiene_iva'].valueChanges.subscribe((newValue) => {
       this.calcularTotales();
     });
     this.form.controls['retiene_iva_porcentaje'].valueChanges.subscribe((newValue) => {
@@ -305,9 +295,7 @@ export class VentaComponent {
     venta.metodo_pago = this.f['metodo_pago'].value;
     // Articulos
     venta.objeto_impuesto = this.f['objeto_impuesto'].value;
-    venta.translada_iva = this.f['translada_iva'].value;
     venta.translada_iva_porcentaje = parseFloat(this.f['translada_iva_porcentaje'].value);
-    venta.retiene_iva = this.f['retiene_iva'].value;
     venta.retiene_iva_porcentaje = parseFloat(this.f['retiene_iva_porcentaje'].value);
     venta.articulos = this.dataSourceArticulos.data;
 
@@ -651,27 +639,17 @@ export class VentaComponent {
   }
 
   calcularImporteByArticuloIva(costo: number, cantidad: number): string {
-    if (this.f['translada_iva'].value == true) {
-      return this.formatearComoMoneda(((costo * cantidad)) * this.f['translada_iva_porcentaje'].value);
-    } else
-      return this.formatearComoMoneda(0);
+    return this.formatearComoMoneda(((costo * cantidad)) * this.f['translada_iva_porcentaje'].value);
   }
 
   calcularImporteByArticuloRetencion(costo: number, cantidad: number): string {
-    if (this.f['retiene_iva'].value == true) {
-      return this.formatearComoMoneda((costo * cantidad) * this.f['retiene_iva_porcentaje'].value);
-    } else
-      return this.formatearComoMoneda(0);
+    return this.formatearComoMoneda((costo * cantidad) * this.f['retiene_iva_porcentaje'].value);
   }
 
   calcularImporteTotalByArticulo(costo: number, cantidad: number): string {
     let total = 0;
-    if (this.f['translada_iva'].value == true) {
-      total += ((costo * cantidad)) * this.f['translada_iva_porcentaje'].value;
-    }
-    if (this.f['retiene_iva'].value == true) {
-      total -= (costo * cantidad) * this.f['retiene_iva_porcentaje'].value;
-    }
+    total += ((costo * cantidad)) * this.f['translada_iva_porcentaje'].value;
+    total -= (costo * cantidad) * this.f['retiene_iva_porcentaje'].value;
     return this.formatearComoMoneda(total + (costo * cantidad));
   }
 
@@ -775,18 +753,16 @@ export class VentaComponent {
 
   calcularIva() {
     this.iva = 0;
-    if (this.f['translada_iva'].value == true)
-      this.dataSourceArticulos.data.forEach(articulo => {
-        this.iva += ((this.obtenerTotalConDescuento(articulo) ?? 0) * (articulo.cantidad ?? 0)) * this.f['translada_iva_porcentaje'].value;
-      });
+    this.dataSourceArticulos.data.forEach(articulo => {
+      this.iva += ((this.obtenerTotalConDescuento(articulo) ?? 0) * (articulo.cantidad ?? 0)) * this.f['translada_iva_porcentaje'].value;
+    });
   }
 
   calcularRetencion() {
     this.retencion = 0;
-    if (this.f['retiene_iva'].value == true)
-      this.dataSourceArticulos.data.forEach(articulo => {
-        this.retencion += ((this.obtenerTotalConDescuento(articulo) ?? 0) * (articulo.cantidad ?? 0)) * this.f['retiene_iva_porcentaje'].value;
-      });
+    this.dataSourceArticulos.data.forEach(articulo => {
+      this.retencion += ((this.obtenerTotalConDescuento(articulo) ?? 0) * (articulo.cantidad ?? 0)) * this.f['retiene_iva_porcentaje'].value;
+    });
   }
 
   calcularTotal() {
@@ -1059,7 +1035,7 @@ export class VentaComponent {
 }
 
 @Component({
-  selector: 'dialog-component',
+  selector: 'dialog-component-agregar-articulo-venta',
   template: `<span mat-dialog-title>Agregar artículos venta </span>
             <mat-dialog-content class="mat-typography">
               <app-venta-articulo [ventaArticulosModel]="ventaArticulosModel" [ventaArticuloModel]="ventaArticuloModel" [clienteId]="clienteId" [isDespachar]="isDespachar" (cancel)="onCancelar()" (add)="onAgregarArticulo($event)" #appVentaArticuloComponent></app-venta-articulo>

@@ -284,7 +284,7 @@ export class CatalogoUsuariosComponent {
 }
 
 @Component({
-  selector: 'dialog-component',
+  selector: 'dialog-component-editar-password',
   template: `<span mat-dialog-title>Actualizar contraseña</span>
             <mat-dialog-content class="mat-typography">
               <app-update-password [userId]="userId" (cancel)="onCancelar()" (update)="onUpdatePassowrd($event)" #appUpdatePasswordComponent></app-update-password>

@@ -133,11 +133,11 @@
                         </div>
                         <div class="form-field">
                             <mat-label class="text-1">Traslada IVA</mat-label>
-                            <mat-label class="text-1-regular">{{ editData?.translada_iva ?  editData?.translada_iva_porcentaje : "No traslada iva" }}</mat-label>
+                            <mat-label class="text-1-regular">{{ editData?.translada_iva_porcentaje }}</mat-label>
                         </div>
                         <div class="form-field">
                             <mat-label class="text-1">Retiene IVA</mat-label>
-                            <mat-label class="text-1-regular">{{ editData?.retiene_iva ?  editData?.retiene_iva_porcentaje : "No retiene iva" }}</mat-label>
+                            <mat-label class="text-1-regular">{{ editData?.retiene_iva_porcentaje }}</mat-label>
                         </div>
                         <div class="saldo saldo-red">
                             <mat-label class="text-1">Saldo</mat-label>
@@ -792,7 +792,7 @@
                             </mat-panel-description>
                         </mat-expansion-panel-header>
     
-                        <div class="form-row seccion-articulos-header" [class.three-col]="isReadOnly" [class.four-col]="!isReadOnly" style="grid-column-gap: 10px;">
+                        <div class="form-row seccion-articulos-header" [class.three-col]="isReadOnly" [class.four-col]="!isReadOnly" style="grid-column-gap: 50px; grid-template-columns: 1fr 200px 200px 210px">
                             <div class="form-field">
                                 <mat-label class="text-1" *ngIf="isReadOnly">Objeto impuesto</mat-label>
                                 <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['objeto_impuesto'].value?.name}}</mat-label>
@@ -806,17 +806,13 @@
                                     <div *ngIf="f['objeto_impuesto'].errors['required']">Este campo requerido</div>
                                 </div>
                             </div>
-                            <div class="form-row two-col">
-                                <div class="form-field">
-                                    <mat-label class="text-1" *ngIf="isReadOnly">Traslada IVA</mat-label>
-                                    <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['translada_iva'].value == true ? 'Sí' : 'No'}}</mat-label>
-                                    <mat-slide-toggle *ngIf="!isReadOnly" formControlName="translada_iva" color="primary" style="margin: auto;">Traslada IVA</mat-slide-toggle>
-                                </div>
+                            <div>
                                 <div class="form-field" *ngIf="isReadOnly">
-                                    <mat-label class="text-1">Traslada IVA Porcentaje</mat-label>
+                                    <mat-label class="text-1">Traslada IVA</mat-label>
                                     <mat-label class="text-1-regular">{{this.f['translada_iva_porcentaje'].value}}%</mat-label>
                                 </div>
-                                <div class="form-field" style="margin-top: 40px; min-width: 80px;" *ngIf="!isReadOnly">
+                                <div class="form-field" style="margin-top: 20px; min-width: 80px;" *ngIf="!isReadOnly">
+                                    <mat-label class="text-1">Traslada IVA</mat-label>
                                     <mat-form-field>
                                         <mat-select formControlName="translada_iva_porcentaje">
                                             <mat-option value="0">0%</mat-option>
@@ -826,18 +822,13 @@
                                     </mat-form-field>
                                 </div>
                             </div>
-                            <div class="form-row two-col">
-                                <div class="form-field" >
-                                    <mat-label class="text-1" *ngIf="isReadOnly">Retiene IVA</mat-label>
-                                    <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['retiene_iva'].value == true ? 'Sí' : 'No'}}</mat-label>
-                                    <mat-slide-toggle *ngIf="!isReadOnly" formControlName="retiene_iva" color="primary" style="margin: auto;">Retiene IVA</mat-slide-toggle>
-                                </div>
-    
+                            <div>
                                 <div class="form-field" *ngIf="isReadOnly">
                                     <mat-label class="text-1">Retiene IVA Porcentaje</mat-label>
                                     <mat-label class="text-1-regular">{{this.f['retiene_iva_porcentaje'].value}}%</mat-label>
                                 </div>
-                                <div class="form-field" style="margin-top: 40px; min-width: 80px;" *ngIf="!isReadOnly">
+                                <div class="form-field" style="margin-top: 20px; min-width: 80px;" *ngIf="!isReadOnly">
+                                    <mat-label class="text-1">Retiene IVA</mat-label>
                                     <mat-form-field>
                                         <mat-select formControlName="retiene_iva_porcentaje">
                                             <mat-option value="0">0%</mat-option>

@@ -520,7 +520,7 @@ export class CatalogoClientesComponent {
 }
 
 @Component({
-  selector: 'dialog-component',
+  selector: 'dialog-component-cliente',
   template: `<span mat-dialog-title>Asignar artículos</span>
             <mat-dialog-content class="mat-typography">
               <app-cliente-articulo [clienteArticulosModel]="clienteArticulosModel" [clienteArticuloModel]="clienteArticuloModel" (cancel)="onCancelar()" (add)="onAgregarArticulo($event)" #appClienteArticuloComponent></app-cliente-articulo>

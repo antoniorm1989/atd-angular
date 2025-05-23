@@ -377,10 +377,7 @@ export class OrdenCompraComponent {
   }
 
   calcularImporteByArticuloRetencion(costo: number, cantidad: number, descuento: number): string {
-    if (this.f['retiene_iva'].value == true) {
-      return this.formatearComoMoneda((((costo * cantidad) - descuento)) * this.f['retiene_iva_porcentaje'].value);
-    } else
-      return this.formatearComoMoneda(0);
+    return this.formatearComoMoneda((((costo * cantidad) - descuento)) * this.f['retiene_iva_porcentaje'].value);
   }
 
   formatearComoMoneda(valor: number | undefined): string {
@@ -483,10 +480,9 @@ export class OrdenCompraComponent {
 
   calcularRetencion() {
     this.retencion = 0;
-    if (this.f['retiene_iva'].value == true)
-      this.dataSourceArticulos.data.forEach(articulo => {
-        this.retencion += ((articulo.precio_orden_compra ?? 0) * (articulo.cantidad ?? 0)) * this.f['retiene_iva_porcentaje'].value;
-      });
+    this.dataSourceArticulos.data.forEach(articulo => {
+      this.retencion += ((articulo.precio_orden_compra ?? 0) * (articulo.cantidad ?? 0)) * this.f['retiene_iva_porcentaje'].value;
+    });
   }
 
   calcularTotal() {
@@ -526,7 +522,7 @@ export class OrdenCompraComponent {
 
 
 @Component({
-  selector: 'dialog-component',
+  selector: 'dialog-component-articulo-orden-compra',
   template: `<span mat-dialog-title>Agregar artículos ordenCompra </span>
             <mat-dialog-content class="mat-typography">
               <!-- <app-orden-compra-articulo [ordenCompraArticulosModel]="ordenCompraArticulosModel" [ordenCompraArticuloModel]="ordenCompraArticuloModel" [proveedorId]="proveedorId" [isDespachar]="isDespachar" (cancel)="onCancelar()" (add)="onAgregarArticulo($event)" #appOrdenCompraArticuloComponent></app-orden-compra-articulo> -->

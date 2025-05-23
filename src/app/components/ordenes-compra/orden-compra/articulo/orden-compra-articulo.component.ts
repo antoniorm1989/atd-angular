@@ -507,7 +507,7 @@ export class OrdenCompraArticuloComponent implements OnInit, OnDestroy {
 }
 
 @Component({
-  selector: 'dialog-component',
+  selector: 'dialog-component-escaner-orden-compra',
   template: `<h2 mat-dialog-title>Escanear codigo de barras</h2>
             <mat-dialog-content class="mat-typography">
               <app-barcode-scanner #appBarcodeScanner (scannedValue)="handleScannedValue($event)"></app-barcode-scanner>

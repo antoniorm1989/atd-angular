@@ -31,7 +31,6 @@ export class VentaModel {
   objeto_impuesto: CatalogoObjetoImpuestoModel | undefined
   translada_iva: boolean | undefined;
   translada_iva_porcentaje: float | undefined;
-  retiene_iva: boolean | undefined;
   retiene_iva_porcentaje: float | undefined;
 
   articulos: VentaArticuloModel[] | undefined;
