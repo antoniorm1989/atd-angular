@@ -73,8 +73,9 @@ import { OrdenCompraArticuloComponent } from './components/ordenes-compra/orden-
 import { PreviewFacturaComponent } from './components/ventas/venta/preview-factura/preview-factura.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoadingOverlayComponent } from './components/genericos/loading/loading-overlay.component';
-import { MatChipInputEvent, MatChipsModule} from '@angular/material/chips';
+import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { SistemaConfiguracionComponent } from './components/configuracion/sistema-configuracion.component';
+import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -145,6 +146,7 @@ export function tokenGetter() {
     HttpClientModule,
     CommonModule,
     MatTableModule,
+    MatSortModule,
     MatBadgeModule,
     MatPaginatorModule,
     MatSlideToggleModule,
@@ -170,7 +172,7 @@ export function tokenGetter() {
     MatProgressSpinnerModule,
     MatChipsModule
   ],
-  providers:[
+  providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
   ],
   bootstrap: [AppComponent],

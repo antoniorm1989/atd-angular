@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { ArticuloGroup, CatalogoArticuloModel } from '../models/catalogo-articulo.model';
 import { environment } from 'src/environments/environment';
 import { CatalogoMonedaModel } from '../models/catalogos.model';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +14,18 @@ export class CatalogoArticuloService {
   constructor(private http: HttpClient) {
   }
 
-  getAll(page: number, limit: number): Observable<{ data: CatalogoArticuloModel[], total: number }> {
-    const url = `${environment.apiUrl}/api/articulo/getAll?page=${page}&limit=${limit}`;
-    return this.http.get<{ data: CatalogoArticuloModel[], total: number }>(url);
-  }
+  getAll(page: number, limit: number, sort: string = 'nombre', order: string = 'asc'): Observable<{ data: Array<CatalogoArticuloModel>, total: number }> {
+      let params = new HttpParams()
+        .set('page', page.toString())
+        .set('limit', limit.toString())
+        .set('sort', sort)
+        .set('order', order);
+  
+      return this.http.get<{ data: Array<CatalogoArticuloModel>, total: number }>(
+        `${environment.apiUrl}/api/articulo/getAll`,
+        { params }
+      );
+    }
 
   getAllByCategory(categoryId: number): Observable<Array<CatalogoArticuloModel>> {
     return this.http.get<Array<CatalogoArticuloModel>>(`${environment.apiUrl}/api/articulo/getAllByCategory/${categoryId}`);

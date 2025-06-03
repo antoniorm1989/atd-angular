@@ -13,12 +13,17 @@ export class CatalogoCategoriaArticuloService {
   constructor(private http: HttpClient) {
   }
 
-  getAll(page: number, limit: number): Observable<{ data: Array<CatalogoCategoriaArticuloModel>, total: number }> {
-    const params = new HttpParams()
+  getAll(page: number, limit: number, sort: string = 'nombre', order: string = 'asc'): Observable<{ data: Array<CatalogoCategoriaArticuloModel>, total: number }> {
+    let params = new HttpParams()
       .set('page', page.toString())
-      .set('limit', limit.toString());
-  
-    return this.http.get<{ data: Array<CatalogoCategoriaArticuloModel>, total: number }>(`${environment.apiUrl}/api/catArticulo/getAll`, { params });
+      .set('limit', limit.toString())
+      .set('sort', sort)
+      .set('order', order);
+
+    return this.http.get<{ data: Array<CatalogoCategoriaArticuloModel>, total: number }>(
+      `${environment.apiUrl}/api/catArticulo/getAll`,
+      { params }
+    );
   }
 
   getById(id: number): Observable<CatalogoCategoriaArticuloModel> {

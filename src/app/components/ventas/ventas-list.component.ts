@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, ViewChild, Input } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { Router, NavigationEnd, Event } from '@angular/router';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -6,12 +6,14 @@ import { environment } from 'src/environments/environment';
 import { VentaModel } from 'src/app/models/ventas.model';
 import { VentaService } from 'src/app/services/ventas.service';
 import { CatalogoClienteModel } from 'src/app/models/catalogo-cliente.model';
-import { Observable, fromEvent, map, startWith } from 'rxjs';
+import { Observable, map, startWith } from 'rxjs';
 import { CatalogoClientesService } from 'src/app/services/catalogo-cliente.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DialogSuccessComponent } from '../genericos/dialogSuccess.component';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
+
 
 @Component({
   selector: 'app-ventas-list',
@@ -19,13 +21,21 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./ventas-list.component.css']
 })
 
-export class VentasListComponent {
+export class VentasListComponent implements OnInit {
 
   hasRecords = false;
   displayedColumns: string[] = ['id', 'estatusFactura', 'factura_folio', 'estatus', 'backorder', 'creacion', 'cliente', 'importe', 'responsable', 'actions'];
   dataSource = new MatTableDataSource<VentaModel>([]);
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
   private dataLoaded = false;
+
+  totalItems = 0;
+  pageSize = 20;
+  pageIndex = 0;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  sortField = 'name';
+  sortDirection: 'asc' | 'desc' | 'none' = 'none';
+  @ViewChild(MatSort) sort!: MatSort;
 
   form: FormGroup;
 
@@ -35,9 +45,9 @@ export class VentasListComponent {
 
   facturaEstatusLabels: { [key: number]: string } = {
     1: 'Por-facturar',
-    2: 'Facturada',
+    4: 'Facturada',
     3: 'Pre-Cancelada',
-    4: 'Cancelada',
+    2: 'Cancelada',
   };
 
   ventaEstatusLabels: { [key: number]: string } = {
@@ -63,15 +73,58 @@ export class VentasListComponent {
       backOrder: false
     });
 
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url == '/ventas' && !this.dataLoaded) {
-        this.onLoadVentas();
-        this.loadSelectData();
+  }
+
+  get f() { return this.form!.controls; }
+
+  ngOnInit(): void {
+    this.loadVentas(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
+    this.loadSelectData();
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+  }
+
+  loadVentas(page: number, limit: number, sort: string = 'name', order: string = 'asc') {
+    let clienteId = this.selectedCliente?.id;
+    let fechaDesde = this.f['fechaDesde'].value;
+    let fechaHasta = this.f['fechaHasta'].value;
+    let backOrder = this.f['backOrder'].value;
+    let facturaEstatus = this.f['factura_estatus'].value;
+    let ventaEstatus = this.f['venta_estatus'].value;
+    let hasFilters = clienteId != undefined || fechaDesde != undefined || fechaHasta != undefined || backOrder != false || facturaEstatus != undefined || ventaEstatus != undefined;
+
+    this.ventaService.getAll(clienteId, facturaEstatus, ventaEstatus, fechaDesde, fechaHasta, backOrder, page, limit, sort, order).subscribe({
+      next: (res) => {
+        if (res.data.length > 0) {
+          this.hasRecords = res.data.length > 0;
+          this.dataSource.data = res.data;
+          this.totalItems = res.total;
+        } else {
+          if (!hasFilters)
+            this.hasRecords = false;
+
+          this.dataSource = new MatTableDataSource<VentaModel>([]);
+        }
+      },
+      error: (e) => {
       }
     });
   }
 
-  get f() { return this.form!.controls; }
+  onPageChange(event: any) {
+    this.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex;
+    this.loadVentas(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
+  }
+
+  onSortChange(event: Sort) {
+    this.sortField = event.active;
+    this.sortDirection = event.direction || 'none';
+    this.loadVentas(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
+  }
 
   formatDate(stringDate: string): string {
     const date = new Date(stringDate);
@@ -112,7 +165,7 @@ export class VentasListComponent {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+      maximumFractionDigits: 4
     }).format(valor);
   }
 
@@ -136,7 +189,7 @@ export class VentasListComponent {
     try {
       this.f['cliente'].reset();
       this.selectedCliente = undefined;
-      this.onLoadVentas();
+      this.loadVentas(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
     } catch (error) {
       console.error('An error occurred in clearAutocompleteInput:', error);
     }
@@ -145,7 +198,7 @@ export class VentasListComponent {
   clearSelectionFacturaEstatus() {
     try {
       this.f['factura_estatus'].reset();
-      this.onLoadVentas();
+      this.loadVentas(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
     } catch (error) {
       console.error('An error occurred in clearAutocompleteInput:', error);
     }
@@ -154,62 +207,34 @@ export class VentasListComponent {
   clearSelectionVentaEstatus() {
     try {
       this.f['venta_estatus'].reset();
-      this.onLoadVentas();
+      this.loadVentas(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
     } catch (error) {
       console.error('An error occurred in clearAutocompleteInput:', error);
     }
   }
 
   onSelectChangeFacturaEstatus(event: any) {
-    this.onLoadVentas();
+    this.loadVentas(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
   }
 
   onSelectChangeVentaEstatus(event: any) {
-    this.onLoadVentas();
+    this.loadVentas(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
   }
 
   onClienteSelectionChange(event: any) {
     if (event.source._selected == true) {
       this.selectedCliente = event.source.value;
-      this.onLoadVentas();
+      this.loadVentas(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
     }
   }
 
   onDateChange(event: any) {
-    this.onLoadVentas();
+    this.loadVentas(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
   }
 
   onToggleChange(event: any) {
-    this.onLoadVentas();
+    this.loadVentas(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
   }
-
-  onLoadVentas() {
-    let clienteId = this.selectedCliente?.id;
-    let fechaDesde = this.f['fechaDesde'].value;
-    let fechaHasta = this.f['fechaHasta'].value;
-    let backOrder = this.f['backOrder'].value;
-    let facturaEstatus = this.f['factura_estatus'].value;
-    let ventaEstatus = this.f['venta_estatus'].value;
-    let hasFilters = clienteId != undefined || fechaDesde != undefined || fechaHasta != undefined || backOrder != false || facturaEstatus != undefined || ventaEstatus != undefined;
-
-    this.ventaService.getAll(clienteId, facturaEstatus, ventaEstatus, fechaDesde, fechaHasta, backOrder).subscribe({
-      next: (data) => {
-        if (data.length > 0) {
-          this.hasRecords = true;
-          this.dataSource = new MatTableDataSource<VentaModel>(data);
-          this.dataSource.paginator = this.paginator;
-        } else {
-          if (!hasFilters)
-            this.hasRecords = false;
-
-          this.dataSource = new MatTableDataSource<VentaModel>([]);
-        }
-      },
-      error: (e) => {
-      }
-    });
-  }
-
 
   private _filter(value: any): CatalogoClienteModel[] {
     let filterValue = "";
@@ -288,7 +313,7 @@ export class VentasListComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('Dialog closed');
-      this.onLoadVentas();
+      this.loadVentas(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
     });
   }
 
@@ -304,5 +329,5 @@ export class VentasListComponent {
   formatNumber(input: number): string {
     return input.toString().padStart(4, '0');
   }
-  
+
 }

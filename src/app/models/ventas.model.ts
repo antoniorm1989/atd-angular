@@ -90,7 +90,7 @@ export class FacturaStatus{
   fecha_estatus: Date | undefined;
   created_at: Date | undefined;
   user: User | undefined;
-
+  custom_data?: any;
 }
 
 export class VentaDocumentoModel{

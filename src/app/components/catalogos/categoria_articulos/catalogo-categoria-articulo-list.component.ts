@@ -1,15 +1,17 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { Router, NavigationEnd, Event } from '@angular/router';
+import { Router } from '@angular/router';
 import { CatalogoCategoriaArticuloService } from 'src/app/services/catalogo-categoria-articulos.service';
 import { CatalogoCategoriaArticuloModel } from 'src/app/models/catalogo-categoria-articulo.model';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { environment } from 'src/environments/environment';
+import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
+
 
 @Component({
   selector: 'app-catalogo-categoria-articulos-list',
   templateUrl: './catalogo-categoria-articulo-list.component.html',
-  styleUrls: ['./catalogo-categoria-articulo-list.component.css']
+  styleUrls: ['./catalogo-categoria-articulo-list.component.css'],
 })
 
 export class CatalogoCategoriaArticuloListComponent implements OnInit {
@@ -18,21 +20,31 @@ export class CatalogoCategoriaArticuloListComponent implements OnInit {
   displayedColumns: string[] = ['name', 'description', 'created', 'modified', 'user', 'status', 'actions'];
   dataSource = new MatTableDataSource<CatalogoCategoriaArticuloModel>([]);
   totalItems = 0;
-  pageSize = 10;
+  pageSize = 20;
   pageIndex = 0;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  sortField = 'name';
+  sortDirection: 'asc' | 'desc' | 'none' = 'none';
 
-  constructor(private catalogoCategoriaArticuloService: CatalogoCategoriaArticuloService, private router: Router) {}
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
+  constructor(private catalogoCategoriaArticuloService: CatalogoCategoriaArticuloService, private router: Router) {
+  }
 
   ngOnInit(): void {
     this.loadCategorias(this.pageIndex + 1, this.pageSize);
   }
 
-  loadCategorias(page: number, limit: number) {
-    this.catalogoCategoriaArticuloService.getAll(page, limit).subscribe({
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+  }
+
+  loadCategorias(page: number, limit: number, sort: string = 'name', order: string = 'asc') {
+    this.catalogoCategoriaArticuloService.getAll(page, limit, sort, order).subscribe({
       next: (res) => {
         this.hasRecords = res.data.length > 0;
-        this.dataSource = new MatTableDataSource<CatalogoCategoriaArticuloModel>(res.data);
+        this.dataSource.data = res.data;
         this.totalItems = res.total;
       },
       error: (e) => {
@@ -42,9 +54,15 @@ export class CatalogoCategoriaArticuloListComponent implements OnInit {
   }
 
   onPageChange(event: any) {
-    this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
-    this.loadCategorias(this.pageIndex + 1, this.pageSize);
+    this.pageIndex = event.pageIndex;
+    this.loadCategorias(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
+  }
+
+  onSortChange(event: Sort) {
+    this.sortField = event.active;
+    this.sortDirection = event.direction || 'none';
+    this.loadCategorias(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
   }
 
   formatDate(stringDate: string): string {
@@ -56,7 +74,7 @@ export class CatalogoCategoriaArticuloListComponent implements OnInit {
   }
 
   getUserName(name: string, last_name: string): string {
-    return name[0].toUpperCase() + last_name[0].toUpperCase();
+    return name[0].toUpperCase() + (last_name ? last_name[0].toUpperCase() : '');
   }
 
   onNew() {
@@ -72,7 +90,7 @@ export class CatalogoCategoriaArticuloListComponent implements OnInit {
       queryParams: { action: 'edit' },
     });
   }
-  
+
   navigate(route: string) {
     this.router.navigate([route]);
   }

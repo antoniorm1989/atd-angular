@@ -5,6 +5,7 @@ import { CatalogoArticuloModel } from 'src/app/models/catalogo-articulo.model';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { environment } from 'src/environments/environment';
+import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
 
 @Component({
   selector: 'app-articulos-list',
@@ -17,10 +18,15 @@ export class CatalogoArticuloListComponent implements OnInit {
   hasRecords = false;
   displayedColumns: string[] = ['part_number', 'description', 'cat_articulo_id', 'created', 'modified', 'user', 'status', 'actions'];
   dataSource = new MatTableDataSource<CatalogoArticuloModel>([]);
+  
   totalItems = 0;
-  pageSize = 10;
+  pageSize = 20;
   pageIndex = 0;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  sortField = 'name';
+  sortDirection: 'asc' | 'desc' | 'none' = 'none';
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private catalogoArticuloService: CatalogoArticuloService, private router: Router) {}
 
@@ -28,11 +34,16 @@ export class CatalogoArticuloListComponent implements OnInit {
     this.loadArticulos(this.pageIndex + 1, this.pageSize);
   }
 
-  loadArticulos(page: number, limit: number) {
-    this.catalogoArticuloService.getAll(page, limit).subscribe({
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+  }
+  
+  loadArticulos(page: number, limit: number, sort: string = 'name', order: string = 'asc') {
+    this.catalogoArticuloService.getAll(page, limit, sort, order).subscribe({
       next: (res) => {
         this.hasRecords = res.data.length > 0;
-        this.dataSource = new MatTableDataSource<CatalogoArticuloModel>(res.data);
+        this.dataSource.data = res.data;
         this.totalItems = res.total;
       },
       error: (e) => {
@@ -41,10 +52,16 @@ export class CatalogoArticuloListComponent implements OnInit {
     });
   }
   
-  onPageChange(event: PageEvent) {
-    this.pageIndex = event.pageIndex;
+  onPageChange(event: any) {
     this.pageSize = event.pageSize;
-    this.loadArticulos(this.pageIndex + 1, this.pageSize);
+    this.pageIndex = event.pageIndex;
+    this.loadArticulos(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
+  }
+
+  onSortChange(event: Sort) {
+    this.sortField = event.active;
+    this.sortDirection = event.direction || 'none';
+    this.loadArticulos(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
   }
 
   formatDate(stringDate: string): string {

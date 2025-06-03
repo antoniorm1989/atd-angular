@@ -5,6 +5,7 @@ import { MatTableDataSource} from '@angular/material/table';
 import { CatalogoAlmacenModel } from 'src/app/models/catalogo-almacen.model';
 import { CatalogoAlmacenesService } from 'src/app/services/catalogo-almacenes.service';
 import { environment } from 'src/environments/environment';
+import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
 
 @Component({
   selector: 'app-catalogo-almacenes-list',
@@ -16,24 +17,51 @@ export class CatalogoAlmacenesListComponent{
   hasRecords = false;
   displayedColumns: string[] = ['name', 'phone', 'location', 'created', 'modified', 'user', 'status', 'actions'];
   dataSource = new MatTableDataSource<CatalogoAlmacenModel>([]);
+  
+  totalItems = 0;
+  pageSize = 20;
+  pageIndex = 0;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  
+  sortField = 'name';
+  sortDirection: 'asc' | 'desc' | 'none' = 'none';
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private catalogoAlmacenesService: CatalogoAlmacenesService, private router: Router) {
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd) {
-        this.catalogoAlmacenesService.getAll().subscribe({
-          next: (data) => {
-            if (data.length > 0){
-              this.hasRecords = true;
-              this.dataSource = new MatTableDataSource<CatalogoAlmacenModel>(data);
-              this.dataSource.paginator = this.paginator;
-            }
-          },
-          error: (e) => {
-          }
-        });
+  }
+
+  ngOnInit(): void {
+    this.loadAlmacenes(this.pageIndex + 1, this.pageSize);
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+  }
+
+  loadAlmacenes(page: number, limit: number, sort: string = 'name', order: string = 'asc') {
+    this.catalogoAlmacenesService.getAllPaginado(page, limit, sort, order).subscribe({
+      next: (res) => {
+        this.hasRecords = res.data.length > 0;
+        this.dataSource.data = res.data;
+        this.totalItems = res.total;
+      },
+      error: (e) => {
+        console.error('Error cargando categorías', e);
       }
     });
+  }
+
+  onPageChange(event: any) {
+    this.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex;
+    this.loadAlmacenes(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
+  }
+
+  onSortChange(event: Sort) {
+    this.sortField = event.active;
+    this.sortDirection = event.direction || 'none';
+    this.loadAlmacenes(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
   }
 
   formatDate(stringDate: string): string {

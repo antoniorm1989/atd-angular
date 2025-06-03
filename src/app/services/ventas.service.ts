@@ -12,8 +12,13 @@ export class VentaService {
   constructor(private http: HttpClient) {
   }
 
-  getAll(clienteId: number | undefined, facturaEstatus: number, ventaEstatus: number, fechaDesde: Date, fechaHasta: Date, backOrder: boolean): Observable<Array<VentaModel>> {
-    let params = new HttpParams();
+  getAll(clienteId: number | undefined, facturaEstatus: number, ventaEstatus: number, fechaDesde: Date, fechaHasta: Date, backOrder: boolean, page: number, limit: number, sort: string = 'nombre', order: string = 'asc'): Observable<{ data: Array<VentaModel>, total: number }> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString())
+      .set('sort', sort)
+      .set('order', order);
+
     if (clienteId) {
       params = params.set('clienteId', clienteId.toString());
     }
@@ -32,8 +37,14 @@ export class VentaService {
     if (backOrder) {
       params = params.set('backOrder', backOrder.toString());
     }
+    params = params.set('page', clienteId ? clienteId.toString() : '')
 
-    return this.http.get<Array<VentaModel>>(`${environment.apiUrl}/api/ventas/getAll`, { params: params });
+    
+
+    return this.http.get<{ data: Array<VentaModel>, total: number }>(
+      `${environment.apiUrl}/api/ventas/getAll`,
+      { params }
+    );
   }
 
   getById(id: number): Observable<VentaModel> {
@@ -88,9 +99,9 @@ export class VentaService {
   cancelarVenta(ventaId: number, fechaCancelacion: Date, motivoCancelacion: string, folioSustituto: string, facturaId: String): Observable<any> {
     let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
 
-    return this.http.post<void>(`${environment.apiUrl}/api/ventas/cancelarVenta/${ventaId}`, { 
-      fechaCancelacion, 
-      motivoCancelacion, 
+    return this.http.post<void>(`${environment.apiUrl}/api/ventas/cancelarVenta/${ventaId}`, {
+      fechaCancelacion,
+      motivoCancelacion,
       folioSustituto,
       userId: userData.id,
       facturaId

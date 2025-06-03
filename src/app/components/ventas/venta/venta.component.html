@@ -141,7 +141,7 @@
                         </div>
                         <div class="saldo saldo-red">
                             <mat-label class="text-1">Saldo</mat-label>
-                            <mat-label class="text-1-regular">{{ formatearComoMoneda(subTotal) }}</mat-label>
+                            <mat-label class="text-1-regular">{{ formatearComoMoneda(total) }}</mat-label>
                         </div>
                         
                     </div>
@@ -405,52 +405,63 @@
                                         <tr mat-row *matRowDef="let row; columns: displayedColumnsCancelacion;"></tr>
                                     </table>
                                 </div>
-                                
 
                                 <div *ngIf="isCancelada()">
-                                    <div class="form-row two-col" style="grid-template-columns: 1fr 1fr; align-items: center;">
-                                        <div class="form-field">
-                                            <mat-label class="text-1-regular">Motivo Cancelación</mat-label>
-                                            <mat-label class="text-1">Motivo Cancelación</mat-label>
-                                        </div>
-                                        <div class="form-field" *ngIf="selectedMotivoCancelacion && selectedMotivoCancelacion.clave == '01'">
-                                            <mat-label class="text-1-regular">UUID factura de sustitución</mat-label>
-                                            <mat-label class="text-1">12234</mat-label>
-                                        </div>
-                                    </div>
-                                    <mat-list class="list-history-cancelation">
-                                        <mat-list-item *ngFor="let cancelacion of facturaEstatusList" style="height: fit-content; margin-top: 12px;">
-                                            <div style="display: grid; grid-template-columns: 40px 1fr; align-items: center; grid-gap: 30px;">
-                                                <span class="estatus-icon estatus-icon-history f-pre-cancelada"></span>
-                                                <mat-card appearance="outlined" style="border: 1px solid #959595; border-radius: 10px; background-color: #f2f2f2; width: 150px; height: 50;;">
-                                                    <mat-card-content>
-                                                        <span style="font-size: large;">{{cancelacion.estatus}}</span>
-                                                    </mat-card-content>
-                                                </mat-card>
-                                            </div>
-                                            <div style="display: grid; grid-template-columns: 40px 1fr 1fr 1fr; align-items: center; width: fit-content; grid-gap: 30px;">
-                                                <div style="background-color: #BA9400; width: 2px; height: 100%; margin: auto;"></div>
-                                                <div class="form-field">
-                                                    <mat-label class="text-1">Fecha cancelación</mat-label>
-                                                    <mat-label class="text-1-regular">{{cancelacion.fecha_estatus}}</mat-label>
+                                    <mat-card style="border: 2px solid #d32f2f; background: #fff0f0; margin-bottom: 24px;">
+                                        <mat-card-content style="display: flex; align-items: center; gap: 24px;">
+                                            <mat-icon style="color: #d32f2f;">cancel</mat-icon>
+                                            <div>
+                                                <div style="font-size: 1.3em; color: #d32f2f; font-weight: bold;">Venta Cancelada</div>
+                                                <div style="display: grid; grid-template-columns: auto 1fr; gap: 12px;">
+                                                    <span style="font-weight: 500;">Fecha de cancelación:</span>
+                                                    <span>{{ getFechaCancelacion() }}</span>
                                                 </div>
-                                                <div class="form-field">
-                                                    <mat-label class="text-1">Hora cancelación</mat-label>
-                                                    <mat-label class="text-1-regular">Motivo Cancelación</mat-label>
-                                                </div>
-                                                <div class="form-field">
-                                                    <mat-label class="text-1">Usuario</mat-label>
-                                                    <mat-label class="text-1-regular">Motivo Cancelación</mat-label>
+                                                <div style="display: grid; grid-template-columns: auto 1fr; gap: 12px;">
+                                                    <span style="font-weight: 500;">Motivo de cancelación:</span>
+                                                    <span>{{ getMotivoCancelacion() }}</span>
                                                 </div>
                                             </div>
-                                            <div style="display: grid; grid-template-columns: 40px 1fr; align-items: center; grid-gap: 30px;">
-                                                <span></span>
-                                                <mat-divider></mat-divider>
-                                            </div>
-                                        </mat-list-item>
-                                    </mat-list>
+                                        </mat-card-content>
+                                    </mat-card>
+                                    <mat-card style="margin-bottom: 24px;">
+                                        <mat-card-content>
+                                            <div style="font-size: 1.1em; font-weight: 500; margin-bottom: 8px;">Artículos regresados al inventario</div>
+                                            <table class="table" mat-table [dataSource]="dataSourceArticulos" style="margin-top: 8px;">
+                                                <ng-container matColumnDef="numero_parte">
+                                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Número de parte</th>
+                                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen.articulo.part_number}}</td>
+                                                </ng-container>
+                                                <ng-container matColumnDef="descripcion">
+                                                    <th mat-header-cell *matHeaderCellDef>Descripción</th>
+                                                    <td mat-cell *matCellDef="let element">
+                                                        <div class="description-wrapper">
+                                                            <span class="dos-renglones">{{element.almacen.articulo.description}}</span>
+                                                        </div>
+                                                    </td>
+                                                </ng-container>
+                                                <ng-container matColumnDef="total">
+                                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Cantidad</th>
+                                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.cantidad}}</td>
+                                                </ng-container>
+                                                <ng-container matColumnDef="backorder">
+                                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Back order</th>
+                                                    <td mat-cell *matCellDef="let element" style="text-align: center;">
+                                                        {{element.backorder}}
+                                                    </td>
+                                                </ng-container>
+                                                <ng-container matColumnDef="almacen">
+                                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Almacén</th>
+                                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen.almacen.name}}</td>
+                                                </ng-container>
+                                                <tr mat-header-row *matHeaderRowDef="displayedColumnsCancelacion"></tr>
+                                                <tr mat-row *matRowDef="let row; columns: displayedColumnsCancelacion;"></tr>
+                                            </table>
+                                        </mat-card-content>
+                                    </mat-card>
+                                    <span> Esta venta ya ha sido cancelada. Los articulos relacionados a esta venta han sido regresados al inventario.</span>
+                                    <!--- Agregar seccion visual del estatus de la cancelacion -->
                                 </div>
-                                
+
                             </mat-tab>
 
                             <mat-tab label="Historial">
@@ -470,31 +481,30 @@
                                                     <span *ngIf="facturaEstatus.estatus == 'Pre-Cancelada'" class="estatus-icon estatus-icon-history f-pre-cancelada"></span>
                                                     <span *ngIf="facturaEstatus.estatus == 'Cancelada'" class="estatus-icon estatus-icon-history f-cancelada"></span>
                                                     
-                                                    <mat-card appearance="outlined" style="border: 1px solid #959595; border-radius: 10px; background-color: #f2f2f2; width: fit-content; height: 50;;">
+                                                    <mat-card appearance="outlined" style="border: 1px solid #959595; border-radius: 10px; background-color: #f2f2f2; width: fit-content; height: 50;">
                                                         <mat-card-content>
                                                             <span style="font-size: large;">{{facturaEstatus.estatus}}</span>
                                                         </mat-card-content>
                                                     </mat-card>
                                                 </div>
-                                                <div style="display: grid; grid-template-columns: 40px 1fr 1fr 1fr; align-items: center; width: fit-content; grid-gap: 30px;">
+                                                <div style="display: grid;grid-template-columns: 40px auto auto 1fr;align-items: center;width: 100%;grid-gap: 24px;justify-items: flex-start;">
                                                     <div style="background-color: #BA9400; width: 2px; height: 100%; margin: auto;"></div>
                                                     <div class="form-field">
                                                         <mat-label class="text-1">Fecha</mat-label>
                                                         <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; grid-gap: 12px;">
                                                             <mat-label class="text-1-regular">{{formatDate(facturaEstatus.created_at)}}</mat-label>
-                                                            <i class="fa-regular fa-calendar" style="color:#c2a11f"></i>
+                                                            <i class="fa-regular fa-calendar" style="color:#c2a11f; margin: auto;"></i>
                                                         </div>
                                                     </div>
                                                     <div class="form-field">
                                                         <mat-label class="text-1">Hora</mat-label>
                                                         <div style="display: grid; grid-template-columns: 40px 1fr; align-items: center; grid-gap: 10px;">
                                                             <mat-label class="text-1-regular">{{formatTime(facturaEstatus.created_at)}}</mat-label>
-                                                            <i class="fa-regular fa-clock" style="color:#c2a11f"></i>
+                                                            <i class="fa-regular fa-clock" style="color:#c2a11f; margin: auto;"></i>
                                                         </div>
                                                     </div>
-                                                    <div class="form-field">
-                                                        <mat-label class="text-1">Usuario</mat-label>
-                                                        <div class="user-wrapper">
+                                                     <div class="form-field" style="margin-top: 8px;">
+                                                        <div class="user-wrapper" style="display: grid ;grid-template-columns: 50px auto auto 1fr; align-items: center; gap: 24px;">
                                                             <div class="circle-initials" mat-mini-fab color="primary" *ngIf="facturaEstatus.user?.photo == null">
                                                                 {{getUserName(facturaEstatus.user?.name ?? '', facturaEstatus.user?.last_name ?? '')}}
                                                             </div>
@@ -528,25 +538,24 @@
                                                         </mat-card-content>
                                                     </mat-card>
                                                 </div>
-                                                <div style="display: grid; grid-template-columns: 40px 1fr 1fr 1fr; align-items: center; width: fit-content; grid-gap: 30px;">
+                                                <div style="display: grid;grid-template-columns: 40px auto auto 1fr;align-items: center;width: 100%;grid-gap: 24px;justify-items: flex-start;">
                                                     <div style="background-color: #BA9400; width: 2px; height: 100%; margin: auto;"></div>
                                                     <div class="form-field">
                                                         <mat-label class="text-1">Fecha</mat-label>
                                                         <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; grid-gap: 12px;">
                                                             <mat-label class="text-1-regular">{{formatDate(ventaEstatus.created_at)}}</mat-label>
-                                                            <i class="fa-regular fa-calendar" style="color:#c2a11f"></i>
+                                                            <i class="fa-regular fa-calendar" style="color:#c2a11f; margin: auto;"></i>
                                                         </div>
                                                     </div>
                                                     <div class="form-field">
                                                         <mat-label class="text-1">Hora</mat-label>
                                                         <div style="display: grid; grid-template-columns: 40px 1fr; align-items: center; grid-gap: 10px;">
                                                             <mat-label class="text-1-regular">{{formatTime(ventaEstatus.created_at)}}</mat-label>
-                                                            <i class="fa-regular fa-clock" style="color:#c2a11f"></i>
+                                                            <i class="fa-regular fa-clock" style="color:#c2a11f; margin: auto;"></i>
                                                         </div>
                                                     </div>
-                                                    <div class="form-field">
-                                                        <mat-label class="text-1">Usuario</mat-label>
-                                                        <div class="user-wrapper">
+                                                    <div class="form-field" style="margin-top: 8px;">
+                                                        <div class="user-wrapper" style="display: grid ;grid-template-columns: 50px auto auto 1fr; align-items: center; gap: 24px;">
                                                             <div class="circle-initials" mat-mini-fab color="primary" *ngIf="ventaEstatus.user?.photo == null">
                                                                 {{getUserName(ventaEstatus.user?.name ?? '', ventaEstatus.user?.last_name ?? '')}}
                                                             </div>

@@ -96,7 +96,6 @@ export class VentaComponent {
 
   editData: VentaModel | null = null;
 
-
   factura: any;
 
   comentario: string = "";
@@ -662,7 +661,7 @@ export class VentaComponent {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+      maximumFractionDigits: 4
     }).format(valor);
   }
 
@@ -1030,6 +1029,24 @@ export class VentaComponent {
       }
     }
     return 0;
+  }
+
+  getFechaCancelacion(): string {
+    if( !this.editData || !this.editData.factura_estatus || !this.editData.factura_estatus.custom_data || !this.editData.factura_estatus.custom_data.fecha_cancelacion) {
+      return "N/A";
+    }
+    return this.formatDate(this.editData.factura_estatus.custom_data.fecha_cancelacion);
+  }
+
+  getMotivoCancelacion(): string {
+    if( !this.editData || !this.editData.factura_estatus || !this.editData.factura_estatus.custom_data || !this.editData.factura_estatus.custom_data.motivo_cancelacion) {
+      return "N/A";
+    }
+    
+    let motivoCancelacionId = this.editData.factura_estatus.custom_data.motivo_cancelacion;
+    let motivoCancelacion = this.motivoCancelacionList.find((item: any) => item.clave === motivoCancelacionId);
+
+    return motivoCancelacion ? `${motivoCancelacion.clave} - ${motivoCancelacion.motivo}` : "N/A";
   }
 
 }

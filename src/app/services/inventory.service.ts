@@ -3,14 +3,14 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { InventoryAlmacenModel, InventoryAlmacenTransactionsModel } from '../models/inventory-almacen.model';
 import { environment } from 'src/environments/environment';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InventoryAlmacenService {
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   getById(id: number | undefined): Observable<InventoryAlmacenModel> {
     return this.http.get<InventoryAlmacenModel>(`${environment.apiUrl}/api/inventoryAlmacen/getById/${id}`, this.getHeaders());
@@ -18,6 +18,22 @@ export class InventoryAlmacenService {
 
   getInventoryByAlmacen(almacenId: number | undefined): Observable<Array<InventoryAlmacenModel>> {
     return this.http.get<Array<InventoryAlmacenModel>>(`${environment.apiUrl}/api/inventoryAlmacen/getInventoryByAlmacen/${almacenId}`, this.getHeaders());
+  }
+
+  getInventoryByAlmacenPaginado(almacenId: number | undefined, page: number, limit: number, sort: string = 'nombre', order: string = 'asc'): Observable<{ data: Array<InventoryAlmacenModel>, total: number }> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString())
+      .set('sort', sort)
+      .set('order', order);
+
+    return this.http.get<{ data: Array<InventoryAlmacenModel>, total: number }>(
+      `${environment.apiUrl}/api/inventoryAlmacen/getInventoryByAlmacenPaginado/${almacenId}`,
+      {
+        headers: this.getHeaders().headers,
+        params
+      }
+    );
   }
 
   getInventoryByAlmacenByArticulo(almacenId: number | undefined, articuloId: number | undefined): Observable<InventoryAlmacenModel> {

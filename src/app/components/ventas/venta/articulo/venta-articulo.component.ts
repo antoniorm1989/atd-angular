@@ -336,7 +336,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
       style: 'currency',
       currency: moneda,
       minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+      maximumFractionDigits: 4
     }).format(valor);
   }
 

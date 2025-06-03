@@ -86,10 +86,10 @@
                 <button mat-flat-button class="btn btn-agregar" (click)="onNew()" type="button"><mat-icon>add</mat-icon>Nueva Factura</button>
             </div>
 
-            <table class="table" mat-table [dataSource]="dataSource">
+            <table class="table" mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortChange($event)">
 
                 <ng-container matColumnDef="id">
-                    <th mat-header-cell *matHeaderCellDef class="center-column">Id</th>
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Id</th>
                     <td mat-cell *matCellDef="let element" class="center-column">
                         <span (click)="onView(element.id)" class="title-grid">
                             {{formatNumber(element.id)}}
@@ -98,7 +98,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="estatusFactura">
-                    <th mat-header-cell *matHeaderCellDef class="center-column">Estatus Factura</th>
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Estatus Factura</th>
                     <td mat-cell *matCellDef="let element">
                         <div style="display: grid; grid-template-columns: 9px 1fr; grid-gap: 12px;">
                             <span *ngIf="(element.factura_estatus.estatus === 'Por-facturar' || element.factura_estatus.estatus === '')" class="estatus-icon f-por-facturar"></span>
@@ -111,12 +111,12 @@
                 </ng-container>
 
                 <ng-container matColumnDef="factura_folio">
-                    <th mat-header-cell *matHeaderCellDef class="center-column">Folio factura</th>
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Folio factura</th>
                     <td mat-cell *matCellDef="let element" class="center-column">{{ element.factura_folio }}</td>
                 </ng-container>
                 
                 <ng-container matColumnDef="estatus">
-                    <th mat-header-cell *matHeaderCellDef class="center-column">Estatus venta</th>
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Estatus venta</th>
                     <td mat-cell *matCellDef="let element">
                         <div style="display: grid; grid-template-columns: 9px 1fr; grid-gap: 12px;">
                             <span *ngIf="capitalizeWords(element.estatus.estatus) === 'Parcialmente'" class="estatus-icon v-parcialmente"></span>
@@ -128,17 +128,17 @@
                 </ng-container>
 
                 <ng-container matColumnDef="backorder">
-                    <th mat-header-cell *matHeaderCellDef class="center-column">Back Order</th>
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Back Order</th>
                     <td mat-cell *matCellDef="let element" class="center-column">{{element.backorder == 0 ? 'No' : element.backorder}}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="creacion">
-                    <th mat-header-cell *matHeaderCellDef class="center-column">Fecha Creación</th>
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Fecha Creación</th>
                     <td mat-cell *matCellDef="let element" class="center-column">{{formatDate(element.created_at)}}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="cliente">
-                    <th mat-header-cell *matHeaderCellDef class="center-column">Cliente</th>
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Cliente</th>
                     <td mat-cell *matCellDef="let element"><span>{{element.cliente.cliente}}</span></td>
                 </ng-container>
 
@@ -148,7 +148,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="responsable">
-                    <th mat-header-cell *matHeaderCellDef class="center-column">Responsable</th>
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Responsable</th>
                     <td mat-cell *matCellDef="let element">
                         <div *ngIf="element.responsable.id" class="user-wrapper">
                             <div class="circle-initials" mat-mini-fab color="primary" *ngIf="element.responsable.photo == null">
@@ -185,8 +185,8 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
 
-            <mat-paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons
-                aria-label="Select page of periodic elements">
+            <mat-paginator [pageSizeOptions]="[20, 50, 100]" [length]="totalItems" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                (page)="onPageChange($event)" showFirstLastButtons>
             </mat-paginator>
         </div>
     </div>
