@@ -317,6 +317,23 @@ mat-panel-description {
     background-color: #eadfb2;
 }
 
+.cliente-articulo .resumen-label{
+    padding: 8px 0px;
+    text-align: end;
+    height: 22px;
+}
+.cliente-articulo .resumen-value{
+    background-color: #D9D9D9;
+    padding: 0;
+    height: 47px;
+    border-radius: 4px;
+    width: 175px;
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 @media only screen and (max-width: 1500px) {
 
 }

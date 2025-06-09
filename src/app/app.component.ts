@@ -32,7 +32,7 @@ export class AppComponent implements OnDestroy {
           href: 'inventario-almacen',
         }
       ]
-    },{
+    }, {
       text: 'Ventas',
       icon: 'fa-solid fa-cash-register',
       subItems: [
@@ -52,7 +52,7 @@ export class AppComponent implements OnDestroy {
           href: 'ventas',
         }
       ]
-    },{
+    }, {
       text: 'Compras',
       icon: 'fa-solid fa-money-check-dollar',
       subItems: [
@@ -67,7 +67,7 @@ export class AppComponent implements OnDestroy {
           href: 'orden-compra',
         }
       ]
-    },{
+    }, {
       text: 'Configuración',
       icon: 'fa-solid fa-gear',
       subItems: [
@@ -118,17 +118,21 @@ export class AppComponent implements OnDestroy {
   ngOnInit(): void {
     let userData = JSON.parse(localStorage.getItem('user_data') || '{"photo":""}');
 
-    if (userData.photo == '' || userData.photo == null || userData.photo == undefined || userData.photo == 'null')
-      this.hasPhoto = false;
-    else
-      this.hasPhoto = true;
+    this.hasPhoto = !!userData.photo && userData.photo !== 'null';
 
     this.communicationService.methodCalled$.subscribe(() => {
-      this.sidenav.close();
       setTimeout(() => {
         this.updateMenu();
       }, 100);
     });
+
+    setInterval(() => {
+      if (!this.isTokenValid) {
+        this.sidenav.close();
+        localStorage.removeItem('user_data');
+        this.router.navigate(['/login']);
+      }
+    }, 30000); // 30,000 ms = 30 segundos
   }
 
   ngOnDestroy() {
@@ -178,7 +182,7 @@ export class AppComponent implements OnDestroy {
 
   getTipoCambio(): number {
     let userData = JSON.parse(localStorage.getItem('user_data') || '{}');
-    if(userData.configuraciones && userData.configuraciones.length > 0) {
+    if (userData.configuraciones && userData.configuraciones.length > 0) {
       let configuracion = userData.configuraciones.find((config: any) => config.name === 'tipo_cambio');
       if (configuracion) {
         return configuracion.value;

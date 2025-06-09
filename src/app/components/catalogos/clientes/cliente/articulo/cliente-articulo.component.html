@@ -34,7 +34,7 @@
                             <mat-icon>photo_camera</mat-icon>
                         </button>
                     </div>
-                    <div class="form-row" style="grid-template-columns: 200px 200px auto auto; gap: 20px;">
+                    <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
                         <div class="form-field" style="margin-top: 0px;">
                             <mat-label class="text-1" >Precio Venta*</mat-label>
                             <mat-form-field floatLabel="always">
@@ -56,10 +56,12 @@
                               <mat-button-toggle value="porcentaje" style="width: 40px;">%</mat-button-toggle>
                             </mat-button-toggle-group>
                         </div>
-                        <div></div>
-                        <div *ngIf="form.get('descuento')?.value" style="margin-top: 0px; display: grid;; grid-template-rows: 30px 30px; grid-row-gap: 12px;">
-                            <span class="text-1">Total con descuento</span>
-                            <span style="text-align: end; padding-right: 30px;">${{ calcularTotalConDescuento() }}</span>
+                        <div style="grid-template-columns: 1fr; column-gap: 12px;">
+                            <span style="height: 0px;" class="text-1">Total con descuento</span>
+                            <div class="resumen-value">
+                                <ng-container *ngIf="selectedArticle?.moneda_nombre == 'MXN'"><span style="font-weight: 500;">MXN ${{ calcularTotalConDescuento() }}</span></ng-container>
+                                <ng-container *ngIf="selectedArticle?.moneda_nombre == 'USD'"><span style="font-weight: 500;">USD ${{ calcularTotalConDescuento() }}</span></ng-container>
+                            </div>
                         </div>
                     </div>
                 </div>

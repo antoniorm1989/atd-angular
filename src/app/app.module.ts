@@ -55,7 +55,7 @@ import { ArticuloClienteModalComponent, CatalogoClientesComponent } from './comp
 import { BarcodeScannerComponent } from './components/genericos/barcodesScanner.component';
 import { VentasListComponent } from './components/ventas/ventas-list.component';
 import { ArticuloVentaModalComponent, PreviewFacturaModalComponent, VentaComponent } from './components/ventas/venta/venta.component';
-import { MAT_DATE_LOCALE, MatNativeDateModule, NativeDateAdapter } from '@angular/material/core';
+import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
 import { VentaArticuloComponent } from './components/ventas/venta/articulo/venta-articulo.component';
@@ -73,9 +73,11 @@ import { OrdenCompraArticuloComponent } from './components/ordenes-compra/orden-
 import { PreviewFacturaComponent } from './components/ventas/venta/preview-factura/preview-factura.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoadingOverlayComponent } from './components/genericos/loading/loading-overlay.component';
-import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
 import { SistemaConfiguracionComponent } from './components/configuracion/sistema-configuracion.component';
-import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
+import { MatSortModule } from '@angular/material/sort';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { TokenExpiredInterceptor } from './interceptors/token.interceptors';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -173,7 +175,12 @@ export function tokenGetter() {
     MatChipsModule
   ],
   providers: [
-    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenExpiredInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent],
 })

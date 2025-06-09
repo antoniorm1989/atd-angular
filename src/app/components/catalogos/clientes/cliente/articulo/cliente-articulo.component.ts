@@ -333,7 +333,7 @@ export class ClienteArticuloComponent implements OnInit, OnDestroy {
       total = precio - (precio * (descuento / 100));
     }
   
-    return total >= 0;
+    return total > 0;
   }
 
   debugTipoDescuento(event: any) {
