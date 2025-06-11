@@ -265,3 +265,18 @@ input[formControlName="password"] {
 .mat-expansion-panel-header{
     background-color: #fff !important;
 }
+
+.search-field .mat-mdc-form-field-flex{
+    height: 45px;
+}
+
+.search-field .mat-mdc-text-field-wrapper.mdc-text-field--outlined .mat-mdc-form-field-infix,
+.almacen-select-input .mat-mdc-text-field-wrapper.mdc-text-field--outlined .mat-mdc-form-field-infix{
+    padding-bottom: 12px !important;
+    padding-top: 12px !important;
+}
+
+.search-field .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floating-label,
+.almacen-select-input .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floating-label{
+    top: 22px;
+}

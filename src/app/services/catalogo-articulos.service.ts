@@ -14,18 +14,22 @@ export class CatalogoArticuloService {
   constructor(private http: HttpClient) {
   }
 
-  getAll(page: number, limit: number, sort: string = 'nombre', order: string = 'asc'): Observable<{ data: Array<CatalogoArticuloModel>, total: number }> {
-      let params = new HttpParams()
-        .set('page', page.toString())
-        .set('limit', limit.toString())
-        .set('sort', sort)
-        .set('order', order);
-  
-      return this.http.get<{ data: Array<CatalogoArticuloModel>, total: number }>(
-        `${environment.apiUrl}/api/articulo/getAll`,
-        { params }
-      );
+  getAll(page: number, limit: number, sort: string = 'nombre', order: string = 'asc', search: string = ''): Observable<{ data: Array<CatalogoArticuloModel>, total: number }> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString())
+      .set('sort', sort)
+      .set('order', order);
+
+    if (search) {
+      params = params.set('search', search);
     }
+
+    return this.http.get<{ data: Array<CatalogoArticuloModel>, total: number }>(
+      `${environment.apiUrl}/api/articulo/getAll`,
+      { params }
+    );
+  }
 
   getAllByCategory(categoryId: number): Observable<Array<CatalogoArticuloModel>> {
     return this.http.get<Array<CatalogoArticuloModel>>(`${environment.apiUrl}/api/articulo/getAllByCategory/${categoryId}`);

@@ -8,7 +8,9 @@ import { environment } from 'src/environments/environment';
 import { CatalogoAlmacenModel } from 'src/app/models/catalogo-almacen.model';
 import { CatalogoAlmacenesService } from 'src/app/services/catalogo-almacenes.service';
 import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
-
+import { FormControl } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { LoadingService } from 'src/app/components/genericos/loading/loading.service';
 
 @Component({
   selector: 'app-inventory-almacen-list',
@@ -36,43 +38,54 @@ export class InventoryAlmacenListComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private inventoryAlmacenService: InventoryAlmacenService, private catalogoAlmacenesService: CatalogoAlmacenesService, private router: Router) {
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url == '/inventario-almacen' && !this.dataLoaded) {
-        this.catalogoAlmacenesService.getAll().subscribe({
-          next: (data) => {
-            this.almacenes = data;
-            if (data.length > 0){
-              this.selectedAlmacen = data[0];
-              this.almacenId = this.selectedAlmacen.id;
-              this.loadInventario(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
-            }
-          },
-          error: (e) => {
-          }
-        });
-      }
-    });
+  searchText: string = '';
+  searchControl = new FormControl('');
+
+  constructor(private inventoryAlmacenService: InventoryAlmacenService, private catalogoAlmacenesService: CatalogoAlmacenesService, private router: Router, private loadingService: LoadingService) {
   }
 
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
+  ngOnInit(): void {
+    this.catalogoAlmacenesService.getAll().subscribe({
+      next: (data) => {
+        this.almacenes = data;
+        if (data.length > 0) {
+          this.selectedAlmacen = data[0];
+          this.almacenId = this.selectedAlmacen.id;
+          this.loadInventario(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
+        }
+      },
+      error: (e) => {
+      }
+    });
+
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(700), // espera 2 segundos después de dejar de escribir
+        distinctUntilChanged()
+      )
+      .subscribe((value: string | null) => {
+        this.searchText = (value ?? '').trim();
+        this.pageIndex = 0; // reinicia a la primera página
+        this.loadInventario(1, this.pageSize, this.sortField, this.sortDirection, this.searchText);
+      });
   }
 
   onAlmacenChange(event: any) {
     this.almacenId = event.value.id;
-    this.loadInventario(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
+    this.loadInventario(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection, this.searchText);
   }
 
-  loadInventario(page: number, limit: number, sort: string = 'name', order: string = 'asc') {
-    this.inventoryAlmacenService.getInventoryByAlmacenPaginado(this.almacenId, page, limit, sort, order).subscribe({
+  loadInventario(page: number, limit: number, sort: string = 'name', order: string = 'asc', search: string = '') {
+    this.loadingService.show();
+    this.inventoryAlmacenService.getInventoryByAlmacenPaginado(this.almacenId, page, limit, sort, order, search).subscribe({
       next: (res) => {
         this.hasRecords = res.data.length > 0;
         this.dataSource = new MatTableDataSource<InventoryAlmacenModel>(res.data);
         this.totalItems = res.total;
+        this.loadingService.hide();
       },
       error: (e) => {
+        this.loadingService.hide();
         console.error('Error cargando inventario', e);
       }
     });
@@ -81,13 +94,13 @@ export class InventoryAlmacenListComponent {
   onPageChange(event: any) {
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex;
-    this.loadInventario(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
+    this.loadInventario(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection, this.searchText);
   }
 
   onSortChange(event: Sort) {
     this.sortField = event.active;
     this.sortDirection = event.direction || 'none';
-    this.loadInventario(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
+    this.loadInventario(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection, this.searchText);
   }
 
   getUserName(name: string, last_name: string): string {
@@ -118,5 +131,16 @@ export class InventoryAlmacenListComponent {
 
   getUrlPhoto(photo: string): string {
     return `${environment.apiUrl}/images/users/${photo}`;
+  }
+
+  onSearchNow() {
+    this.searchText = (this.searchControl.value ?? '').trim();
+    this.pageIndex = 0;
+    this.loadInventario(1, this.pageSize, this.sortField, this.sortDirection, this.searchText);
+  }
+
+  onClearSearchText() {
+    this.searchControl.setValue('');
+    this.hasRecords = true;
   }
 }

@@ -62,32 +62,21 @@
     padding: 0px 5px;
 }
 
-
 /* list */
-.catalogo-categoria-articulos-list .container .container-list {
-    margin-top: 30px;
-}
-
-.catalogo-categoria-articulos-list .container .container-list .table{
-    margin-top: 30px;
-}
-
 .catalogo-categoria-articulos-list .container .container-list .toolbar {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr 250px;
+    column-gap: 24px;
+    margin-top: 24px;
 }
 
-.catalogo-categoria-articulos-list .container .container-list .toolbar {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin-bottom: 12px;
+.catalogo-categoria-articulos-list .search-field {
+  width: 100%;
+  margin-bottom: 1rem;
 }
 
 .catalogo-categoria-articulos-list .container .container-list .toolbar .btn {
-    width: auto;
-    height: 40px;
+    height: 45px;
     border-radius: 8px;
     background-color: #BA9400;
     color: #fff;

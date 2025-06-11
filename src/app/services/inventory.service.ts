@@ -10,7 +10,7 @@ import { HttpParams } from '@angular/common/http';
 })
 export class InventoryAlmacenService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getById(id: number | undefined): Observable<InventoryAlmacenModel> {
     return this.http.get<InventoryAlmacenModel>(`${environment.apiUrl}/api/inventoryAlmacen/getById/${id}`, this.getHeaders());
@@ -20,12 +20,16 @@ export class InventoryAlmacenService {
     return this.http.get<Array<InventoryAlmacenModel>>(`${environment.apiUrl}/api/inventoryAlmacen/getInventoryByAlmacen/${almacenId}`, this.getHeaders());
   }
 
-  getInventoryByAlmacenPaginado(almacenId: number | undefined, page: number, limit: number, sort: string = 'nombre', order: string = 'asc'): Observable<{ data: Array<InventoryAlmacenModel>, total: number }> {
+  getInventoryByAlmacenPaginado(almacenId: number | undefined, page: number, limit: number, sort: string = 'nombre', order: string = 'asc', search: string = ''): Observable<{ data: Array<InventoryAlmacenModel>, total: number }> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString())
       .set('sort', sort)
       .set('order', order);
+
+    if (search) {
+      params = params.set('search', search);
+    }
 
     return this.http.get<{ data: Array<InventoryAlmacenModel>, total: number }>(
       `${environment.apiUrl}/api/inventoryAlmacen/getInventoryByAlmacenPaginado/${almacenId}`,

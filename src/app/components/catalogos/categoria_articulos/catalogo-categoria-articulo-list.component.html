@@ -9,15 +9,28 @@
         </div>
     </div>
     <div class="container">
-        <div *ngIf="!hasRecords" class="container-empty">
+        <div *ngIf="!hasRecords && searchText === ''" class="container-empty">
             <img src="../../assets/images/empty-list.png" alt="empty logo" class="img">
             <span class="text">Aún no tienes artículos en el catálogo, para poder ver información favor de agregar una
                 artículo.</span>
             <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Agregar categoría</button>
         </div>
+        <div *ngIf="!hasRecords && searchText !== ''" class="container-empty">
+            <img src="../../assets/images/empty-list.png" alt="empty logo" class="img" style="margin-top: 50px;">
+            <span class="text">No se encontraron resultados para "{{searchText}}".</span>
+            <button mat-flat-button class="btn" style="width: 200px;" (click)="onClearSearchText()">
+                <mat-icon>close</mat-icon> Limpiar búsqueda
+            </button>
+        </div>
         <div *ngIf="hasRecords" class="container-list">
 
             <div class="toolbar">
+                <mat-form-field appearance="outline" class="search-field" style="margin-bottom: 0px;">
+                    <mat-label>Buscar</mat-label>
+                    <input matInput   [formControl]="searchControl" (keydown.enter)="onSearchNow()" placeholder="Buscar categoría, descripción, usuario...">
+                    <mat-icon matSuffix>search</mat-icon>
+                </mat-form-field>
+                <div class="spacer"></div>
                 <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Agregar categoría</button>
             </div>
 

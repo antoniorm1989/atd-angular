@@ -10,23 +10,36 @@
         <div class="toolbar">
             <div class="select-wrapper">
                 <mat-label class="text-1">Almacén</mat-label><br/>
-                <mat-form-field>
-                    <mat-select [(value)]="selectedAlmacen" (selectionChange)="onAlmacenChange($event)">
+                <mat-form-field style="width: 100%;" class="almacen-select-input">
+                    <mat-select [(value)]="selectedAlmacen" (selectionChange)="onAlmacenChange($event)" style="height: 20px">
                         <mat-option *ngFor="let almacen of almacenes" [value]="almacen">{{ almacen.name }}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
-
+            <div class="spacer"></div>
+            <mat-form-field appearance="outline" class="search-field" style="height: 45px; margin-top: 30px;">
+                    <mat-label>Buscar</mat-label>
+                    <input matInput [formControl]="searchControl" (keydown.enter)="onSearchNow()" placeholder="Buscar #Parte, descripción, categoría, usuario...">
+                    <mat-icon matSuffix>search</mat-icon>
+                </mat-form-field>
             <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>
                 Entrada
             </button>
         </div>
 
-        <div *ngIf="!hasRecords && selectedAlmacen != null" class="container-empty">
+        <div *ngIf="!hasRecords && selectedAlmacen != null && searchText === ''" class="container-empty">
             <img src="../../assets/images/empty-list.png" alt="empty logo" class="img">
             <span class="text">Aún no tienes artículos en tu inventario, para poder ver información favor de dar entrada
                 un artículo.</span>
+        </div>
+
+        <div *ngIf="!hasRecords && selectedAlmacen != null && searchText !== ''" class="container-empty">
+            <img src="../../assets/images/empty-list.png" alt="empty logo" class="img" style="margin-top: 50px;">
+            <span class="text">No se encontraron resultados para "{{searchText}}".</span>
+            <button mat-flat-button class="btn" style="width: 200px;" (click)="onClearSearchText()">
+                <mat-icon>close</mat-icon> Limpiar búsqueda
+            </button>
         </div>
         
         <div *ngIf="hasRecords && selectedAlmacen != null" class="container-list">

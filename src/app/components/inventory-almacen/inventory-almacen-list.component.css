@@ -65,19 +65,26 @@
 
 /* list */
 .inventory-almacen-list .container .toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 120px;
+    column-gap: 40px;
+    margin-top: 24px;
+}
+
+.inventory-almacen-list .search-field {
+  width: 100%;
+  margin-bottom: 1rem;
 }
 
 .inventory-almacen-list .container .toolbar .btn {
     width: 120px;
-    height: 40px;
+    height: 45px;
     border-radius: 8px;
     background-color: #BA9400;
     color: #fff;
     padding: 0px 5px;
     margin-bottom: 12px;
+    margin-top: 30px;
 }
 
 .inventory-almacen-list .container .container-list .user-wrapper {
