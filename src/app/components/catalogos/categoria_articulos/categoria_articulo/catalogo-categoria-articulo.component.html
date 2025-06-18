@@ -34,6 +34,10 @@
                         <div *ngIf="submitted && f['name'].errors" class="invalid-feedback">
                             <div *ngIf="f['name'].errors['required']">Este campo requerido</div>
                         </div>
+                        <div *ngIf="submitted && (f['name'].errors || isNameDuplicate)" class="invalid-feedback">
+                            <div *ngIf="f['name'].errors && f['name'].errors['required']">Este campo requerido</div>
+                            <div *ngIf="isNameDuplicate">Este nombre ya existe</div>
+                        </div>
                     </div>
                     <div class="form-field description">
                         <mat-label class="text-1">Descripción</mat-label>

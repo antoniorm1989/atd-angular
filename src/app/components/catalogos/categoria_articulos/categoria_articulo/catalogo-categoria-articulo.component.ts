@@ -20,6 +20,7 @@ export class CatalogoCategoriaArticuloComponent {
   form: FormGroup;
   submitted = false;
   id = 0;
+  isNameDuplicate: boolean = false;
 
   constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private CatalogoCategoriaArticuloService: CatalogoCategoriaArticuloService, private router: Router, private _snackBar: MatSnackBar) {
 
@@ -88,6 +89,7 @@ export class CatalogoCategoriaArticuloComponent {
 
   onSubmit() {
     this.submitted = true;
+    this.isNameDuplicate = false;
 
     // stop here if form is invalid
     if (this.form!.invalid)
@@ -114,6 +116,10 @@ export class CatalogoCategoriaArticuloComponent {
           this.router.navigate(['almacenes/catalogos/categoria-articulos']);
         },
         error: (e) => {
+          if (e.error.error == 'Name already exists')
+            this.isNameDuplicate = true;
+
+          console.log(e);
         }
       });
     } else {
@@ -123,6 +129,10 @@ export class CatalogoCategoriaArticuloComponent {
           this.router.navigate(['almacenes/catalogos/categoria-articulos']);
         },
         error: (e) => {
+          if (e.error.error == 'Name already exists')
+            this.isNameDuplicate = true;
+
+          console.log(e);
         }
       });
     }

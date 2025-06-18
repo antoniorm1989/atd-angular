@@ -187,7 +187,7 @@
                                     <ng-container matColumnDef="backorder">
                                         <th mat-header-cell *matHeaderCellDef style="text-align: center;">Back order</th>
                                         <td mat-cell *matCellDef="let element" style="text-align: center;">
-                                            <button *ngIf="element.backorder > 0" [disabled]="id == undefined"
+                                            <button *ngIf="element.backorder > 0 && isCancelada() == false" [disabled]="id == undefined"
                                                     mat-stroked-button
                                                     type="button"
                                                     title="Despachar artículo"
@@ -195,6 +195,9 @@
                                                 <mat-icon>local_mall</mat-icon>
                                                 {{element.backorder}}
                                             </button>
+                                            <div *ngIf="element.backorder > 0 && isCancelada() == true">
+                                                <span class="backorder">{{element.backorder}}</span>
+                                            </div>
                                         </td>
                                     </ng-container>
         

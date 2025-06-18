@@ -95,7 +95,6 @@ export class OrdenCompraArticuloComponent implements OnInit, OnDestroy {
       descuento: 0,
       comentarios: '',
       unidad_medida: ['producto'],
-      numero_identificacion_fiscal: [''],
       articulosCliente: false,
       backorder: 0
     });
@@ -168,7 +167,6 @@ export class OrdenCompraArticuloComponent implements OnInit, OnDestroy {
           //descuento: ordenCompraArticuloModel.descuento,
           comentarios: ordenCompraArticuloModel.comentarios,
           //unidad_medida: ordenCompraArticuloModel.unidad_medida,
-          numero_identificacion_fiscal: ordenCompraArticuloModel.numero_identificacion_fiscal,
           backorder: 0
         });
         this.onOptionSelected(ordenCompraArticuloModel.almacen?.articulo?.part_number);
@@ -443,7 +441,6 @@ export class OrdenCompraArticuloComponent implements OnInit, OnDestroy {
         // ordenCompraArticuloModel.precio_ordenCompra = this.f['precio_ordenCompra'].value;
         // ordenCompraArticuloModel.descuento = this.f['descuento'].value;
         // ordenCompraArticuloModel.cantidad = this.f['qty'].value;
-        // ordenCompraArticuloModel.numero_identificacion_fiscal = this.f['numero_identificacion_fiscal'].value;
         // ordenCompraArticuloModel.unidad_medida = this.f['unidad_medida'].value;
         // ordenCompraArticuloModel.comentarios = this.f['comentarios'].value;
         // ordenCompraArticuloModel.backorder = this.f['backorder'].value;

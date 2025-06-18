@@ -99,7 +99,6 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
       comentarios: '',
       articulosCliente: false,
       backorder: 0,
-      numero_identificacion_fiscal: [''],
       unidad_medida: ['producto'],
       producto_servicio_model: [null, Validators.required, [this.validarProductoServicio.bind(this)]],
       unidad_medida_model: [null, Validators.required, [this.validarUnidadMedida.bind(this)]],
@@ -235,7 +234,6 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
           descuento: ventaArticuloModel.descuento,
           comentarios: ventaArticuloModel.comentarios,
           backorder: 0,
-          numero_identificacion_fiscal: ventaArticuloModel.numero_identificacion_fiscal,
           unidad_medida: ventaArticuloModel.unidad_medida,
           producto_servicio_model: ventaArticuloModel.producto_servicio_model,
           unidad_medida_model: ventaArticuloModel.unidad_medida_model
@@ -298,7 +296,6 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
       this.form.controls['descuento'].reset();
       this.form.controls['qty'].reset();
       this.form.controls['comentarios'].reset();
-      this.form.controls['numero_identificacion_fiscal'].reset();
       this.form.controls['unidad_medida'].reset();
       this.form.controls['backorder'].reset();
       this.form.controls['producto_servicio_model'].reset();
@@ -516,7 +513,6 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         ventaArticuloModel.comentarios = this.f['comentarios'].value;
         ventaArticuloModel.moneda_nombre = this.f['moneda_nombre'].value;
 
-        ventaArticuloModel.numero_identificacion_fiscal = this.f['numero_identificacion_fiscal'].value;
         ventaArticuloModel.unidad_medida = this.f['unidad_medida'].value;
         ventaArticuloModel.producto_servicio_model = this.f['producto_servicio_model'].value;
         ventaArticuloModel.unidad_medida_model = this.f['unidad_medida_model'].value;
@@ -596,7 +592,6 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
 
     this.form.patchValue({
       precio_venta: this.isEditing ? this.ventaArticuloModel?.precio_venta : this.selectedArticle?.precio_venta,
-      numero_identificacion_fiscal: this.isEditing ? this.ventaArticuloModel?.numero_identificacion_fiscal : this.selectedArticle?.numero_identificacion_fiscal,
       unidad_medida: this.isEditing ? this.ventaArticuloModel?.unidad_medida : this.selectedArticle?.unidad_medida,
       producto_servicio_model: this.isEditing ? this.ventaArticuloModel?.producto_servicio_model : this.selectedArticle?.producto_servicio_model,
       unidad_medida_model: this.isEditing ? this.ventaArticuloModel?.unidad_medida_model : this.selectedArticle?.unidad_medida_model,

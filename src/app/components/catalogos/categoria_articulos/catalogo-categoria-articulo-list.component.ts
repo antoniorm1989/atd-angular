@@ -25,8 +25,8 @@ export class CatalogoCategoriaArticuloListComponent implements OnInit {
   totalItems = 0;
   pageSize = 20;
   pageIndex = 0;
-  sortField = 'name';
-  sortDirection: 'asc' | 'desc' | 'none' = 'none';
+  sortField = 'created';
+  sortDirection: 'asc' | 'desc' | 'none' = 'desc';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -52,7 +52,7 @@ export class CatalogoCategoriaArticuloListComponent implements OnInit {
     this.loadCategorias(this.pageIndex + 1, this.pageSize);
   }
 
-  loadCategorias(page: number, limit: number, sort: string = 'name', order: string = 'asc', search: string = '') {
+  loadCategorias(page: number, limit: number, sort: string = 'created', order: string = 'desc', search: string = '') {
     this.loadingService.show();
     this.catalogoCategoriaArticuloService.getAll(page, limit, sort, order, search).subscribe({
       next: (res) => {

@@ -27,8 +27,8 @@ export class CatalogoArticuloListComponent implements OnInit {
   pageIndex = 0;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  sortField = 'name';
-  sortDirection: 'asc' | 'desc' | 'none' = 'none';
+  sortField = 'created';
+  sortDirection: 'asc' | 'desc' | 'none' = 'desc';
   @ViewChild(MatSort) sort!: MatSort;
 
   searchText: string = '';
@@ -52,7 +52,7 @@ export class CatalogoArticuloListComponent implements OnInit {
   }
 
   
-  loadArticulos(page: number, limit: number, sort: string = 'name', order: string = 'asc' , search: string = '') {
+  loadArticulos(page: number, limit: number, sort: string = 'created', order: string = 'desc' , search: string = '') {
     this.loadingService.show();
     this.catalogoArticuloService.getAll(page, limit, sort, order, search).subscribe({
       next: (res) => {

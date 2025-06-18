@@ -38,7 +38,6 @@ export class OrdenCompraArticuloModel {
   translada_iva: boolean | undefined;
   translada_iva_porcentaje: float | undefined;
   retiene_iva_porcentaje: float | undefined;
-  numero_identificacion_fiscal: string | undefined;
   comentarios: string | undefined;
   created_at: Date | undefined;
   updated_at: Date | undefined;

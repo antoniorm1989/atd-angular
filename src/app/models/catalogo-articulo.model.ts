@@ -30,7 +30,6 @@ export class CatalogoArticuloModel {
   descuento: number | undefined;
   tipoDescuento: string | undefined;
 
-  numero_identificacion_fiscal: string | undefined;
   unidad_medida: string | undefined;
   producto_servicio_model: CatalogoUnidadMedidaModel | undefined;
   unidad_medida_model: CatalogoProductoServicioModel | undefined;

@@ -66,7 +66,6 @@ export class CatalogoArticuloComponent {
       costo_importado: ['', [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
       precio_venta: ['', [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
       moneda: [null, Validators.required],
-      numero_identificacion_fiscal: [''],
       unidad_medida: [''],
       producto_servicio_model: [null, [this.validarProductoServicio.bind(this)]],
       unidad_medida_model: [null, [this.validarUnidadMedida.bind(this)]],
@@ -99,7 +98,6 @@ export class CatalogoArticuloComponent {
                   costo_importado: data.costo_importado,
                   precio_venta: data.precio_venta,
                   moneda: [null, Validators.required],
-                  numero_identificacion_fiscal: data.numero_identificacion_fiscal,
                   unidad_medida: data.unidad_medida,
                   producto_servicio_model: data.producto_servicio_model,
                   unidad_medida_model: data.unidad_medida_model,
@@ -304,7 +302,6 @@ export class CatalogoArticuloComponent {
     articulo.costo_importado = this.f['costo_importado'].value;
     articulo.precio_venta = this.f['precio_venta'].value;
     
-    articulo.numero_identificacion_fiscal = this.f['numero_identificacion_fiscal'].value;
     articulo.unidad_medida = this.f['unidad_medida'].value;
     articulo.producto_servicio_model = this.f['producto_servicio_model'].value;
     articulo.unidad_medida_model = this.f['unidad_medida_model'].value;
@@ -401,7 +398,6 @@ export class CatalogoArticuloComponent {
       reader.readAsDataURL(this.selectedFile);
     }
   }
-
 
   uploadPhoto(id: number): Observable<void> {
     const formData = new FormData();
