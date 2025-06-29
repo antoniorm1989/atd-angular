@@ -54,7 +54,7 @@ import { CatalogoClientesListComponent } from './components/catalogos/clientes/c
 import { ArticuloClienteModalComponent, CatalogoClientesComponent } from './components/catalogos/clientes/cliente/catalogo-clientes.component';
 import { BarcodeScannerComponent } from './components/genericos/barcodesScanner.component';
 import { VentasListComponent } from './components/ventas/ventas-list.component';
-import { ArticuloVentaModalComponent, PreviewFacturaModalComponent, VentaComponent } from './components/ventas/venta/venta.component';
+import { ArticuloVentaModalComponent, PagoVentaModalComponent, PreviewFacturaModalComponent, VentaComponent } from './components/ventas/venta/venta.component';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
@@ -78,6 +78,9 @@ import { SistemaConfiguracionComponent } from './components/configuracion/sistem
 import { MatSortModule } from '@angular/material/sort';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenExpiredInterceptor } from './interceptors/token.interceptors';
+import { VentaPagoComponent } from './components/ventas/venta/pago/venta-pago.component';
+import { CatalogoCuentaBancariaListComponent } from './components/catalogos/cuenta_bancaria/catalogo-cuenta-bancaria-list.component';
+import { CatalogoCuentaBancariaComponent } from './components/catalogos/cuenta_bancaria/cuenta_bancaria_detail/catalogo-cuenta-bancaria-detail..component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -128,7 +131,11 @@ export function tokenGetter() {
     PreviewFacturaModalComponent,
     PreviewFacturaComponent,
     LoadingOverlayComponent,
-    SistemaConfiguracionComponent
+    SistemaConfiguracionComponent,
+    VentaPagoComponent,
+    PagoVentaModalComponent,
+    CatalogoCuentaBancariaListComponent,
+    CatalogoCuentaBancariaComponent
   ],
   imports: [
     BrowserModule,

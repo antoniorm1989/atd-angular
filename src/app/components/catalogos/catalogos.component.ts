@@ -15,6 +15,7 @@ export class CatalogosComponent {
     { cat: 'almacenes', text: 'Categoría Artículo', icon: 'fa-solid fa-layer-group', href: 'categoria-articulos', style: {'background-color' : '#000'}, styleCircle: {'color' : '#000'} },
 
     { cat: 'ventas', text: 'Clientes', icon: 'fa-solid fa-user-group', href: 'clientes', style: {'background-color' : '#BA9400'}, styleCircle: {'color' : '#BA9400'} },
+    { cat: 'ventas', text: 'Cuenta Bancaria', icon: 'fa-solid fa-money-check-dollar', href: 'cuenta-bancaria', style: {'background-color' : '#00000099'}, styleCircle: {'color' : '#00000099'} },
 
     { cat: 'compras', text: 'Proveedores', icon: 'fa-solid fa-people-group', href: 'proveedores', style: {'background-color' : '#BA9400'}, styleCircle: {'color' : '#BA9400'} },
     

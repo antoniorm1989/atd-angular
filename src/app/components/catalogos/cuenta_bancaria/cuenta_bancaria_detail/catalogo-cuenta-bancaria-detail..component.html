@@ -1,0 +1,115 @@
+<div class="catalogo-cuenta-bancaria ">
+    <div class="toolbar">
+        <div class="toolbar-title">
+            <i class="icon fa-solid fa-layer-group"></i>
+            <span class="title">Catálogo cuenta bancaria</span>
+        </div>
+        <div class="toolbar-breadcrumb">
+            <span class="link-breadcrumb" (click)="navigate('venta/catalogos')">Ventas / Catálogos</span>
+            <span> / </span>
+            <span class="link-breadcrumb" (click)="navigate('venta/catalogos/cuenta-bancaria')">Catálogo cuenta bancaria</span>
+            <span> / </span>
+            <span class="breadcrumb-item">{{title}}</span>
+
+            <button *ngIf="isReadOnly" mat-button class="btn" (click)="makeEditMode()"><mat-icon>edit</mat-icon>Editar información</button>
+        </div>
+    </div>
+    <div class="container">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+            <div class="form-container">
+                <div class="form-container-toolbar">
+                    <span class="title">Datos generales</span>
+                    <span *ngIf="action != 'new'" class="id"><b>ID</b> {{id}}</span>
+                </div>
+
+                <div class="form-row four-col" style="grid-template-columns: 1fr 2fr 200px 200px;">
+                    
+                    <div class="form-field name">
+                        <mat-label class="text-1"  *ngIf="isReadOnly">Número de cuenta</mat-label>
+                        <mat-label class="text-1"  *ngIf="!isReadOnly">Número de cuenta*</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['numero_cuenta'].value}}</mat-label>
+                        <mat-form-field *ngIf="!isReadOnly">
+                            <input matInput placeholder="Número de cuenta" formControlName="numero_cuenta" [ngClass]="{ 'is-invalid': submitted && f['numero_cuenta'].errors }" required>
+                        </mat-form-field>
+                        <div *ngIf="submitted && f['numero_cuenta'].errors" class="invalid-feedback">
+                            <div *ngIf="f['numero_cuenta'].errors['required']">Este campo requerido</div>
+                            <div *ngIf="f['numero_cuenta'].errors['pattern']">Número de cuenta inválido (debe tener entre 8 y 20 dígitos)</div>
+                        </div>
+                        <div *ngIf="submitted && (f['numero_cuenta'].errors || isNumeroCuentaDuplicate)" class="invalid-feedback">
+                            <div *ngIf="f['numero_cuenta'].errors && f['numero_cuenta'].errors['required']">Este campo requerido</div>
+                            <div *ngIf="isNumeroCuentaDuplicate">Este número de cuenta ya existe</div>
+                        </div>
+                    </div>
+
+                    <div class="form-field name">
+                        <mat-label class="text-1"  *ngIf="isReadOnly">Descripción cuenta</mat-label>
+                        <mat-label class="text-1"  *ngIf="!isReadOnly">Descripción cuenta*</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['descripcion'].value}}</mat-label>
+                        <mat-form-field *ngIf="!isReadOnly">
+                            <input matInput placeholder="Descripción cuenta" formControlName="descripcion" [ngClass]="{ 'is-invalid': submitted && f['descripcion'].errors }" required>
+                        </mat-form-field>
+                        <div *ngIf="submitted && f['descripcion'].errors" class="invalid-feedback">
+                            <div *ngIf="f['descripcion'].errors['required']">Este campo requerido</div>
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <mat-label class="text-1" *ngIf="isReadOnly">Moneda</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['moneda'].value?.moneda  ==  'MXN' ? 'Pesos' : 'Dolares'}}</mat-label>
+                        <mat-label class="text-1" *ngIf="!isReadOnly">Moneda*</mat-label>
+                        <mat-form-field *ngIf="!isReadOnly">
+                            <mat-select formControlName="moneda">
+                                <mat-option *ngFor="let moneda of monedas" [value]="moneda">
+                                    {{ moneda.moneda === 'MXN' ? 'Pesos' : 'Dólares' }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <div *ngIf="submitted && f['moneda'].errors" class="invalid-feedback">
+                            <div *ngIf="f['moneda'].errors['required']">Este campo requerido</div>
+                         </div>
+                    </div>
+
+                    <div class="form-field description">
+                        <mat-label class="text-1">Banco</mat-label>
+                        <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['banco'].value}}</mat-label>
+                        <mat-form-field *ngIf="!isReadOnly">
+                            <input matInput placeholder="Banco" formControlName="banco">
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+
+            <div style="height: 24px;"></div>
+
+            <mat-accordion>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Configuración
+                        </mat-panel-title>
+                        <mat-panel-description>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div class="form-row four-col">
+                        <div class="form-field num-ext">
+                            <mat-slide-toggle formControlName="activo" color="primary">Activo</mat-slide-toggle>
+                        </div>
+
+                         <div class="form-field empty"></div>
+                         
+                        <div class="form-field empty"></div>
+
+                        <div class="form-field empty"></div>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div class="toolbar-bottom">
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('venta/catalogos/cuenta-bancaria')" *ngIf="isReadOnly">Regresar</button>
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('venta/catalogos/cuenta-bancaria')" *ngIf="!isReadOnly">Cancelar</button>
+                <button mat-flat-button class="btn" type="submit" *ngIf="!isReadOnly">{{title}}</button>
+            </div>
+        </form>
+    </div>
+</div>

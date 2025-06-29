@@ -1,0 +1,131 @@
+.catalogo-cuenta-bancaria-list {
+    padding: 24px;
+    background-color: #F7F7F7;
+    height: 100%;
+}
+
+.catalogo-cuenta-bancaria-list .toolbar .icon {
+    font-size: 23px;
+}
+
+.catalogo-cuenta-bancaria-list .toolbar .toolbar-title {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.catalogo-cuenta-bancaria-list .toolbar .title {
+    font-size: 36px;
+    font-weight: 500;
+    line-height: 54px;
+    letter-spacing: 0.01em;
+    margin-left: 12px;
+}
+
+.catalogo-cuenta-bancaria-list .toolbar .breadcrumb-item {
+    font-size: 16px;
+    line-height: 19px;
+    letter-spacing: 0.01em;
+    color: #BA9400;
+}
+
+.catalogo-cuenta-bancaria-list .container .container-empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 600px;
+    margin: auto;
+}
+
+.catalogo-cuenta-bancaria-list .container .container-empty .img {
+    height: 238px;
+    width: 237px;
+}
+
+.catalogo-cuenta-bancaria-list .container .container-empty .text {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 32px;
+    letter-spacing: 0.01em;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.catalogo-cuenta-bancaria-list .container .container-empty .btn {
+    width: auto;
+    height: 40px;
+    border-radius: 8px;
+    background-color: #BA9400;
+    color: #fff;
+    margin-top: 50px;
+    padding: 0px 5px;
+}
+
+/* list */
+.catalogo-cuenta-bancaria-list .container .container-list .toolbar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 250px;
+    column-gap: 24px;
+    margin-top: 24px;
+}
+
+.catalogo-cuenta-bancaria-list .search-field {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.catalogo-cuenta-bancaria-list .container .container-list .toolbar .btn {
+    height: 45px;
+    border-radius: 8px;
+    background-color: #BA9400;
+    color: #fff;
+    padding: 0px 5px;
+}
+
+.catalogo-cuenta-bancaria-list .container .container-list .user-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.catalogo-cuenta-bancaria-list .container .container-list .user-wrapper .circle-initials {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #BA9400;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    color: #ffffff;
+    min-width: 28px;
+}
+
+.catalogo-cuenta-bancaria-list .container .container-list .user-wrapper .text {
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: 0px;
+    text-align: center;
+    margin-left: 8px;
+}
+
+.catalogo-cuenta-bancaria-list .container .title-grid {
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: 0px;
+}
+
+.catalogo-cuenta-bancaria-list .container .title-grid:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    color: #BA9400;
+}
+
+.catalogo-cuenta-bancaria-list .container .table .mat-icon{
+    color: #ba9400;
+}
+
+.mat-mdc-header-row{
+    background-color: #eadfb2;
+}

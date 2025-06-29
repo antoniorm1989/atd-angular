@@ -9,7 +9,7 @@ import { Observable, map, startWith } from 'rxjs';
 import { CatalogoClienteModel } from 'src/app/models/catalogo-cliente.model';
 import { CatalogoFormaPagoModel, CatalogoObjetoImpuestoModel, CatalogoRegimenFiscalModel, CatalogoUsoCfdiModel, CatalogoMotivoCancelacionModel } from 'src/app/models/catalogos.model';
 import { User } from 'src/app/models/user';
-import { VentaArticuloModel, VentaModel, VentaDocumentoModel, FacturaStatus } from 'src/app/models/ventas.model';
+import { VentaArticuloModel, VentaModel, VentaDocumentoModel, FacturaStatus, VentaPagoModel } from 'src/app/models/ventas.model';
 import { CatalogoClientesService } from 'src/app/services/catalogo-cliente.service';
 import { CatalogosService } from 'src/app/services/catalogos.service';
 import { UserService } from 'src/app/services/user.service';
@@ -84,10 +84,18 @@ export class VentaComponent {
   dataSourceArticulos = new MatTableDataSource<VentaArticuloModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+  // Documentos
   hasRecordsDocumentos = false;
   displayedColumnsDocumentos: string[] = ['nombre', 'fecha_creacion', 'acciones'];
   dataSourceDocumentos = new MatTableDataSource<any>([]);
   @ViewChild(MatPaginator) paginatorDocumentos!: MatPaginator;
+
+  // Pagos y abonos
+  hasRecordsPagos = false;
+  displayedColumnsPagos: string[] = ['folio', 'forma_pago', 'cuenta', 'importe', 'cancelacion', 'fecha', 'usuario'];
+  dataSourcePagos = new MatTableDataSource<VentaPagoModel>([]);
+  @ViewChild(MatPaginator) paginatorPagos!: MatPaginator;
+
 
   subTotal: number = 0;
   iva: number = 0;
@@ -1049,6 +1057,38 @@ export class VentaComponent {
     return motivoCancelacion ? `${motivoCancelacion.clave} - ${motivoCancelacion.motivo}` : "N/A";
   }
 
+  // Pagos
+  getPagos() {
+    this.ventaService.getPagos(this.id).subscribe({
+      next: (data) => {
+        this.dataSourcePagos.data = data;
+        this.dataSourcePagos._updateChangeSubscription();
+        this.hasRecordsPagos = this.dataSourcePagos.data.length > 0;
+      },
+      error: (e) => {
+        console.error('Error al obtener los pagos:', e);
+      }
+    });
+  }
+
+  openPagoVentaModalComponent() {
+    const dialogRef = this.dialog.open(PagoVentaModalComponent, {
+      height: '550px',
+      width: '1175px',
+      data: {
+        ventaPagoModel: this.dataSourcePagos.data,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(ventaPagoModel => {
+      if (ventaPagoModel != undefined && ventaPagoModel != "") {
+        this.dataSourcePagos.data.push(ventaPagoModel);
+        this.dataSourcePagos._updateChangeSubscription();
+        this.hasRecordsPagos = true;
+      }
+    });
+  }
+
 }
 
 @Component({
@@ -1107,6 +1147,51 @@ export class ArticuloVentaModalComponent {
   }
 }
 
+@Component({
+  selector: 'dialog-component-agregar-pago-venta',
+  template: `<span mat-dialog-title>Agregar pago - abono</span>
+            <mat-dialog-content class="mat-typography">
+              <app-venta-pago [ventaPagoModel]="ventaPagoModel" (cancel)="onCancelar()" (add)="onAgregarPago($event)" #appVentaPagoComponent></app-venta-pago>
+            </mat-dialog-content>`,
+  styles: [
+  ]
+})
+export class PagoVentaModalComponent {
+  @ViewChild('appVentaPagoComponent') appVentaPagoComponent: any;
+  ventaPagoModel!: VentaPagoModel;
+  clienteId = 0;
+  isDespachar = false;
+
+  constructor(
+    public dialogRef: MatDialogRef<PagoVentaModalComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    dialogRef.disableClose = true;
+
+    if (Object.keys(data).length > 0) {
+      if (data.articulo != undefined) {
+        this.ventaPagoModel = data.articulo;
+      }
+    }
+
+  }
+
+  onCancelar() {
+    try {
+      this.dialogRef.close();
+    } catch (error) {
+      console.error('An error occurred in onAgregarArticulo:', error);
+    }
+  }
+
+  onAgregarPago(ventaPagoModel: VentaPagoModel) {
+    try {
+      this.dialogRef.close(ventaPagoModel);
+    } catch (error) {
+      console.error('An error occurred in onAgregarPago:', error);
+    }
+  }
+}
 
 @Component({
   selector: 'dialog-component-preview-factura',

@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { VentaArticuloModel, VentaModel, VentaDocumentoModel } from '../models/ventas.model';
+import { VentaArticuloModel, VentaModel, VentaDocumentoModel, VentaPagoModel } from '../models/ventas.model';
 
 @Injectable({
   providedIn: 'root'
@@ -71,10 +71,31 @@ export class VentaService {
     });
   }
 
+  cancelarVenta(ventaId: number, fechaCancelacion: Date, motivoCancelacion: string, folioSustituto: string, facturaId: String): Observable<any> {
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
+
+    return this.http.post<void>(`${environment.apiUrl}/api/ventas/cancelarVenta/${ventaId}`, {
+      fechaCancelacion,
+      motivoCancelacion,
+      folioSustituto,
+      userId: userData.id,
+      facturaId
+    }, this.getHeaders());
+  }
+
+  obtenerFacturasEstatus(id: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/ventas/getFacturasEstatus/${id}`);
+  }
+
+  obtenerVentaEstatus(id: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/ventas/getVentaEstatus/${id}`);
+  }
+
   updateComentario(ventaId: number, comentarios: string): Observable<any> {
     return this.http.post<void>(`${environment.apiUrl}/api/ventas/updateComentario/${ventaId}`, { comentarios }, this.getHeaders());
   }
 
+  // documentos
   getDocumentos(ventaId: number): Observable<Array<VentaDocumentoModel>> {
     return this.http.get<Array<VentaDocumentoModel>>(
       `${environment.apiUrl}/api/ventas/getFiles/${ventaId}`
@@ -96,24 +117,9 @@ export class VentaService {
     return this.http.delete(`${environment.apiUrl}/api/ventas/deleteFile/${documentoId}`);
   }
 
-  cancelarVenta(ventaId: number, fechaCancelacion: Date, motivoCancelacion: string, folioSustituto: string, facturaId: String): Observable<any> {
-    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
-
-    return this.http.post<void>(`${environment.apiUrl}/api/ventas/cancelarVenta/${ventaId}`, {
-      fechaCancelacion,
-      motivoCancelacion,
-      folioSustituto,
-      userId: userData.id,
-      facturaId
-    }, this.getHeaders());
-  }
-
-  obtenerFacturasEstatus(id: number): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/api/ventas/getFacturasEstatus/${id}`);
-  }
-
-  obtenerVentaEstatus(id: number): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/api/ventas/getVentaEstatus/${id}`);
+  // Pagos y abonos
+  getPagos(ventaId: number): Observable<Array<VentaPagoModel>> {
+    return this.http.get<Array<VentaPagoModel>>(`${environment.apiUrl}/api/ventas/getPagos/${ventaId}`);
   }
 
   private getHeaders() {

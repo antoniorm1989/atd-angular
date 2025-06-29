@@ -1,6 +1,6 @@
 import { float } from "@zxing/library/esm/customTypings";
 import { CatalogoClienteModel } from "./catalogo-cliente.model";
-import { CatalogoUnidadMedidaModel, CatalogoFormaPagoModel, CatalogoMetodoPagoModel, CatalogoObjetoImpuestoModel, CatalogoProductoServicioModel, CatalogoRegimenFiscalModel, CatalogoUsoCfdiModel } from "./catalogos.model";
+import { CatalogoUnidadMedidaModel, CatalogoFormaPagoModel, CatalogoMetodoPagoModel, CatalogoObjetoImpuestoModel, CatalogoProductoServicioModel, CatalogoRegimenFiscalModel, CatalogoUsoCfdiModel, CatalogoCuentaBancariaModel } from "./catalogos.model";
 import { User } from "./user";
 import { InventoryAlmacenModel } from "./inventory-almacen.model";
 import { InventorySucursalModel } from "./inventory-sucursal.model";
@@ -100,3 +100,18 @@ export class VentaDocumentoModel{
   created_at: Date | undefined;
   updated_at: Date | undefined;
 }
+
+export class VentaPagoModel {
+  id: number | undefined;
+  venta_id: number | undefined;
+  deposito: string | undefined;
+  referencia: string | undefined;
+  moneda: string | undefined;
+  tipoCambio: float | undefined;
+  formaPago: CatalogoFormaPagoModel | undefined;
+  cuentaBancaria: CatalogoCuentaBancariaModel | undefined;
+  metodoPago: CatalogoMetodoPagoModel | undefined;
+  fecha: Date | undefined;
+  usuario: User | undefined;
+}
+

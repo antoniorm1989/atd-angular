@@ -27,6 +27,8 @@ import { CatalogoUsuariosComponent } from './components/catalogos/usuarios/usuar
 import { ChangePasswordComponent } from './components/login/changepassword/changepassword.component';
 import { OrdenesCompraListComponent } from './components/ordenes-compra/orden-compra-list.component';
 import { SistemaConfiguracionComponent } from './components/configuracion/sistema-configuracion.component';
+import { CatalogoCuentaBancariaListComponent } from './components/catalogos/cuenta_bancaria/catalogo-cuenta-bancaria-list.component';
+import { CatalogoCuentaBancariaComponent } from './components/catalogos/cuenta_bancaria/cuenta_bancaria_detail/catalogo-cuenta-bancaria-detail..component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/inventario-almacen', pathMatch: 'full' }, // Redirect to login by default
@@ -66,6 +68,10 @@ const routes: Routes = [
   { path: 'venta/catalogos/clientes', component: CatalogoClientesListComponent, canActivate: [AuthGuard] },
   { path: 'venta/catalogos/clientes/detail', component: CatalogoClientesComponent, canActivate: [AuthGuard] },
   { path: 'venta/catalogos/clientes/detail/:id', component: CatalogoClientesComponent, canActivate: [AuthGuard] },
+
+  { path: 'venta/catalogos/cuenta-bancaria', component: CatalogoCuentaBancariaListComponent, canActivate: [AuthGuard] },
+  { path: 'venta/catalogos/cuenta-bancaria/detail', component: CatalogoCuentaBancariaComponent, canActivate: [AuthGuard] },
+  { path: 'venta/catalogos/cuenta-bancaria/detail/:id', component: CatalogoCuentaBancariaComponent, canActivate: [AuthGuard] },
 
   // Ordens de compra
   { path: 'orden-compra', component: OrdenesCompraListComponent, canActivate: [AuthGuard] },

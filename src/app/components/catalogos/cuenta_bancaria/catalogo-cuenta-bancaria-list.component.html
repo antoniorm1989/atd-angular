@@ -1,0 +1,109 @@
+<div class="catalogo-cuenta-bancaria-list">
+    <div class="toolbar">
+        <div class="toolbar-title">
+            <i class="icon fa-solid fa-layer-group"></i>
+            <span class="title">Catálogo cuentas bancos</span>
+        </div>
+        <div>
+            <span class="link-breadcrumb" (click)="navigate('almacenes/catalogos')"> Almacenes / Catálogos </span> / <span class="breadcrumb-item">Catálogo cuentas bancarias</span>
+        </div>
+    </div>
+    <div class="container">
+        <div *ngIf="!hasRecords && searchText === ''" class="container-empty">
+            <img src="../../assets/images/empty-list.png" alt="empty logo" class="img">
+            <span class="text">Aún no tienes cuentas bancarias en el catálogo, para poder ver información favor de agregar una
+                cuenta bancaria.</span>
+            <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Agregar cuenta</button>
+        </div>
+        <div *ngIf="!hasRecords && searchText !== ''" class="container-empty">
+            <img src="../../assets/images/empty-list.png" alt="empty logo" class="img" style="margin-top: 50px;">
+            <span class="text">No se encontraron resultados para "{{searchText}}".</span>
+            <button mat-flat-button class="btn" style="width: 200px;" (click)="onClearSearchText()">
+                <mat-icon>close</mat-icon> Limpiar búsqueda
+            </button>
+        </div>
+        <div *ngIf="hasRecords" class="container-list">
+
+            <div class="toolbar">
+                <mat-form-field appearance="outline" class="search-field" style="margin-bottom: 0px;">
+                    <mat-label>Buscar</mat-label>
+                    <input matInput   [formControl]="searchControl" (keydown.enter)="onSearchNow()" placeholder="Buscar cuenta bancaria, descripción, usuario...">
+                    <mat-icon matSuffix>search</mat-icon>
+                </mat-form-field>
+                <div class="spacer"></div>
+                <button mat-flat-button class="btn" (click)="onNew()"><mat-icon>add</mat-icon>Agregar cuenta</button>
+            </div>
+
+            <table class="table" mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortChange($event)">
+
+                <ng-container matColumnDef="numero_cuenta">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Número de cuenta</th>
+                    <td mat-cell *matCellDef="let element"><span (click)="onView(element.id)" class="title-grid">{{element.numero_cuenta}}</span></td>
+                </ng-container>
+
+                <ng-container matColumnDef="descripcion">
+                    <th mat-header-cell *matHeaderCellDef>Descripción cuenta</th>
+                    <td mat-cell *matCellDef="let element">{{element.descripcion}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="moneda">
+                    <th mat-header-cell *matHeaderCellDef>Descripción cuenta</th>
+                    <td mat-cell *matCellDef="let element">{{element.moneda.nombre}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="banco">
+                    <th mat-header-cell *matHeaderCellDef>Descripción cuenta</th>
+                    <td mat-cell *matCellDef="let element">{{element.banco}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="created">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Registro</th>
+                    <td mat-cell *matCellDef="let element">{{formatDate(element.created_at)}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="modified">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Edición</th>
+                    <td mat-cell *matCellDef="let element">{{formatDate(element.updated_at)}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="user">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Usuario</th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="user-wrapper">
+                            <div class="circle-initials" mat-mini-fab color="primary" *ngIf="element.user.photo == null">
+                                {{getUserName(element.user.name, element.user.last_name)}}
+                            </div>
+                            <div *ngIf="element.user.photo != null" class="container-photo-user">
+                                <img class="photo" [src]="getUrlPhoto(element.user.photo)">
+                            </div>
+                            <span class="text">{{element.user.name}} {{element.user.last_name}}</span>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef>Estatus</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-slide-toggle [(ngModel)]="element.status" disabled=true></mat-slide-toggle>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element">
+                        <button mat-icon-button aria-label="" (click)="onEdit(element.id)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <mat-paginator [pageSizeOptions]="[20, 50, 100]" [length]="totalItems" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                (page)="onPageChange($event)" showFirstLastButtons>
+            </mat-paginator>
+        </div>
+    </div>
+</div>

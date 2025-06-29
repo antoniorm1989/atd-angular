@@ -1,4 +1,5 @@
 import Integer from "@zxing/library/esm/core/util/Integer";
+import { User } from "./user";
 
 export class CatalogoCountryModel {
   id: string | undefined;
@@ -75,5 +76,15 @@ export class CatalogoMonedaModel {
   id: number | undefined;
   moneda: string | undefined;
   datosJson: string | undefined;
+}
+
+export class CatalogoCuentaBancariaModel{
+  id: number | undefined;
+  numero_cuenta: string | undefined;
+  descripcion: string | undefined;
+  moneda: CatalogoMonedaModel | undefined;
+  banco: string | undefined;
+  activo: boolean | undefined;
+  user: User | undefined;
 }
 

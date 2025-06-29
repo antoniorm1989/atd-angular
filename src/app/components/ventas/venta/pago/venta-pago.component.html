@@ -1,0 +1,156 @@
+<div class="venta-pago">
+
+    <div class="separator"></div>
+
+    <div class="container">
+        <form [formGroup]="form" (ngSubmit)="onAdd()">
+
+            <div style="height: 24px;"></div>
+
+            <div class="form-row" style="grid-template-columns: 160px 250px 1fr 150px 120px; column-gap: 30px;">
+                <div class="form-field">
+                    <mat-label class="text-1">Importe a depositar*</mat-label>
+                    <mat-form-field floatLabel="always">
+                        <input matInput type="text" formControlName="deposito" min="0" step="0.01"
+                            (keypress)="validarDecimal($event)" (blur)="validarFinal('deposito')" placeholder="0.00">
+                        <span matTextPrefix>$&nbsp;</span>
+                    </mat-form-field>
+                    <div *ngIf="submitted && f['deposito'].errors" class="invalid-feedback">
+                        <div *ngIf="f['deposito'].errors['required']">Este campo requerido</div>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <mat-label class="text-1">Referencia</mat-label>
+                    <mat-form-field>
+                        <input matInput placeholder="Escribir la referencia" formControlName="referencia"
+                            [ngClass]="{ 'is-invalid': submitted && f['referencia'].errors }" required>
+                    </mat-form-field>
+                    <div *ngIf="submitted && f['referencia'].errors" class="invalid-feedback">
+                        <div *ngIf="f['referencia'].errors['required']">Este campo requerido</div>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <mat-label class="text-1">Cuenta bancaria*</mat-label>
+                    <mat-form-field>
+                        <mat-select [(value)]="selectedCuentaBancaria" formControlName="cuenta_bancaria">
+                            <mat-option *ngFor="let cuenta of cuentasBancarias" [value]="cuenta">{{cuenta.banco}} - {{
+                                cuenta.numero_cuenta }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <div *ngIf="submitted && f['cuenta_bancaria'].errors" class="invalid-feedback">
+                        <div *ngIf="f['cuenta_bancaria'].errors['required']">Este campo requerido</div>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <mat-label class="text-1">Moneda</mat-label>
+                    <mat-form-field>
+                        <mat-select formControlName="moneda">
+                            <mat-option *ngFor="let moneda of monedas" [value]="moneda">
+                                {{ moneda.moneda === 'MXN' ? 'Pesos' : 'Dólares' }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <div *ngIf="submitted && f['moneda'].errors" class="invalid-feedback">
+                        <div *ngIf="f['moneda'].errors['required']">Este campo requerido</div>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <mat-label class="text-1">Tipo de cambio</mat-label>
+                    <mat-form-field floatLabel="always">
+                        <input matInput type="number" class="example-right-align" placeholder="0"
+                            formControlName="tipo_cambio" min="0" step="0.01" (keypress)="validarDecimal($event)">
+                        <span matTextPrefix>$&nbsp;</span>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="form-row" style="grid-template-columns: 160px 1fr 1fr; column-gap: 30px;">
+                <div class="form-field">
+                    <mat-label class="text-1">Condición de pago*</mat-label>
+                    <mat-form-field>
+                        <mat-select formControlName="condicion_pago" [(value)]="selectedCondicionPago"
+                            (selectionChange)="onCondicionPagoChange($event)">
+                            <mat-option value="credito">Crédito</mat-option>
+                            <mat-option value="contado">Contado</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <div *ngIf="submitted && f['condicion_pago'].errors" class="invalid-feedback">
+                        <div *ngIf="f['condicion_pago'].errors['required']">Este campo requerido</div>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <mat-label class="text-1">Forma de pago físcal*</mat-label>
+                    <mat-form-field>
+                        <mat-select [(value)]="selectedFormaPago" formControlName="forma_pago">
+                            <mat-option *ngFor="let forma_pago of formaPagoList" [value]="forma_pago">{{forma_pago.key}}
+                                - {{ forma_pago.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <div *ngIf="submitted && f['forma_pago'].errors" class="invalid-feedback">
+                        <div *ngIf="f['forma_pago'].errors['required']">Este campo requerido</div>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <mat-label class="text-1">Método de pago*</mat-label>
+                    <mat-form-field>
+                        <mat-select [(value)]="selectedMetodoPago" formControlName="metodo_pago">
+                            <mat-option *ngFor="let metodo_pago of metodoPagoList" [value]="metodo_pago">{{
+                                metodo_pago.key }} - {{ metodo_pago.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <div *ngIf="submitted && f['metodo_pago'].errors" class="invalid-feedback">
+                        <div *ngIf="f['metodo_pago'].errors['required']">Este campo requerido</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="height: 24px;"></div>
+
+            <div class="form-container form-row" style="grid-template-columns: 600px 1fr;">
+                <div></div>
+                <div class="form-row two-col" style="width: 300px; grid-column-gap: 8px; grid-row-gap: 10px; margin-left: auto;">
+                    <span class="resumen-label">Saldo</span>
+                    <div class="resumen-value">{{ this.f['moneda'].value.moneda }} {{ formatearComoMoneda(11) }}</div>
+
+                    <span class="resumen-label">Deposito</span>
+                    <div class="resumen-value">{{ this.f['moneda'].value.moneda }} {{ formatearComoMoneda(11) }}</div>
+
+                    <span class="resumen-label"><b>Restante</b></span>
+                    <div class="resumen-value"><b>{{ this.f['moneda'].value.moneda }} {{ formatearComoMoneda(11) }}</b></div>
+                </div>
+            </div>
+
+            <!-- hacer catalog para referenciarlos cuentas bancarias aca -->
+
+            <!-- <div style="position: absolute; bottom: 55px;" *ngIf="submitted && f['precio_venta'].errors"
+                class="invalid-feedback">
+                <div *ngIf="f['precio_venta'].errors['min']">Precio de venta debe ser mayor a 0</div>
+            </div>
+            <div style="position: absolute; bottom: 35px;" *ngIf="submitted && f['selectedArticle'].errors"
+                class="invalid-feedback">
+                <div *ngIf="f['selectedArticle'].errors['required']">Debe seleccionar un pago</div>
+            </div>
+            <div style="position: absolute; bottom: 15px;" *ngIf="submitted && f['qty'].errors"
+                class="invalid-feedback">
+                <div *ngIf="f['qty'].errors['min']">Debe seleccionar por lo menos 1 pago</div>
+            </div>
+            <div style="position: absolute; bottom: 15px;" *ngIf="submitted && f['qty'].errors"
+                class="invalid-feedback">
+                <div *ngIf="f['qty'].errors['max']">Cantidad a despachar excede el stock disponible</div>
+            </div> -->
+
+            <div style="height: 40px;"></div>
+
+            <div style="display: grid; grid-template-columns: 180px 1fr 180px;">
+                <button mat-flat-button class="btn secundary" type="button" (click)="onCancel()">Cancelar</button>
+                <div></div>
+                <button mat-flat-button class="btn" type="submit">{{action}}</button>
+            </div>
+        </form>
+    </div>
+</div>

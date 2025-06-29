@@ -259,7 +259,55 @@
                                     <span>Pagos y Abonos</span>
                                     <div></div>
                                 </div>
-                                Pagos y Abonos
+                                <div style="display: grid; grid-template-columns: 1fr 200px; align-items: center;">
+                                    <mat-label class="text-1" *ngIf="hasRecordsPagos == false">
+                                        No hay pagos asociados a esta venta
+                                    </mat-label>
+                                    <mat-label class="text-1" *ngIf="hasRecordsPagos">
+                                        Pagos asociados a la venta
+                                    </mat-label>
+                                    <button type="button" mat-flat-button class="btn" (click)="openPagoVentaModalComponent()" ><mat-icon>add</mat-icon>Agregar pago</button>
+                                </div>
+
+                                <table *ngIf="hasRecordsPagos" class="table" mat-table [dataSource]="dataSourcePagos" style="margin-top: 24px;">
+                                    <ng-container matColumnDef="folio">
+                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Folio</th>
+                                        <td mat-cell *matCellDef="let pago" style="text-align: center;">{{pago.folio}}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="forma_pago">
+                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Forma de pago</th>
+                                        <td mat-cell *matCellDef="let pago" style="text-align: center;">{{pago.forma_pago}}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="cuenta">
+                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Cuenta</th>
+                                        <td mat-cell *matCellDef="let pago" style="text-align: center;">{{pago.cuenta}}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="importe">
+                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Importe</th>
+                                        <td mat-cell *matCellDef="let pago" style="text-align: center;">{{pago.moneda_nombre}} {{pago.importe}}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="cancelacion">
+                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Cancelación</th>
+                                        <td mat-cell *matCellDef="let pago" style="text-align: center;">{{pago.cancelacion}}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="fecha">
+                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Fecha</th>
+                                        <td mat-cell *matCellDef="let pago" style="text-align: center;">{{formatDate(pago.fecha)}}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="usuario">
+                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Usuario</th>
+                                        <td mat-cell *matCellDef="let pago" style="text-align: center;">{{pago.usuario}}</td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="displayedColumnsPagos"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: displayedColumnsPagos;"></tr>
+                                </table>
                             </mat-tab>
 
                             <mat-tab label="Documentos">
@@ -269,9 +317,19 @@
                                 </div>
 
                                 <input type="file" #fileInput (change)="subirDocumento($event)" hidden>
-                                <button mat-button class="btn" (click)="fileInput.click()">
-                                    <mat-icon>file_upload</mat-icon> Subir documento
-                                </button>
+
+                                <div style="display: grid; grid-template-columns: 1fr 200px; align-items: center;">
+                                    <mat-label class="text-1" *ngIf="hasRecordsDocumentos == false">
+                                        No hay documentos asociados a esta venta
+                                    </mat-label>
+                                    <mat-label class="text-1" *ngIf="hasRecordsDocumentos">
+                                        Documentos asociados a la venta
+                                    </mat-label>
+                                    <button mat-button class="btn" (click)="fileInput.click()">
+                                        <mat-icon>file_upload</mat-icon> Subir documento
+                                    </button>
+                                </div>
+                                
 
                                 <table *ngIf="hasRecordsDocumentos" class="table" mat-table [dataSource]="dataSourceDocumentos" style="margin-top: 24px;">
                                     <ng-container matColumnDef="nombre">

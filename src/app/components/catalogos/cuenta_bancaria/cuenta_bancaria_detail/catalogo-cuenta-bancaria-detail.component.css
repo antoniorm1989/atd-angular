@@ -1,0 +1,195 @@
+.catalogo-cuenta-bancaria {
+    padding: 16px 34px;
+    background-color: #F7F7F7;
+}
+
+.catalogo-cuenta-bancaria .toolbar .icon {
+    font-size: 23px;
+}
+
+.catalogo-cuenta-bancaria .toolbar .toolbar-title {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.catalogo-cuenta-bancaria .toolbar .form-container-toolbar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.catalogo-cuenta-bancaria .form-container .form-container-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.catalogo-cuenta-bancaria .form-container .form-container-toolbar .id {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 22px;
+    letter-spacing: 0em;
+    background-color: #F6FAFF;
+    border-radius: 20px;
+    padding: 8px;
+}
+
+.catalogo-cuenta-bancaria .toolbar .title {
+    font-size: 36px;
+    font-weight: 500;
+    line-height: 54px;
+    letter-spacing: 0.01em;
+    margin-left: 12px;
+}
+
+.catalogo-cuenta-bancaria .toolbar .breadcrumb-item {
+    font-size: 16px;
+    line-height: 19px;
+    letter-spacing: 0.01em;
+    color: #BA9400;
+}
+
+.catalogo-cuenta-bancaria .toolbar .toolbar-breadcrumb {
+    justify-content: flex-start;
+    align-items: center;
+    display: flex;
+}
+
+.catalogo-cuenta-bancaria .toolbar .link-breadcrumb {
+    cursor: pointer;
+}
+
+.catalogo-cuenta-bancaria .toolbar .btn {
+    margin-left: auto;
+    background-color: transparent !important;
+    color: #BA9400 !important;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: 0.01em;
+    text-align: left;
+}
+
+.catalogo-cuenta-bancaria .toolbar .link-breadcrumb:hover {
+    text-decoration: underline;
+}
+
+/* container */
+.catalogo-cuenta-bancaria .container .form-container {
+    display: flex;
+    background-color: #fff;
+    border-radius: 4px;
+    margin-top: 24px;
+    padding: 24px;
+    flex-direction: column;
+    margin-bottom: 24px;
+}
+
+.catalogo-cuenta-bancaria .container .form-container .title {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 36px;
+    letter-spacing: 0em;
+}
+
+.catalogo-cuenta-bancaria .container .form-row {
+    justify-content: space-between;
+    display: grid;
+    gap: 40px;
+}
+
+.catalogo-cuenta-bancaria .container .form-row.one-col {
+    grid-template-columns: repeat(1, 1fr);
+}
+
+.catalogo-cuenta-bancaria .container .form-row.two-col {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.catalogo-cuenta-bancaria .container .form-row.four-col {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.catalogo-cuenta-bancaria .form-field {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.accordion-address {
+    margin-bottom: 24px;
+}
+
+
+.toolbar-bottom {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 24px;
+}
+
+.toolbar-bottom .btn.secundary {
+    margin-right: 24px;
+}
+
+mat-panel-title {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 36px;
+    letter-spacing: 0em;
+}
+
+mat-panel-description {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 36px;
+}
+
+.mat-expansion-panel-header-description{
+    font-size: 20px;
+    flex-grow: unset !important;
+}
+
+.mat-mdc-tab:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label, .mat-mdc-tab-link:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label{
+    color : #BA9400;
+}
+
+.mat-mdc-tab:not(.mat-mdc-tab-disabled) .mdc-tab-indicator__content--underline, .mat-mdc-tab-link:not(.mat-mdc-tab-disabled) .mdc-tab-indicator__content--underline{
+    border-color: #BA9400;
+}
+
+
+.rights mat-panel-title {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 36px;
+    letter-spacing: 0em;
+}
+
+.catalogo-cuenta-bancaria .rights .mat-grid-tile-content{
+    justify-content: flex-start;
+}
+
+.catalogo-cuenta-bancaria .rights .gray{
+    background-color: #FAFAFA;
+}
+
+@media only screen and (max-width: 1084px) {
+    .catalogo-cuenta-bancaria .container .form-row.four-col {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media only screen and (max-width: 835px) {
+    .catalogo-cuenta-bancaria .container .form-row.four-col {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media only screen and (max-width: 587px) {
+    .catalogo-cuenta-bancaria .container .form-row.two-col,
+    .catalogo-cuenta-bancaria .container .form-row.four-col {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
