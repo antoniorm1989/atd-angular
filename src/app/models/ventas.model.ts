@@ -97,21 +97,20 @@ export class VentaDocumentoModel{
   venta_id: number | undefined;
   nombre: string | undefined;
   tipo: string | undefined;
-  created_at: Date | undefined;
-  updated_at: Date | undefined;
 }
 
 export class VentaPagoModel {
   id: number | undefined;
   venta_id: number | undefined;
-  deposito: string | undefined;
+  deposito: float | undefined;
   referencia: string | undefined;
   moneda: string | undefined;
   tipoCambio: float | undefined;
   formaPago: CatalogoFormaPagoModel | undefined;
   cuentaBancaria: CatalogoCuentaBancariaModel | undefined;
   metodoPago: CatalogoMetodoPagoModel | undefined;
-  fecha: Date | undefined;
   usuario: User | undefined;
+  created_at: Date | undefined;
+  updated_at: Date | undefined;
 }
 

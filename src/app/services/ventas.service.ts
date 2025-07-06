@@ -122,6 +122,24 @@ export class VentaService {
     return this.http.get<Array<VentaPagoModel>>(`${environment.apiUrl}/api/ventas/getPagos/${ventaId}`);
   }
 
+  createPago(ventaId: number, pago: VentaPagoModel): Observable<any> {
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
+    if (pago && pago.usuario) {
+      pago.usuario.id = userData.id;
+    }
+
+    return this.http.post<void>(`${environment.apiUrl}/api/ventas/createPago/${ventaId}`, pago, this.getHeaders());
+  }
+
+  updatePago(ventaId: number, pago: VentaPagoModel): Observable<any> {
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
+    if (pago && pago.usuario) {
+      pago.usuario.id = userData.id;
+    }
+
+    return this.http.put<void>(`${environment.apiUrl}/api/ventas/updatePago/${ventaId}/${pago.id}`, pago, this.getHeaders());
+  }
+
   private getHeaders() {
     return {
       headers: {

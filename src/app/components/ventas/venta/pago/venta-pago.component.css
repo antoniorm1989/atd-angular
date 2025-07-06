@@ -328,6 +328,21 @@ mat-panel-description {
     text-align: left;
 }
 
+.venta-pago .saldo{
+    background-color: lightgray;
+    border-radius: 4px;
+    padding: 11px;
+    display: flex;
+    margin: 10px 0px;
+}
+.venta-pago .saldo .text-1-regular{
+    margin-left: auto;
+    font-size: 18px;
+}
+.venta-pago .saldo-red{
+    background-color: #FF00006B;
+}
+
 @media only screen and (max-width: 1500px) {
 
 }

@@ -13,7 +13,11 @@ export class CatalogoCuentaBancariaService {
   constructor(private http: HttpClient) {
   }
 
-  getAll(page: number, limit: number, sort: string = 'nombre', order: string = 'asc', search: string = ''): Observable<{ data: Array<CatalogoCuentaBancariaModel>, total: number }> {
+  getAll(): Observable<Array<CatalogoCuentaBancariaModel>> {
+    return this.http.get<Array<CatalogoCuentaBancariaModel>>(`${environment.apiUrl}/api/cuentaBancaria/getAll`);
+  }
+
+  getAllPaginated(page: number, limit: number, sort: string = 'nombre', order: string = 'asc', search: string = ''): Observable<{ data: Array<CatalogoCuentaBancariaModel>, total: number }> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString())
@@ -25,7 +29,7 @@ export class CatalogoCuentaBancariaService {
     }
 
     return this.http.get<{ data: Array<CatalogoCuentaBancariaModel>, total: number }>(
-      `${environment.apiUrl}/api/cuentaBancaria/getAll`,
+      `${environment.apiUrl}/api/cuentaBancaria/getAllPaginated`,
       { params }
     );
   }

@@ -141,7 +141,7 @@
                         </div>
                         <div class="saldo saldo-red">
                             <mat-label class="text-1">Saldo</mat-label>
-                            <mat-label class="text-1-regular">{{ formatearComoMoneda(total) }}</mat-label>
+                            <mat-label class="text-1-regular">{{ formatearComoMoneda(saldo) }}</mat-label>
                         </div>
                         
                     </div>
@@ -272,37 +272,56 @@
                                 <table *ngIf="hasRecordsPagos" class="table" mat-table [dataSource]="dataSourcePagos" style="margin-top: 24px;">
                                     <ng-container matColumnDef="folio">
                                         <th mat-header-cell *matHeaderCellDef style="text-align: center;">Folio</th>
-                                        <td mat-cell *matCellDef="let pago" style="text-align: center;">{{pago.folio}}</td>
+                                        <td mat-cell *matCellDef="let pago" style="text-align: center;">
+                                            <span (click)="onViewPago(pago.id)" class="title-grid">
+                                                {{ pago.id.toString().padStart(5, '0') }}
+                                            </span>
+                                        </td>
                                     </ng-container>
 
                                     <ng-container matColumnDef="forma_pago">
                                         <th mat-header-cell *matHeaderCellDef style="text-align: center;">Forma de pago</th>
-                                        <td mat-cell *matCellDef="let pago" style="text-align: center;">{{pago.forma_pago}}</td>
+                                        <td mat-cell *matCellDef="let pago" style="text-align: center;">{{ pago.forma_pago.key }} - {{ pago.forma_pago.name }}</td>
                                     </ng-container>
 
                                     <ng-container matColumnDef="cuenta">
                                         <th mat-header-cell *matHeaderCellDef style="text-align: center;">Cuenta</th>
-                                        <td mat-cell *matCellDef="let pago" style="text-align: center;">{{pago.cuenta}}</td>
+                                        <td mat-cell *matCellDef="let pago" style="text-align: center;">{{ pago.cuenta_bancaria.banco }} - {{ pago.cuenta_bancaria.numero_cuenta }}</td>
                                     </ng-container>
 
                                     <ng-container matColumnDef="importe">
                                         <th mat-header-cell *matHeaderCellDef style="text-align: center;">Importe</th>
-                                        <td mat-cell *matCellDef="let pago" style="text-align: center;">{{pago.moneda_nombre}} {{pago.importe}}</td>
-                                    </ng-container>
-
-                                    <ng-container matColumnDef="cancelacion">
-                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Cancelación</th>
-                                        <td mat-cell *matCellDef="let pago" style="text-align: center;">{{pago.cancelacion}}</td>
+                                        <td mat-cell *matCellDef="let pago" style="text-align: center;">{{ pago.moneda }} {{ pago.deposito }}</td>
                                     </ng-container>
 
                                     <ng-container matColumnDef="fecha">
                                         <th mat-header-cell *matHeaderCellDef style="text-align: center;">Fecha</th>
-                                        <td mat-cell *matCellDef="let pago" style="text-align: center;">{{formatDate(pago.fecha)}}</td>
+                                        <td mat-cell *matCellDef="let pago" style="text-align: center;">{{formatDate(pago.updated_at)}}</td>
                                     </ng-container>
 
                                     <ng-container matColumnDef="usuario">
-                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Usuario</th>
-                                        <td mat-cell *matCellDef="let pago" style="text-align: center;">{{pago.usuario}}</td>
+                                        <th mat-header-cell *matHeaderCellDef>Usuario</th>
+                                        <td mat-cell *matCellDef="let pago">
+                                            <div class="user-wrapper">
+                                                <div class="circle-initials" mat-mini-fab color="primary" *ngIf="pago.user.photo == null">
+                                                    {{getUserName(pago.user.name, pago.user.last_name)}}
+                                                </div>
+                                                <div *ngIf="pago.user.photo != null" class="container-photo-user">
+                                                    <img class="photo" [src]="getUrlPhoto(pago.user.photo)">
+                                                </div>
+                                                <span class="text">{{pago.user.name}} {{pago.user.last_name}}</span>
+                                            </div>
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="acciones">
+                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Acciones</th>
+                                        <td mat-cell *matCellDef="let documento" style="text-align: center;">
+                                            <button mat-button (click)="eliminarDocumento(documento)">
+                                                <mat-icon>delete</mat-icon>
+                                                <span>Eliminar</span>
+                                            </button>
+                                        </td>
                                     </ng-container>
 
                                     <tr mat-header-row *matHeaderRowDef="displayedColumnsPagos"></tr>

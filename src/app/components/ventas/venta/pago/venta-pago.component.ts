@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InventoryAlmacenService } from 'src/app/services/inventory.service';
 import { CatalogoAlmacenesService } from 'src/app/services/catalogo-almacenes.service';
@@ -20,6 +20,7 @@ import { InventorySucursalModel } from 'src/app/models/inventory-sucursal.model'
 import { User } from 'src/app/models/user';
 import { VentaService } from 'src/app/services/ventas.service';
 import { CatalogoArticuloService } from 'src/app/services/catalogo-articulos.service';
+import { CatalogoCuentaBancariaService } from 'src/app/services/catalogo-cuenta-bancaria.service';
 
 
 @Component({
@@ -35,7 +36,7 @@ export class VentaPagoComponent implements OnInit {
   submitted = false;
   monedas: CatalogoMonedaModel[] = [];
   formaPagoList: CatalogoFormaPagoModel[] = [];
-  
+
   selectedFormaPago!: CatalogoFormaPagoModel;
   selectedCondicionPago = "contado";
 
@@ -45,58 +46,60 @@ export class VentaPagoComponent implements OnInit {
   metodoPagoList: CatalogoFormaPagoModel[] = [];
   selectedMetodoPago!: CatalogoFormaPagoModel;
 
-  subtotal: number = 0;
-
   @Output() cancel = new EventEmitter();
-  @Output() add = new EventEmitter<VentaPagoModel>();
+  @Output() add = new EventEmitter<boolean>();
   @Input() ventaPagoModel: VentaPagoModel | undefined;
+  @Input() ventaId: number = 0;
+  @Input() importeTotal: number = 0;
+
+  private _saldo: number = 0;
+  @Input()
+  get saldo(): number {
+    return this._saldo;
+  }
+  set saldo(value: number) {
+    this._saldo = value;
+    // Revalidate deposito when saldo changes
+    if (this.form) {
+      this.form.get('deposito')?.updateValueAndValidity();
+    }
+  }
 
   isEditing: boolean = false;
 
   constructor(public route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private catalogosService: CatalogosService,
-    private dialog: MatDialog,
     private ventaService: VentaService,
-    private catalogoArticuloService: CatalogoArticuloService) {
+    private catalogoArticuloService: CatalogoArticuloService,
+    private catalogoCuentaBancariaService: CatalogoCuentaBancariaService,
+    private router: Router,) {
 
     let tipoCambioDefault = this.getTipoCambioDefault();
 
     this.form = this.formBuilder.group({
-      deposito: ['', [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
+      deposito: ['', [
+        Validators.required,
+        Validators.pattern(/^\d+(\.\d{1,2})?$/),
+        this.maxDepositoValidator.bind(this)
+      ]],
       referencia: [null, Validators.required],
-      condicion_pago: ['contado'],
+      cuenta_bancaria: [null, Validators.required],
       moneda: ['MXN'],
-      forma_pago: [],
       tipo_cambio: tipoCambioDefault,
+      condicion_pago: ['contado'],
+      forma_pago: [],
       metodo_pago: []
     });
   }
 
   ngOnInit() {
     try {
-      // add cuentas bancarias aqui
-      // this.catalogoSucursalesService.getAll().subscribe({
-      //   next: (data) => {
-      //     this.sucursales = data;
-      //     if (data.length > 0)
-      //       this.selectedSucursal = data[0];
-      //   },
-      //   error: (e) => {
-      //   }
-      // });
-
-
       if (this.ventaPagoModel != null) {
         this.isEditing = true;
         this.action = 'Editar';
         // this.f['producto_servicio_model'].disable();
       }
-
-      // Cuando se clcle importes
-      // this.form.get('tipoDescuento')?.valueChanges.subscribe(value => {
-      //   this.calcularSubTotal();
-      // });
 
       this.catalogoArticuloService.getMonedas().subscribe({
         next: (data) => {
@@ -106,22 +109,38 @@ export class VentaPagoComponent implements OnInit {
       });
 
       this.catalogosService.getMetodoPago().subscribe({
-      next: (data) => {
-        if (data.length > 0) {
-          this.metodoPagoList = data;
+        next: (data) => {
+          if (data.length > 0) {
+            this.metodoPagoList = data;
+            if (this.isEditing) {
+              let selectedMetodoPago = data.find(x => x.id == this.ventaPagoModel?.metodoPago?.id);
+              if (selectedMetodoPago != undefined)
+                this.form.patchValue({ metodo_pago: selectedMetodoPago });
+            }
+            else
+              this.selectedMetodoPago = data[0];
+          }
+        },
+        error: (e) => {
+          console.log(e);
+        }
+      });
+
+      this.catalogoCuentaBancariaService.getAll().subscribe({
+        next: (data) => {
+          this.cuentasBancarias = data;
           if (this.isEditing) {
-            let selectedMetodoPago = data.find(x => x.id == this.ventaPagoModel?.metodoPago?.id);
-            if (selectedMetodoPago != undefined)
-              this.form.patchValue({ metodo_pago: selectedMetodoPago });
+            let selectedCuentaBancaria = data.find(x => x.id == this.ventaPagoModel?.cuentaBancaria?.id);
+            if (selectedCuentaBancaria != undefined)
+              this.form.patchValue({ cuenta_bancaria: selectedCuentaBancaria });
           }
           else
-            this.selectedMetodoPago = data[0];
+            this.selectedCuentaBancaria = data[0];
+        },
+        error: (e) => {
+          console.log(e);
         }
-      },
-      error: (e) => {
-        console.log(e);
-      }
-    });
+      });
 
       this.loadFormaPagoSelect();
 
@@ -129,20 +148,6 @@ export class VentaPagoComponent implements OnInit {
       console.error('An error occurred in ngOnInit:', error);
     }
   }
-
-  // loadEdit(ventaPagoModel: VentaPagoModel) {
-  //       this.form.patchValue({
-  //         selectedArticle: ventaPagoModel.almacen?.pago?.part_number,
-  //         qty: this.isDespachar ? 0 : ventaPagoModel.cantidad,
-  //         descuento: ventaPagoModel.descuento,
-  //         comentarios: ventaPagoModel.comentarios,
-  //         backorder: 0,
-  //         unidad_medida: ventaPagoModel.unidad_medida,
-  //         producto_servicio_model: ventaPagoModel.producto_servicio_model,
-  //         unidad_medida_model: ventaPagoModel.unidad_medida_model
-  //       });
-  //     }
-  // }
 
   get f() { return this.form!.controls; }
 
@@ -159,27 +164,6 @@ export class VentaPagoComponent implements OnInit {
       maximumFractionDigits: 4
     }).format(valor);
   }
-
-  calcularSubTotal() {
-    //this.subtotal = ((this.calcularTotalConDescuento() * this.f['qty'].value));
-  }
-
-  // validarDecimal(event: any) {
-  //   const allowedChars = /[0-9\.\,]/;
-  //   const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
-
-  //   if (!allowedKeys.includes(event.key) && !allowedChars.test(event.key)) {
-  //     event.preventDefault();
-  //   }
-
-  //   const input = event.target as HTMLInputElement;
-  //   const value = input.value.replace(',', '.');
-  //   const regexp = new RegExp(/^\d+(\.\d{0,2})?$/);
-
-  //   if (!regexp.test(value + event.key)) {
-  //     event.preventDefault();
-  //   }
-  // }
 
   validarDecimal(event: any) {
     const allowedChars = /[0-9\.\,]/;
@@ -200,9 +184,29 @@ export class VentaPagoComponent implements OnInit {
 
   validarFinal(controlName: string) {
     const value = this.f[controlName].value;
+
+    // Skip validation if value is empty (let required validator handle it)
+    if (!value || value.toString().trim() === '') {
+      return;
+    }
+
     const regexp = /^\d+(\.\d{1,2})?$/;
+
     if (!regexp.test(value)) {
       this.f[controlName].setErrors({ pattern: true });
+      return;
+    }
+
+    // Clear pattern error if valid
+    if (this.f[controlName].hasError('pattern')) {
+      const errors = { ...this.f[controlName].errors };
+      delete errors['pattern'];
+      this.f[controlName].setErrors(Object.keys(errors).length > 0 ? errors : null);
+    }
+
+    // Revalidate deposito when saldo might have changed
+    if (controlName === 'deposito') {
+      this.form.get('deposito')?.updateValueAndValidity();
     }
   }
 
@@ -241,42 +245,171 @@ export class VentaPagoComponent implements OnInit {
     });
   }
 
+  // Custom validator to prevent deposit amount from exceeding saldo
+  maxDepositoValidator(control: AbstractControl): ValidationErrors | null {
+    const depositoValue = parseFloat(control.value);
+    if (!isNaN(depositoValue) && depositoValue > 0 && this.saldo && depositoValue > this.saldo) {
+      return { maxDeposito: true };
+    }
+    return null;
+  }
+
   onAdd() {
-    // try {
-    //   this.submitted = true;
-    //     let ventaPagoModel = new VentaPagoModel();
-    //     ventaPagoModel.inventory_almacen_id = this.inventory_almacen_id;
-    //     ventaPagoModel.precio_venta = this.f['precio_venta'].value;
-    //     ventaPagoModel.totalConDescuento = this.calcularTotalConDescuento();
-    //     ventaPagoModel.descuento = this.f['descuento'].value;
-    //     ventaPagoModel.tipoDescuento = this.f['tipoDescuento'].value;
-    //     ventaPagoModel.cantidad = this.f['qty'].value;
-    //     ventaPagoModel.backorder = this.f['backorder'].value;
-    //     ventaPagoModel.comentarios = this.f['comentarios'].value;
-    //     ventaPagoModel.moneda_nombre = this.f['moneda_nombre'].value;
+    try {
+      this.submitted = true;
 
-    //     ventaPagoModel.unidad_medida = this.f['unidad_medida'].value;
-    //     ventaPagoModel.producto_servicio_model = this.f['producto_servicio_model'].value;
-    //     ventaPagoModel.unidad_medida_model = this.f['unidad_medida_model'].value;
+      // Validate form and show errors if invalid
+      if (!this.validateForm()) {
+        return;
+      }
 
-    //     if (this.selectedAlmacen) {
-    //       let inventoryAlmacenModel = new InventoryAlmacenModel();
-    //       inventoryAlmacenModel.almacen = this.selectedAlmacen;
-    //       inventoryAlmacenModel.pago = this.selectedArticle;
-    //       ventaPagoModel.almacen = inventoryAlmacenModel;
-    //     }
+      // Validate business rules
+      if (!this.validateBusinessRules()) {
+        return;
+      }
 
-    //     if (this.selectedSucursal) {
-    //       let inventorySucursalModel = new InventorySucursalModel();
-    //       inventorySucursalModel.sucursal = this.selectedSucursal;
-    //       inventorySucursalModel.pago = this.selectedArticle;
-    //       ventaPagoModel.sucursal = inventorySucursalModel;
-    //     }
+      let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
+      let user = new User();
+      user.id = userData.id;
 
-    //     this.add.emit(ventaPagoModel);
-    // } catch (error) {
-    //   console.error('An error occurred in onSubmit:', error);
-    // }
+      // Create and populate the payment model
+      const ventaPagoModel = new VentaPagoModel();
+      ventaPagoModel.deposito = parseFloat(this.f['deposito'].value);
+      ventaPagoModel.referencia = this.f['referencia'].value?.trim();
+      ventaPagoModel.cuentaBancaria = this.f['cuenta_bancaria'].value;
+      ventaPagoModel.moneda = this.f['moneda'].value;
+      ventaPagoModel.tipoCambio = parseFloat(this.f['tipo_cambio'].value);
+      ventaPagoModel.formaPago = this.f['forma_pago'].value;
+      ventaPagoModel.metodoPago = this.f['metodo_pago'].value;
+      ventaPagoModel.venta_id = this.ventaId;
+      ventaPagoModel.usuario = user;
+
+
+      // Set ID for editing
+      if (this.isEditing && this.ventaPagoModel?.id) {
+        ventaPagoModel.id = this.ventaPagoModel.id;
+      }
+
+      // Save the payment (create or update)
+      this.saveVentaPago(ventaPagoModel);
+
+    } catch (error) {
+      console.error('An error occurred in onAdd:', error);
+      this.submitted = false;
+    }
+  }
+
+  private validateForm(): boolean {
+    if (this.form.invalid) {
+      // Mark all fields as touched to show validation errors
+      Object.keys(this.form.controls).forEach(key => {
+        this.form.get(key)?.markAsTouched();
+      });
+
+      console.warn('Form is invalid, validation errors:', this.getFormErrors());
+      return false;
+    }
+    return true;
+  }
+
+  private validateBusinessRules(): boolean {
+    // Validate deposit amount doesn't exceed saldo
+    const depositoValue = parseFloat(this.f['deposito'].value);
+    if (isNaN(depositoValue) || depositoValue <= 0) {
+      this.f['deposito'].setErrors({ required: true });
+      this.f['deposito'].markAsTouched();
+      return false;
+    }
+
+    if (depositoValue > this.saldo) {
+      this.f['deposito'].setErrors({ maxDeposito: true });
+      this.f['deposito'].markAsTouched();
+      return false;
+    }
+
+    // Validate that we have a valid venta_id for creating/updating payments
+    if (this.isEditing && (!this.ventaPagoModel || !this.ventaPagoModel.venta_id)) {
+      console.error('Cannot edit payment: missing venta_id');
+      return false;
+    }
+
+    if (this.ventaId == 0 || !this.ventaId) {
+      console.error('Cannot create payment: missing venta_id');
+      return false;
+    }
+
+    return true;
+  }
+
+  private saveVentaPago(ventaPagoModel: VentaPagoModel): void {
+    if (!ventaPagoModel.venta_id) {
+      console.error('Cannot save payment: missing venta_id');
+      return;
+    }
+
+    if (this.isEditing && ventaPagoModel.id) {
+      // Update existing payment
+      this.ventaService.updatePago(ventaPagoModel.venta_id, ventaPagoModel).subscribe({
+        next: (data) => {
+          console.log('Payment updated successfully', data);
+          this.handleSaveSuccess(true);
+        },
+        error: (error) => {
+          console.error('Error updating payment:', error);
+          this.handleSaveError(error);
+        }
+      });
+    } else {
+      // Create new payment
+      this.ventaService.createPago(ventaPagoModel.venta_id, ventaPagoModel).subscribe({
+        next: (data) => {
+          console.log('Payment created successfully', data);
+          this.handleSaveSuccess(false);
+        },
+        error: (error) => {
+          console.error('Error creating payment:', error);
+          this.handleSaveError(error);
+        }
+      });
+    }
+  }
+
+  private handleSaveSuccess(isUpdate: boolean): void {
+    this.submitted = false;
+    this.add.emit(isUpdate);
+
+    // Optionally reset form after successful creation
+    if (!isUpdate) {
+      this.resetForm();
+    }
+  }
+
+  private handleSaveError(error: any): void {
+    this.submitted = false;
+    // You could show a user-friendly error message here
+    // For example, using a toast service or setting form errors
+  }
+
+  private resetForm(): void {
+    this.form.reset();
+    this.submitted = false;
+    // Reset to default values
+    this.form.patchValue({
+      moneda: 'MXN',
+      tipo_cambio: this.getTipoCambioDefault(),
+      condicion_pago: 'contado'
+    });
+  }
+
+  private getFormErrors(): any {
+    const formErrors: any = {};
+    Object.keys(this.form.controls).forEach(key => {
+      const controlErrors = this.form.get(key)?.errors;
+      if (controlErrors) {
+        formErrors[key] = controlErrors;
+      }
+    });
+    return formErrors;
   }
 
   onCancel() {

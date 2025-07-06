@@ -454,13 +454,13 @@ mat-panel-description {
     margin: auto 12px;
 }
 
-.ventas .user-wrapper {
+.venta .user-wrapper {
     display: flex;
     justify-content: flex-start;
     align-items: center;
 }
 
-.ventas .user-wrapper .circle-initials {
+.venta .user-wrapper .circle-initials {
     width: 28px;
     height: 28px;
     border-radius: 50%;
@@ -473,7 +473,7 @@ mat-panel-description {
     min-width: 28px;
 }
 
-.ventas .user-wrapper .text {
+.venta .user-wrapper .text {
     font-weight: 500;
     line-height: 19px;
     letter-spacing: 0px;

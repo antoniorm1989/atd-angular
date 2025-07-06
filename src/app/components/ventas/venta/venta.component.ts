@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
@@ -26,7 +26,7 @@ import { LoadingService } from 'src/app/components/genericos/loading/loading.ser
   styleUrls: ['./venta.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class VentaComponent {
+export class VentaComponent implements OnInit {
 
   action: string = 'view';
   title: string = '';
@@ -62,7 +62,6 @@ export class VentaComponent {
   }];
   selectedMotivoCancelacion!: CatalogoMotivoCancelacionModel;
 
-
   regimenesFiscales: CatalogoRegimenFiscalModel[] = [];
   selectedRegimenFiscal!: CatalogoRegimenFiscalModel;
 
@@ -92,15 +91,15 @@ export class VentaComponent {
 
   // Pagos y abonos
   hasRecordsPagos = false;
-  displayedColumnsPagos: string[] = ['folio', 'forma_pago', 'cuenta', 'importe', 'cancelacion', 'fecha', 'usuario'];
+  displayedColumnsPagos: string[] = ['folio', 'forma_pago', 'cuenta', 'importe', 'fecha', 'usuario', 'acciones'];
   dataSourcePagos = new MatTableDataSource<VentaPagoModel>([]);
   @ViewChild(MatPaginator) paginatorPagos!: MatPaginator;
-
 
   subTotal: number = 0;
   iva: number = 0;
   retencion: number = 0;
   total: number = 0;
+  saldo: number = 0;
 
   editData: VentaModel | null = null;
 
@@ -166,81 +165,6 @@ export class VentaComponent {
       facturaControl?.updateValueAndValidity();
     });
 
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url.includes('/ventas/detail')) {
-
-        this.route.params.subscribe(params => {
-          this.id = params['ventaId'];
-          if (this.id != undefined) {
-            this.ventaService.getById(this.id).subscribe({
-              next: (data) => {
-
-                var venta = data;
-                this.editData = venta;
-
-                this.comentario = venta.comentarios || "";
-                this.originalComentario = this.comentario;
-
-                this.form.patchValue({
-                  // Datos generales
-                  fecha_compra_cliente: venta.fecha_compra_cliente,
-                  usoCfdi: venta.uso_cfdi,
-                  comentarios: venta.comentarios,
-                  nombre_fiscal: venta.cliente?.nombre_fiscal,
-                  regimen_fiscal: venta.cliente?.regimen_fiscal,
-                  // Forma pago
-                  condicion_pago: venta.condicion_pago,
-                  tiene_dias_credito: venta.tiene_dias_credito,
-                  cantidad_dias_credito: venta.cantidad_dias_credito,
-                  moneda: venta.moneda,
-                  forma_pago: venta.forma_pago,
-                  metodo_pago: venta.metodo_pago,
-                  tipo_cambio: venta.tipo_cambio,
-                  // Articulos
-                  objeto_impuesto: venta.objeto_impuesto,
-                  translada_iva_porcentaje: venta.translada_iva_porcentaje?.toString(),
-                  retiene_iva_porcentaje: venta.retiene_iva_porcentaje?.toString(),
-                });
-
-                this.dataSourceArticulos.data = venta.articulos || [];
-                this.hasRecords = this.dataSourceArticulos.data.length > 0;
-
-                this.calcularTotales();
-
-                this.loadSelectData();
-
-                this.obtenerDocumentos();
-
-                this.obtenerFacturasEstatus();
-
-                this.obtenerVentasEstatus();
-
-                this.route.queryParams.subscribe(params => {
-                  switch (params['action']) {
-                    case undefined:
-                      this.action = 'view';
-                      this.title = 'Consultar factura';
-                      //this.form.disable();
-                      break;
-                    case 'edit':
-                      this.action = 'edit';
-                      this.title = 'Editar factura';
-                      break;
-                  }
-                });
-              },
-              error: (e) => {
-              }
-            });
-          } else {
-            this.action = 'new';
-            this.title = 'Crear factura';
-            this.loadSelectData();
-          }
-        });
-      }
-    });
-
     this.form.controls['translada_iva_porcentaje'].valueChanges.subscribe((newValue) => {
       this.calcularTotales();
     });
@@ -252,6 +176,81 @@ export class VentaComponent {
     });
     this.form.controls['tipo_cambio'].valueChanges.subscribe((newValue) => {
       this.calcularTotales();
+    });
+  }
+
+  ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      this.id = params['ventaId'];
+      if (this.id != undefined) {
+        this.ventaService.getById(this.id).subscribe({
+          next: (data) => {
+            // Editación de venta
+            var venta = data;
+            this.editData = venta;
+
+            this.comentario = venta.comentarios || "";
+            this.originalComentario = this.comentario;
+
+            this.form.patchValue({
+              // Datos generales
+              fecha_compra_cliente: venta.fecha_compra_cliente,
+              usoCfdi: venta.uso_cfdi,
+              comentarios: venta.comentarios,
+              nombre_fiscal: venta.cliente?.nombre_fiscal,
+              regimen_fiscal: venta.cliente?.regimen_fiscal,
+              // Forma pago
+              condicion_pago: venta.condicion_pago,
+              tiene_dias_credito: venta.tiene_dias_credito,
+              cantidad_dias_credito: venta.cantidad_dias_credito,
+              moneda: venta.moneda,
+              forma_pago: venta.forma_pago,
+              metodo_pago: venta.metodo_pago,
+              tipo_cambio: venta.tipo_cambio,
+              // Articulos
+              objeto_impuesto: venta.objeto_impuesto,
+              translada_iva_porcentaje: venta.translada_iva_porcentaje?.toString(),
+              retiene_iva_porcentaje: venta.retiene_iva_porcentaje?.toString(),
+            });
+
+            this.dataSourceArticulos.data = venta.articulos || [];
+            this.hasRecords = this.dataSourceArticulos.data.length > 0;
+
+            this.calcularTotales();
+
+            this.loadSelectData();
+
+            this.obtenerDocumentos();
+
+            this.obtenerFacturasEstatus();
+
+            this.obtenerVentasEstatus();
+
+            this.obtenerPagos();
+
+            this.route.queryParams.subscribe(params => {
+              switch (params['action']) {
+                case undefined:
+                  this.action = 'view';
+                  this.title = 'Consultar factura';
+                  //this.form.disable();
+                  break;
+                case 'edit':
+                  this.action = 'edit';
+                  this.title = 'Editar factura';
+                  break;
+              }
+            });
+          },
+          error: (e) => {
+          }
+        });
+      } else {
+        // Nueva venta
+        this.action = 'new';
+        this.title = 'Crear factura';
+        this.loadSelectData();
+      }
     });
   }
 
@@ -660,7 +659,6 @@ export class VentaComponent {
     return this.formatearComoMoneda(total + (costo * cantidad));
   }
 
-
   formatearComoMoneda(valor: number | undefined): string {
     if (!valor && valor != 0)
       return 'n/a';
@@ -748,6 +746,7 @@ export class VentaComponent {
     this.calcularIva();
     this.calcularRetencion();
     this.calcularTotal();
+    this.calcularSaldo();
   }
 
   calcularSubTotal() {
@@ -774,6 +773,10 @@ export class VentaComponent {
 
   calcularTotal() {
     this.total = this.subTotal + this.iva - this.retencion;
+  }
+
+  calcularSaldo() {
+    this.saldo = this.total - (this.dataSourcePagos.data.reduce((acc, pago) => acc + (parseFloat(pago.deposito?.toString() || '0') || 0), 0));
   }
 
   obtenerTotalConDescuento(articulo: VentaArticuloModel): number {
@@ -1040,17 +1043,17 @@ export class VentaComponent {
   }
 
   getFechaCancelacion(): string {
-    if( !this.editData || !this.editData.factura_estatus || !this.editData.factura_estatus.custom_data || !this.editData.factura_estatus.custom_data.fecha_cancelacion) {
+    if (!this.editData || !this.editData.factura_estatus || !this.editData.factura_estatus.custom_data || !this.editData.factura_estatus.custom_data.fecha_cancelacion) {
       return "N/A";
     }
     return this.formatDate(this.editData.factura_estatus.custom_data.fecha_cancelacion);
   }
 
   getMotivoCancelacion(): string {
-    if( !this.editData || !this.editData.factura_estatus || !this.editData.factura_estatus.custom_data || !this.editData.factura_estatus.custom_data.motivo_cancelacion) {
+    if (!this.editData || !this.editData.factura_estatus || !this.editData.factura_estatus.custom_data || !this.editData.factura_estatus.custom_data.motivo_cancelacion) {
       return "N/A";
     }
-    
+
     let motivoCancelacionId = this.editData.factura_estatus.custom_data.motivo_cancelacion;
     let motivoCancelacion = this.motivoCancelacionList.find((item: any) => item.clave === motivoCancelacionId);
 
@@ -1058,12 +1061,16 @@ export class VentaComponent {
   }
 
   // Pagos
-  getPagos() {
+  obtenerPagos() {
+    this.hasRecordsPagos = false;
     this.ventaService.getPagos(this.id).subscribe({
       next: (data) => {
         this.dataSourcePagos.data = data;
         this.dataSourcePagos._updateChangeSubscription();
         this.hasRecordsPagos = this.dataSourcePagos.data.length > 0;
+
+        debugger;
+        this.calcularSaldo();
       },
       error: (e) => {
         console.error('Error al obtener los pagos:', e);
@@ -1073,22 +1080,24 @@ export class VentaComponent {
 
   openPagoVentaModalComponent() {
     const dialogRef = this.dialog.open(PagoVentaModalComponent, {
-      height: '550px',
-      width: '1175px',
+      height: '600px',
+      width: '1250px',
       data: {
-        ventaPagoModel: this.dataSourcePagos.data,
+        //ventaPagoModel: this.dataSourcePagos.data,
+        ventaId: this.id,
+        importeTotal: this.total,
+        saldo: this.saldo
       },
     });
 
     dialogRef.afterClosed().subscribe(ventaPagoModel => {
-      if (ventaPagoModel != undefined && ventaPagoModel != "") {
-        this.dataSourcePagos.data.push(ventaPagoModel);
-        this.dataSourcePagos._updateChangeSubscription();
-        this.hasRecordsPagos = true;
-      }
+      this.obtenerPagos();
     });
   }
 
+  onViewPago(id: string) {
+    this.router.navigate(['ventas/detail', id]);
+  }
 }
 
 @Component({
@@ -1151,7 +1160,7 @@ export class ArticuloVentaModalComponent {
   selector: 'dialog-component-agregar-pago-venta',
   template: `<span mat-dialog-title>Agregar pago - abono</span>
             <mat-dialog-content class="mat-typography">
-              <app-venta-pago [ventaPagoModel]="ventaPagoModel" (cancel)="onCancelar()" (add)="onAgregarPago($event)" #appVentaPagoComponent></app-venta-pago>
+              <app-venta-pago [ventaPagoModel]="ventaPagoModel" [importeTotal]="importeTotal" [saldo]="saldo" [ventaId]="ventaId" (cancel)="onCancelar()" (add)="onAgregarPago($event)" #appVentaPagoComponent></app-venta-pago>
             </mat-dialog-content>`,
   styles: [
   ]
@@ -1159,6 +1168,9 @@ export class ArticuloVentaModalComponent {
 export class PagoVentaModalComponent {
   @ViewChild('appVentaPagoComponent') appVentaPagoComponent: any;
   ventaPagoModel!: VentaPagoModel;
+  ventaId = 0;
+  importeTotal: number = 0;
+  saldo: number = 0;
   clienteId = 0;
   isDespachar = false;
 
@@ -1169,8 +1181,17 @@ export class PagoVentaModalComponent {
     dialogRef.disableClose = true;
 
     if (Object.keys(data).length > 0) {
-      if (data.articulo != undefined) {
-        this.ventaPagoModel = data.articulo;
+      if (data.ventaPagoModel != undefined) {
+        this.ventaPagoModel = data.ventaPagoModel;
+      }
+      if (data.ventaId != undefined) {
+        this.ventaId = data.ventaId;
+      }
+      if (data.importeTotal != undefined) {
+        this.importeTotal = data.importeTotal;
+      }
+      if (data.saldo != undefined) {
+        this.saldo = data.saldo;
       }
     }
 
@@ -1184,9 +1205,9 @@ export class PagoVentaModalComponent {
     }
   }
 
-  onAgregarPago(ventaPagoModel: VentaPagoModel) {
+  onAgregarPago(isEditing: boolean) {
     try {
-      this.dialogRef.close(ventaPagoModel);
+      this.dialogRef.close({ isEditing });
     } catch (error) {
       console.error('An error occurred in onAgregarPago:', error);
     }

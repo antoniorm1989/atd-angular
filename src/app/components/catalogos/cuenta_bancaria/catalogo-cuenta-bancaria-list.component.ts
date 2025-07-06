@@ -54,7 +54,7 @@ export class CatalogoCuentaBancariaListComponent implements OnInit {
 
   loadCuentaBancarias(page: number, limit: number, sort: string = 'created', order: string = 'desc', search: string = '') {
     this.loadingService.show();
-    this.catalogoCuentaBancariaService.getAll(page, limit, sort, order, search).subscribe({
+    this.catalogoCuentaBancariaService.getAllPaginated(page, limit, sort, order, search).subscribe({
       next: (res) => {
         this.hasRecords = res.data.length > 0;
         this.dataSource.data = res.data;
