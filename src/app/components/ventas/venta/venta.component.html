@@ -4,64 +4,95 @@
             <i class="icon fa-solid fa-cash-register"></i>
             <span class="title">Facturación</span>
             <div *ngIf="isReadOnly" style="margin-left: auto; margin-bottom: auto; margin-top: auto; display: flex;">
-                
-                <mat-card class="status-card" appearance="outlined">
+                <mat-card class="status-card" 
+                          [ngClass]="{
+                            'v-backorder': editData && editData.estatus && editData.estatus.id === 1,
+                            'v-cancelada': editData && editData.estatus && editData.estatus.id === 2,
+                            'v-despachada': editData && editData.estatus && editData.estatus.id === 3,
+                            'v-completada': editData && editData.estatus && editData.estatus.id === 4
+                          }" 
+                          appearance="outlined" style="width: 200px;">
                     <mat-card-content>
-                        <span style="font-size: large;">Venta:</span>
-                        <span *ngIf="editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '') === 'Parcialmente'" class="estatus-icon  v-parcialmente"></span>
-                        <span *ngIf="editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '') === 'Cancelada'" class="estatus-icon  v-cancelada"></span>
-                        <span *ngIf="editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '') === 'Despachada'" class="estatus-icon v-despachada"></span>
-                        <span style="font-size: large; font-weight: 500;">{{editData && editData.estatus && capitalizeWords(editData.estatus.estatus || '')}}</span>
+                        <div style="display: grid; grid-template-columns: 22px 1fr; column-gap: 12px;">
+                            <span *ngIf="editData?.estatus" 
+                              class="estatus-icon"
+                              [ngClass]="{
+                                'v-backorder': editData?.estatus?.id === 1,
+                                'v-cancelada': editData?.estatus?.id === 2,
+                                'v-despachada': editData?.estatus?.id === 3,
+                                'v-completada': editData?.estatus?.id === 4
+                              }">
+                            </span>
+                            <div style="display: grid; grid-template-columns: 1fr;">
+                                <span style="font-size: large; font-weight: 4200;">Venta</span>
+                                <span style="font-size: large; font-weight: 700;">{{editData?.estatus?.estatus || '--'}}</span>
+                            </div>
+                        </div>
                     </mat-card-content>
                 </mat-card>
-                <mat-card class="status-card" appearance="outlined">
+                <mat-card class="status-card" 
+                          [ngClass]="{
+                            'f-fallida': editData && editData.factura_estatus && editData.factura_estatus.id === 1,
+                            'f-cancelada': editData && editData.factura_estatus && editData.factura_estatus.id === 2,
+                            'f-pre-cancelada': editData && editData.factura_estatus && editData.factura_estatus.id === 3,
+                            'f-timbrada': editData && editData.factura_estatus && editData.factura_estatus.id === 4
+                          }" 
+                          appearance="outlined" style="width: 200px;">
                     <mat-card-content>
-                        <span style="font-size: large;">Factura:</span>
-                        <span *ngIf="editData && editData.factura_estatus && (editData.factura_estatus.estatus === 'Por-facturar' || editData.factura_estatus.estatus === '')" class="estatus-icon f-por-facturar"></span>
-                        <span *ngIf="editData && editData.factura_estatus && editData.factura_estatus.estatus === 'Cancelada'" class="estatus-icon f-cancelada"></span>
-                        <span *ngIf="editData && editData.factura_estatus && editData.factura_estatus.estatus === 'Pre-Cancelada'" class="estatus-icon f-pre-cancelada"></span>
-                        <span *ngIf="editData && editData.factura_estatus && editData.factura_estatus.estatus === 'Facturada'" class="estatus-icon f-facturada"></span>
-                        <span style="font-size: large; font-weight: 500;">{{editData && editData.factura_estatus && editData.factura_estatus.estatus || "No facturada"}}</span>
+                        <div style="display: grid; grid-template-columns: 22px 1fr; column-gap: 12px;">
+                            <span *ngIf="editData?.factura_estatus" 
+                              class="estatus-icon"
+                              [ngClass]="{
+                                'f-fallida': editData?.factura_estatus?.id === 1,
+                                'f-cancelada': editData?.factura_estatus?.id === 2,
+                                'f-pre-cancelada': editData?.factura_estatus?.id === 3,
+                                'f-timbrada': editData?.factura_estatus?.id === 4
+                              }"></span>
+                            <div style="display: grid; grid-template-columns: 1fr;">
+                                <span style="font-size: large; font-weight: 4200;">Factura</span>
+                                <span style="font-size: large; font-weight: 700;">{{editData?.factura_estatus?.estatus || '--'}}</span>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+                <mat-card class="status-card" 
+                          [ngClass]="{
+                            'p-pendiente': editData && editData.pago_estatus && editData.pago_estatus.id === 1,
+                            'p-parcial': editData && editData.pago_estatus && editData.pago_estatus.id === 2,
+                            'p-pagado': editData && editData.pago_estatus && editData.pago_estatus.id === 3,
+                            'p-reembolsado': editData && editData.pago_estatus && editData.pago_estatus.id === 4
+                          }" 
+                          appearance="outlined" style="width: 200px;">
+                    <mat-card-content>
+                        <div style="display: grid; grid-template-columns: 22px 1fr; column-gap: 12px;">
+                        <span *ngIf="editData?.pago_estatus" 
+                              class="estatus-icon"
+                              [ngClass]="{
+                                'p-pendiente': editData?.pago_estatus?.id === 1,
+                                'p-parcial': editData?.pago_estatus?.id === 2,
+                                'p-pagado': editData?.pago_estatus?.id === 3,
+                                'p-reembolsado': editData?.pago_estatus?.id === 4
+                              }"></span>
+                              <div style="display: grid; grid-template-columns: 1fr;">
+                                <span style="font-size: large; font-weight: 4200;">Pago</span>
+                                <span style="font-size: large; font-weight: 700;">{{editData?.pago_estatus?.nombre || '--'}}</span>
+                            </div>
+                        </div>
                     </mat-card-content>
                 </mat-card>
             </div>
         </div>
-
-        <ng-container matColumnDef="estatusFactura">
-            <th mat-header-cell *matHeaderCellDef class="center-column">Estatus Factura</th>
-            <td mat-cell *matCellDef="let element">
-                <span *ngIf="element.factura_estatus.estatus === 'Por-facturar'" class="estatus-icon f-por-facturar"></span>
-                <span *ngIf="element.factura_estatus.estatus === 'Cancelada'" class="estatus-icon f-cancelada"></span>
-                <span *ngIf="element.factura_estatus.estatus === 'Pre-Cancelada'" class="estatus-icon f-pre-cancelada"></span>
-                <span *ngIf="element.factura_estatus.estatus === 'Facturada'" class="estatus-icon f-facturada"></span>
-                <span>{{element.factura_estatus.estatus}}</span>
-            </td>
-        </ng-container>
-
-        <ng-container matColumnDef="factura_folio">
-            <th mat-header-cell *matHeaderCellDef class="center-column">Folio factura</th>
-            <td mat-cell *matCellDef="let element" class="center-column">{{ element.factura_folio }}</td>
-        </ng-container>
-        
-        <ng-container matColumnDef="estatus">
-            <th mat-header-cell *matHeaderCellDef class="center-column">Estatus venta</th>
-            <td mat-cell *matCellDef="let element">
-                <span *ngIf="capitalizeWords(element.estatus.estatus) === 'Parcialmente'" class="estatus-icon v-parcialmente"></span>
-                <span *ngIf="capitalizeWords(element.estatus.estatus) === 'Cancelada'" class="estatus-icon v-cancelada"></span>
-                <span *ngIf="capitalizeWords(element.estatus.estatus) === 'Despachada'" class="estatus-icon v-despachada"></span>
-                <span>{{capitalizeWords(element.estatus.estatus)}}</span>
-            </td>
-        </ng-container>
 
         <div class="toolbar-breadcrumb">
             <span class="link-breadcrumb" (click)="navigate('ventas')">Facturación</span>
             <span> / </span>
             <span class="breadcrumb-item" style="margin-right: auto;">{{title}}</span>
 
-            <button style="margin-left: unset;" *ngIf="isReadOnly && (isFacturada()  || isCancelada())" type="button" mat-button class="btn" (click)="descargarFacturaPDF()" ><mat-icon>file_download</mat-icon>Factura PDF</button>
-            <button style="margin-left: unset;" *ngIf="isReadOnly && (isFacturada()  || isCancelada())" type="button" mat-button class="btn" (click)="descargarFacturaXML()" ><mat-icon>file_download</mat-icon>Factura XML</button>
+            <button style="margin-left: unset;" *ngIf="isReadOnly && (isTimbrada() || isCancelada())" type="button" mat-button class="btn" (click)="descargarFacturaPDF()" ><mat-icon>file_download</mat-icon>Factura PDF</button>
+            <button style="margin-left: unset;" *ngIf="isReadOnly && (isTimbrada() || isCancelada())" type="button" mat-button class="btn" (click)="descargarFacturaXML()" ><mat-icon>file_download</mat-icon>Factura XML</button>
         </div>
     </div>
+
     <div class="container">
 
         <div class="separator"></div>
@@ -254,22 +285,51 @@
                                 </div>
                                 Notas de crédito
                             </mat-tab>
+
                             <mat-tab label="Pagos y Abonos">
                                 <div class="title-tab">
                                     <span>Pagos y Abonos</span>
                                     <div></div>
                                 </div>
-                                <div style="display: grid; grid-template-columns: 1fr 200px; align-items: center;">
-                                    <mat-label class="text-1" *ngIf="hasRecordsPagos == false">
-                                        No hay pagos asociados a esta venta
-                                    </mat-label>
-                                    <mat-label class="text-1" *ngIf="hasRecordsPagos">
-                                        Pagos asociados a la venta
-                                    </mat-label>
-                                    <button type="button" mat-flat-button class="btn" (click)="openPagoVentaModalComponent()" ><mat-icon>add</mat-icon>Agregar pago</button>
-                                </div>
 
-                                <table *ngIf="hasRecordsPagos" class="table" mat-table [dataSource]="dataSourcePagos" style="margin-top: 24px;">
+                                <div *ngIf="!isCancelada() && !isPagada()">
+                                    <div style="display: grid; grid-template-columns: 1fr 200px; align-items: center;">
+                                        <mat-label class="text-1" *ngIf="hasRecordsPagos == false">
+                                            No hay pagos asociados a esta venta
+                                        </mat-label>
+                                        <mat-label class="text-1" *ngIf="hasRecordsPagos">
+                                            Pagos asociados a la venta
+                                        </mat-label>
+                                        <button type="button" mat-flat-button class="btn" (click)="openPagoVentaModalComponent()" ><mat-icon>add</mat-icon>Agregar pago</button>
+                                    </div>
+                                </div>
+                                <div *ngIf="isCancelada() && !isPagada()">
+                                    <div style="display: flex; align-items: center; justify-content: center; padding: 0px 40px; text-align: center;">
+                                        <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 24px; max-width: 500px;">
+                                            <mat-icon style="color: #856404; font-size: 48px; height: 48px; width: 48px; margin-bottom: 16px;">block</mat-icon>
+                                            <div style="color: #856404; font-size: 1.2em; font-weight: 500; margin-bottom: 8px;">
+                                                No es posible agregar pagos a esta venta
+                                            </div>
+                                            <div style="color: #6c757d; font-size: 1em;">
+                                                Esta venta ya se encuentra cancelada, por lo que no se pueden registrar nuevos pagos o abonos.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="isPagada()">
+                                    <div style="display: flex; align-items: center; justify-content: center; padding: 0px 40px; text-align: center;">
+                                        <div style="background-color: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; padding: 24px; max-width: 500px;">
+                                            <mat-icon style="color: #155724; font-size: 48px; height: 48px; width: 48px; margin-bottom: 16px;">check_circle</mat-icon>
+                                            <div style="color: #155724; font-size: 1.2em; font-weight: 500; margin-bottom: 8px;">
+                                                Venta pagada
+                                            </div>
+                                            <div style="color: #6c757d; font-size: 1em;">
+                                                Esta venta ya se encuentra pagada, por lo que no se pueden registrar nuevos pagos o abonos.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table *ngIf="hasRecordsPagos" class="table" mat-table [dataSource]="dataSourcePagos" style="margin-top: 12px;">
                                     <ng-container matColumnDef="folio">
                                         <th mat-header-cell *matHeaderCellDef style="text-align: center;">Folio</th>
                                         <td mat-cell *matCellDef="let pago" style="text-align: center;">
@@ -322,7 +382,7 @@
                                                 <span>Eliminar</span>
                                             </button>
                                         </td>
-                                    </ng-container>
+                                     </ng-container>
 
                                     <tr mat-header-row *matHeaderRowDef="displayedColumnsPagos"></tr>
                                     <tr mat-row *matRowDef="let row; columns: displayedColumnsPagos;"></tr>
@@ -347,8 +407,7 @@
                                     <button mat-button class="btn" (click)="fileInput.click()">
                                         <mat-icon>file_upload</mat-icon> Subir documento
                                     </button>
-                                </div>
-                                
+                                </div>                
 
                                 <table *ngIf="hasRecordsDocumentos" class="table" mat-table [dataSource]="dataSourceDocumentos" style="margin-top: 24px;">
                                     <ng-container matColumnDef="nombre">
@@ -402,11 +461,11 @@
                                     <div></div>
                                 </div>
 
-                                <div *ngIf="!isFacturada() && !isCancelada()">
+                                <div *ngIf="!isTimbrada() && !isCancelada()">
                                     <span> Esta venta no ha sido facturada, por lo que no se puede cancelar.</span>
                                 </div>
 
-                                <div *ngIf="isFacturada()">
+                                <div *ngIf="isTimbrada()">
                                     <form [formGroup]="formCancelacion" (ngSubmit)="onSubmitCancelacion()" class="form-row two-col" style="grid-template-columns: 200px 1fr 250px 200px; align-items: center;">
                                         <div class="form-field">
                                             <mat-label class="text-1">Fecha Cancelación*</mat-label>
@@ -556,8 +615,8 @@
                                             <mat-list-item *ngFor="let facturaEstatus of facturaEstatusList" style="height: fit-content; margin-top: 12px;">
                                                 <div style="display: grid; grid-template-columns: 40px 1fr; align-items: center; grid-gap: 30px;">
                                                     
-                                                    <span *ngIf="facturaEstatus.estatus == 'Facturada'" class="estatus-icon estatus-icon-history f-facturada"></span>
-                                                    <span *ngIf="facturaEstatus.estatus == 'Por-facturar'" class="estatus-icon estatus-icon-history f-por-facturar"></span>
+                                                    <span *ngIf="facturaEstatus.estatus == 'Facturada'" class="estatus-icon estatus-icon-history f-timbrada"></span>
+                                                    <span *ngIf="facturaEstatus.estatus == 'Por-facturar'" class="estatus-icon estatus-icon-history f-fallida"></span>
                                                     <span *ngIf="facturaEstatus.estatus == 'Pre-Cancelada'" class="estatus-icon estatus-icon-history f-pre-cancelada"></span>
                                                     <span *ngIf="facturaEstatus.estatus == 'Cancelada'" class="estatus-icon estatus-icon-history f-cancelada"></span>
                                                     
@@ -609,7 +668,7 @@
                                             <mat-list-item *ngFor="let ventaEstatus of ventaEstatusList" style="height: fit-content; margin-top: 12px;">
                                                 <div style="display: grid; grid-template-columns: 40px 1fr; align-items: center; grid-gap: 30px;">
                                                     <span *ngIf="ventaEstatus.estatus == 'Cancelada'" class="estatus-icon estatus-icon-history v-cancelada"></span>
-                                                    <span *ngIf="ventaEstatus.estatus == 'Parcialmente'" class="estatus-icon estatus-icon-history v-parcialmente"></span>
+                                                    <span *ngIf="ventaEstatus.estatus == 'Parcialmente'" class="estatus-icon estatus-icon-history v-backorder"></span>
                                                     <span *ngIf="ventaEstatus.estatus == 'Despachada'" class="estatus-icon estatus-icon-history v-despachada"></span>
                                                     
                                                     <mat-card appearance="outlined" style="border: 1px solid #959595; border-radius: 10px; background-color: #f2f2f2; width: fit-content; height: 50;;">
@@ -656,8 +715,7 @@
                                 </div>
                                 
                             </mat-tab>
-
-                            
+                 
                         </mat-tab-group>
                     </div>
                 </mat-expansion-panel>

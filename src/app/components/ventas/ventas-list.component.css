@@ -186,13 +186,13 @@
     border-radius: 9px;
     display: inline-block;
     vertical-align: middle;
-    height: 9px;
-    width: 9px;
+    height: 12px;
+    width: 12px;
 }
 
 
 /*estilos de estatus factura*/
-.ventas-list .estatus-icon.f-por-facturar{
+.ventas-list .estatus-icon.f-fallida{
     background-color: gray;
 }
 .ventas-list .estatus-icon.f-cancelada{
@@ -201,17 +201,34 @@
 .ventas-list .estatus-icon.f-pre-cancelada{
     background-color: #FF8B38;
 }
-.ventas-list .estatus-icon.f-facturada{
+.ventas-list .estatus-icon.f-timbrada{
     background-color: #5BD26E;
 }
 
 /*estilos de estatus venta*/
-.ventas-list .estatus-icon.v-parcialmente{
+.ventas-list .estatus-icon.v-backorder{
     background-color: #BA9400;
 }
 .ventas-list .estatus-icon.v-cancelada{
     background-color: #FF0000;
 }
 .ventas-list .estatus-icon.v-despachada{
+    background-color: #FF8B38;
+}
+.ventas-list .estatus-icon.v-completada{
     background-color: #5BD26E;
+}
+
+/*estilos de estatus pago*/
+.ventas-list .estatus-icon.p-pendiente{
+    background-color: #FF0000;
+}
+.ventas-list .estatus-icon.p-parcial{
+    background-color: #FF8B38;
+}
+.ventas-list .estatus-icon.p-pagado{
+    background-color: #5BD26E;
+}
+.ventas-list .estatus-icon.p-reembolsado{
+    background-color: #BA9400;
 }

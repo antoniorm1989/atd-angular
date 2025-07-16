@@ -919,14 +919,6 @@ export class VentaComponent implements OnInit {
     }
   }
 
-  capitalizeWords(str: string): string {
-    return str
-      .trim()
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(' ');
-  }
-
   descargarDocumento(documento: VentaDocumentoModel) {
     if (documento.id) {
       this.ventaService.descargarDocumento(documento.id).subscribe({
@@ -1011,14 +1003,20 @@ export class VentaComponent implements OnInit {
     });
   }
 
-  isFacturada(): boolean {
-    if (this.editData && this.editData.factura_estatus && (this.editData.factura_estatus.estatus === 'Facturada'))
+  isTimbrada(): boolean {
+    if (this.editData && this.editData.factura_estatus && (this.editData.factura_estatus.estatus === 'TIMBRADA'))
       return true;
     return false;
   }
 
   isCancelada(): boolean {
-    if (this.editData && this.editData.factura_estatus && (this.editData.factura_estatus.estatus === 'Cancelada' || this.editData.factura_estatus.estatus === 'Pre-Cancelada'))
+    if (this.editData && this.editData.factura_estatus && (this.editData.factura_estatus.estatus === 'CANCELADA' || this.editData.factura_estatus.estatus === 'Pre-Cancelada'))
+      return true;
+    return false;
+  }
+
+  isPagada(): boolean {
+    if (this.editData && this.editData.pago_estatus && (this.editData.pago_estatus.nombre === 'PAGADO'))
       return true;
     return false;
   }
@@ -1069,7 +1067,6 @@ export class VentaComponent implements OnInit {
         this.dataSourcePagos._updateChangeSubscription();
         this.hasRecordsPagos = this.dataSourcePagos.data.length > 0;
 
-        debugger;
         this.calcularSaldo();
       },
       error: (e) => {
@@ -1081,12 +1078,13 @@ export class VentaComponent implements OnInit {
   openPagoVentaModalComponent() {
     const dialogRef = this.dialog.open(PagoVentaModalComponent, {
       height: '600px',
-      width: '1250px',
+      width: '1050px',
       data: {
         //ventaPagoModel: this.dataSourcePagos.data,
         ventaId: this.id,
         importeTotal: this.total,
-        saldo: this.saldo
+        saldo: this.saldo,
+        moneda: this.f['moneda'].value
       },
     });
 
@@ -1160,7 +1158,7 @@ export class ArticuloVentaModalComponent {
   selector: 'dialog-component-agregar-pago-venta',
   template: `<span mat-dialog-title>Agregar pago - abono</span>
             <mat-dialog-content class="mat-typography">
-              <app-venta-pago [ventaPagoModel]="ventaPagoModel" [importeTotal]="importeTotal" [saldo]="saldo" [ventaId]="ventaId" (cancel)="onCancelar()" (add)="onAgregarPago($event)" #appVentaPagoComponent></app-venta-pago>
+              <app-venta-pago [ventaPagoModel]="ventaPagoModel" [importeTotal]="importeTotal" [moneda]="moneda" [saldo]="saldo" [ventaId]="ventaId" (cancel)="onCancelar()" (add)="onAgregarPago($event)" #appVentaPagoComponent></app-venta-pago>
             </mat-dialog-content>`,
   styles: [
   ]
@@ -1173,6 +1171,7 @@ export class PagoVentaModalComponent {
   saldo: number = 0;
   clienteId = 0;
   isDespachar = false;
+  moneda: string = 'MXN';
 
   constructor(
     public dialogRef: MatDialogRef<PagoVentaModalComponent>,
@@ -1192,6 +1191,9 @@ export class PagoVentaModalComponent {
       }
       if (data.saldo != undefined) {
         this.saldo = data.saldo;
+      }
+      if (data.moneda != undefined) {
+        this.moneda = data.moneda;
       }
     }
 

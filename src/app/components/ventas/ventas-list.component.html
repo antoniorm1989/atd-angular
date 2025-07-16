@@ -27,10 +27,10 @@
                                     <span>{{ facturaEstatusLabels[this.f['factura_estatus'].value] || '' }}</span>
                                     <mat-icon style="position: absolute; right: 16px;" matSuffix *ngIf="this.f['factura_estatus'].value" (click)="clearSelectionFacturaEstatus()">clear</mat-icon>
                                 </mat-select-trigger>
-                                <mat-option value="1">Por-facturar</mat-option>
-                                <mat-option value="4">Facturada</mat-option>
-                                <mat-option value="3">Pre-Cancelada</mat-option>
-                                <mat-option value="2">Cancelada</mat-option>
+                                <mat-option value="1">{{ facturaEstatusLabels[1] }}</mat-option>
+                                <mat-option value="2">{{ facturaEstatusLabels[2] }}</mat-option>
+                                <mat-option value="3">{{ facturaEstatusLabels[3] }}</mat-option>
+                                <mat-option value="4">{{ facturaEstatusLabels[4] }}</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>
@@ -42,9 +42,10 @@
                                     <span>{{ ventaEstatusLabels[this.f['venta_estatus'].value] || '' }}</span>
                                     <mat-icon style="position: absolute; right: 16px;" matSuffix *ngIf="this.f['venta_estatus'].value" (click)="clearSelectionVentaEstatus()">clear</mat-icon>
                                 </mat-select-trigger>
-                                <mat-option value="1">Parcialmente</mat-option>
-                                <mat-option value="3">Despachada</mat-option>
-                                <mat-option value="2">Cancelada</mat-option>
+                                <mat-option value="1">{{ ventaEstatusLabels[1] }}</mat-option>
+                                <mat-option value="2">{{ ventaEstatusLabels[2] }}</mat-option>
+                                <mat-option value="3">{{ ventaEstatusLabels[3] }}</mat-option>
+                                <mat-option value="4">{{ ventaEstatusLabels[4] }}</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>
@@ -78,16 +79,12 @@
                             <mat-datepicker #picker2></mat-datepicker>
                         </mat-form-field>
                     </div>
-                    <div class="form-field" style="display: contents;">
-                        <mat-slide-toggle formControlName="backOrder" (change)="onToggleChange($event)" style="margin: auto;">Back Order</mat-slide-toggle>
-                    </div>
                 </form>
 
                 <button mat-flat-button class="btn btn-agregar" (click)="onNew()" type="button"><mat-icon>add</mat-icon>Nueva Factura</button>
             </div>
 
             <table class="table" mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortChange($event)">
-
                 <ng-container matColumnDef="id">
                     <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Id</th>
                     <td mat-cell *matCellDef="let element" class="center-column">
@@ -97,14 +94,34 @@
                     </td>
                 </ng-container>
 
+                <ng-container matColumnDef="estatus">
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Estatus venta</th>
+                    <td mat-cell *matCellDef="let element">
+                        <div style="display: grid; grid-template-columns: 9px 1fr; grid-gap: 12px;">
+                            <span class="estatus-icon"
+                              [ngClass]="{
+                                'v-backorder': element.estatus.id === 1,
+                                'v-cancelada': element.estatus.id === 2,
+                                'v-despachada': element.estatus.id === 3,
+                                'v-completada': element.estatus.id === 4
+                              }">
+                            </span>
+                            <span>{{element.estatus.estatus}}</span>
+                        </div>
+                    </td>
+                </ng-container>
+
                 <ng-container matColumnDef="estatusFactura">
                     <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Estatus Factura</th>
                     <td mat-cell *matCellDef="let element">
                         <div style="display: grid; grid-template-columns: 9px 1fr; grid-gap: 12px;">
-                            <span *ngIf="(element.factura_estatus.estatus === 'Por-facturar' || element.factura_estatus.estatus === '')" class="estatus-icon f-por-facturar"></span>
-                            <span *ngIf="element.factura_estatus.estatus === 'Cancelada'" class="estatus-icon f-cancelada"></span>
-                            <span *ngIf="element.factura_estatus.estatus === 'Pre-Cancelada'" class="estatus-icon f-pre-cancelada"></span>
-                            <span *ngIf="element.factura_estatus.estatus === 'Facturada'" class="estatus-icon f-facturada"></span>
+                            <span class="estatus-icon"
+                              [ngClass]="{
+                                'f-fallida': element.factura_estatus.id === 1,
+                                'f-cancelada': element.factura_estatus.id === 2,
+                                'f-pre-cancelada': element.factura_estatus.id === 3,
+                                'f-timbrada': element.factura_estatus.id === 4
+                              }"></span>
                             <span>{{element.factura_estatus.estatus}}</span>
                         </div>
                     </td>
@@ -114,22 +131,21 @@
                     <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Folio factura</th>
                     <td mat-cell *matCellDef="let element" class="center-column">{{ element.factura_folio }}</td>
                 </ng-container>
-                
-                <ng-container matColumnDef="estatus">
-                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Estatus venta</th>
+
+                <ng-container matColumnDef="estatus_pago">
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Estatus Pago</th>
                     <td mat-cell *matCellDef="let element">
                         <div style="display: grid; grid-template-columns: 9px 1fr; grid-gap: 12px;">
-                            <span *ngIf="capitalizeWords(element.estatus.estatus) === 'Parcialmente'" class="estatus-icon v-parcialmente"></span>
-                            <span *ngIf="capitalizeWords(element.estatus.estatus) === 'Cancelada'" class="estatus-icon v-cancelada"></span>
-                            <span *ngIf="capitalizeWords(element.estatus.estatus) === 'Despachada'" class="estatus-icon v-despachada"></span>
-                            <span>{{capitalizeWords(element.estatus.estatus)}}</span>
+                            <span class="estatus-icon"
+                              [ngClass]="{
+                                'p-pendiente': element.pago_estatus.id === 1,
+                                'p-parcial': element.pago_estatus.id === 2,
+                                'p-pagado': element.pago_estatus.id === 3,
+                                'p-reembolsado': element.pago_estatus.id === 4
+                              }"></span>
+                            <span>{{element.pago_estatus.estatus}}</span>
                         </div>
                     </td>
-                </ng-container>
-
-                <ng-container matColumnDef="backorder">
-                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Back Order</th>
-                    <td mat-cell *matCellDef="let element" class="center-column">{{element.backorder == 0 ? 'No' : element.backorder}}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="creacion">

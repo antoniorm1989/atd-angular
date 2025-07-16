@@ -43,6 +43,9 @@ export class VentaModel {
   factura_fecha_timbrado: Date | undefined;
   factura_folio: string | undefined;
 
+  // Pago
+  pago_estatus: PagoEstatusModel | undefined;
+
   userId: number | undefined;
 
   constructor(id?: number) {
@@ -89,6 +92,14 @@ export class FacturaStatus{
   fecha_estatus: Date | undefined;
   created_at: Date | undefined;
   user: User | undefined;
+  custom_data?: any;
+}
+
+export class PagoEstatusModel {
+  id: number | undefined;
+  nombre: string | undefined;
+  created_at: Date | undefined;
+  updated_at: Date | undefined;
   custom_data?: any;
 }
 

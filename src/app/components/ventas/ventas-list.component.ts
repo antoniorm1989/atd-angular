@@ -24,7 +24,7 @@ import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
 export class VentasListComponent implements OnInit {
 
   hasRecords = false;
-  displayedColumns: string[] = ['id', 'estatusFactura', 'factura_folio', 'estatus', 'backorder', 'creacion', 'cliente', 'importe', 'responsable', 'actions'];
+  displayedColumns: string[] = ['id', 'estatus', 'estatusFactura', 'factura_folio', 'estatus_pago', 'creacion', 'cliente', 'importe', 'responsable', 'actions'];
   dataSource = new MatTableDataSource<VentaModel>([]);
   private dataLoaded = false;
 
@@ -44,16 +44,24 @@ export class VentasListComponent implements OnInit {
   filteredClientes!: Observable<CatalogoClienteModel[]>;
 
   facturaEstatusLabels: { [key: number]: string } = {
-    1: 'Por-facturar',
-    4: 'Facturada',
-    3: 'Pre-Cancelada',
+    1: 'Fallida',
     2: 'Cancelada',
+    3: 'Pre-Cancelada',
+    4: 'Timbrada',
   };
 
   ventaEstatusLabels: { [key: number]: string } = {
-    1: 'Parcialmente',
-    3: 'Despachada',
-    2: 'Cancelada',
+    1: 'BackOrder',
+    3: 'Cancelada',
+    2: 'Despachada',
+    4: 'Pendiente',
+  };
+
+  ventaPagoEstatusLabels: { [key: number]: string } = {
+    1: 'Pendiente',
+    2: 'Parcial',
+    3: 'Pagado',
+    4: 'Reembolsado'
   };
 
   constructor(
@@ -243,14 +251,6 @@ export class VentasListComponent implements OnInit {
       filterValue = filterValue.toLowerCase();
     }
     return this.clientes.filter(option => option.nombre_fiscal!.toLowerCase().includes(filterValue));
-  }
-
-  capitalizeWords(str: string): string {
-    return str
-      .trim()
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(' ');
   }
 
   getUrlPhoto(photo: string): string {

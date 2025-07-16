@@ -181,14 +181,6 @@ export class OrdenesCompraListComponent {
     return this.proveedores.filter(option => (option.nombreContacto!.toLowerCase()).concat(option.apellidoContacto!.toLowerCase()).includes(filterValue));
   }
 
-  capitalizeWords(str: string): string {
-    return str
-      .trim()
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(' ');
-  }
-
   getUrlPhoto(photo: string): string {
     return `${environment.apiUrl}/images/users/${photo}`;
   }

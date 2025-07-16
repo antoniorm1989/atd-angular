@@ -51,6 +51,7 @@ export class VentaPagoComponent implements OnInit {
   @Input() ventaPagoModel: VentaPagoModel | undefined;
   @Input() ventaId: number = 0;
   @Input() importeTotal: number = 0;
+  @Input() moneda: string = 'MXN';
 
   private _saldo: number = 0;
   @Input()
@@ -72,8 +73,7 @@ export class VentaPagoComponent implements OnInit {
     private catalogosService: CatalogosService,
     private ventaService: VentaService,
     private catalogoArticuloService: CatalogoArticuloService,
-    private catalogoCuentaBancariaService: CatalogoCuentaBancariaService,
-    private router: Router,) {
+    private catalogoCuentaBancariaService: CatalogoCuentaBancariaService) {
 
     let tipoCambioDefault = this.getTipoCambioDefault();
 
@@ -85,7 +85,7 @@ export class VentaPagoComponent implements OnInit {
       ]],
       referencia: [null, Validators.required],
       cuenta_bancaria: [null, Validators.required],
-      moneda: ['MXN'],
+      moneda: [this.moneda, Validators.required],
       tipo_cambio: tipoCambioDefault,
       condicion_pago: ['contado'],
       forma_pago: [],
@@ -98,13 +98,14 @@ export class VentaPagoComponent implements OnInit {
       if (this.ventaPagoModel != null) {
         this.isEditing = true;
         this.action = 'Editar';
-        // this.f['producto_servicio_model'].disable();
       }
 
       this.catalogoArticuloService.getMonedas().subscribe({
         next: (data) => {
           this.monedas = data;
-          this.f['moneda'].setValue(data[0]);
+          let selectedMoneda = data.find(x => x.moneda == this.moneda);
+          if (selectedMoneda != undefined)
+            this.form.patchValue({ moneda: selectedMoneda });
         }
       });
 
@@ -144,12 +145,43 @@ export class VentaPagoComponent implements OnInit {
 
       this.loadFormaPagoSelect();
 
+      // Listen for changes in the moneda field and re-validate deposito
+      this.form.get('moneda')?.valueChanges.subscribe(() => {
+        this.form.get('deposito')?.updateValueAndValidity();
+      });
+
+      // Listen for changes in the tipo_cambio field and re-validate deposito
+      this.form.get('tipo_cambio')?.valueChanges.subscribe(() => {
+        this.form.get('deposito')?.updateValueAndValidity();
+      });
+
     } catch (error) {
       console.error('An error occurred in ngOnInit:', error);
     }
   }
 
   get f() { return this.form!.controls; }
+
+  calcularRestante(): number {
+    const deposito = this.f['deposito'].value ? parseFloat(this.f['deposito'].value) : 0;
+
+    if (this.moneda === 'USD' && this.f['moneda'].value.moneda === 'USD')
+      return this.saldo - deposito;
+
+    if (this.moneda === 'MXN' && this.f['moneda'].value.moneda === 'MXN')
+      return this.saldo - deposito;
+
+    if (this.moneda === 'USD' && this.f['moneda'].value.moneda === 'MXN') {
+      const tipoCambio = this.f['tipo_cambio'].value ? parseFloat(this.f['tipo_cambio'].value) : 1;
+      return this.saldo - (deposito / tipoCambio);
+    }
+
+    if (this.moneda === 'MXN' && this.f['moneda'].value.moneda === 'USD') {
+      const tipoCambio = this.f['tipo_cambio'].value ? parseFloat(this.f['tipo_cambio'].value) : 1;
+      return this.saldo - (deposito * tipoCambio);
+    }
+    return this.saldo - deposito; // Default case, should not happen
+  }
 
   formatearComoMoneda(valor: number | undefined): string {
     if (valor === undefined || valor === null)
@@ -247,8 +279,7 @@ export class VentaPagoComponent implements OnInit {
 
   // Custom validator to prevent deposit amount from exceeding saldo
   maxDepositoValidator(control: AbstractControl): ValidationErrors | null {
-    const depositoValue = parseFloat(control.value);
-    if (!isNaN(depositoValue) && depositoValue > 0 && this.saldo && depositoValue > this.saldo) {
+    if(this.form && this.calcularRestante() < 0) {
       return { maxDeposito: true };
     }
     return null;
@@ -321,7 +352,8 @@ export class VentaPagoComponent implements OnInit {
       return false;
     }
 
-    if (depositoValue > this.saldo) {
+    if (this.calcularRestante() < 0) {
+      debugger;
       this.f['deposito'].setErrors({ maxDeposito: true });
       this.f['deposito'].markAsTouched();
       return false;
@@ -395,7 +427,7 @@ export class VentaPagoComponent implements OnInit {
     this.submitted = false;
     // Reset to default values
     this.form.patchValue({
-      moneda: 'MXN',
+      moneda: this.moneda,
       tipo_cambio: this.getTipoCambioDefault(),
       condicion_pago: 'contado'
     });

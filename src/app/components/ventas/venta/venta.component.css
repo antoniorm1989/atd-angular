@@ -333,8 +333,8 @@ mat-panel-description {
     border-radius: 9px;
     display: inline-block;
     vertical-align: middle;
-    height: 9px;
-    width: 9px;
+    height: 16px;
+    width: 16px;
     margin: auto 4px auto 4px;
 }
 
@@ -344,8 +344,9 @@ mat-panel-description {
     width: 23px;
     margin: auto;
 }
+
 /*estilos de estatus factura*/
-.venta .estatus-icon.f-por-facturar{
+.venta .estatus-icon.f-fallida{
     background-color: gray;
 }
 .venta .estatus-icon.f-cancelada{
@@ -354,19 +355,36 @@ mat-panel-description {
 .venta .estatus-icon.f-pre-cancelada{
     background-color: #FF8B38;
 }
-.venta .estatus-icon.f-facturada{
+.venta .estatus-icon.f-timbrada{
     background-color: #5BD26E;
 }
 
 /*estilos de estatus venta*/
-.venta .estatus-icon.v-parcialmente{
+.venta .estatus-icon.v-backorder{
     background-color: #BA9400;
 }
 .venta .estatus-icon.v-cancelada{
     background-color: #FF0000;
 }
 .venta .estatus-icon.v-despachada{
+    background-color: #FF8B38;
+}
+.venta .estatus-icon.v-completada{
     background-color: #5BD26E;
+}
+
+/*estilos de estatus pago*/
+.venta .estatus-icon.p-pendiente{
+    background-color: #FF0000;
+}
+.venta .estatus-icon.p-parcial{
+    background-color: #FF8B38;
+}
+.venta .estatus-icon.p-pagado{
+    background-color: #5BD26E;
+}
+.venta .estatus-icon.p-reembolsado{
+    background-color: #BA9400;
 }
 
 
@@ -445,6 +463,69 @@ mat-panel-description {
     margin-right: 12px; 
     background-color: transparent; 
     height: 50px;
+}
+
+/* Colores de fondo para status-card basados en el estatus de la venta */
+.venta .status-card.v-backorder{
+    background-color: rgba(186, 148, 0, 0.1);
+    border-color: #BA9400;
+}
+
+.venta .status-card.v-cancelada{
+    background-color: rgba(255, 0, 0, 0.1);
+    border-color: #FF0000;
+}
+
+.venta .status-card.v-despachada{
+    background-color: rgba(255, 139, 56, 0.1);
+    border-color: #FF8B38;
+}
+
+.venta .status-card.v-completada{
+    background-color: rgba(91, 210, 110, 0.1);
+    border-color: #5BD26E;
+}
+
+/* Colores de fondo para status-card basados en el estatus de factura */
+.venta .status-card.f-fallida{
+    background-color: rgba(128, 128, 128, 0.1);
+    border-color: gray;
+}
+
+.venta .status-card.f-cancelada{
+    background-color: rgba(255, 0, 0, 0.1);
+    border-color: #FF0000;
+}
+
+.venta .status-card.f-pre-cancelada{
+    background-color: rgba(255, 139, 56, 0.1);
+    border-color: #FF8B38;
+}
+
+.venta .status-card.f-timbrada{
+    background-color: rgba(91, 210, 110, 0.1);
+    border-color: #5BD26E;
+}
+
+/* Colores de fondo para status-card basados en el estatus de pago */
+.venta .status-card.p-pendiente{
+    background-color: rgba(255, 0, 0, 0.1);
+    border-color: #FF0000;
+}
+
+.venta .status-card.p-parcial{
+    background-color: rgba(255, 139, 56, 0.1);
+    border-color: #FF8B38;
+}
+
+.venta .status-card.p-pagado{
+    background-color: rgba(91, 210, 110, 0.1);
+    border-color: #5BD26E;
+}
+
+.venta .status-card.p-reembolsado{
+    background-color: rgba(186, 148, 0, 0.1);
+    border-color: #BA9400;
 }
 
 .venta .status-card .mat-mdc-card-content{

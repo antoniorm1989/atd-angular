@@ -15,7 +15,7 @@
 
             <div style="height: 24px;"></div>
 
-            <div class="form-row" style="display: grid; grid-template-columns: .6fr 1.2fr .9fr; column-gap: 24px;">
+            <div class="form-row" style="display: grid; grid-template-columns: .6fr .8fr 1fr; column-gap: 24px;">
                 <div class="form-field" style="display: grid;">
                     <mat-label class="text-1">Importe a depositar*</mat-label>
                     <mat-form-field floatLabel="always">
@@ -54,7 +54,7 @@
                 </div>
             </div>
 
-            <div class="form-row" style="display: grid; grid-template-columns: .6fr 1.2fr .9fr; column-gap: 24px;">
+            <div class="form-row" style="display: grid; grid-template-columns: .6fr .8fr 1fr; column-gap: 24px;">
                 <div class="form-field" style="display: grid;">
                     <mat-label class="text-1">Referencia</mat-label>
                     <mat-form-field>
@@ -62,25 +62,13 @@
                             [ngClass]="{ 'is-invalid': submitted && f['referencia'].errors }" required>
                     </mat-form-field>
                 </div>
-                <div style="display: grid; grid-template-columns: 150px 1fr; column-gap: 24px;">
-                    <div class="form-field"  style="display: grid;">
-                        <mat-label class="text-1">Condición de pago*</mat-label>
-                        <mat-form-field>
-                            <mat-select formControlName="condicion_pago" [(value)]="selectedCondicionPago"
-                                (selectionChange)="onCondicionPagoChange($event)">
-                                <mat-option value="credito">Crédito</mat-option>
-                                <mat-option value="contado">Contado</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-                    <div class="form-field"  style="display: grid;">
-                        <mat-label class="text-1">Forma de pago físcal*</mat-label>
-                        <mat-form-field>
-                            <mat-select [(value)]="selectedFormaPago" formControlName="forma_pago">
-                                <mat-option *ngFor="let forma_pago of formaPagoList" [value]="forma_pago">{{forma_pago.key}}-{{ forma_pago.name }}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
+                <div class="form-field"  style="display: grid;">
+                    <mat-label class="text-1">Forma de pago físcal*</mat-label>
+                    <mat-form-field>
+                        <mat-select [(value)]="selectedFormaPago" formControlName="forma_pago">
+                            <mat-option *ngFor="let forma_pago of formaPagoList" [value]="forma_pago">{{forma_pago.key}}-{{ forma_pago.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
                 </div>
                 <div class="form-field" style="display: grid;">
                     <mat-label class="text-1">Método de pago*</mat-label>
@@ -99,13 +87,13 @@
                 <div></div>
                 <div class="form-row two-col" style="width: 400px; grid-column-gap: 8px; grid-row-gap: 10px; margin-left: auto;">
                     <span class="resumen-label">Saldo</span>
-                    <div class="resumen-value">{{ this.f['moneda'].value.moneda }} {{ formatearComoMoneda(saldo) }}</div>
+                    <div class="resumen-value">{{ this.moneda }} {{ formatearComoMoneda(saldo) }}</div>
 
                     <span class="resumen-label">Deposito</span>
                     <div class="resumen-value">{{ this.f['moneda'].value.moneda }} {{ formatearComoMoneda(f['deposito'].value) }}</div>
 
                     <span class="resumen-label"><b>Restante</b></span>
-                    <div class="resumen-value"><b>{{ this.f['moneda'].value.moneda }} {{ formatearComoMoneda(saldo - f['deposito'].value) }}</b></div>
+                    <div class="resumen-value"><b>{{ this.moneda }} {{ formatearComoMoneda(calcularRestante()) }}</b></div>
                 </div>
             </div>
 
