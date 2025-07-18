@@ -384,7 +384,7 @@ export class VentaPagoComponent implements OnInit {
       this.ventaService.updatePago(ventaPagoModel.venta_id, ventaPagoModel).subscribe({
         next: (data) => {
           console.log('Payment updated successfully', data);
-          this.handleSaveSuccess(true);
+          this.handleSaveSuccess();
         },
         error: (error) => {
           console.error('Error updating payment:', error);
@@ -396,7 +396,7 @@ export class VentaPagoComponent implements OnInit {
       this.ventaService.createPago(ventaPagoModel.venta_id, ventaPagoModel).subscribe({
         next: (data) => {
           console.log('Payment created successfully', data);
-          this.handleSaveSuccess(false);
+          this.handleSaveSuccess();
         },
         error: (error) => {
           console.error('Error creating payment:', error);
@@ -406,14 +406,9 @@ export class VentaPagoComponent implements OnInit {
     }
   }
 
-  private handleSaveSuccess(isUpdate: boolean): void {
+  private handleSaveSuccess(): void {
     this.submitted = false;
-    this.add.emit(isUpdate);
-
-    // Optionally reset form after successful creation
-    if (!isUpdate) {
-      this.resetForm();
-    }
+    this.add.emit();
   }
 
   private handleSaveError(error: any): void {

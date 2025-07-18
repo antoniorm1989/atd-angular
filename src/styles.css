@@ -280,3 +280,7 @@ input[formControlName="password"] {
 .almacen-select-input .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floating-label{
     top: 22px;
 }
+
+.mat-sort-header-container {
+    display: inline-flex;
+}

@@ -1080,7 +1080,6 @@ export class VentaComponent implements OnInit {
       height: '600px',
       width: '1050px',
       data: {
-        //ventaPagoModel: this.dataSourcePagos.data,
         ventaId: this.id,
         importeTotal: this.total,
         saldo: this.saldo,
@@ -1089,7 +1088,7 @@ export class VentaComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(ventaPagoModel => {
-      this.obtenerPagos();
+      window.location.reload();
     });
   }
 
@@ -1158,7 +1157,7 @@ export class ArticuloVentaModalComponent {
   selector: 'dialog-component-agregar-pago-venta',
   template: `<span mat-dialog-title>Agregar pago - abono</span>
             <mat-dialog-content class="mat-typography">
-              <app-venta-pago [ventaPagoModel]="ventaPagoModel" [importeTotal]="importeTotal" [moneda]="moneda" [saldo]="saldo" [ventaId]="ventaId" (cancel)="onCancelar()" (add)="onAgregarPago($event)" #appVentaPagoComponent></app-venta-pago>
+              <app-venta-pago [ventaPagoModel]="ventaPagoModel" [importeTotal]="importeTotal" [moneda]="moneda" [saldo]="saldo" [ventaId]="ventaId" (cancel)="onCancelar()" (add)="onAgregarPago()" #appVentaPagoComponent></app-venta-pago>
             </mat-dialog-content>`,
   styles: [
   ]
@@ -1207,9 +1206,9 @@ export class PagoVentaModalComponent {
     }
   }
 
-  onAgregarPago(isEditing: boolean) {
+  onAgregarPago() {
     try {
-      this.dialogRef.close({ isEditing });
+      this.dialogRef.close();
     } catch (error) {
       console.error('An error occurred in onAgregarPago:', error);
     }
