@@ -2,80 +2,57 @@
     <div class="toolbar">
         <div class="toolbar-title">
             <i class="icon fa-solid fa-cash-register"></i>
-            <span class="title">Facturación</span>
+            <span class="title">Ventas</span>
             <div *ngIf="isReadOnly" style="margin-left: auto; margin-bottom: auto; margin-top: auto; display: flex;">
-                <mat-card class="status-card" 
-                          [ngClass]="{
-                            'v-backorder': editData && editData.estatus && editData.estatus.id === 1,
-                            'v-cancelada': editData && editData.estatus && editData.estatus.id === 2,
-                            'v-despachada': editData && editData.estatus && editData.estatus.id === 3,
-                            'v-completada': editData && editData.estatus && editData.estatus.id === 4
-                          }" 
-                          appearance="outlined" style="width: 200px;">
+                <mat-card class="status-card" appearance="outlined" style="width: 150px;">
                     <mat-card-content>
-                        <div style="display: grid; grid-template-columns: 22px 1fr; column-gap: 12px;">
-                            <span *ngIf="editData?.estatus" 
-                              class="estatus-icon"
-                              [ngClass]="{
-                                'v-backorder': editData?.estatus?.id === 1,
-                                'v-cancelada': editData?.estatus?.id === 2,
-                                'v-despachada': editData?.estatus?.id === 3,
-                                'v-completada': editData?.estatus?.id === 4
-                              }">
-                            </span>
-                            <div style="display: grid; grid-template-columns: 1fr;">
-                                <span style="font-size: large; font-weight: 4200;">Venta</span>
-                                <span style="font-size: large; font-weight: 700;">{{editData?.estatus?.estatus || '--'}}</span>
+                        <div style="display: grid; grid-template-columns: 1fr; column-gap: 12px; row-gap: 4px;">
+                            <span style="font-size: small;">Venta</span>
+                            <div style="display: grid; grid-template-columns: 16px 1fr; column-gap: 8px">
+                                <span class="estatus-icon"
+                                    [ngClass]="{
+                                        'v-creada':  ventaEstatusModel.venta === ventaEstatusEnum.CREADA,
+                                        'v-abierta':  ventaEstatusModel.venta === ventaEstatusEnum.ABIERTA,
+                                        'v-cerrada': ventaEstatusModel.venta === ventaEstatusEnum.CERRADA
+                                    }">
+                                </span>
+                                <span style="font-size: larger; font-weight: 700;">{{ ventaEstatusModel.venta || '--'}}</span>
                             </div>
                         </div>
                     </mat-card-content>
                 </mat-card>
-                <mat-card class="status-card" 
-                          [ngClass]="{
-                            'f-fallida': editData && editData.factura_estatus && editData.factura_estatus.id === 1,
-                            'f-cancelada': editData && editData.factura_estatus && editData.factura_estatus.id === 2,
-                            'f-pre-cancelada': editData && editData.factura_estatus && editData.factura_estatus.id === 3,
-                            'f-timbrada': editData && editData.factura_estatus && editData.factura_estatus.id === 4
-                          }" 
-                          appearance="outlined" style="width: 200px;">
+
+                <mat-card class="status-card" appearance="outlined" style="width: 150px;">
                     <mat-card-content>
-                        <div style="display: grid; grid-template-columns: 22px 1fr; column-gap: 12px;">
-                            <span *ngIf="editData?.factura_estatus" 
-                              class="estatus-icon"
-                              [ngClass]="{
-                                'f-fallida': editData?.factura_estatus?.id === 1,
-                                'f-cancelada': editData?.factura_estatus?.id === 2,
-                                'f-pre-cancelada': editData?.factura_estatus?.id === 3,
-                                'f-timbrada': editData?.factura_estatus?.id === 4
-                              }"></span>
-                            <div style="display: grid; grid-template-columns: 1fr;">
-                                <span style="font-size: large; font-weight: 4200;">Factura</span>
-                                <span style="font-size: large; font-weight: 700;">{{editData?.factura_estatus?.estatus || '--'}}</span>
+                        <div style="display: grid; grid-template-columns: 1fr; column-gap: 12px; row-gap: 4px;">
+                            <span style="font-size: small;">Factura</span>
+                            <div style="display: grid; grid-template-columns: 16px 1fr; column-gap: 8px">
+                                <span class="estatus-icon"
+                                    [ngClass]="{
+                                        'f-pendiente':  ventaEstatusModel.factura === facturaEstatusEnum.PENDIENTE,
+                                        'f-facturada':  ventaEstatusModel.factura === facturaEstatusEnum.FACTURADA,
+                                        'f-cancelada': ventaEstatusModel.factura === facturaEstatusEnum.CANCELADA
+                                    }">
+                                </span>
+                                <span style="font-size: larger; font-weight: 700;">{{ ventaEstatusModel.factura || '--'}}</span>
                             </div>
                         </div>
                     </mat-card-content>
                 </mat-card>
-                <mat-card class="status-card" 
-                          [ngClass]="{
-                            'p-pendiente': editData && editData.pago_estatus && editData.pago_estatus.id === 1,
-                            'p-parcial': editData && editData.pago_estatus && editData.pago_estatus.id === 2,
-                            'p-pagado': editData && editData.pago_estatus && editData.pago_estatus.id === 3,
-                            'p-reembolsado': editData && editData.pago_estatus && editData.pago_estatus.id === 4
-                          }" 
-                          appearance="outlined" style="width: 200px;">
+
+                <mat-card class="status-card" appearance="outlined" style="width: 150px;">
                     <mat-card-content>
-                        <div style="display: grid; grid-template-columns: 22px 1fr; column-gap: 12px;">
-                        <span *ngIf="editData?.pago_estatus" 
-                              class="estatus-icon"
-                              [ngClass]="{
-                                'p-pendiente': editData?.pago_estatus?.id === 1,
-                                'p-parcial': editData?.pago_estatus?.id === 2,
-                                'p-pagado': editData?.pago_estatus?.id === 3,
-                                'p-reembolsado': editData?.pago_estatus?.id === 4
-                              }"></span>
-                              <div style="display: grid; grid-template-columns: 1fr;">
-                                <span style="font-size: large; font-weight: 4200;">Pago</span>
-                                <span style="font-size: large; font-weight: 700;">{{editData?.pago_estatus?.nombre || '--'}}</span>
+                        <div style="display: grid; grid-template-columns: 1fr; column-gap: 12px; row-gap: 4px;">
+                            <span style="font-size: small;">Pago</span>
+                            <div style="display: grid; grid-template-columns: 16px 1fr; column-gap: 8px">
+                                <span class="estatus-icon"
+                                    [ngClass]="{
+                                        'p-sin-adeudo':  ventaEstatusModel.pago === pagoEstatusEnum.SIN_ADEUDO,
+                                        'p-pendiente':  ventaEstatusModel.pago === pagoEstatusEnum.PENDIENTE,
+                                        'p-pagado': ventaEstatusModel.pago === pagoEstatusEnum.PAGADO
+                                    }">
+                                </span>
+                                <span style="font-size: larger; font-weight: 700;">{{ ventaEstatusModel.pago || '--'}}</span>
                             </div>
                         </div>
                     </mat-card-content>
@@ -84,12 +61,13 @@
         </div>
 
         <div class="toolbar-breadcrumb">
-            <span class="link-breadcrumb" (click)="navigate('ventas')">Facturación</span>
+            <span class="link-breadcrumb" (click)="navigate('ventas')">Ventas</span>
             <span> / </span>
             <span class="breadcrumb-item" style="margin-right: auto;">{{title}}</span>
 
-            <button style="margin-left: unset;" *ngIf="isReadOnly && (isTimbrada() || isCancelada())" type="button" mat-button class="btn" (click)="descargarFacturaPDF()" ><mat-icon>file_download</mat-icon>Factura PDF</button>
-            <button style="margin-left: unset;" *ngIf="isReadOnly && (isTimbrada() || isCancelada())" type="button" mat-button class="btn" (click)="descargarFacturaXML()" ><mat-icon>file_download</mat-icon>Factura XML</button>
+            <!-- TODO -->
+            <!-- <button style="margin-left: unset;" *ngIf="isReadOnly && (isTimbrada() || isCancelada())" type="button" mat-button class="btn" (click)="descargarFacturaPDF()" ><mat-icon>file_download</mat-icon>Factura PDF</button> -->
+            <!-- <button style="margin-left: unset;" *ngIf="isReadOnly && (isTimbrada() || isCancelada())" type="button" mat-button class="btn" (click)="descargarFacturaXML()" ><mat-icon>file_download</mat-icon>Factura XML</button> -->
         </div>
     </div>
 
@@ -105,33 +83,36 @@
                             Datos Factura
                         </mat-panel-title>
                         <mat-panel-description>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; width: 600px;">
+                                <div class="saldo">
+                                    <mat-label class="text-1">Importe total</mat-label>
+                                    <mat-label class="text-1-regular">{{ formatearComoMoneda(importeTotalFacturado) }}</mat-label>
+                                </div>
+                                <div class="saldo saldo-red">
+                                    <mat-label class="text-1">Saldo</mat-label>
+                                    <mat-label class="text-1-regular">{{ formatearComoMoneda(importeTotalFacturado - importeTotalPagado) }}</mat-label>
+                                </div>
+                            </div>
                         </mat-panel-description>
                     </mat-expansion-panel-header>
-    
-                    <div class="form-row" style="grid-template-columns: 1fr 2fr 1fr 1fr 1fr;">
-    
+
+                    <div class="form-row" style="grid-template-columns: repeat(4, 1fr); margin: 24px 0px;">
                         <div class="form-field">
-                            <mat-label class="text-1">Id</mat-label>
+                            <mat-label class="text-1">Venta ID</mat-label>
                             <mat-label class="text-1-regular">{{editData && editData.id ? formatNumber(editData.id) : 'n/a'}}</mat-label>
                         </div>
                         <div class="form-field">
                             <mat-label class="text-1">Cliente</mat-label>
                             <mat-label class="text-1-regular">{{editData?.cliente?.id}} - {{editData?.cliente?.nombre_fiscal}}</mat-label>
+                         </div>
+                        <div class="form-field">
+                            <mat-label class="text-1">Vendedor</mat-label>
+                            <mat-label class="text-1-regular">{{editData?.responsable?.id}} - {{editData?.responsable?.name}} {{editData?.responsable?.last_name}}</mat-label>
                         </div>
                         <div class="form-field">
                             <mat-label class="text-1">Fecha registro</mat-label>
                             <mat-label class="text-1-regular">{{ editData?.created_at ? formatDate(editData?.created_at) : "N/A" }}</mat-label>
                         </div>
-                        <div class="form-field">
-                            <mat-label class="text-1">Fecha factura</mat-label>
-                            <mat-label class="text-1-regular"> {{ editData?.factura_fecha_timbrado ? formatDate(editData?.factura_fecha_timbrado) : "Sin fecha de factura" }}</mat-label>
-                        </div>
-                        <div class="numero-parte-container">
-                            <mat-label class="text-1">Folio factura</mat-label>
-                            <mat-label class="text-1-regular">{{ editData?.factura_folio || "Sin folio" }}</mat-label>
-                        </div>
-    
-    
                         <div class="form-field">
                             <mat-label class="text-1">Forma de pago</mat-label>
                             <mat-label class="text-1-regular">{{editData?.forma_pago?.key}} - {{editData?.forma_pago?.name}}</mat-label>
@@ -148,18 +129,12 @@
                             <mat-label class="text-1">Días de crédito</mat-label>
                             <mat-label class="text-1-regular">{{ editData?.tiene_dias_credito ?  editData?.cantidad_dias_credito : "Sin días de crédito" }}</mat-label>
                         </div>
-                        <div class="saldo">
-                            <mat-label class="text-1">Importe total</mat-label>
-                            <mat-label class="text-1-regular">{{ formatearComoMoneda(total) }}</mat-label>
-                        </div>
-    
-                        
                         <div class="form-field">
                             <mat-label class="text-1">Moneda</mat-label>
-                            <mat-label class="text-1-regular">{{ editData?.moneda }}</mat-label>
+                            <mat-label class="text-1-regular">{{ editData?.moneda?.moneda }}</mat-label>
                         </div>
                         <div class="form-field">
-                            <mat-label class="text-1">T.C</mat-label>
+                                <mat-label class="text-1">Tipo de cambio</mat-label>
                             <mat-label class="text-1-regular" style="text-transform: capitalize;">{{ editData?.tipo_cambio }}</mat-label>
                         </div>
                         <div class="form-field">
@@ -170,11 +145,6 @@
                             <mat-label class="text-1">Retiene IVA</mat-label>
                             <mat-label class="text-1-regular">{{ editData?.retiene_iva_porcentaje }}</mat-label>
                         </div>
-                        <div class="saldo saldo-red">
-                            <mat-label class="text-1">Saldo</mat-label>
-                            <mat-label class="text-1-regular">{{ formatearComoMoneda(saldo) }}</mat-label>
-                        </div>
-                        
                     </div>
                 </mat-expansion-panel>
             </mat-accordion>
@@ -186,107 +156,247 @@
                     <div class="form-row one-col rights">
                         <mat-tab-group>
                             <mat-tab label="Artículos">
-                                <div class="title-tab">
-                                    <span>Artículos</span>
-                                    <div></div>
-                                </div>
-                                <table *ngIf="hasRecords" class="table" mat-table [dataSource]="dataSourceArticulos" style="margin-top: 24px;">
-    
-                                    <ng-container matColumnDef="almacen">
-                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Almacen</th>
-                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen.almacen.name}}</td>
-                                    </ng-container>
-    
-                                    <ng-container matColumnDef="numero_parte">
-                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Número de parte</th>
-                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen.articulo.part_number}}</td>
-                                    </ng-container>
+                                
+                                <div class="articulos-sin-facturar" *ngIf="hasRecords">
+                                    <div class="title-tab" style="grid-template-columns: auto 1fr 200px;">
+                                        <span>Artículos Sin Facturar (backorder)</span>
+                                        <div>
+                                        </div>
+                                        <button type="button" mat-flat-button class="btn" (click)="onSubmit()" style="margin-left: 12px;"><mat-icon>add</mat-icon>Facturar</button>
+                                    </div>
+                                    <table class="table" mat-table [dataSource]="dataSourceArticulos" style="margin-top: 24px; margin-bottom: 24px;">
         
-                                    <ng-container matColumnDef="descripcion">
-                                        <th mat-header-cell *matHeaderCellDef>Descripción</th>
-                                        <td mat-cell *matCellDef="let element">
-                                            <div class="description-wrapper">
-                                                <div *ngIf="!element.almacen.articulo.photo" class="empty-image-container">
-                                                    <img src="../../assets/images/empty-image.png" class="empty-image">
+                                        <ng-container matColumnDef="almacen">
+                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">Almacen</th>
+                                            <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen.almacen.name}}</td>
+                                        </ng-container>
+        
+                                        <ng-container matColumnDef="numero_parte">
+                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">Número de parte</th>
+                                            <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen.articulo.part_number}}</td>
+                                        </ng-container>
+            
+                                        <ng-container matColumnDef="descripcion">
+                                            <th mat-header-cell *matHeaderCellDef>Descripción</th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <div class="description-wrapper">
+                                                    <div *ngIf="!element.almacen.articulo.photo" class="empty-image-container">
+                                                        <img src="../../assets/images/empty-image.png" class="empty-image">
+                                                    </div>
+                                                    <img *ngIf="element.almacen.articulo.photo" class="photo" [src]="getPathPhoto(element.almacen.articulo.photo)">
+                                                    <span class="dos-renglones">{{element.almacen.articulo.description}}</span>
                                                 </div>
-                                                <img *ngIf="element.almacen.articulo.photo" class="photo" [src]="getPathPhoto(element.almacen.articulo.photo)">
-                                                <span class="dos-renglones">{{element.almacen.articulo.description}}</span>
-                                            </div>
-                                        </td>
-                                    </ng-container>
-    
-                                    <ng-container matColumnDef="backorder">
-                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Back order</th>
-                                        <td mat-cell *matCellDef="let element" style="text-align: center;">
-                                            <button *ngIf="element.backorder > 0 && isCancelada() == false" [disabled]="id == undefined"
-                                                    mat-stroked-button
-                                                    type="button"
-                                                    title="Despachar artículo"
-                                                    (click)="despacharArticuloVentaModalComponent(element)">
-                                                <mat-icon>local_mall</mat-icon>
-                                                {{element.backorder}}
-                                            </button>
-                                            <div *ngIf="element.backorder > 0 && isCancelada() == true">
-                                                <span class="backorder">{{element.backorder}}</span>
-                                            </div>
-                                        </td>
-                                    </ng-container>
+                                            </td>
+                                        </ng-container>
         
-                                    <ng-container matColumnDef="total">
-                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Cantidad</th>
-                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.cantidad}}</td>
-                                    </ng-container>
-        
-                                    <ng-container matColumnDef="totalConDescuento">
-                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Precio</th>
-                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.moneda_nombre}} ${{element.totalConDescuento}}</td>
-                                    </ng-container>
-        
-                                    <ng-container matColumnDef="unidad_medida">
-                                        <th mat-header-cell *matHeaderCellDef>Unidad Medida</th>
-                                        <td mat-cell *matCellDef="let element">{{element.unidad_medida.name}}</td>
-                                    </ng-container>
-        
-                                    <ng-container matColumnDef="importe_iva">
-                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">IVA</th>
-                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.moneda_nombre}} {{calcularImporteByArticuloIva(element.totalConDescuento, element.cantidad)}}</td>
-                                    </ng-container>
-        
-                                    <ng-container matColumnDef="importe_retencion">
-                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Retención</th>
-                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.moneda_nombre}} {{calcularImporteByArticuloRetencion(element.totalConDescuento, element.cantidad)}}</td>
-                                    </ng-container>
+                                        <!-- <ng-container matColumnDef="backorder">
+                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">Back order</th>
+                                            <td mat-cell *matCellDef="let element" style="text-align: center;">
+                                                <button *ngIf="element.backorder > 0 && isCancelada() == false" [disabled]="id == undefined"
+                                                        mat-stroked-button
+                                                        type="button"
+                                                        title="Despachar artículo"
+                                                        (click)="despacharArticuloVentaModalComponent(element)">
+                                                    <mat-icon>local_mall</mat-icon>
+                                                    {{element.backorder}}
+                                                </button>
+                                                <div *ngIf="element.backorder > 0 && isCancelada() == true">
+                                                    <span class="backorder">{{element.backorder}}</span>
+                                                </div>
+                                            </td>
+                                        </ng-container> -->
+            
+                                        <ng-container matColumnDef="total">
+                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">Cantidad</th>
+                                            <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.cantidad}}</td>
+                                        </ng-container>
 
-                                    <ng-container matColumnDef="importe_total">
-                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Total</th>
-                                        <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.moneda_nombre}} {{calcularImporteTotalByArticulo(element.totalConDescuento, element.cantidad)}}</td>
-                                    </ng-container>
-        
-                                    <ng-container matColumnDef="actions">
-                                        <th mat-header-cell *matHeaderCellDef style="width: 110px; text-align: center;"></th>
-                                        <td mat-cell *matCellDef="let element" style="text-align: center;">
-                                            <button *ngIf="!isReadOnly" type="button" mat-icon-button aria-label="editar articulo" (click)="editArticuloVentaModalComponent(element)">
-                                                <mat-icon>edit</mat-icon>
-                                            </button>
-                                            <button *ngIf="!isReadOnly" type="button" mat-icon-button aria-label="elimianr articulo" (click)="removeArticulo(element)">
-                                                <mat-icon>delete</mat-icon>
-                                            </button>
-                                        </td>
-                                    </ng-container>
-        
-                                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                                </table>
-                            </mat-tab>
-                            <mat-tab label="Notas de crédito">
-                                <div class="title-tab">
-                                    <span>Notas de crédito</span>
-                                    <div></div>
+                                        <ng-container matColumnDef="stock">
+                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">Stock</th>
+                                            <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.stock}}</td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="totalConDescuento">
+                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">Precio</th>
+                                            <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.moneda_nombre}} ${{element.totalConDescuento}}</td>
+                                        </ng-container>
+            
+                                        <ng-container matColumnDef="unidad_medida">
+                                            <th mat-header-cell *matHeaderCellDef>Unidad Medida</th>
+                                            <td mat-cell *matCellDef="let element">{{element.unidad_medida_model.name}}</td>
+                                        </ng-container>
+            
+                                        <ng-container matColumnDef="importe_iva">
+                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">IVA</th>
+                                            <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.moneda_nombre}} {{calcularImporteByArticuloIva(element.totalConDescuento, element.cantidad)}}</td>
+                                        </ng-container>
+            
+                                        <ng-container matColumnDef="importe_retencion">
+                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">Retención</th>
+                                            <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.moneda_nombre}} {{calcularImporteByArticuloRetencion(element.totalConDescuento, element.cantidad)}}</td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="importe_total">
+                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">Total</th>
+                                            <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.moneda_nombre}} {{calcularImporteTotalByArticulo(element.totalConDescuento, element.cantidad)}}</td>
+                                        </ng-container>
+            
+                                        <ng-container matColumnDef="actions">
+                                            <th mat-header-cell *matHeaderCellDef style="width: 110px; text-align: center;"></th>
+                                            <td mat-cell *matCellDef="let element" style="text-align: center;">
+                                                <button *ngIf="!isReadOnly" type="button" mat-icon-button aria-label="editar articulo" (click)="editArticuloVentaModalComponent(element)">
+                                                    <mat-icon>edit</mat-icon>
+                                                </button>
+                                                <button *ngIf="!isReadOnly" type="button" mat-icon-button aria-label="elimianr articulo" (click)="removeArticulo(element)">
+                                                    <mat-icon>delete</mat-icon>
+                                                </button>
+                                                <!-- <button *ngIf="isReadOnly" type="button" mat-icon-button aria-label="Facturar" (click)="removeArticulo(element)">
+                                                    <mat-icon>delete</mat-icon>
+                                                </button> -->
+                                            </td>
+                                        </ng-container>
+            
+                                        <tr mat-header-row *matHeaderRowDef="displayedColumnsArticulosSinFacturar"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: displayedColumnsArticulosSinFacturar;"></tr>
+                                    </table>
                                 </div>
-                                Notas de crédito
+
+                                <div class="articulos-facturados" *ngIf="hasRecordsFacturaArticulos">
+                                    <div class="title-tab">
+                                        <span>Facturas</span>
+                                        <div></div>
+                                    </div>
+                                    <table class="table" mat-table [dataSource]="dataSourceFacturaArticulos" multiTemplateDataRows style="margin-top: 24px;">
+                                       
+                                        <ng-container matColumnDef="expand">
+                                            <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <button
+                                                mat-icon-button
+                                                aria-label="expand row"
+                                                (click)="toggle(element); $event.stopPropagation()"
+                                                [attr.aria-expanded]="isExpanded(element)"
+                                                [attr.aria-label]="'expand row ' + element.folio">
+                                                <mat-icon>{{isExpanded(element) ? 'expand_more' : 'chevron_right'}}</mat-icon>
+                                                </button>
+                                            </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="cfdi">
+                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">CFDI</th>
+                                            <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.cfdi_uid}}</td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="folio">
+                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">Folio</th>
+                                            <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.folio}}</td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="fecha">
+                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">Fecha</th>
+                                            <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.fecha_timbrado}}</td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="total">
+                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">Total</th>
+                                            <td mat-cell *matCellDef="let element" style="text-align: center;">
+                                                {{formatearComoMoneda(element.total)}}
+                                            </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="pagado">
+                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">Pagado</th>
+                                            <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.total_pagado}}</td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="estatus">
+                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">Estatus</th>
+                                            <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.estatus}}</td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="actions">
+                                            <th mat-header-cell *matHeaderCellDef style="width: 110px; text-align: center;"></th>
+                                            <td mat-cell *matCellDef="let element" style="text-align: center;">
+                                               <button mat-icon-button [matMenuTriggerFor]="menu">
+                                                    <mat-icon>more_vert</mat-icon>
+                                                </button>
+                                                <mat-menu #menu="matMenu">
+                                                    <button mat-menu-item (click)="descargarFacturaPDF(element.cfdi_uid)">
+                                                        <mat-icon>file_download</mat-icon>
+                                                        <span>Descargar PDF</span>
+                                                    </button>
+                                                    <button mat-menu-item (click)="descargarFacturaXML(element.cfdi_uid)">
+                                                        <mat-icon>file_download</mat-icon>
+                                                        <span>Descargar XML</span>
+                                                    </button>
+                                                </mat-menu>
+                                            </td>
+                                        </ng-container>
+
+                                        <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+                                        <ng-container matColumnDef="expandedDetail">
+                                            <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumnsFacturaArticulosWithExpand.length">
+                                                <div class="example-element-detail-wrapper" [@detailExpand]="isExpanded(element) ? 'expanded' : 'collapsed'">
+                                                    <div class="example-element-detail">
+                                                        <div style="display: grid; grid-template-columns: 50px 1fr;">
+                                                            <div></div>
+                                                            <div>
+                                                                <h3 style="margin-top: 12px; margin-bottom: 16px;">Artículos</h3>
+                                                                <table class="table sub-table" mat-table [dataSource]="element.articulos">
+                                                                <ng-container matColumnDef="part_number">
+                                                                    <th mat-header-cell *matHeaderCellDef>Número de parte</th>
+                                                                    <td mat-cell *matCellDef="let art">{{ art.part_number }}</td>
+                                                                </ng-container>
+                                                                <ng-container matColumnDef="description">
+                                                                    <th mat-header-cell *matHeaderCellDef>Descripción</th>
+                                                                    <td mat-cell *matCellDef="let art">
+                                                                        <div class="description-wrapper">
+                                                                            <div *ngIf="!art.photo" class="empty-image-container">
+                                                                                <img src="../../assets/images/empty-image.png" class="empty-image">
+                                                                            </div>
+                                                                            <img *ngIf="art.photo" class="photo" [src]="getPathPhoto(art.photo)">
+                                                                            <span class="dos-renglones">{{art.description}}</span>
+                                                                        </div>
+                                                                    </td>
+                                                                </ng-container>
+                                                                <ng-container matColumnDef="unidad_medida">
+                                                                    <th mat-header-cell *matHeaderCellDef>Unidad Medida</th>
+                                                                    <td mat-cell *matCellDef="let art">{{ art.unidad_medida_name }}</td>
+                                                                </ng-container>
+                                                                <ng-container matColumnDef="cantidad">
+                                                                    <th mat-header-cell *matHeaderCellDef>Cantidad</th>
+                                                                    <td mat-cell *matCellDef="let art">{{ art.cantidad_articulos }}</td>
+                                                                </ng-container>
+                                                                <ng-container matColumnDef="precio">
+                                                                    <th mat-header-cell *matHeaderCellDef>Precio</th>
+                                                                    <td mat-cell *matCellDef="let art">{{ formatearComoMoneda(art.total / art.cantidad_articulos) }}</td>
+                                                                </ng-container>
+                                                                <ng-container matColumnDef="total">
+                                                                    <th mat-header-cell *matHeaderCellDef>Total</th>
+                                                                    <td mat-cell *matCellDef="let art">{{ formatearComoMoneda(art.total) }}</td>
+                                                                </ng-container>
+
+                                                                <tr mat-header-row *matHeaderRowDef="['part_number', 'description', 'unidad_medida', 'cantidad', 'precio', 'total']"></tr>
+                                                                <tr mat-row *matRowDef="let row; columns: ['part_number', 'description', 'unidad_medida', 'cantidad', 'precio', 'total'];"></tr>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            </ng-container>
+
+                                        <tr mat-header-row *matHeaderRowDef="displayedColumnsFacturaArticulosWithExpand"></tr>
+                                        <tr mat-row *matRowDef="let element; columns: displayedColumnsFacturaArticulosWithExpand;"
+                                            class="example-element-row"
+                                            [class.example-expanded-row]="isExpanded(element)">
+                                        </tr>
+                                        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+                                    </table>
+                                </div>
                             </mat-tab>
 
-                            <mat-tab label="Pagos y Abonos">
+                            <!-- <mat-tab label="Pagos y Abonos">
                                 <div class="title-tab">
                                     <span>Pagos y Abonos</span>
                                     <div></div>
@@ -387,7 +497,7 @@
                                     <tr mat-header-row *matHeaderRowDef="displayedColumnsPagos"></tr>
                                     <tr mat-row *matRowDef="let row; columns: displayedColumnsPagos;"></tr>
                                 </table>
-                            </mat-tab>
+                            </mat-tab> -->
 
                             <mat-tab label="Documentos">
                                 <div class="title-tab">
@@ -455,7 +565,7 @@
                                 </button>
                             </mat-tab>
 
-                            <mat-tab label="Cancelar">
+                            <!-- <mat-tab label="Cancelar">
                                 <div class="title-tab">
                                     <span>Cancelar</span>
                                     <div></div>
@@ -598,10 +708,8 @@
                                         </mat-card-content>
                                     </mat-card>
                                     <span> Esta venta ya ha sido cancelada. Los articulos relacionados a esta venta han sido regresados al inventario.</span>
-                                    <!--- Agregar seccion visual del estatus de la cancelacion -->
                                 </div>
-
-                            </mat-tab>
+                            </mat-tab> -->
 
                             <mat-tab label="Historial">
                                 <div class="title-tab">
@@ -615,14 +723,14 @@
                                             <mat-list-item *ngFor="let facturaEstatus of facturaEstatusList" style="height: fit-content; margin-top: 12px;">
                                                 <div style="display: grid; grid-template-columns: 40px 1fr; align-items: center; grid-gap: 30px;">
                                                     
-                                                    <span *ngIf="facturaEstatus.estatus == 'Facturada'" class="estatus-icon estatus-icon-history f-timbrada"></span>
+                                                    <!-- <span *ngIf="facturaEstatus.estatus == 'Facturada'" class="estatus-icon estatus-icon-history f-timbrada"></span>
                                                     <span *ngIf="facturaEstatus.estatus == 'Por-facturar'" class="estatus-icon estatus-icon-history f-fallida"></span>
                                                     <span *ngIf="facturaEstatus.estatus == 'Pre-Cancelada'" class="estatus-icon estatus-icon-history f-pre-cancelada"></span>
-                                                    <span *ngIf="facturaEstatus.estatus == 'Cancelada'" class="estatus-icon estatus-icon-history f-cancelada"></span>
+                                                    <span *ngIf="facturaEstatus.estatus == 'Cancelada'" class="estatus-icon estatus-icon-history f-cancelada"></span> -->
                                                     
                                                     <mat-card appearance="outlined" style="border: 1px solid #959595; border-radius: 10px; background-color: #f2f2f2; width: fit-content; height: 50;">
                                                         <mat-card-content>
-                                                            <span style="font-size: large;">{{facturaEstatus.estatus}}</span>
+                                                            <!-- <span style="font-size: large;">{{facturaEstatus.estatus}}</span> -->
                                                         </mat-card-content>
                                                     </mat-card>
                                                 </div>
@@ -662,7 +770,7 @@
                                         </mat-list>
                                     </div>
                                     
-                                    <div style="display: grid; grid-template-columns: 1fr;">
+                                    <!-- <div style="display: grid; grid-template-columns: 1fr;">
                                         <span class="text-1" style="font-size: large; text-align: center;">Ventas</span>
                                         <mat-list class="list-history-cancelation">
                                             <mat-list-item *ngFor="let ventaEstatus of ventaEstatusList" style="height: fit-content; margin-top: 12px;">
@@ -711,7 +819,7 @@
                                                 </div>
                                             </mat-list-item>
                                         </mat-list>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 
                             </mat-tab>
@@ -721,6 +829,7 @@
                 </mat-expansion-panel>
             </mat-accordion>
         </div>
+
         <div *ngIf="!isReadOnly">
             <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
@@ -877,12 +986,15 @@
                             </div>
                             <div class="form-field">
                                 <mat-label class="text-1" *ngIf="isReadOnly">Moneda</mat-label>
-                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['moneda'].value  ==  'MXN' ? 'Pesos' : 'Dolares'}}</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">
+                                    {{ this.f['moneda'].value.nombre }}
+                                </mat-label>
                                 <mat-label class="text-1" *ngIf="!isReadOnly">Moneda*</mat-label>
                                 <mat-form-field *ngIf="!isReadOnly">
                                     <mat-select formControlName="moneda">
-                                      <mat-option value="MXN">Pesos</mat-option>
-                                      <mat-option value="USD">Dolares</mat-option>
+                                        <mat-option *ngFor="let moneda of monedas" [value]="moneda">
+                                            {{ moneda.moneda === 'MXN' ? 'Pesos' : 'Dólares' }}
+                                        </mat-option>
                                     </mat-select>
                                 </mat-form-field>
                                 <div *ngIf="submitted && f['moneda'].errors" class="invalid-feedback">
@@ -998,7 +1110,7 @@
                             <table *ngIf="hasRecords" class="table" mat-table [dataSource]="dataSourceArticulos" style="margin-top: 24px;">
     
                                 <ng-container matColumnDef="almacen">
-                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Almacen</th>
+                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Almacennnn</th>
                                     <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen.almacen.name}}</td>
                                 </ng-container>
 
@@ -1020,7 +1132,7 @@
                                     </td>
                                 </ng-container>
 
-                                <ng-container matColumnDef="backorder">
+                                <!-- <ng-container matColumnDef="backorder">
                                     <th mat-header-cell *matHeaderCellDef style="text-align: center;">Back order</th>
                                     <td mat-cell *matCellDef="let element" style="text-align: center;">
                                         <button *ngIf="element.backorder > 0" [disabled]="id == undefined"
@@ -1032,21 +1144,26 @@
                                             {{element.backorder}}
                                         </button>
                                     </td>
-                                </ng-container>
-    
-                                <ng-container matColumnDef="totalConDescuento">
-                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Precio</th>
-                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.moneda_nombre}} ${{element.totalConDescuento}}</td>
+                                </ng-container> -->
+
+                                <ng-container matColumnDef="unidad_medida">
+                                    <th mat-header-cell *matHeaderCellDef>Unidad Medida</th>
+                                    <td mat-cell *matCellDef="let element">{{element.unidad_medida_model.name}}</td>
                                 </ng-container>
 
                                 <ng-container matColumnDef="total">
                                     <th mat-header-cell *matHeaderCellDef style="text-align: center;">Cantidad</th>
                                     <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.cantidad}}</td>
                                 </ng-container>
+                                
+                                <ng-container matColumnDef="stock">
+                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Stock</th>
+                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.almacen?.articulo?.stock || 0}}</td>
+                                </ng-container>
     
-                                <ng-container matColumnDef="unidad_medida">
-                                    <th mat-header-cell *matHeaderCellDef>Unidad Medida</th>
-                                    <td mat-cell *matCellDef="let element">{{element.unidad_medida.name}}</td>
+                                <ng-container matColumnDef="totalConDescuento">
+                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Precio</th>
+                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.moneda_nombre}} ${{element.totalConDescuento}}</td>
                                 </ng-container>
     
                                 <ng-container matColumnDef="importe_iva">
@@ -1096,16 +1213,16 @@
 
                     <div class="form-row two-col" style="width: 300px; grid-column-gap: 8px; grid-row-gap: 10px; margin-left: auto;">
                         <span class="resumen-label">Subtotal</span>
-                        <div class="resumen-value">{{ this.f['moneda'].value }} {{ formatearComoMoneda(subTotal) }}</div>
+                        <div class="resumen-value">{{ this.f['moneda'].value?.moneda }} {{ formatearComoMoneda(subTotal) }}</div>
     
                         <span class="resumen-label">IVA</span>
-                        <div class="resumen-value">{{ this.f['moneda'].value }} {{ formatearComoMoneda(iva) }}</div>
-    
+                        <div class="resumen-value">{{ this.f['moneda'].value?.moneda }} {{ formatearComoMoneda(iva) }}</div>
+
                         <span class="resumen-label">Retención</span>
-                        <div class="resumen-value">{{ this.f['moneda'].value }} {{ formatearComoMoneda(retencion) }}</div>
-    
+                        <div class="resumen-value">{{ this.f['moneda'].value?.moneda }} {{ formatearComoMoneda(retencion) }}</div>
+
                         <span class="resumen-label"><b>Total</b></span>
-                        <div class="resumen-value"><b>{{ this.f['moneda'].value }} {{ formatearComoMoneda(total) }}</b></div>
+                        <div class="resumen-value"><b>{{ this.f['moneda'].value?.moneda }} {{ formatearComoMoneda(total) }}</b></div>
                     </div>
                 </div>
     

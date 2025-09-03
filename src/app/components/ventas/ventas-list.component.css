@@ -191,44 +191,35 @@
 }
 
 
-/*estilos de estatus factura*/
-.ventas-list .estatus-icon.f-fallida{
-    background-color: gray;
+/*estilos de estatus venta*/
+.ventas-list .estatus-icon.v-creada{
+    background-color: #3f51b5;
 }
-.ventas-list .estatus-icon.f-cancelada{
-    background-color: #FF0000;
+.ventas-list .estatus-icon.v-abierta{
+    background-color: #3B82F6;
 }
-.ventas-list .estatus-icon.f-pre-cancelada{
-    background-color: #FF8B38;
-}
-.ventas-list .estatus-icon.f-timbrada{
+.ventas-list .estatus-icon.v-cerrada{
     background-color: #5BD26E;
 }
 
-/*estilos de estatus venta*/
-.ventas-list .estatus-icon.v-backorder{
-    background-color: #BA9400;
+/*estilos de estatus factura*/
+.ventas-list .estatus-icon.f-pendiente{
+    background-color: #3f51b5;
 }
-.ventas-list .estatus-icon.v-cancelada{
-    background-color: #FF0000;
-}
-.ventas-list .estatus-icon.v-despachada{
-    background-color: #FF8B38;
-}
-.ventas-list .estatus-icon.v-completada{
+.ventas-list .estatus-icon.f-facturada{
     background-color: #5BD26E;
+}
+.ventas-list .estatus-icon.f-cancelada{
+    background-color: #FF8B38;
 }
 
 /*estilos de estatus pago*/
-.ventas-list .estatus-icon.p-pendiente{
-    background-color: #FF0000;
-}
-.ventas-list .estatus-icon.p-parcial{
+.ventas-list .estatus-icon.p-sin-adeudo{
     background-color: #FF8B38;
+}
+.ventas-list .estatus-icon.p-pendiente{
+    background-color: #3f51b5;
 }
 .ventas-list .estatus-icon.p-pagado{
     background-color: #5BD26E;
-}
-.ventas-list .estatus-icon.p-reembolsado{
-    background-color: #BA9400;
 }

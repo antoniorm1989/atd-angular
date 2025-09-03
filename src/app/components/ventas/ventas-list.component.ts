@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { Router, NavigationEnd, Event } from '@angular/router';
+import { Router } from '@angular/router';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { environment } from 'src/environments/environment';
@@ -13,6 +13,7 @@ import { DialogSuccessComponent } from '../genericos/dialogSuccess.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
+import { facturaEstatusEnum, pagoEstatusEnum, ventaEstatusEnum } from 'src/app/global/tools';
 
 
 @Component({
@@ -24,7 +25,7 @@ import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
 export class VentasListComponent implements OnInit {
 
   hasRecords = false;
-  displayedColumns: string[] = ['id', 'estatus', 'estatusFactura', 'factura_folio', 'estatus_pago', 'creacion', 'cliente', 'importe', 'responsable', 'actions'];
+  displayedColumns: string[] = ['id', 'estatus', 'estatusFactura', 'estatus_pago', 'creacion', 'cliente', 'importe', 'responsable', 'actions'];
   dataSource = new MatTableDataSource<VentaModel>([]);
   private dataLoaded = false;
 
@@ -43,12 +44,16 @@ export class VentasListComponent implements OnInit {
   selectedCliente: CatalogoClienteModel | undefined;
   filteredClientes!: Observable<CatalogoClienteModel[]>;
 
-  facturaEstatusLabels: { [key: number]: string } = {
-    1: 'Fallida',
-    2: 'Cancelada',
-    3: 'Pre-Cancelada',
-    4: 'Timbrada',
-  };
+  ventaEstatusEnum = ventaEstatusEnum;
+    facturaEstatusEnum = facturaEstatusEnum;
+    pagoEstatusEnum = pagoEstatusEnum;  
+
+  // facturaEstatusLabels: { [key: number]: string } = {
+  //   1: 'Fallida',
+  //   2: 'Cancelada',
+  //   3: 'Pre-Cancelada',
+  //   4: 'Timbrada',
+  // };
 
   ventaEstatusLabels: { [key: number]: string } = {
     1: 'BackOrder',
@@ -57,12 +62,12 @@ export class VentasListComponent implements OnInit {
     4: 'Pendiente',
   };
 
-  ventaPagoEstatusLabels: { [key: number]: string } = {
-    1: 'Pendiente',
-    2: 'Parcial',
-    3: 'Pagado',
-    4: 'Reembolsado'
-  };
+  // ventaPagoEstatusLabels: { [key: number]: string } = {
+  //   1: 'Pendiente',
+  //   2: 'Parcial',
+  //   3: 'Pagado',
+  //   4: 'Reembolsado'
+  // };
 
   constructor(
     private formBuilder: FormBuilder,
@@ -74,7 +79,6 @@ export class VentasListComponent implements OnInit {
 
     this.form = this.formBuilder.group({
       cliente: null,
-      factura_estatus: null,
       venta_estatus: null,
       fechaDesde: null,
       fechaHasta: null,
@@ -100,11 +104,10 @@ export class VentasListComponent implements OnInit {
     let fechaDesde = this.f['fechaDesde'].value;
     let fechaHasta = this.f['fechaHasta'].value;
     let backOrder = this.f['backOrder'].value;
-    let facturaEstatus = this.f['factura_estatus'].value;
     let ventaEstatus = this.f['venta_estatus'].value;
-    let hasFilters = clienteId != undefined || fechaDesde != undefined || fechaHasta != undefined || backOrder != false || facturaEstatus != undefined || ventaEstatus != undefined;
+    let hasFilters = clienteId != undefined || fechaDesde != undefined || fechaHasta != undefined || backOrder != false || ventaEstatus != undefined;
 
-    this.ventaService.getAll(clienteId, facturaEstatus, ventaEstatus, fechaDesde, fechaHasta, backOrder, page, limit, sort, order).subscribe({
+    this.ventaService.getAll(clienteId, ventaEstatus, fechaDesde, fechaHasta, backOrder, page, limit, sort, order).subscribe({
       next: (res) => {
         if (res.data.length > 0) {
           this.hasRecords = res.data.length > 0;
@@ -203,15 +206,6 @@ export class VentasListComponent implements OnInit {
     }
   }
 
-  clearSelectionFacturaEstatus() {
-    try {
-      this.f['factura_estatus'].reset();
-      this.loadVentas(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
-    } catch (error) {
-      console.error('An error occurred in clearAutocompleteInput:', error);
-    }
-  }
-
   clearSelectionVentaEstatus() {
     try {
       this.f['venta_estatus'].reset();
@@ -255,54 +249,6 @@ export class VentasListComponent implements OnInit {
 
   getUrlPhoto(photo: string): string {
     return `${environment.apiUrl}/images/users/${photo}`;
-  }
-
-  descargarFacturaPDF(factura_cfdi_uid: string, ventaId: number) {
-    if (factura_cfdi_uid == undefined || factura_cfdi_uid == "") {
-      this.openSnackBarError('No se ha generado la factura aún.');
-    } else {
-      this.ventaService.descargarFactura(factura_cfdi_uid, 'pdf').subscribe({
-        next: (data) => {
-          const blob = new Blob([data], { type: 'application/pdf' });
-          const url = window.URL.createObjectURL(blob);
-
-          // Descarga el archivo en lugar de abrirlo
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = `cfdi_${ventaId}.pdf`;
-          link.click();
-
-          window.URL.revokeObjectURL(url);
-        },
-        error: (e) => {
-          console.log(e);
-        }
-      });
-    }
-  }
-
-  descargarFacturaXML(factura_cfdi_uid: string, ventaId: number) {
-    if (factura_cfdi_uid == undefined || factura_cfdi_uid == "") {
-      this.openSnackBarError('No se ha generado la factura aún.');
-    } else {
-      this.ventaService.descargarFactura(factura_cfdi_uid, 'xml').subscribe({
-        next: (data) => {
-          const blob = new Blob([data], { type: 'application/xml' });
-          const url = window.URL.createObjectURL(blob);
-
-          // Descarga el archivo en lugar de abrirlo
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = `cfdi_${ventaId}.xml`;
-          link.click();
-
-          window.URL.revokeObjectURL(url);
-        },
-        error: (e) => {
-          console.log(e);
-        }
-      });
-    }
   }
 
   openDialogSuccess(comment: string): void {

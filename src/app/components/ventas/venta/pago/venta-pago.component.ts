@@ -312,7 +312,7 @@ export class VentaPagoComponent implements OnInit {
       ventaPagoModel.tipoCambio = parseFloat(this.f['tipo_cambio'].value);
       ventaPagoModel.formaPago = this.f['forma_pago'].value;
       ventaPagoModel.metodoPago = this.f['metodo_pago'].value;
-      ventaPagoModel.venta_id = this.ventaId;
+      // ventaPagoModel.venta_id = this.ventaId;
       ventaPagoModel.usuario = user;
 
 
@@ -353,17 +353,17 @@ export class VentaPagoComponent implements OnInit {
     }
 
     if (this.calcularRestante() < 0) {
-      debugger;
       this.f['deposito'].setErrors({ maxDeposito: true });
       this.f['deposito'].markAsTouched();
       return false;
     }
 
     // Validate that we have a valid venta_id for creating/updating payments
-    if (this.isEditing && (!this.ventaPagoModel || !this.ventaPagoModel.venta_id)) {
-      console.error('Cannot edit payment: missing venta_id');
-      return false;
-    }
+    // TODO
+    // if (this.isEditing && (!this.ventaPagoModel || !this.ventaPagoModel.venta_id)) {
+    //   console.error('Cannot edit payment: missing venta_id');
+    //   return false;
+    // }
 
     if (this.ventaId == 0 || !this.ventaId) {
       console.error('Cannot create payment: missing venta_id');
@@ -374,35 +374,36 @@ export class VentaPagoComponent implements OnInit {
   }
 
   private saveVentaPago(ventaPagoModel: VentaPagoModel): void {
-    if (!ventaPagoModel.venta_id) {
-      console.error('Cannot save payment: missing venta_id');
-      return;
-    }
+    // if (!ventaPagoModel.venta_id) {
+    //   console.error('Cannot save payment: missing venta_id');
+    //   return;
+    // }
 
     if (this.isEditing && ventaPagoModel.id) {
+      // TODO
       // Update existing payment
-      this.ventaService.updatePago(ventaPagoModel.venta_id, ventaPagoModel).subscribe({
-        next: (data) => {
-          console.log('Payment updated successfully', data);
-          this.handleSaveSuccess();
-        },
-        error: (error) => {
-          console.error('Error updating payment:', error);
-          this.handleSaveError(error);
-        }
-      });
+      // this.ventaService.updatePago(ventaPagoModel.venta_id, ventaPagoModel).subscribe({
+      //   next: (data) => {
+      //     console.log('Payment updated successfully', data);
+      //     this.handleSaveSuccess();
+      //   },
+      //   error: (error) => {
+      //     console.error('Error updating payment:', error);
+      //     this.handleSaveError(error);
+      //   }
+      // });
     } else {
       // Create new payment
-      this.ventaService.createPago(ventaPagoModel.venta_id, ventaPagoModel).subscribe({
-        next: (data) => {
-          console.log('Payment created successfully', data);
-          this.handleSaveSuccess();
-        },
-        error: (error) => {
-          console.error('Error creating payment:', error);
-          this.handleSaveError(error);
-        }
-      });
+      // this.ventaService.createPago(ventaPagoModel.venta_id, ventaPagoModel).subscribe({
+      //   next: (data) => {
+      //     console.log('Payment created successfully', data);
+      //     this.handleSaveSuccess();
+      //   },
+      //   error: (error) => {
+      //     console.error('Error creating payment:', error);
+      //     this.handleSaveError(error);
+      //   }
+      // });
     }
   }
 

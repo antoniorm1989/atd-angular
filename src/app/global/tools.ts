@@ -4,10 +4,20 @@ export enum environmentEnum {
     production
 }
 
-export enum tipoVentaEstatusEnum {
-    ParcialmenteDespachada,
-    Despachada,
-    Cancelada,
-    Facturada,
-    CanceladaSAT
+export enum ventaEstatusEnum {
+    CREADA = 'CREADA',
+    ABIERTA = 'ABIERTA',
+    CERRADA = 'CERRADA',
+}
+
+export enum facturaEstatusEnum {
+    PENDIENTE = 'PENDIENTE',
+    FACTURADA = 'FACTURADA',
+    CANCELADA = 'CANCELADA',
+}
+
+export enum pagoEstatusEnum {
+    SIN_ADEUDO = 'SIN ADEUDO',
+    PENDIENTE = 'PENDIENTE',
+    PAGADO = 'PAGADO',
 }

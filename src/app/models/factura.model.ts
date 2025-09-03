@@ -1,6 +1,6 @@
 import { VentaArticuloModel } from "./ventas.model";
 
-export class FacturaModel {
+export class FacturaPreviewModel {
   tipoComprobante: string | undefined;
   folioFiscal: string | undefined;
   fecha_expedicion: string | undefined;

@@ -87,4 +87,3 @@ export class CatalogoCuentaBancariaModel{
   activo: boolean | undefined;
   user: User | undefined;
 }
-

@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { float } from '@zxing/library/esm/customTypings';
-import { FacturaModel, ReceptorModel } from 'src/app/models/factura.model';
+import { FacturaPreviewModel, ReceptorModel } from 'src/app/models/factura.model';
 import { VentaModel, VentaArticuloModel } from 'src/app/models/ventas.model';
 import { VentaService } from 'src/app/services/ventas.service';
 import { environment } from 'src/environments/environment';
@@ -18,7 +17,7 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
   @Output() cancel = new EventEmitter();
   @Output() timbrar = new EventEmitter();
   @Input() venta: VentaModel | undefined;
-  factura: FacturaModel | undefined;
+  factura: FacturaPreviewModel | undefined;
 
   displayedColumns: string[] = ['unidad', 'producto_servicio', 'cantidad', 'descripcion', 'p_unitario', 'importe'];
   dataSourceArticulos = new MatTableDataSource<VentaArticuloModel>([]);
@@ -39,19 +38,27 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     try {
-      this.factura = new FacturaModel();
+      this.factura = new FacturaPreviewModel();
       this.factura.receptor = new ReceptorModel();
       this.factura.receptor.nombre = this.venta?.cliente?.nombre_fiscal;
       this.factura.receptor.rfc = this.venta?.cliente?.rfc;
       this.factura.receptor.domicilio_fiscal = `${this.venta?.cliente?.calle} Col. ${this.venta?.cliente?.colonia}, C.P. ${this.venta?.cliente?.cp}, ${this.venta?.cliente?.city?.name}, ${this.venta?.cliente?.state?.name}, ${this.venta?.cliente?.country?.name}`;
       this.factura.receptor.regimen_fiscal = this.venta?.cliente?.regimen_fiscal?.name;
 
+      const articulosOriginales = this.venta?.articulos || [];
+      this.dataSourceArticulos.data = articulosOriginales.map(x => {
+        let stock = (x.almacen?.articulo?.stock || 0);
+        let cantidad = (x.cantidad || 0);
+        return {
+          ...x,
+          cantidad: stock >= cantidad ? cantidad : stock
+        }; 
+      }).filter(x => (x.cantidad || 0) > 0);
 
-      this.dataSourceArticulos.data = this.venta?.articulos || [];
-
+      // Assign other factura properties
       this.factura.formaPago = this.venta?.forma_pago?.name;
       this.factura.metodoPago = this.venta?.metodo_pago?.name;
-      this.factura.moneda = this.venta?.moneda
+      this.factura.moneda = this.venta?.moneda?.moneda;
       this.factura.uso_cfdi = this.venta?.uso_cfdi?.name;
       this.factura.tipo_cambio = this.venta?.tipo_cambio;
 
@@ -71,39 +78,27 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
       this.calcularRetencion();
       this.calcularTotal();
 
+      // this.ventaService.getVentaById(this.ventaId).subscribe({
+      //   next: (data) => {
+      //     this.factura = new FacturaPreviewModel();
+      //     this.factura.receptor = new ReceptorModel();
+      //     this.factura.receptor.nombre = data.cliente?.nombre_fiscal;
+      //     this.factura.receptor.rfc = data.cliente?.rfc;
+      //     this.factura.receptor.domicilio_fiscal = data.cliente?.full_direction;
+      //     this.factura.receptor.regimen_fiscal = data.cliente?.regimen_fiscal?.name;
+      //     this.dataSourceArticulos.data = data.articulos || [];
+      //     this.factura.subTotal = this.calcularSubTotal();
+      //     this.factura.subTotalIva = `$${this.calcularIva().toFixed(2)}`;
+      //     this.factura.total = `${this.calcularTotal().toFixed(2)}`;
+      //     this.factura.formaPago = data.forma_pago?.name;
+      //     this.factura.metodoPago = data.metodo_pago?.name;
+      //     this.factura.moneda = data.moneda
 
-      /*this.ventaService.getVentaById(this.ventaId).subscribe({
-        next: (data) => {
-          this.factura = new FacturaModel();
-          this.factura.receptor = new ReceptorModel();
-          this.factura.receptor.nombre = data.cliente?.nombre_fiscal;
-          this.factura.receptor.rfc = data.cliente?.rfc;
-          this.factura.receptor.domicilio_fiscal = data.cliente?.full_direction;
-          this.factura.receptor.regimen_fiscal = data.cliente?.regimen_fiscal?.name;
-          this.dataSourceArticulos.data = data.articulos?.map((a) => {
-            return {
-              unidad: a.unidad_medida?.name,
-              producto_servicio: a.producto_servicio_model,
-              cantidad: a.cantidad,
-              descripcion: a.articulo_descripcion,
-              p_unitario: `$${(a.precio_venta ?? 0).toFixed(2)}`,
-              p_unitario_number: a.precio_venta,
-              importe: `$${((a.cantidad ?? 0) * (a.precio_venta ?? 0)).toFixed(2)}`,
-            }
-          }) || [];
-          this.factura.subTotal = `$${this.calcularSubTotal().toFixed(2)}`,
-          this.factura.subTotalIva = `$${this.calcularIva().toFixed(2)}`;
-          this.factura.total = `$${this.calcularTotal().toFixed(2)}`;
-          this.factura.formaPago = data.forma_pago?.name;
-          this.factura.metodoPago = data.metodo_pago?.name;
-          this.factura.moneda = data.moneda
-          
-        },
-        error: (e) => {
-          console.error("Error al obtener la venta en el preview de la factura...")
-        }
-      });
-      */
+      //   },
+      //   error: (e) => {
+      //     console.error("Error al obtener la venta en el preview de la factura...")
+      //   }
+      // });
     } catch (error) {
       console.error('An error occurred in ngOnInit:', error);
     }

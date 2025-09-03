@@ -2,10 +2,10 @@
     <div class="toolbar">
         <div class="toolbar-title">
             <i class="icon fa-solid fa-money-bill"></i>
-            <span class="title">Facturación Ventas</span>
+            <span class="title">Ventas</span>
         </div>
         <div>
-            <span class="breadcrumb-item">Facturación</span>
+            <span class="breadcrumb-item">Listado de ventas</span>
         </div>
     </div>
     <div class="container">
@@ -19,21 +19,6 @@
             <div class="toolbar">
                 <form [formGroup]="form" class="filters">
                     <i class="icon-filter fa-solid fa-filter"></i>
-                    <div class="form-field">
-                        <mat-label class="text-1">Estatus Factura</mat-label>
-                        <mat-form-field style="width: 100%;" class="mini">
-                            <mat-select formControlName="factura_estatus" (selectionChange)="onSelectChangeFacturaEstatus($event)">
-                                <mat-select-trigger>
-                                    <span>{{ facturaEstatusLabels[this.f['factura_estatus'].value] || '' }}</span>
-                                    <mat-icon style="position: absolute; right: 16px;" matSuffix *ngIf="this.f['factura_estatus'].value" (click)="clearSelectionFacturaEstatus()">clear</mat-icon>
-                                </mat-select-trigger>
-                                <mat-option value="1">{{ facturaEstatusLabels[1] }}</mat-option>
-                                <mat-option value="2">{{ facturaEstatusLabels[2] }}</mat-option>
-                                <mat-option value="3">{{ facturaEstatusLabels[3] }}</mat-option>
-                                <mat-option value="4">{{ facturaEstatusLabels[4] }}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
                     <div class="form-field">
                         <mat-label class="text-1">Estatus venta	</mat-label>
                         <mat-form-field style="width: 100%;" class="mini">
@@ -86,7 +71,7 @@
 
             <table class="table" mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortChange($event)">
                 <ng-container matColumnDef="id">
-                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Id</th>
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Id venta</th>
                     <td mat-cell *matCellDef="let element" class="center-column">
                         <span (click)="onView(element.id)" class="title-grid">
                             {{formatNumber(element.id)}}
@@ -95,55 +80,46 @@
                 </ng-container>
 
                 <ng-container matColumnDef="estatus">
-                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Estatus venta</th>
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Venta</th>
                     <td mat-cell *matCellDef="let element">
                         <div style="display: grid; grid-template-columns: 9px 1fr; grid-gap: 12px;">
-                            <span class="estatus-icon"
-                              [ngClass]="{
-                                'v-backorder': element.estatus.id === 1,
-                                'v-cancelada': element.estatus.id === 2,
-                                'v-despachada': element.estatus.id === 3,
-                                'v-completada': element.estatus.id === 4
-                              }">
+                            <span class="estatus-icon" [ngClass]="{
+                                'v-creada':  element.estatus.venta === ventaEstatusEnum.CREADA,
+                                'v-abierta':  element.estatus.venta === ventaEstatusEnum.ABIERTA,
+                                'v-cerrada': element.estatus.venta === ventaEstatusEnum.CERRADA
+                            }">
                             </span>
-                            <span>{{element.estatus.estatus}}</span>
+                            <span>{{element.estatus.venta}}</span>
                         </div>
                     </td>
                 </ng-container>
 
                 <ng-container matColumnDef="estatusFactura">
-                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Estatus Factura</th>
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Factura</th>
                     <td mat-cell *matCellDef="let element">
                         <div style="display: grid; grid-template-columns: 9px 1fr; grid-gap: 12px;">
-                            <span class="estatus-icon"
-                              [ngClass]="{
-                                'f-fallida': element.factura_estatus.id === 1,
-                                'f-cancelada': element.factura_estatus.id === 2,
-                                'f-pre-cancelada': element.factura_estatus.id === 3,
-                                'f-timbrada': element.factura_estatus.id === 4
-                              }"></span>
-                            <span>{{element.factura_estatus.estatus}}</span>
+                            <span class="estatus-icon" [ngClass]="{
+                                'f-pendiente':  element.estatus.factura === facturaEstatusEnum.PENDIENTE,
+                                'f-facturada':  element.estatus.factura === facturaEstatusEnum.FACTURADA,
+                                'f-cancelada': element.estatus.factura === facturaEstatusEnum.CANCELADA
+                            }">
+                            </span>
+                            <span>{{element.estatus.factura}}</span>
                         </div>
                     </td>
                 </ng-container>
 
-                <ng-container matColumnDef="factura_folio">
-                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Folio factura</th>
-                    <td mat-cell *matCellDef="let element" class="center-column">{{ element.factura_folio }}</td>
-                </ng-container>
-
                 <ng-container matColumnDef="estatus_pago">
-                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Estatus Pago</th>
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Pago</th>
                     <td mat-cell *matCellDef="let element">
                         <div style="display: grid; grid-template-columns: 9px 1fr; grid-gap: 12px;">
-                            <span class="estatus-icon"
-                              [ngClass]="{
-                                'p-pendiente': element.pago_estatus.id === 1,
-                                'p-parcial': element.pago_estatus.id === 2,
-                                'p-pagado': element.pago_estatus.id === 3,
-                                'p-reembolsado': element.pago_estatus.id === 4
-                              }"></span>
-                            <span>{{element.pago_estatus.estatus}}</span>
+                            <span class="estatus-icon" [ngClass]="{
+                                'p-sin-adeudo':  element.estatus.pago === pagoEstatusEnum.SIN_ADEUDO,
+                                'p-pendiente':  element.estatus.pago === pagoEstatusEnum.PENDIENTE,
+                                'p-pagado': element.estatus.pago === pagoEstatusEnum.PAGADO
+                            }">
+                            </span>
+                            <span>{{element.estatus.pago}}</span>
                         </div>
                     </td>
                 </ng-container>
@@ -185,14 +161,10 @@
                             <mat-icon>more_vert</mat-icon>
                         </button>
                         <mat-menu #menu="matMenu">
-                            <button mat-menu-item (click)="descargarFacturaPDF(element.factura_cfdi_uid, element.id)">
+                            <!-- <button mat-menu-item (click)="descargarFacturaPDF(element.factura_cfdi_uid, element.id)">
                                 <mat-icon>file_download</mat-icon>
                                 <span>Descargar PDF</span>
-                            </button>
-                            <button mat-menu-item (click)="descargarFacturaXML(element.factura_cfdi_uid, element.id)">
-                                <mat-icon>file_download</mat-icon>
-                                <span>Descargar XML</span>
-                            </button>
+                            </button> -->
                         </mat-menu>
                     </td>
                 </ng-container>

@@ -2,7 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { VentaArticuloModel, VentaModel, VentaDocumentoModel, VentaPagoModel } from '../models/ventas.model';
+import { VentaArticuloModel, VentaModel, VentaDocumentoModel, VentaPagoModel, VentaEstatusModel, FacturaArticuloModel } from '../models/ventas.model';
+import { CatalogoMonedaModel } from '../models/catalogos.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class VentaService {
   constructor(private http: HttpClient) {
   }
 
-  getAll(clienteId: number | undefined, facturaEstatus: number, ventaEstatus: number, fechaDesde: Date, fechaHasta: Date, backOrder: boolean, page: number, limit: number, sort: string = 'nombre', order: string = 'asc'): Observable<{ data: Array<VentaModel>, total: number }> {
+  getAll(clienteId: number | undefined, ventaEstatus: number, fechaDesde: Date, fechaHasta: Date, backOrder: boolean, page: number, limit: number, sort: string = 'nombre', order: string = 'asc'): Observable<{ data: Array<VentaModel>, total: number }> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString())
@@ -21,9 +22,6 @@ export class VentaService {
 
     if (clienteId) {
       params = params.set('clienteId', clienteId.toString());
-    }
-    if (facturaEstatus) {
-      params = params.set('facturaEstatus', facturaEstatus.toString());
     }
     if (ventaEstatus) {
       params = params.set('ventaEstatus', ventaEstatus.toString());
@@ -83,10 +81,6 @@ export class VentaService {
     }, this.getHeaders());
   }
 
-  obtenerFacturasEstatus(id: number): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/api/ventas/getFacturasEstatus/${id}`);
-  }
-
   obtenerVentaEstatus(id: number): Observable<any> {
     return this.http.get(`${environment.apiUrl}/api/ventas/getVentaEstatus/${id}`);
   }
@@ -138,6 +132,18 @@ export class VentaService {
     }
 
     return this.http.put<void>(`${environment.apiUrl}/api/ventas/updatePago/${ventaId}/${pago.id}`, pago, this.getHeaders());
+  }
+
+  getEstatusVenta(id: number): Observable<VentaEstatusModel> {
+    return this.http.get<VentaEstatusModel>(`${environment.apiUrl}/api/ventas/getEstatusVenta/${id}`);
+  }
+
+  getFacturaArticulos(ventaId: number): Observable<Array<FacturaArticuloModel>> {
+    return this.http.get<Array<FacturaArticuloModel>>(`${environment.apiUrl}/api/ventas/getFacturaArticulos/${ventaId}`);
+  }
+
+  getMonedas(): Observable<CatalogoMonedaModel[]> {
+    return this.http.get<CatalogoMonedaModel[]>(`${environment.apiUrl}/api/catalogs/getMonedas`);
   }
 
   private getHeaders() {

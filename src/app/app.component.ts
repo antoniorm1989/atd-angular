@@ -47,7 +47,7 @@ export class AppComponent implements OnDestroy {
           href: 'xxx',
         },
         {
-          text: 'Facturación',
+          text: 'Ventas',
           icon: 'fa-solid fa-money-bill',
           href: 'ventas',
         }

@@ -7,9 +7,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router, NavigationEnd, Event } from '@angular/router';
 import { Observable, map, startWith } from 'rxjs';
 import { CatalogoClienteModel } from 'src/app/models/catalogo-cliente.model';
-import { CatalogoFormaPagoModel, CatalogoObjetoImpuestoModel, CatalogoRegimenFiscalModel, CatalogoUsoCfdiModel, CatalogoMotivoCancelacionModel } from 'src/app/models/catalogos.model';
+import { CatalogoFormaPagoModel, CatalogoObjetoImpuestoModel, CatalogoRegimenFiscalModel, CatalogoUsoCfdiModel, CatalogoMotivoCancelacionModel, CatalogoMonedaModel } from 'src/app/models/catalogos.model';
 import { User } from 'src/app/models/user';
-import { VentaArticuloModel, VentaModel, VentaDocumentoModel, FacturaStatus, VentaPagoModel } from 'src/app/models/ventas.model';
+import { VentaArticuloModel, VentaModel, VentaDocumentoModel, VentaPagoModel, FacturaEstatusModel, VentaEstatusModel, FacturaArticuloModel } from 'src/app/models/ventas.model';
 import { CatalogoClientesService } from 'src/app/services/catalogo-cliente.service';
 import { CatalogosService } from 'src/app/services/catalogos.service';
 import { UserService } from 'src/app/services/user.service';
@@ -19,12 +19,22 @@ import { DialogSuccessComponent } from '../../genericos/dialogSuccess.component'
 import { DialogErrorComponent } from '../../genericos/dialogError.component';
 import { DialogWarningComponent } from '../../genericos/dialogWarning.component';
 import { LoadingService } from 'src/app/components/genericos/loading/loading.service';
+import { ventaEstatusEnum, facturaEstatusEnum, pagoEstatusEnum } from '../../../global/tools';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+
 
 @Component({
   selector: 'app-venta',
   templateUrl: './venta.component.html',
   styleUrls: ['./venta.component.css'],
   encapsulation: ViewEncapsulation.None,
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class VentaComponent implements OnInit {
 
@@ -77,11 +87,20 @@ export class VentaComponent implements OnInit {
   selectedCondicionPago = "contado";
 
   hasRecords = false;
-  displayedColumns: string[] = ['almacen', 'numero_parte', 'descripcion', 'unidad_medida', 'backorder', 'total', 'totalConDescuento', 'importe_iva', 'importe_retencion', 'importe_total', 'actions'];
+  displayedColumns: string[] = ['almacen', 'numero_parte', 'descripcion', 'unidad_medida', 'total', 'stock', 'totalConDescuento', 'importe_iva', 'importe_retencion', 'importe_total', 'actions'];
+  displayedColumnsArticulosSinFacturar: string[] = ['almacen', 'numero_parte', 'descripcion', 'unidad_medida', 'total', 'stock', 'totalConDescuento', 'importe_iva', 'importe_retencion', 'importe_total', 'actions'];
 
   displayedColumnsCancelacion: string[] = ['numero_parte', 'descripcion', 'total', 'backorder', 'almacen'];
   dataSourceArticulos = new MatTableDataSource<VentaArticuloModel>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  // articulos facturados
+  dataSourceFacturaArticulos = new MatTableDataSource<FacturaArticuloModel>([]);
+  @ViewChild(MatPaginator) paginatorFacturaArticulos!: MatPaginator;
+  displayedColumnsFacturaArticulos: string[] = ['cfdi', 'folio', 'fecha', 'total', 'pagado', 'estatus', 'actions'];
+  displayedColumnsFacturaArticulosWithExpand = ['expand', ...this.displayedColumnsFacturaArticulos];
+  expandedElement: FacturaArticuloModel | null = null;
+  hasRecordsFacturaArticulos = false;
 
   // Documentos
   hasRecordsDocumentos = false;
@@ -99,7 +118,9 @@ export class VentaComponent implements OnInit {
   iva: number = 0;
   retencion: number = 0;
   total: number = 0;
-  saldo: number = 0;
+
+  importeTotalFacturado: number = 0;
+  importeTotalPagado: number = 0;
 
   editData: VentaModel | null = null;
 
@@ -109,8 +130,15 @@ export class VentaComponent implements OnInit {
   originalComentario: string = "";
   comentarioHasChanged: boolean = false;
 
-  facturaEstatusList: FacturaStatus[] | undefined;
-  ventaEstatusList: FacturaStatus[] | undefined;
+  facturaEstatusList: FacturaEstatusModel[] | undefined;
+  ventaEstatusList: VentaEstatusModel[] | undefined;
+
+  ventaEstatusModel: VentaEstatusModel = new VentaEstatusModel();
+  ventaEstatusEnum = ventaEstatusEnum;
+  facturaEstatusEnum = facturaEstatusEnum;
+  pagoEstatusEnum = pagoEstatusEnum;
+
+  monedas: CatalogoMonedaModel[] = [];
 
   constructor(public route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -138,7 +166,7 @@ export class VentaComponent implements OnInit {
       condicion_pago: ['contado'],
       tiene_dias_credito: { value: false, disabled: true },
       cantidad_dias_credito: { value: 0, disabled: true },
-      moneda: ['MXN'],
+      moneda: [null, Validators.required],
       forma_pago: [],
       metodo_pago: [],
       tipo_cambio: tipoCambioDefault,
@@ -171,6 +199,7 @@ export class VentaComponent implements OnInit {
     this.form.controls['retiene_iva_porcentaje'].valueChanges.subscribe((newValue) => {
       this.calcularTotales();
     });
+
     this.form.controls['moneda'].valueChanges.subscribe((newValue) => {
       this.calcularTotales();
     });
@@ -226,18 +255,23 @@ export class VentaComponent implements OnInit {
 
             this.obtenerVentasEstatus();
 
-            this.obtenerPagos();
+            // TODO
+            //this.obtenerPagos();
+
+            this.getEstatusVenta();
+
+            this.getFacturaArticulos();
 
             this.route.queryParams.subscribe(params => {
               switch (params['action']) {
                 case undefined:
                   this.action = 'view';
-                  this.title = 'Consultar factura';
+                  this.title = 'Consultar venta';
                   //this.form.disable();
                   break;
                 case 'edit':
                   this.action = 'edit';
-                  this.title = 'Editar factura';
+                  this.title = 'Editar venta';
                   break;
               }
             });
@@ -248,9 +282,19 @@ export class VentaComponent implements OnInit {
       } else {
         // Nueva venta
         this.action = 'new';
-        this.title = 'Crear factura';
+        this.title = 'Crear venta';
         this.loadSelectData();
       }
+
+      this.ventaService.getMonedas().subscribe({
+        next: (data) => {
+          this.monedas = data;
+          this.form.controls['moneda'].setValue(this.monedas[0]);
+        },
+        error: (e) => {
+          console.log(`Hubo un error al cargar el catalogo de monedas: ${e.error.error}`);
+        }
+      });
     });
   }
 
@@ -303,9 +347,55 @@ export class VentaComponent implements OnInit {
     venta.objeto_impuesto = this.f['objeto_impuesto'].value;
     venta.translada_iva_porcentaje = parseFloat(this.f['translada_iva_porcentaje'].value);
     venta.retiene_iva_porcentaje = parseFloat(this.f['retiene_iva_porcentaje'].value);
-    venta.articulos = this.dataSourceArticulos.data;
 
-    this.previewFactura(venta);
+    if (!this.editData) {
+      venta.articulos = this.dataSourceArticulos.data;
+      let articulosFacturar = this.dataSourceArticulos.data?.filter(x => ((x.cantidad || 0) > (x.backorder || 0)));
+      if (articulosFacturar.length > 0) {
+        this.previewFactura(venta);
+      } else {
+        // No hay articulos para facturar no hay nada en stock
+        const dialogRef = this.dialog.open(DialogWarningComponent, {
+          width: '710px',
+          data: { title: '¡ Espera !', content: 'No hay artículos para facturar, todos los artículos están en backorder. ¿Deseas guardar la venta de todas formas?' }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+          if (result == 'ok') {
+            this.loadingService.show();
+            this.ventaService.create(venta).subscribe({
+              next: (data) => {
+                this.loadingService.hide();
+                this.openDialogSuccess(`Se ha creado con éxito la venta #${data.id}, podrás visualizarlo desde tu listado ventas.`)
+                this.router.navigate(['ventas']);
+              },
+              error: (e) => {
+                this.loadingService.hide();
+                this.openDialogError(`Hubo un error al crear la venta: ${e.error.error}`)
+              }
+            });
+          }
+        });
+      }
+    } else {
+      let articulosFacturar = this.dataSourceArticulos.data?.map(x => {
+        let stock = (x.stock || 0);
+        let cantidad = (x.cantidad || 0);
+
+        // facturar solo los que me alcanzan
+        x.cantidad = stock >= cantidad ? cantidad : stock;
+        return x;
+      }).filter(x => (x.cantidad || 0) > 0);
+      venta.articulos = articulosFacturar;
+
+      if (articulosFacturar.length === 0) {
+        this.openSnackBarWarning('No hay artículos para facturar, no hay stock disponible.');
+        return;
+      }
+
+      // Si hay artículos para facturar, se procede a la vista previa
+      this.previewFactura(venta);
+    }
   }
 
   checkChanges() {
@@ -375,22 +465,23 @@ export class VentaComponent implements OnInit {
       data: { title: '¡ Espera !', content: comment }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result == 'ok') {
-        this.loadingService.show();
-        this.ventaService.cancelarVenta(this.id, this.fCancelacion['fecha_cancelacion'].value, this.fCancelacion['motivo_cancelacion'].value, this.fCancelacion['folioSustituto'].value, this.editData?.factura_cfdi_uid || "").subscribe({
-          next: () => {
-            this.loadingService.hide();
-            this.openSnackBarSuccess('Venta cancelada correctamente.');
-            this.router.navigate(['ventas']);
-          },
-          error: (e) => {
-            this.loadingService.hide();
-            this.openDialogError(`Hubo un error al crear la factura: ${e.error.error}`)
-          }
-        });
-      }
-    });
+    // TODO: cancelacion ahora por factura
+    // dialogRef.afterClosed().subscribe(result => {
+    //   if (result == 'ok') {
+    //     this.loadingService.show();
+    //     this.ventaService.cancelarVenta(this.id, this.fCancelacion['fecha_cancelacion'].value, this.fCancelacion['motivo_cancelacion'].value, this.fCancelacion['folioSustituto'].value, this.editData?.factura_cfdi_uid || "").subscribe({
+    //       next: () => {
+    //         this.loadingService.hide();
+    //         this.openSnackBarSuccess('Venta cancelada correctamente.');
+    //         this.router.navigate(['ventas']);
+    //       },
+    //       error: (e) => {
+    //         this.loadingService.hide();
+    //         this.openDialogError(`Hubo un error al crear la factura: ${e.error.error}`)
+    //       }
+    //     });
+    //   }
+    // });
   }
 
   navigate(route: string) {
@@ -746,7 +837,6 @@ export class VentaComponent implements OnInit {
     this.calcularIva();
     this.calcularRetencion();
     this.calcularTotal();
-    this.calcularSaldo();
   }
 
   calcularSubTotal() {
@@ -775,19 +865,15 @@ export class VentaComponent implements OnInit {
     this.total = this.subTotal + this.iva - this.retencion;
   }
 
-  calcularSaldo() {
-    this.saldo = this.total - (this.dataSourcePagos.data.reduce((acc, pago) => acc + (parseFloat(pago.deposito?.toString() || '0') || 0), 0));
-  }
-
   obtenerTotalConDescuento(articulo: VentaArticuloModel): number {
     let totalConDescuento = 0;
-    if (this.f['moneda'].value == "MXN") {
+    if (this.f['moneda'].value.moneda == "MXN") {
       if (articulo.moneda_nombre == "MXN")
         totalConDescuento = articulo.totalConDescuento ?? 0;
       else if (articulo.moneda_nombre == "USD")
         totalConDescuento = (articulo.totalConDescuento ?? 0) * this.f['tipo_cambio'].value;
     }
-    else if (this.f['moneda'].value == "USD") {
+    else if (this.f['moneda'].value.moneda == "USD") {
       if (articulo.moneda_nombre == "MXN")
         totalConDescuento = (articulo.totalConDescuento ?? 0) / this.f['tipo_cambio'].value;
       else if (articulo.moneda_nombre == "USD")
@@ -816,6 +902,15 @@ export class VentaComponent implements OnInit {
       horizontalPosition: 'end',
       verticalPosition: 'top',
       panelClass: ['snackbar-error'],
+      duration: 5000,
+    });
+  }
+
+  openSnackBarWarning(message: string) {
+    this._snackBar.open(message, 'cerrar', {
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: ['snackbar-warning'],
       duration: 5000,
     });
   }
@@ -871,11 +966,11 @@ export class VentaComponent implements OnInit {
     });
   }
 
-  descargarFacturaPDF() {
-    if (this.editData?.factura_cfdi_uid == undefined || this.editData?.factura_cfdi_uid == "") {
+  descargarFacturaPDF(cfdi_uid: string) {
+    if (!cfdi_uid) {
       this.openSnackBarError('No se ha generado la factura aún.');
     } else {
-      this.ventaService.descargarFactura(this.editData?.factura_cfdi_uid, 'pdf').subscribe({
+      this.ventaService.descargarFactura(cfdi_uid, 'pdf').subscribe({
         next: (data) => {
           const blob = new Blob([data], { type: 'application/pdf' });
           const url = window.URL.createObjectURL(blob);
@@ -895,11 +990,11 @@ export class VentaComponent implements OnInit {
     }
   }
 
-  descargarFacturaXML() {
-    if (this.editData?.factura_cfdi_uid == undefined || this.editData?.factura_cfdi_uid == "") {
+  descargarFacturaXML(cfdi_uid: string) {
+    if (!cfdi_uid) {
       this.openSnackBarError('No se ha generado la factura aún.');
     } else {
-      this.ventaService.descargarFactura(this.editData?.factura_cfdi_uid, 'xml').subscribe({
+      this.ventaService.descargarFactura(cfdi_uid, 'xml').subscribe({
         next: (data) => {
           const blob = new Blob([data], { type: 'application/xml' });
           const url = window.URL.createObjectURL(blob);
@@ -917,6 +1012,34 @@ export class VentaComponent implements OnInit {
         }
       });
     }
+  }
+
+  getEstatusVenta() {
+    this.ventaService.getEstatusVenta(this.id).subscribe({
+      next: (data) => {
+        this.ventaEstatusModel = data;
+      },
+      error: (e) => {
+        console.error('Error al obtener el estatus general de la venta:', e);
+      }
+    });
+  }
+
+  getFacturaArticulos() {
+    this.ventaService.getFacturaArticulos(this.id).subscribe({
+      next: (data) => {
+        this.dataSourceFacturaArticulos.data = data;
+        if(this.dataSourceFacturaArticulos.data.length > 0){
+          this.hasRecordsFacturaArticulos = true;
+
+          this.importeTotalFacturado = this.dataSourceFacturaArticulos.data.reduce((acc, factura) => acc + (factura.total ?? 0), 0);
+        }
+        this.dataSourceFacturaArticulos._updateChangeSubscription();
+      },
+      error: (e) => {
+        console.error('Error al obtener los artículos facturados:', e);
+      }
+    });
   }
 
   descargarDocumento(documento: VentaDocumentoModel) {
@@ -982,14 +1105,15 @@ export class VentaComponent implements OnInit {
   }
 
   obtenerFacturasEstatus() {
-    this.ventaService.obtenerFacturasEstatus(this.id).subscribe({
-      next: (data) => {
-        this.facturaEstatusList = data;
-      },
-      error: (e) => {
-        console.error('Error al obtener los estatus de las facturas:', e);
-      }
-    });
+    // TODO
+    // this.ventaService.obtenerFacturasEstatus(this.id).subscribe({
+    //   next: (data) => {
+    //     this.facturaEstatusList = data;
+    //   },
+    //   error: (e) => {
+    //     console.error('Error al obtener los estatus de las facturas:', e);
+    //   }
+    // });
   }
 
   obtenerVentasEstatus() {
@@ -1004,20 +1128,23 @@ export class VentaComponent implements OnInit {
   }
 
   isTimbrada(): boolean {
-    if (this.editData && this.editData.factura_estatus && (this.editData.factura_estatus.estatus === 'TIMBRADA'))
-      return true;
+    // TODO
+    // if (this.editData && this.editData.factura_estatus && (this.editData.factura_estatus.estatus === 'TIMBRADA'))
+    //   return true;
     return false;
   }
 
   isCancelada(): boolean {
-    if (this.editData && this.editData.factura_estatus && (this.editData.factura_estatus.estatus === 'CANCELADA' || this.editData.factura_estatus.estatus === 'Pre-Cancelada'))
-      return true;
+    // TODO
+    // if (this.editData && this.editData.factura_estatus && (this.editData.factura_estatus.estatus === 'CANCELADA' || this.editData.factura_estatus.estatus === 'Pre-Cancelada'))
+    //   return true;
     return false;
   }
 
   isPagada(): boolean {
-    if (this.editData && this.editData.pago_estatus && (this.editData.pago_estatus.nombre === 'PAGADO'))
-      return true;
+    // TODO
+    // if (this.editData && this.editData.pago_estatus && (this.editData.pago_estatus.nombre === 'PAGADO'))
+    //   return true;
     return false;
   }
 
@@ -1041,59 +1168,70 @@ export class VentaComponent implements OnInit {
   }
 
   getFechaCancelacion(): string {
-    if (!this.editData || !this.editData.factura_estatus || !this.editData.factura_estatus.custom_data || !this.editData.factura_estatus.custom_data.fecha_cancelacion) {
-      return "N/A";
-    }
-    return this.formatDate(this.editData.factura_estatus.custom_data.fecha_cancelacion);
+    // TODO
+    return "N/A";
+    // if (!this.editData || !this.editData.factura_estatus || !this.editData.factura_estatus.custom_data || !this.editData.factura_estatus.custom_data.fecha_cancelacion) {
+    //   return "N/A";
+    // }
+    // return this.formatDate(this.editData.factura_estatus.custom_data.fecha_cancelacion);
   }
 
   getMotivoCancelacion(): string {
-    if (!this.editData || !this.editData.factura_estatus || !this.editData.factura_estatus.custom_data || !this.editData.factura_estatus.custom_data.motivo_cancelacion) {
-      return "N/A";
-    }
+    // TODO
+    return "N/A";
+    // if (!this.editData || !this.editData.factura_estatus || !this.editData.factura_estatus.custom_data || !this.editData.factura_estatus.custom_data.motivo_cancelacion) {
+    //   return "N/A";
+    // }
 
-    let motivoCancelacionId = this.editData.factura_estatus.custom_data.motivo_cancelacion;
-    let motivoCancelacion = this.motivoCancelacionList.find((item: any) => item.clave === motivoCancelacionId);
+    // let motivoCancelacionId = this.editData.factura_estatus.custom_data.motivo_cancelacion;
+    // let motivoCancelacion = this.motivoCancelacionList.find((item: any) => item.clave === motivoCancelacionId);
 
-    return motivoCancelacion ? `${motivoCancelacion.clave} - ${motivoCancelacion.motivo}` : "N/A";
+    // return motivoCancelacion ? `${motivoCancelacion.clave} - ${motivoCancelacion.motivo}` : "N/A";
   }
 
   // Pagos
-  obtenerPagos() {
-    this.hasRecordsPagos = false;
-    this.ventaService.getPagos(this.id).subscribe({
-      next: (data) => {
-        this.dataSourcePagos.data = data;
-        this.dataSourcePagos._updateChangeSubscription();
-        this.hasRecordsPagos = this.dataSourcePagos.data.length > 0;
+  // obtenerPagos() {
+  //   this.hasRecordsPagos = false;
+  //   this.ventaService.getPagos(this.id).subscribe({
+  //     next: (data) => {
+  //       this.dataSourcePagos.data = data;
+  //       this.dataSourcePagos._updateChangeSubscription();
+  //       this.hasRecordsPagos = this.dataSourcePagos.data.length > 0;
 
-        this.calcularSaldo();
-      },
-      error: (e) => {
-        console.error('Error al obtener los pagos:', e);
-      }
-    });
-  }
+  //     },
+  //     error: (e) => {
+  //       console.error('Error al obtener los pagos:', e);
+  //     }
+  //   });
+  // }
 
-  openPagoVentaModalComponent() {
-    const dialogRef = this.dialog.open(PagoVentaModalComponent, {
-      height: '600px',
-      width: '1050px',
-      data: {
-        ventaId: this.id,
-        importeTotal: this.total,
-        saldo: this.saldo,
-        moneda: this.f['moneda'].value
-      },
-    });
+  // openPagoVentaModalComponent() {
+  //   const dialogRef = this.dialog.open(PagoVentaModalComponent, {
+  //     height: '600px',
+  //     width: '1050px',
+  //     data: {
+  //       ventaId: this.id,
+  //       importeTotal: this.total,
+  //       saldo: this.saldo,
+  //       moneda_id: this.f['moneda_id'].value
+  //     },
+  //   });
 
-    dialogRef.afterClosed().subscribe(ventaPagoModel => {
-      window.location.reload();
-    });
-  }
+  //   dialogRef.afterClosed().subscribe(ventaPagoModel => {
+  //     window.location.reload();
+  //   });
+  // }
 
   onViewPago(id: string) {
     this.router.navigate(['ventas/detail', id]);
+  }
+
+  // Expandible rows facturacion
+  isExpanded(element: FacturaArticuloModel) {
+    return this.expandedElement === element;
+  }
+  toggle(element: FacturaArticuloModel) {
+    this.expandedElement = this.isExpanded(element) ? null : element;
   }
 }
 

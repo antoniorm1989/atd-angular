@@ -335,7 +335,6 @@ mat-panel-description {
     vertical-align: middle;
     height: 16px;
     width: 16px;
-    margin: auto 4px auto 4px;
 }
 
 .venta .estatus-icon-history {
@@ -345,48 +344,38 @@ mat-panel-description {
     margin: auto;
 }
 
-/*estilos de estatus factura*/
-.venta .estatus-icon.f-fallida{
-    background-color: gray;
+/*estilos de estatus venta*/
+.venta .estatus-icon.v-creada{
+    background-color: #3f51b5;
 }
-.venta .estatus-icon.f-cancelada{
-    background-color: #FF0000;
+.venta .estatus-icon.v-abierta{
+    background-color: #3B82F6;
 }
-.venta .estatus-icon.f-pre-cancelada{
-    background-color: #FF8B38;
-}
-.venta .estatus-icon.f-timbrada{
+.venta .estatus-icon.v-cerrada{
     background-color: #5BD26E;
 }
 
-/*estilos de estatus venta*/
-.venta .estatus-icon.v-backorder{
-    background-color: #BA9400;
+/*estilos de estatus factura*/
+.venta .estatus-icon.f-pendiente{
+    background-color: #3f51b5;
 }
-.venta .estatus-icon.v-cancelada{
-    background-color: #FF0000;
-}
-.venta .estatus-icon.v-despachada{
-    background-color: #FF8B38;
-}
-.venta .estatus-icon.v-completada{
+.venta .estatus-icon.f-facturada{
     background-color: #5BD26E;
+}
+.venta .estatus-icon.f-cancelada{
+    background-color: #FF8B38;
 }
 
 /*estilos de estatus pago*/
-.venta .estatus-icon.p-pendiente{
-    background-color: #FF0000;
-}
-.venta .estatus-icon.p-parcial{
+.venta .estatus-icon.p-sin-adeudo{
     background-color: #FF8B38;
+}
+.venta .estatus-icon.p-pendiente{
+    background-color: #3f51b5;
 }
 .venta .estatus-icon.p-pagado{
     background-color: #5BD26E;
 }
-.venta .estatus-icon.p-reembolsado{
-    background-color: #BA9400;
-}
-
 
 .venta .numero-parte-container{
     background-color: #fff6d1;
@@ -465,69 +454,6 @@ mat-panel-description {
     height: 50px;
 }
 
-/* Colores de fondo para status-card basados en el estatus de la venta */
-.venta .status-card.v-backorder{
-    background-color: rgba(186, 148, 0, 0.1);
-    border-color: #BA9400;
-}
-
-.venta .status-card.v-cancelada{
-    background-color: rgba(255, 0, 0, 0.1);
-    border-color: #FF0000;
-}
-
-.venta .status-card.v-despachada{
-    background-color: rgba(255, 139, 56, 0.1);
-    border-color: #FF8B38;
-}
-
-.venta .status-card.v-completada{
-    background-color: rgba(91, 210, 110, 0.1);
-    border-color: #5BD26E;
-}
-
-/* Colores de fondo para status-card basados en el estatus de factura */
-.venta .status-card.f-fallida{
-    background-color: rgba(128, 128, 128, 0.1);
-    border-color: gray;
-}
-
-.venta .status-card.f-cancelada{
-    background-color: rgba(255, 0, 0, 0.1);
-    border-color: #FF0000;
-}
-
-.venta .status-card.f-pre-cancelada{
-    background-color: rgba(255, 139, 56, 0.1);
-    border-color: #FF8B38;
-}
-
-.venta .status-card.f-timbrada{
-    background-color: rgba(91, 210, 110, 0.1);
-    border-color: #5BD26E;
-}
-
-/* Colores de fondo para status-card basados en el estatus de pago */
-.venta .status-card.p-pendiente{
-    background-color: rgba(255, 0, 0, 0.1);
-    border-color: #FF0000;
-}
-
-.venta .status-card.p-parcial{
-    background-color: rgba(255, 139, 56, 0.1);
-    border-color: #FF8B38;
-}
-
-.venta .status-card.p-pagado{
-    background-color: rgba(91, 210, 110, 0.1);
-    border-color: #5BD26E;
-}
-
-.venta .status-card.p-reembolsado{
-    background-color: rgba(186, 148, 0, 0.1);
-    border-color: #BA9400;
-}
-
 .venta .status-card .mat-mdc-card-content{
     padding: 0px;
     display: flex;
@@ -560,6 +486,26 @@ mat-panel-description {
     letter-spacing: 0px;
     text-align: center;
     margin-left: 8px;
+}
+
+.venta .mat-mdc-table .mdc-data-table__header-row,
+.venta .mat-mdc-table .mdc-data-table__row {
+    height: 40px;
+}
+
+
+.example-element-detail-wrapper {
+  overflow: hidden;
+  transition: height 225ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.example-element-detail-wrapper.example-element-detail-wrapper-expanded {
+  height: auto;
+}
+
+
+.venta .table .sub-table .mat-mdc-header-row {
+    background-color: #d8d8d8 !important;
 }
 
 @media only screen and (max-width: 1084px) {
