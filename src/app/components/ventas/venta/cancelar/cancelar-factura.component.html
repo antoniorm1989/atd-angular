@@ -1,0 +1,90 @@
+<div class="cancelar-factura-modal">
+    <!-- Header with question mark icon -->
+    <div class="modal-header">
+        <div class="question-icon">
+            <mat-icon>cancel</mat-icon>
+        </div>
+        <button mat-icon-button class="close-button" (click)="onCancel()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <!-- Modal Content -->
+    <div class="modal-content">
+        <!-- Main Question -->
+        <h2 class="confirmation-title">
+            ¿Estás seguro que deseas cancelar el CFDI 
+            <span class="folio-highlight">{{folioFactura}}</span>?
+        </h2>
+
+        <!-- Secondary Message -->
+        <p class="confirmation-subtitle">
+            Si es así, por favor selecciona un motivo
+        </p>
+
+        <!-- Form -->
+        <form [formGroup]="form" (ngSubmit)="onAdd()">
+            <!-- Reason Selection -->
+            <div class="form-field">
+                <mat-form-field appearance="outline" class="reason-select">
+                    <mat-label>Selecciona un motivo de cancelación</mat-label>
+                    <mat-select formControlName="motivo_cancelacion" required>
+                        <mat-option *ngFor="let motivo of motivosCancelacion" [value]="motivo">
+                            {{motivo.descripcion}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-icon matSuffix>expand_more</mat-icon>
+                </mat-form-field>
+            </div>
+
+            <!-- Conditional UUID Input - Only show when option 1 is selected -->
+            <div class="form-field" *ngIf="showUuidInput()">
+                <mat-form-field appearance="outline" class="uuid-input">
+                    <mat-label>UUID factura de sustitución</mat-label>
+                    <input matInput 
+                           formControlName="uuid_sustitucion" 
+                           placeholder="Ingrese el UUID de la factura de sustitución"
+                           maxlength="36">
+                    <mat-hint>Formato: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX</mat-hint>
+                </mat-form-field>
+            </div>
+
+            <!-- Validation Errors -->
+            <div class="validation-errors">
+                <!-- Error for motivo_cancelacion -->
+                <div *ngIf="submitted && f['motivo_cancelacion'].errors" class="error-message">
+                    <mat-icon>error</mat-icon>
+                    Debe seleccionar un motivo de cancelación
+                </div>
+                
+                <!-- Error for UUID when option 1 is selected -->
+                <div *ngIf="submitted && showUuidInput() && f['uuid_sustitucion'].errors" class="error-message">
+                    <mat-icon>error</mat-icon>
+                    <span *ngIf="f['uuid_sustitucion'].errors['required']">
+                        El UUID de la factura de sustitución es requerido
+                    </span>
+                    <span *ngIf="f['uuid_sustitucion'].errors['pattern']">
+                        El formato del UUID no es válido
+                    </span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="modal-actions">
+                <button mat-flat-button 
+                        type="button" 
+                        class="btn-no-cancelar" 
+                        (click)="onCancel()">
+                    NO cancelar
+                </button>
+                
+                <button mat-flat-button 
+                        type="submit" 
+                        class="btn-si-cancelar"
+                        [disabled]="form.invalid">
+                    Sí cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

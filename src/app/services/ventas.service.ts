@@ -69,15 +69,12 @@ export class VentaService {
     });
   }
 
-  cancelarVenta(ventaId: number, fechaCancelacion: Date, motivoCancelacion: string, folioSustituto: string, facturaId: String): Observable<any> {
+  cancelarFactura(ventaFacturaId: number, cancelData: { motivo: any, uuid_sustitucion?: string }): Observable<any> {
     let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
 
-    return this.http.post<void>(`${environment.apiUrl}/api/ventas/cancelarVenta/${ventaId}`, {
-      fechaCancelacion,
-      motivoCancelacion,
-      folioSustituto,
-      userId: userData.id,
-      facturaId
+    return this.http.post<void>(`${environment.apiUrl}/api/ventas/cancelarFactura/${ventaFacturaId}`, {
+      ...cancelData,
+      userId: userData.id
     }, this.getHeaders());
   }
 

@@ -508,6 +508,69 @@ mat-panel-description {
     background-color: #d8d8d8 !important;
 }
 
+
+
+
+/* Status Badge Base */
+.status-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 80px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
+}
+
+/* Status Cancelada - Red */
+.status-badge.status-cancelada {
+    background-color: #dc3545;
+    color: white;
+    border: 1px solid #dc3545;
+}
+
+.status-badge.status-cancelada:hover {
+    background-color: #c82333;
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+/* Status Facturada/Timbrada - Green */
+.status-badge.status-facturada {
+    background-color: #28a745;
+    color: white;
+    border: 1px solid #28a745;
+}
+
+.status-badge.status-facturada:hover {
+    background-color: #218838;
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+/* Status Fallida - Gray */
+.status-badge.status-fallida {
+    background-color: #6c757d;
+    color: white;
+    border: 1px solid #6c757d;
+}
+
+.status-badge.status-fallida:hover {
+    background-color: #5a6268;
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .status-badge {
+        font-size: 10px;
+        padding: 4px 12px;
+        min-width: 60px;
+    }
+}
+
 @media only screen and (max-width: 1084px) {
     .venta .container .form-row.four-col {
         grid-template-columns: repeat(3, 1fr);

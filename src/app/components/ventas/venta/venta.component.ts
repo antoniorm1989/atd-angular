@@ -21,6 +21,7 @@ import { DialogWarningComponent } from '../../genericos/dialogWarning.component'
 import { LoadingService } from 'src/app/components/genericos/loading/loading.service';
 import { ventaEstatusEnum, facturaEstatusEnum, pagoEstatusEnum } from '../../../global/tools';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { CancelarFacturaComponent } from './cancelar/cancelar-factura.component';
 
 
 @Component({
@@ -1029,7 +1030,7 @@ export class VentaComponent implements OnInit {
     this.ventaService.getFacturaArticulos(this.id).subscribe({
       next: (data) => {
         this.dataSourceFacturaArticulos.data = data;
-        if(this.dataSourceFacturaArticulos.data.length > 0){
+        if (this.dataSourceFacturaArticulos.data.length > 0) {
           this.hasRecordsFacturaArticulos = true;
 
           this.importeTotalFacturado = this.dataSourceFacturaArticulos.data.reduce((acc, factura) => acc + (factura.total ?? 0), 0);
@@ -1233,7 +1234,53 @@ export class VentaComponent implements OnInit {
   toggle(element: FacturaArticuloModel) {
     this.expandedElement = this.isExpanded(element) ? null : element;
   }
+
+
+  // Cancelar factura
+  openCancelarFacturaModal(facturaData?: any) {
+    const dialogRef = this.dialog.open(CancelarFacturaComponent, {
+      width: '650px',
+      maxWidth: '90vw',
+      disableClose: true,
+      data: {
+        folio: facturaData?.cfdi_uid || '',
+        facturaId: facturaData?.id,
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.canceled) {
+        console.log('Factura cancelada con motivo:', result.motivo);
+        console.log('UUID de sustitución:', result.uuid_sustitucion);
+        this.cancelarFactura(facturaData?.venta_factura_id, result.motivo, result.uuid_sustitucion, facturaData?.cfdi_uid);
+      }
+    });
+  }
+
+  private cancelarFactura(ventaFacturaId: number, motivo: any, uuidSustitucion?: string, cfdi_uid?: string) {
+    const cancelData = {
+      motivo: motivo.clave,
+      uuid_sustitucion: uuidSustitucion,
+      uuid_cancelar: cfdi_uid
+    };
+
+    this.loadingService.show();
+    this.ventaService.cancelarFactura(ventaFacturaId, cancelData).subscribe({
+      next: (response: any) => {
+        console.log('Factura cancelada exitosamente:', response);
+        this.getFacturaArticulos();
+        this.openSnackBarSuccess('Factura cancelada correctamente');
+        this.loadingService.hide();
+      },
+      error: (e: any) => {
+        console.error('Error al cancelar factura:', e.error.detalles);
+        this.openDialogError('Error al cancelar la factura: ' + e.error.detalles);
+        this.loadingService.hide();
+      }
+    });
+  }
 }
+
 
 @Component({
   selector: 'dialog-component-agregar-articulo-venta',
@@ -1333,7 +1380,6 @@ export class PagoVentaModalComponent {
         this.moneda = data.moneda;
       }
     }
-
   }
 
   onCancelar() {

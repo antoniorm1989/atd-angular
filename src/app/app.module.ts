@@ -81,6 +81,7 @@ import { TokenExpiredInterceptor } from './interceptors/token.interceptors';
 import { VentaPagoComponent } from './components/ventas/venta/pago/venta-pago.component';
 import { CatalogoCuentaBancariaListComponent } from './components/catalogos/cuenta_bancaria/catalogo-cuenta-bancaria-list.component';
 import { CatalogoCuentaBancariaComponent } from './components/catalogos/cuenta_bancaria/cuenta_bancaria_detail/catalogo-cuenta-bancaria-detail..component';
+import { CancelarFacturaComponent } from './components/ventas/venta/cancelar/cancelar-factura.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -135,7 +136,8 @@ export function tokenGetter() {
     VentaPagoComponent,
     PagoVentaModalComponent,
     CatalogoCuentaBancariaListComponent,
-    CatalogoCuentaBancariaComponent
+    CatalogoCuentaBancariaComponent,
+    CancelarFacturaComponent
   ],
   imports: [
     BrowserModule,
