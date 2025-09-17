@@ -13,7 +13,7 @@ export class VentaService {
   constructor(private http: HttpClient) {
   }
 
-  getAll(clienteId: number | undefined, ventaEstatus: number, fechaDesde: Date, fechaHasta: Date, backOrder: boolean, page: number, limit: number, sort: string = 'nombre', order: string = 'asc'): Observable<{ data: Array<VentaModel>, total: number }> {
+  getAll(clienteId: number | undefined, ventaEstatus: number, fechaDesde: Date, fechaHasta: Date, backOrder: boolean, page: number, limit: number, sort: string = 'nombre', order: string = 'asc', tipo: number): Observable<{ data: Array<VentaModel>, total: number }> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString())
@@ -36,11 +36,9 @@ export class VentaService {
       params = params.set('backOrder', backOrder.toString());
     }
     params = params.set('page', clienteId ? clienteId.toString() : '')
-
     
-
     return this.http.get<{ data: Array<VentaModel>, total: number }>(
-      `${environment.apiUrl}/api/ventas/getAll`,
+      `${environment.apiUrl}/api/${tipo == 1 ? 'ventas' : 'cotizaciones'}/getAll`,
       { params }
     );
   }
@@ -49,10 +47,10 @@ export class VentaService {
     return this.http.get<VentaModel>(`${environment.apiUrl}/api/ventas/getById/${id}`);
   }
 
-  create(ventaModel: VentaModel): Observable<any> {
+  create(ventaModel: VentaModel, tipo: number): Observable<any> {
     let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
     ventaModel.userId = userData.id;
-    return this.http.post<void>(`${environment.apiUrl}/api/ventas/create`, ventaModel, this.getHeaders());
+    return this.http.post<void>(`${environment.apiUrl}/api/${tipo == 1 ? 'ventas' : 'cotizaciones'}/create`, ventaModel, this.getHeaders());
   }
 
   despachar(articulo: VentaArticuloModel): Observable<any> {
@@ -76,10 +74,6 @@ export class VentaService {
       ...cancelData,
       userId: userData.id
     }, this.getHeaders());
-  }
-
-  obtenerVentaEstatus(id: number): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/api/ventas/getVentaEstatus/${id}`);
   }
 
   updateComentario(ventaId: number, comentarios: string): Observable<any> {

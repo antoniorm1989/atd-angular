@@ -24,8 +24,18 @@ import { facturaEstatusEnum, pagoEstatusEnum, ventaEstatusEnum } from 'src/app/g
 
 export class VentasListComponent implements OnInit {
 
+  isVenta = true;
+
   hasRecords = false;
-  displayedColumns: string[] = ['id', 'estatus', 'estatusFactura', 'estatus_pago', 'creacion', 'cliente', 'importe', 'responsable', 'actions'];
+  private baseDisplayedColumns: string[] = ['id', 'estatus', 'estatusFactura', 'estatus_pago', 'creacion', 'cliente', 'importe', 'responsable', 'actions'];
+  get displayedColumns(): string[] {
+    if (this.isVenta) {
+      return this.baseDisplayedColumns;
+    } else {
+      return this.baseDisplayedColumns.filter(col => col !== 'estatusFactura' && col !== 'estatus_pago');
+    }
+  }
+
   dataSource = new MatTableDataSource<VentaModel>([]);
   private dataLoaded = false;
 
@@ -45,15 +55,8 @@ export class VentasListComponent implements OnInit {
   filteredClientes!: Observable<CatalogoClienteModel[]>;
 
   ventaEstatusEnum = ventaEstatusEnum;
-    facturaEstatusEnum = facturaEstatusEnum;
-    pagoEstatusEnum = pagoEstatusEnum;  
-
-  // facturaEstatusLabels: { [key: number]: string } = {
-  //   1: 'Fallida',
-  //   2: 'Cancelada',
-  //   3: 'Pre-Cancelada',
-  //   4: 'Timbrada',
-  // };
+  facturaEstatusEnum = facturaEstatusEnum;
+  pagoEstatusEnum = pagoEstatusEnum;
 
   ventaEstatusLabels: { [key: number]: string } = {
     1: 'BackOrder',
@@ -61,13 +64,6 @@ export class VentasListComponent implements OnInit {
     2: 'Despachada',
     4: 'Pendiente',
   };
-
-  // ventaPagoEstatusLabels: { [key: number]: string } = {
-  //   1: 'Pendiente',
-  //   2: 'Parcial',
-  //   3: 'Pagado',
-  //   4: 'Reembolsado'
-  // };
 
   constructor(
     private formBuilder: FormBuilder,
@@ -90,6 +86,14 @@ export class VentasListComponent implements OnInit {
   get f() { return this.form!.controls; }
 
   ngOnInit(): void {
+    // Determine if the current route is for 'ventas' or 'cotizaciones'
+    const currentRoute = this.router.url;
+    if (currentRoute.includes('cotizaciones')) {
+      this.isVenta = false;
+    } else if (currentRoute.includes('ventas')) {
+      this.isVenta = true;
+    }
+
     this.loadVentas(this.pageIndex + 1, this.pageSize, this.sortField, this.sortDirection);
     this.loadSelectData();
   }
@@ -107,7 +111,7 @@ export class VentasListComponent implements OnInit {
     let ventaEstatus = this.f['venta_estatus'].value;
     let hasFilters = clienteId != undefined || fechaDesde != undefined || fechaHasta != undefined || backOrder != false || ventaEstatus != undefined;
 
-    this.ventaService.getAll(clienteId, ventaEstatus, fechaDesde, fechaHasta, backOrder, page, limit, sort, order).subscribe({
+    this.ventaService.getAll(clienteId, ventaEstatus, fechaDesde, fechaHasta, backOrder, page, limit, sort, order, this.isVenta ? 1 : 0).subscribe({
       next: (res) => {
         if (res.data.length > 0) {
           this.hasRecords = res.data.length > 0;
@@ -151,17 +155,11 @@ export class VentasListComponent implements OnInit {
   }
 
   onNew() {
-    this.router.navigate(['ventas/detail']);
+    this.isVenta ? this.router.navigate(['ventas/detail']) : this.router.navigate(['cotizaciones/detail']);
   }
 
   onView(id: string) {
-    this.router.navigate(['ventas/detail', id]);
-  }
-
-  onEdit(id: string) {
-    this.router.navigate(['ventas/detail', id], {
-      queryParams: { action: 'edit' },
-    });
+    this.isVenta ? this.router.navigate(['ventas/detail', id]) : this.router.navigate(['cotizaciones/detail', id]);
   }
 
   navigate(route: string) {

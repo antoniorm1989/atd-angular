@@ -7,7 +7,7 @@
             <!--FACTURA-->
             <div style="display: grid; grid-template-columns: 1fr 1fr;">
                 <img src="../../assets/images/logotipo-negro.svg" alt="Image" class="logo-image">
-                <div style="grid-template-columns: 1fr">
+                <div style="grid-template-columns: 1fr" *ngIf="tipo === 1">
                     <div class="title">Factura</div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px;">
                         <div class="etiquieta" style="text-align: end;">Tipo de Comprobante</div>
@@ -57,21 +57,21 @@
             <div style="height: 8px;"></div>
             <div style="margin-left: 12px; font-weight: bold;" class="texto">{{factura?.receptor?.nombre}}</div>
 
-            <div style="height: 8px;"></div>
-            <div style="margin-left: 12px;" class="etiquieta">USO CFDI</div>
-            <div style="margin-left: 12px;" class="texto">{{factura?.uso_cfdi}}</div>
+            <div *ngIf="tipo === 1" style="height: 8px;"></div>
+            <div *ngIf="tipo === 1" style="margin-left: 12px;" class="etiquieta">USO CFDI</div>
+            <div *ngIf="tipo === 1" style="margin-left: 12px;" class="texto">{{factura?.uso_cfdi}}</div>
 
             <div style="height: 8px;"></div>
             <div style="margin-left: 12px;" class="etiquieta">RFC</div>
             <div style="margin-left: 12px;" class="texto">{{factura?.receptor?.rfc}}</div>
 
-            <div style="height: 8px;"></div>
-            <div style="margin-left: 12px;" class="etiquieta">DOMICILIO FISCAL</div>
-            <div style="margin-left: 12px;" class="texto">{{factura?.receptor?.domicilio_fiscal}}</div>
+            <div *ngIf="tipo === 1" style="height: 8px;"></div>
+            <div *ngIf="tipo === 1" style="margin-left: 12px;" class="etiquieta">DOMICILIO FISCAL</div>
+            <div *ngIf="tipo === 1"style="margin-left: 12px;" class="texto">{{factura?.receptor?.domicilio_fiscal}}</div>
 
-            <div style="height: 8px;"></div>
-            <div style="margin-left: 12px;" class="etiquieta">RÉGIME FISCAL</div>
-            <div style="margin-left: 12px;" class="texto">{{factura?.receptor?.regimen_fiscal}}</div>
+            <div *ngIf="tipo === 1" style="height: 8px;"></div>
+            <div *ngIf="tipo === 1" style="margin-left: 12px;" class="etiquieta">RÉGIME FISCAL</div>
+            <div *ngIf="tipo === 1" style="margin-left: 12px;" class="texto">{{factura?.receptor?.regimen_fiscal}}</div>
 
             <!--TABLA-->
             <div style="height: 24px;"></div>
@@ -139,7 +139,7 @@
         <div style="height: 24px;"></div>
         <div class="toolbar-bottom">
             <button mat-flat-button class="btn secundary" type="button" (click)="onCancel()">Regresar</button>
-            <button mat-flat-button class="btn" type="button" (click)="onTimbrar()">Si, Timbrar</button>
+            <button mat-flat-button class="btn" type="button" (click)="onTimbrar()">{{tipo == 1 ? 'Si, Timbrar' : 'Descargar'}}</button>
         </div>
     </div>
 </div>

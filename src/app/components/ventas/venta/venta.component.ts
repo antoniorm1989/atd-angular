@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute, Router, NavigationEnd, Event } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, map, startWith } from 'rxjs';
 import { CatalogoClienteModel } from 'src/app/models/catalogo-cliente.model';
 import { CatalogoFormaPagoModel, CatalogoObjetoImpuestoModel, CatalogoRegimenFiscalModel, CatalogoUsoCfdiModel, CatalogoMotivoCancelacionModel, CatalogoMonedaModel } from 'src/app/models/catalogos.model';
@@ -39,10 +39,12 @@ import { CancelarFacturaComponent } from './cancelar/cancelar-factura.component'
 })
 export class VentaComponent implements OnInit {
 
+  isVenta = true;
+
   action: string = 'view';
   title: string = '';
-  form: FormGroup;
-  formCancelacion: FormGroup;
+  form!: FormGroup;
+  formCancelacion!: FormGroup;
 
   submitted = false;
   submittedCancelacion = false;
@@ -152,30 +154,64 @@ export class VentaComponent implements OnInit {
     private dialog: MatDialog,
     private loadingService: LoadingService) {
 
+
+  }
+
+  ngOnInit(): void {
+
+    // Determine if the current route is for 'ventas' or 'cotizaciones'
+    const currentRoute = this.router.url;
+    if (currentRoute.includes('cotizaciones')) {
+      this.isVenta = false;
+    } else if (currentRoute.includes('ventas')) {
+      this.isVenta = true;
+    }
+
     let tipoCambioDefault = this.getTipoCambioDefault();
 
-    this.form = this.formBuilder.group({
-      // Datos generales
-      fecha_compra_cliente: new Date(),
-      vendedor: null,
-      usoCfdi: [null, Validators.required],
-      cliente: [null, Validators.required],
-      nombre_fiscal: [''],
-      regimen_fiscal: [''],
-      comentarios: "",
-      // Forma pago
-      condicion_pago: ['contado'],
-      tiene_dias_credito: { value: false, disabled: true },
-      cantidad_dias_credito: { value: 0, disabled: true },
-      moneda: [null, Validators.required],
-      forma_pago: [],
-      metodo_pago: [],
-      tipo_cambio: tipoCambioDefault,
-      // Articulos
-      objeto_impuesto: [],
-      translada_iva_porcentaje: "0",
-      retiene_iva_porcentaje: "0"
-    });
+    if (this.isVenta) {
+      // Formulario para venta (cliente obligatorio)
+      this.form = this.formBuilder.group({
+        fecha_compra_cliente: new Date(),
+        vendedor: null,
+        usoCfdi: [null, Validators.required],
+        cliente: [null, Validators.required],
+        nombre_fiscal: [''],
+        regimen_fiscal: [''],
+        comentarios: "",
+        condicion_pago: ['contado'],
+        tiene_dias_credito: { value: false, disabled: true },
+        cantidad_dias_credito: { value: 0, disabled: true },
+        moneda: [null, Validators.required],
+        forma_pago: [],
+        metodo_pago: [],
+        tipo_cambio: tipoCambioDefault,
+        objeto_impuesto: [],
+        translada_iva_porcentaje: "0",
+        retiene_iva_porcentaje: "0"
+      });
+    } else {
+      // Formulario para cotización (razon_social y rfc opcionales)
+      this.form = this.formBuilder.group({
+        fecha_compra_cliente: new Date(),
+        vendedor: null,
+        razon_social: [''],
+        rfc: [''],
+        nombre_fiscal: [''],
+        regimen_fiscal: [''],
+        comentarios: "",
+        condicion_pago: ['contado'],
+        tiene_dias_credito: { value: false, disabled: true },
+        cantidad_dias_credito: { value: 0, disabled: true },
+        moneda: [null, Validators.required],
+        forma_pago: [],
+        metodo_pago: [],
+        tipo_cambio: tipoCambioDefault,
+        objeto_impuesto: [],
+        translada_iva_porcentaje: "0",
+        retiene_iva_porcentaje: "0"
+      });
+    }
 
     this.formCancelacion = this.formBuilder.group({
       fecha_cancelacion: [null, Validators.required],
@@ -207,11 +243,9 @@ export class VentaComponent implements OnInit {
     this.form.controls['tipo_cambio'].valueChanges.subscribe((newValue) => {
       this.calcularTotales();
     });
-  }
 
-  ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.id = params['ventaId'];
+      this.id = params['ventaId'] || params['cotizacionId'];
       if (this.id != undefined) {
         this.ventaService.getById(this.id).subscribe({
           next: (data) => {
@@ -229,6 +263,8 @@ export class VentaComponent implements OnInit {
               comentarios: venta.comentarios,
               nombre_fiscal: venta.cliente?.nombre_fiscal,
               regimen_fiscal: venta.cliente?.regimen_fiscal,
+              rfc: venta.cliente?.rfc,
+              razon_social: venta.cliente?.nombre_fiscal,
               // Forma pago
               condicion_pago: venta.condicion_pago,
               tiene_dias_credito: venta.tiene_dias_credito,
@@ -247,32 +283,24 @@ export class VentaComponent implements OnInit {
             this.hasRecords = this.dataSourceArticulos.data.length > 0;
 
             this.calcularTotales();
-
             this.loadSelectData();
 
-            this.obtenerDocumentos();
-
-            this.obtenerFacturasEstatus();
-
-            this.obtenerVentasEstatus();
-
-            // TODO
-            //this.obtenerPagos();
-
-            this.getEstatusVenta();
-
-            this.getFacturaArticulos();
+            if (this.isVenta) {
+              this.getFacturaArticulos();
+              this.getEstatusVenta();
+              this.obtenerDocumentos();
+            }
 
             this.route.queryParams.subscribe(params => {
               switch (params['action']) {
                 case undefined:
                   this.action = 'view';
-                  this.title = 'Consultar venta';
+                  this.title = this.isVenta ? 'Consultar venta' : 'Consultar cotización';
                   //this.form.disable();
                   break;
                 case 'edit':
                   this.action = 'edit';
-                  this.title = 'Editar venta';
+                  this.title = this.isVenta ? 'Editar venta' : 'Editar cotización';
                   break;
               }
             });
@@ -283,7 +311,7 @@ export class VentaComponent implements OnInit {
       } else {
         // Nueva venta
         this.action = 'new';
-        this.title = 'Crear venta';
+        this.title = this.isVenta ? 'Crear venta' : 'Crear cotización';
         this.loadSelectData();
       }
 
@@ -327,15 +355,21 @@ export class VentaComponent implements OnInit {
     // Datos generales
     venta.id = this.id;
     venta.fecha_compra_cliente = this.f['fecha_compra_cliente'].value;
-    venta.cliente = this.f['cliente'].value;
-    if (venta.cliente) {
-      venta.cliente.regimen_fiscal = this.f['regimen_fiscal'].value;
+    
+    if (this.isVenta) {
+      venta.cliente = this.f['cliente'].value;
+      if (venta.cliente) {
+        venta.cliente.regimen_fiscal = this.f['regimen_fiscal'].value;
+      }
+      venta.uso_cfdi = this.f['usoCfdi'].value;
+    }else{
+      venta.rfc = this.f['rfc'].value;
+      venta.razon_social = this.f['razon_social'].value;
     }
+
     venta.vendedor = this.vendedores.find(x => (x.name + ' ' + x.last_name) == this.f['vendedor'].value);
-    venta.uso_cfdi = this.f['usoCfdi'].value;
     venta.comentarios = this.f['comentarios'].value;
     venta.responsable = user;
-    venta.uso_cfdi = this.f['usoCfdi'].value;
     // forma pago
     venta.condicion_pago = this.f['condicion_pago'].value;
     venta.tiene_dias_credito = this.f['tiene_dias_credito'].value;
@@ -349,54 +383,116 @@ export class VentaComponent implements OnInit {
     venta.translada_iva_porcentaje = parseFloat(this.f['translada_iva_porcentaje'].value);
     venta.retiene_iva_porcentaje = parseFloat(this.f['retiene_iva_porcentaje'].value);
 
-    if (!this.editData) {
-      venta.articulos = this.dataSourceArticulos.data;
-      let articulosFacturar = this.dataSourceArticulos.data?.filter(x => ((x.cantidad || 0) > (x.backorder || 0)));
-      if (articulosFacturar.length > 0) {
-        this.previewFactura(venta);
-      } else {
-        // No hay articulos para facturar no hay nada en stock
-        const dialogRef = this.dialog.open(DialogWarningComponent, {
-          width: '710px',
-          data: { title: '¡ Espera !', content: 'No hay artículos para facturar, todos los artículos están en backorder. ¿Deseas guardar la venta de todas formas?' }
-        });
+    if (this.isVenta) {
+      if (!this.editData) {
+        venta.articulos = this.dataSourceArticulos.data;
+        let articulosFacturar = this.dataSourceArticulos.data?.filter(x => ((x.cantidad || 0) > (x.backorder || 0)));
+        if (articulosFacturar.length > 0) {
+          this.previewFactura(venta);
+        } else {
+          // No hay articulos para facturar no hay nada en stock
+          const dialogRef = this.dialog.open(DialogWarningComponent, {
+            width: '710px',
+            data: { title: '¡ Espera !', content: 'No hay artículos para facturar, todos los artículos están en backorder. ¿Deseas guardar la venta de todas formas?' }
+          });
 
-        dialogRef.afterClosed().subscribe(result => {
-          if (result == 'ok') {
-            this.loadingService.show();
-            this.ventaService.create(venta).subscribe({
-              next: (data) => {
-                this.loadingService.hide();
-                this.openDialogSuccess(`Se ha creado con éxito la venta #${data.id}, podrás visualizarlo desde tu listado ventas.`)
-                this.router.navigate(['ventas']);
-              },
-              error: (e) => {
-                this.loadingService.hide();
-                this.openDialogError(`Hubo un error al crear la venta: ${e.error.error}`)
-              }
-            });
-          }
-        });
+          dialogRef.afterClosed().subscribe(result => {
+            if (result == 'ok') {
+              this.loadingService.show();
+              this.ventaService.create(venta, 1).subscribe({
+                next: (data) => {
+                  this.loadingService.hide();
+                  this.openDialogSuccess(`Se ha creado con éxito la venta #${data.id}, podrás visualizarlo desde tu listado ventas.`)
+                  this.router.navigate(['ventas']);
+                },
+                error: (e) => {
+                  this.loadingService.hide();
+                  this.openDialogError(`Hubo un error al crear la venta: ${e.error.error}`)
+                }
+              });
+            }
+          });
+        }
+      } else {
+        let articulosFacturar = this.dataSourceArticulos.data?.map(x => {
+          let stock = (x.stock || 0);
+          let cantidad = (x.cantidad || 0);
+
+          let copia = JSON.parse(JSON.stringify(x));
+          copia.cantidad = stock >= cantidad ? cantidad : stock;
+          return copia;
+        }).filter(x => (x.cantidad || 0) > 0);
+
+        venta.articulos = articulosFacturar;
+
+        if (articulosFacturar.length === 0) {
+          this.openSnackBarWarning('No hay artículos para facturar, no hay stock disponible.');
+          return;
+        }
+
+        // Si hay artículos para facturar, se procede a la vista previa
+        this.previewFactura(venta);
       }
     } else {
-      let articulosFacturar = this.dataSourceArticulos.data?.map(x => {
-        let stock = (x.stock || 0);
-        let cantidad = (x.cantidad || 0);
-
-        // facturar solo los que me alcanzan
-        x.cantidad = stock >= cantidad ? cantidad : stock;
-        return x;
-      }).filter(x => (x.cantidad || 0) > 0);
-      venta.articulos = articulosFacturar;
-
-      if (articulosFacturar.length === 0) {
-        this.openSnackBarWarning('No hay artículos para facturar, no hay stock disponible.');
-        return;
-      }
-
-      // Si hay artículos para facturar, se procede a la vista previa
-      this.previewFactura(venta);
+      // Cotización
+      venta.articulos = this.dataSourceArticulos.data;
+      this.ventaService.create(venta, 0).subscribe({
+        next: (data) => {
+          this.loadingService.hide();
+          this.openDialogSuccess(`Se ha creado con éxito la cotización #${data.id}, podrás visualizarlo desde tu listado cotizaciones.`)
+          this.router.navigate(['cotizaciones']);
+        },
+        error: (e) => {
+          this.loadingService.hide();
+          this.openDialogError(`Hubo un error al crear la cotización: ${e.error.detalles}`)
+          this.router.navigate(['cotizaciones']);
+          console.log(e);
+        }
+      });
     }
+  }
+
+  onDescargarCotizacion() {
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
+    let user = new User();
+    user.id = userData.id;
+
+    let venta = new VentaModel();
+    // Datos generales
+    venta.id = this.id;
+    venta.fecha_compra_cliente = this.f['fecha_compra_cliente'].value;
+
+    if(this.isVenta) {
+      venta.cliente = this.f['cliente'].value;
+      if (venta.cliente) {
+        venta.cliente.regimen_fiscal = this.f['regimen_fiscal'].value;
+      }
+      venta.uso_cfdi = this.f['usoCfdi'].value;
+    }else{
+      venta.cliente = new CatalogoClienteModel();
+      venta.cliente.rfc = this.f['rfc'].value;
+      venta.cliente.nombre_fiscal = this.f['razon_social'].value;
+    }
+
+    venta.vendedor = this.vendedores.find(x => (x.name + ' ' + x.last_name) == this.f['vendedor'].value);
+    venta.comentarios = this.f['comentarios'].value;
+    venta.responsable = user;
+
+    // forma pago
+    venta.condicion_pago = this.f['condicion_pago'].value;
+    venta.tiene_dias_credito = this.f['tiene_dias_credito'].value;
+    venta.cantidad_dias_credito = this.f['cantidad_dias_credito'].value;
+    venta.moneda = this.f['moneda'].value;
+    venta.tipo_cambio = this.f['tipo_cambio'].value;
+    venta.forma_pago = this.f['forma_pago'].value;
+    venta.metodo_pago = this.f['metodo_pago'].value;
+    // Articulos
+    venta.objeto_impuesto = this.f['objeto_impuesto'].value;
+    venta.translada_iva_porcentaje = parseFloat(this.f['translada_iva_porcentaje'].value);
+    venta.retiene_iva_porcentaje = parseFloat(this.f['retiene_iva_porcentaje'].value);
+
+    venta.articulos = this.dataSourceArticulos.data;
+    this.previewFactura(venta);
   }
 
   checkChanges() {
@@ -526,7 +622,7 @@ export class VentaComponent implements OnInit {
 
   makeEditMode() {
     this.action = 'edit';
-    this.title = 'Editar articulo';
+    this.title = this.isVenta ? 'Editar articulo' : 'Editar cotización';
     this.form.enable();
   }
 
@@ -773,7 +869,7 @@ export class VentaComponent implements OnInit {
       width: '1100px',
       data: {
         articulos: this.dataSourceArticulos.data,
-        clienteId: this.f['cliente'].value ? this.f['cliente'].value.id : 0
+        clienteId: this.f['cliente'] && this.f['cliente'].value ? this.f['cliente'].value.id : 0
       },
     });
 
@@ -936,7 +1032,8 @@ export class VentaComponent implements OnInit {
       height: '900px',
       width: '1100px',
       data: {
-        venta: venta
+        venta: venta,
+        tipo: this.isVenta ? 1 : 0
       }
     });
 
@@ -950,7 +1047,7 @@ export class VentaComponent implements OnInit {
           return articulo;
         });
 
-        this.ventaService.create(venta).subscribe({
+        this.ventaService.create(venta, 1).subscribe({
           next: (data) => {
             this.loadingService.hide();
             this.openDialogSuccess(`Se ha creado con éxito la venta #${data.id}, podrás visualizarlo desde tu listado ventas.`)
@@ -1101,29 +1198,6 @@ export class VentaComponent implements OnInit {
       },
       error: (e) => {
         console.error('Error al obtener los documentos:', e);
-      }
-    });
-  }
-
-  obtenerFacturasEstatus() {
-    // TODO
-    // this.ventaService.obtenerFacturasEstatus(this.id).subscribe({
-    //   next: (data) => {
-    //     this.facturaEstatusList = data;
-    //   },
-    //   error: (e) => {
-    //     console.error('Error al obtener los estatus de las facturas:', e);
-    //   }
-    // });
-  }
-
-  obtenerVentasEstatus() {
-    this.ventaService.obtenerVentaEstatus(this.id).subscribe({
-      next: (data) => {
-        this.ventaEstatusList = data;
-      },
-      error: (e) => {
-        console.error('Error al obtener los estatus de las ventas:', e);
       }
     });
   }
@@ -1401,9 +1475,9 @@ export class PagoVentaModalComponent {
 
 @Component({
   selector: 'dialog-component-preview-factura',
-  template: `<span mat-dialog-title>Confirmación de dato factura</span>
+  template: `<span mat-dialog-title>{{tipo === 1 ? 'Confirmación de dato factura' : 'Descargar documento'}}</span>
             <mat-dialog-content class="mat-typography">
-              <app-preview-factura [venta]="venta" (cancel)="onCancelar()" (timbrar)="onTimbrar()" #appPreviewFacturaComponent></app-preview-factura>
+              <app-preview-factura [venta]="venta" [tipo]="tipo" (cancel)="onCancelar()" (timbrar)="onTimbrar()" #appPreviewFacturaComponent></app-preview-factura>
             </mat-dialog-content>`,
   styles: [
   ]
@@ -1411,6 +1485,7 @@ export class PagoVentaModalComponent {
 export class PreviewFacturaModalComponent {
   @ViewChild('appVentaArticuloComponent') appPreviewFacturaComponent: any;
   venta!: VentaModel;
+  tipo = 1; // 1 venta, 0 cotizacion
 
   constructor(
     public dialogRef: MatDialogRef<PreviewFacturaModalComponent>,
@@ -1421,6 +1496,9 @@ export class PreviewFacturaModalComponent {
     if (Object.keys(data).length > 0) {
       if (data.venta != undefined) {
         this.venta = data.venta;
+      }
+      if (data.tipo != undefined) {
+        this.tipo = data.tipo;
       }
     }
 

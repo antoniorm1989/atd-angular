@@ -300,3 +300,21 @@ input[formControlName="password"] {
 .mat-sort-header-container {
     display: inline-flex;
 }
+
+/* Center all table headers globally */
+.table .mat-mdc-header-cell {
+    text-align: center !important;
+    justify-content: center !important;
+}
+
+/* Center column class for individual use */
+.center-column {
+    text-align: center !important;
+    justify-content: center !important;
+}
+
+/* If you also want to center the content of cells */
+.table .mat-mdc-cell.center-column {
+    text-align: center !important;
+    justify-content: center !important;
+}

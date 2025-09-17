@@ -39,6 +39,10 @@ export class VentaModel {
   estatus: VentaEstatusModel | undefined;
   facturas: VentaFacturaModel[] | undefined;
 
+  // Datos cuando es solo cotizacion
+  rfc: string | undefined;
+  razon_social: string | undefined;
+
   constructor(id?: number) {
     this.id = id;
   }

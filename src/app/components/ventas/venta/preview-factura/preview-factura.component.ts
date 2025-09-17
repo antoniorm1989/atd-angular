@@ -17,6 +17,7 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
   @Output() cancel = new EventEmitter();
   @Output() timbrar = new EventEmitter();
   @Input() venta: VentaModel | undefined;
+  @Input() tipo = 1; // 1 venta, 0 cotizacion
   factura: FacturaPreviewModel | undefined;
 
   displayedColumns: string[] = ['unidad', 'producto_servicio', 'cantidad', 'descripcion', 'p_unitario', 'importe'];
@@ -42,18 +43,26 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
       this.factura.receptor = new ReceptorModel();
       this.factura.receptor.nombre = this.venta?.cliente?.nombre_fiscal;
       this.factura.receptor.rfc = this.venta?.cliente?.rfc;
-      this.factura.receptor.domicilio_fiscal = `${this.venta?.cliente?.calle} Col. ${this.venta?.cliente?.colonia}, C.P. ${this.venta?.cliente?.cp}, ${this.venta?.cliente?.city?.name}, ${this.venta?.cliente?.state?.name}, ${this.venta?.cliente?.country?.name}`;
-      this.factura.receptor.regimen_fiscal = this.venta?.cliente?.regimen_fiscal?.name;
+
+      if (this.tipo == 1) {
+        this.factura.receptor.domicilio_fiscal = `${this.venta?.cliente?.calle} Col. ${this.venta?.cliente?.colonia}, C.P. ${this.venta?.cliente?.cp}, ${this.venta?.cliente?.city?.name}, ${this.venta?.cliente?.state?.name}, ${this.venta?.cliente?.country?.name}`;
+        this.factura.receptor.regimen_fiscal = this.venta?.cliente?.regimen_fiscal?.name;
+      }
 
       const articulosOriginales = this.venta?.articulos || [];
-      this.dataSourceArticulos.data = articulosOriginales.map(x => {
-        let stock = (x.almacen?.articulo?.stock || 0);
-        let cantidad = (x.cantidad || 0);
-        return {
-          ...x,
-          cantidad: stock >= cantidad ? cantidad : stock
-        }; 
-      }).filter(x => (x.cantidad || 0) > 0);
+
+      if (this.tipo == 1) {
+        this.dataSourceArticulos.data = articulosOriginales.map(x => {
+          let stock = (x.stock || 0);
+          let cantidad = (x.cantidad || 0);
+          return {
+            ...x,
+            cantidad: stock >= cantidad ? cantidad : stock
+          };
+        }).filter(x => (x.cantidad || 0) > 0);
+      } else {
+        this.dataSourceArticulos.data = articulosOriginales;
+      }
 
       // Assign other factura properties
       this.factura.formaPago = this.venta?.forma_pago?.name;

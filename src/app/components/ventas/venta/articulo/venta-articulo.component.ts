@@ -516,6 +516,7 @@ export class VentaArticuloComponent implements OnInit, OnDestroy {
         ventaArticuloModel.unidad_medida = this.f['unidad_medida'].value;
         ventaArticuloModel.producto_servicio_model = this.f['producto_servicio_model'].value;
         ventaArticuloModel.unidad_medida_model = this.f['unidad_medida_model'].value;
+        ventaArticuloModel.stock = this.stock
 
         if (this.selectedAlmacen) {
           let inventoryAlmacenModel = new InventoryAlmacenModel();

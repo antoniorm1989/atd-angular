@@ -63,6 +63,10 @@ const routes: Routes = [
   { path: 'ventas/detail', component: VentaComponent, canActivate: [AuthGuard]},
   { path: 'ventas/detail/:ventaId', component: VentaComponent, canActivate: [AuthGuard]},
 
+  { path: 'cotizaciones', component: VentasListComponent, canActivate: [AuthGuard] },
+  { path: 'cotizaciones/detail', component: VentaComponent, canActivate: [AuthGuard]},
+  { path: 'cotizaciones/detail/:cotizacionId', component: VentaComponent, canActivate: [AuthGuard]},
+
   // Ventas Catalogos
   { path: 'venta/catalogos', component: CatalogosComponent, canActivate: [AuthGuard] },
   { path: 'venta/catalogos/clientes', component: CatalogoClientesListComponent, canActivate: [AuthGuard] },

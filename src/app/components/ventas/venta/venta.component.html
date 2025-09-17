@@ -1,9 +1,9 @@
 <div class="venta">
     <div class="toolbar">
         <div class="toolbar-title">
-            <i class="icon fa-solid fa-cash-register"></i>
-            <span class="title">Ventas</span>
-            <div *ngIf="isReadOnly" style="margin-left: auto; margin-bottom: auto; margin-top: auto; display: flex;">
+            <i class="icon fa-solid" [ngClass]="{'fa-money-bill': isVenta, 'fa-file-invoice': !isVenta}"></i>
+            <span class="title">{{ isVenta ? 'Ventas' : 'Cotizaciones' }}</span>
+            <div *ngIf="isReadOnly && isVenta" style="margin-left: auto; margin-bottom: auto; margin-top: auto; display: flex;">
                 <mat-card class="status-card" appearance="outlined" style="width: 150px;">
                     <mat-card-content>
                         <div style="display: grid; grid-template-columns: 1fr; column-gap: 12px; row-gap: 4px;">
@@ -61,7 +61,7 @@
         </div>
 
         <div class="toolbar-breadcrumb">
-            <span class="link-breadcrumb" (click)="navigate('ventas')">Ventas</span>
+            <span class="link-breadcrumb" (click)="isVenta ? navigate('ventas') : navigate('cotizaciones')">{{ isVenta ? 'Ventas' : 'Cotizaciones' }}</span>
             <span> / </span>
             <span class="breadcrumb-item" style="margin-right: auto;">{{title}}</span>
 
@@ -83,7 +83,7 @@
                             Datos Factura
                         </mat-panel-title>
                         <mat-panel-description>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; width: 600px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; width: 600px;" *ngIf="isVenta">
                                 <div class="saldo">
                                     <mat-label class="text-1">Importe total</mat-label>
                                     <mat-label class="text-1-regular">{{ formatearComoMoneda(importeTotalFacturado) }}</mat-label>
@@ -98,12 +98,12 @@
 
                     <div class="form-row" style="grid-template-columns: repeat(4, 1fr); margin: 24px 0px;">
                         <div class="form-field">
-                            <mat-label class="text-1">Venta ID</mat-label>
+                            <mat-label class="text-1">{{isVenta ? 'Venta ID' : 'Cotización ID'}}</mat-label>
                             <mat-label class="text-1-regular">{{editData && editData.id ? formatNumber(editData.id) : 'n/a'}}</mat-label>
                         </div>
                         <div class="form-field">
                             <mat-label class="text-1">Cliente</mat-label>
-                            <mat-label class="text-1-regular">{{editData?.cliente?.id}} - {{editData?.cliente?.nombre_fiscal}}</mat-label>
+                            <mat-label class="text-1-regular">{{isVenta ? editData?.cliente?.id : editData?.cliente?.rfc}} - {{editData?.cliente?.nombre_fiscal}}</mat-label>
                          </div>
                         <div class="form-field">
                             <mat-label class="text-1">Vendedor</mat-label>
@@ -159,10 +159,14 @@
                                 
                                 <div class="articulos-sin-facturar" *ngIf="hasRecords">
                                     <div class="title-tab" style="grid-template-columns: auto 1fr 200px;">
-                                        <span>Artículos Sin Facturar (backorder)</span>
+                                        <span>
+                                            {{ isVenta ? 'Artículos Sin Facturar (backorder)' : 'Artículos' }}
+                                        </span>
                                         <div>
                                         </div>
-                                        <button type="button" mat-flat-button class="btn" (click)="onSubmit()" style="margin-left: 12px;"><mat-icon>add</mat-icon>Facturar</button>
+                                        <button *ngIf="isVenta" type="button" mat-flat-button class="btn" (click)="onSubmit()" style="margin-left: 12px;"><mat-icon>add</mat-icon>Facturar</button>
+                                        <button *ngIf="!isVenta" type="button" mat-flat-button class="btn" (click)="onDescargarCotizacion()" style="margin-left: 12px;"><mat-icon>download</mat-icon>Cotización</button>
+
                                     </div>
                                     <table class="table" mat-table [dataSource]="dataSourceArticulos" style="margin-top: 24px; margin-bottom: 24px;">
         
@@ -261,7 +265,7 @@
                                     </table>
                                 </div>
 
-                                <div class="articulos-facturados" *ngIf="hasRecordsFacturaArticulos">
+                                <div class="articulos-facturados" *ngIf="hasRecordsFacturaArticulos && isVenta">
                                     <div class="title-tab">
                                         <span>Facturas</span>
                                         <div></div>
@@ -511,7 +515,7 @@
                                 </table>
                             </mat-tab> -->
 
-                            <mat-tab label="Documentos">
+                            <mat-tab label="Documentos" *ngIf="isVenta">
                                 <div class="title-tab">
                                     <span>Documentos</span>
                                     <div></div>
@@ -723,7 +727,7 @@
                                 </div>
                             </mat-tab> -->
 
-                            <mat-tab label="Historial">
+                            <mat-tab label="Historial" *ngIf="isVenta">
                                 <div class="title-tab">
                                     <span>Historial</span>
                                     <div></div>
@@ -858,9 +862,9 @@
                         <div class="form-row two-col" style="grid-template-columns: 1fr 2fr;">
                             <div>
                                 <div class="form-field">
-                                    <mat-label class="text-1" *ngIf="isReadOnly">Fecha compra cliente</mat-label>
+                                    <mat-label class="text-1" *ngIf="isReadOnly">Fecha {{isVenta ? 'compra' : 'cotización'}} cliente</mat-label>
                                     <mat-label class="text-1-regular" *ngIf="isReadOnly">{{formatDate(this.f['fecha_compra_cliente'].value)}}</mat-label>
-                                    <mat-label class="text-1" *ngIf="!isReadOnly">Fecha compra cliente (opcional)</mat-label>
+                                    <mat-label class="text-1" *ngIf="!isReadOnly">Fecha {{isVenta ? 'compra' : 'cotización'}} cliente (opcional)</mat-label>
                                     <mat-form-field *ngIf="!isReadOnly">
                                         <input matInput [matDatepicker]="picker" formControlName="fecha_compra_cliente" [matDatepickerFilter]="filterFutureDates">
                                         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
@@ -884,7 +888,7 @@
                                         </mat-autocomplete>
                                     </mat-form-field>
                                 </div>
-                                <div class="form-field">
+                                <div class="form-field" *ngIf="isVenta">
                                     <mat-label class="text-1" *ngIf="isReadOnly">Uso CFDI</mat-label>
                                     <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['usoCfdi'].value?.name}}</mat-label>
                                     <mat-label class="text-1" *ngIf="!isReadOnly">Uso CFDI*</mat-label>
@@ -898,53 +902,70 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="datos-cliente">
-                                <div class="form-row one-col">
-                                    <div class="form-field" style="margin-top: 00px;">
-                                        <mat-label class="text-1" *ngIf="isReadOnly">Cliente</mat-label>
-                                        <mat-label class="text-1-regular" *ngIf="isReadOnly && editData != null">{{this.editData.cliente?.cliente}}</mat-label>
-                                        <mat-label class="text-1" *ngIf="!isReadOnly">Cliente*</mat-label>
-                                        <mat-form-field *ngIf="!isReadOnly">
-                                            <input type="text" matInput required [matAutocomplete]="auto" formControlName="cliente" [value]="selectedCliente ? selectedCliente.cliente : null">
-                                            <button type="button" matSuffix mat-icon-button aria-label="Clear" *ngIf="route.snapshot.paramMap.get('ventaId') == undefined && this.f['cliente'].value != undefined" (click)="clearAutocompleteInput()">
-                                                <mat-icon>close</mat-icon>
-                                            </button>
-                                            <mat-autocomplete requireSelection autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayClienteFn">
-                                                <ng-container *ngFor="let cliente of filteredClientes | async; track cliente">
-                                                    <mat-option [value]="cliente" (onSelectionChange)="onClienteSelectionChange($event)">{{cliente.cliente}}</mat-option>
-                                                </ng-container>
-                                            </mat-autocomplete>
-                                        </mat-form-field>
-                                    </div>
+                            <div [ngClass]="isVenta ? 'datos-cliente' : ''">
+                              <div class="form-row one-col">
+                                <div class="form-field" style="margin-top: 0px;">
+                                  <!-- Si es venta, muestra el autocomplete obligatorio -->
+                                  <ng-container *ngIf="isVenta; else camposClienteLibre">
+                                    <mat-label class="text-1" *ngIf="isReadOnly">Cliente</mat-label>
+                                    <mat-label class="text-1-regular" *ngIf="isReadOnly && editData != null">{{this.editData.cliente?.cliente}}</mat-label>
+                                    <mat-label class="text-1" *ngIf="!isReadOnly">Cliente*</mat-label>
+                                    <mat-form-field *ngIf="!isReadOnly">
+                                      <input type="text" matInput required [matAutocomplete]="auto" formControlName="cliente" [value]="selectedCliente ? selectedCliente.cliente : null">
+                                      <button type="button" matSuffix mat-icon-button aria-label="Clear" *ngIf="route.snapshot.paramMap.get('ventaId') == undefined && this.f['cliente'].value != undefined" (click)="clearAutocompleteInput()">
+                                        <mat-icon>close</mat-icon>
+                                      </button>
+                                      <mat-autocomplete requireSelection autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayClienteFn">
+                                        <ng-container *ngFor="let cliente of filteredClientes | async; track cliente">
+                                          <mat-option [value]="cliente" (onSelectionChange)="onClienteSelectionChange($event)">{{cliente.cliente}}</mat-option>
+                                        </ng-container>
+                                      </mat-autocomplete>
+                                    </mat-form-field>
+                                  </ng-container>
+                                  <!-- Si no es venta, muestra los campos libres -->
+                                  <ng-template #camposClienteLibre>
+                                    <mat-label class="text-1" style="margin-top: 20px;">Razón social</mat-label>
+                                    <mat-form-field>
+                                      <input matInput formControlName="razon_social" placeholder="Razón social del cliente">
+                                    </mat-form-field>
+                                    <mat-label class="text-1" style="margin-top: 20px;">RFC</mat-label>
+                                    <mat-form-field>
+                                      <input matInput formControlName="rfc" placeholder="RFC del cliente">
+                                    </mat-form-field>
+                                  </ng-template>
+                                </div>
+                              </div>
+                              <!-- Si es venta, muestra los demás datos del cliente -->
+                              <ng-container *ngIf="isVenta">
+                                <div class="form-row two-col">
+                                  <div class="form-field">
+                                    <mat-label class="text-1">Tipo de Cliente</mat-label>
+                                    <mat-label *ngIf="isReadOnly && editData != null" class="text-1-regular">{{this.editData.cliente?.tipo}}</mat-label>
+                                    <mat-label *ngIf="!isReadOnly" class="text-1-regular">{{ this.f['cliente'].value != null ? this.f['cliente'].value.tipo : 'Selecciona un cliente' }}</mat-label>
+                                  </div>
+                                  <div class="form-field">
+                                    <mat-label class="text-1">RFC</mat-label>
+                                    <mat-label *ngIf="isReadOnly && editData != null" class="text-1-regular">{{this.editData.cliente?.rfc}}</mat-label>
+                                    <mat-label *ngIf="!isReadOnly" class="text-1-regular">{{ this.f['cliente'].value != null ? this.f['cliente'].value.rfc : 'Selecciona un cliente' }}</mat-label>
+                                  </div>
                                 </div>
                                 <div class="form-row two-col">
-                                    <div class="form-field">
-                                        <mat-label class="text-1">Tipo de Cliente</mat-label>
-                                        <mat-label *ngIf="isReadOnly && editData != null" class="text-1-regular">{{this.editData.cliente?.tipo}}</mat-label>
-                                        <mat-label *ngIf="!isReadOnly" class="text-1-regular">{{ this.f['cliente'].value != null ? this.f['cliente'].value.tipo : 'Selecciona un cliente' }}</mat-label>
-                                    </div>
-                                    <div class="form-field">
-                                        <mat-label class="text-1">RFC</mat-label>
-                                        <mat-label *ngIf="isReadOnly && editData != null" class="text-1-regular">{{this.editData.cliente?.rfc}}</mat-label>
-                                        <mat-label *ngIf="!isReadOnly" class="text-1-regular">{{ this.f['cliente'].value != null ? this.f['cliente'].value.rfc : 'Selecciona un cliente' }}</mat-label>
-                                    </div>
+                                  <div class="form-field">
+                                    <mat-label class="text-1">Razón social</mat-label>
+                                    <mat-label *ngIf="isReadOnly && editData != null" class="text-1-regular">{{this.editData.cliente?.nombre_fiscal}}</mat-label>
+                                    <mat-label *ngIf="!isReadOnly" class="text-1-regular">{{ this.f['cliente'].value != null ? this.f['cliente'].value.nombre_fiscal : 'Selecciona un cliente' }}</mat-label>
+                                  </div>
+                                  <div class="form-field">
+                                    <mat-label class="text-1">Régimen fiscal</mat-label>
+                                    <mat-label *ngIf="isReadOnly && editData?.cliente?.regimen_fiscal" class="text-1-regular">
+                                      {{ editData?.cliente?.regimen_fiscal?.key }} {{ editData?.cliente?.regimen_fiscal?.name }}
+                                    </mat-label>
+                                    <mat-label *ngIf="!isReadOnly" class="text-1-regular">
+                                      {{ f['cliente'].value?.regimen_fiscal ? (f['cliente'].value.regimen_fiscal.key + ' ' + f['cliente'].value.regimen_fiscal.name) : 'Selecciona un cliente' }}
+                                    </mat-label>
+                                  </div>
                                 </div>
-                                <div class="form-row two-col">
-                                    <div class="form-field">
-                                        <mat-label class="text-1">Razón social</mat-label>
-                                        <mat-label *ngIf="isReadOnly && editData != null" class="text-1-regular">{{this.editData.cliente?.nombre_fiscal}}</mat-label>
-                                        <mat-label *ngIf="!isReadOnly" class="text-1-regular">{{ this.f['cliente'].value != null ? this.f['cliente'].value.nombre_fiscal : 'Selecciona un cliente' }}</mat-label>
-                                    </div>
-                                    <div class="form-field">
-                                        <mat-label class="text-1">Régimen fiscal</mat-label>
-                                        <mat-label *ngIf="isReadOnly && editData?.cliente?.regimen_fiscal" class="text-1-regular">
-                                          {{ editData?.cliente?.regimen_fiscal?.key }} {{ editData?.cliente?.regimen_fiscal?.name }}
-                                        </mat-label>
-                                        <mat-label *ngIf="!isReadOnly" class="text-1-regular">
-                                          {{ f['cliente'].value?.regimen_fiscal ? (f['cliente'].value.regimen_fiscal.key + ' ' + f['cliente'].value.regimen_fiscal.name) : 'Selecciona un cliente' }}
-                                        </mat-label>
-                                      </div>
-                                </div>
+                              </ng-container>
                             </div>
                         </div>
                     </mat-expansion-panel>
