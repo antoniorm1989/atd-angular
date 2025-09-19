@@ -106,20 +106,25 @@ body {
 }
 
 .mat-mdc-snack-bar-container.snackbar-error {
-    --mdc-snackbar-container-color: #ffcccc !important;
-    --mdc-snackbar-supporting-text-color: #212121 !important;
-    --mdc-snackbar-container-color: #ffcccc; /* Color de fondo */
-    --mdc-snackbar-supporting-text-color: #333333 !important; /* Color de texto oscuro */
-    font-weight: bold; /* Texto en negrita */
-    border: 2px solid #ff0000; /* Borde rojo de 2px */
-    margin: 10px; /* Espaciado externo */
-    border-radius: 5px; /* Bordes redondeados */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
-    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
+    --mdc-snackbar-container-color: #fff4e5 !important; /* Fondo suave naranja */
+    --mdc-snackbar-supporting-text-color: #a94442 !important; /* Texto rojo suave */
+    border: 1.5px solid #f5c6cb; /* Borde coral claro */
+    font-weight: 500;
+    border-radius: 7px;
+    box-shadow: 0 2px 8px rgba(169, 68, 66, 0.08);
+    margin: 10px;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    display: flex;
+    align-items: center;
+}
+
+.mat-mdc-snack-bar-container.snackbar-error .mat-mdc-button.mat-mdc-snack-bar-action:not(:disabled){
+    color: #a94442 !important;
 }
 
 .mat-mdc-snack-bar-container.snackbar-error:hover {
-    --mdc-snackbar-container-color: #ff9999 !important; 
+    --mdc-snackbar-container-color: #ffe3d6 !important;
 }
 
 .mat-mdc-snack-bar-container.snackbar-success {

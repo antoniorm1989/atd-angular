@@ -22,6 +22,7 @@ import { LoadingService } from 'src/app/components/genericos/loading/loading.ser
 import { ventaEstatusEnum, facturaEstatusEnum, pagoEstatusEnum } from '../../../global/tools';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CancelarFacturaComponent } from './cancelar/cancelar-factura.component';
+import { PagarFacturaComponent } from './pago/pagar-factura.component';
 
 
 @Component({
@@ -110,12 +111,6 @@ export class VentaComponent implements OnInit {
   displayedColumnsDocumentos: string[] = ['nombre', 'fecha_creacion', 'acciones'];
   dataSourceDocumentos = new MatTableDataSource<any>([]);
   @ViewChild(MatPaginator) paginatorDocumentos!: MatPaginator;
-
-  // Pagos y abonos
-  hasRecordsPagos = false;
-  displayedColumnsPagos: string[] = ['folio', 'forma_pago', 'cuenta', 'importe', 'fecha', 'usuario', 'acciones'];
-  dataSourcePagos = new MatTableDataSource<VentaPagoModel>([]);
-  @ViewChild(MatPaginator) paginatorPagos!: MatPaginator;
 
   subTotal: number = 0;
   iva: number = 0;
@@ -1265,20 +1260,7 @@ export class VentaComponent implements OnInit {
   }
 
   // Pagos
-  // obtenerPagos() {
-  //   this.hasRecordsPagos = false;
-  //   this.ventaService.getPagos(this.id).subscribe({
-  //     next: (data) => {
-  //       this.dataSourcePagos.data = data;
-  //       this.dataSourcePagos._updateChangeSubscription();
-  //       this.hasRecordsPagos = this.dataSourcePagos.data.length > 0;
-
-  //     },
-  //     error: (e) => {
-  //       console.error('Error al obtener los pagos:', e);
-  //     }
-  //   });
-  // }
+  
 
   // openPagoVentaModalComponent() {
   //   const dialogRef = this.dialog.open(PagoVentaModalComponent, {
@@ -1309,7 +1291,6 @@ export class VentaComponent implements OnInit {
     this.expandedElement = this.isExpanded(element) ? null : element;
   }
 
-
   // Cancelar factura
   openCancelarFacturaModal(facturaData?: any) {
     const dialogRef = this.dialog.open(CancelarFacturaComponent, {
@@ -1331,7 +1312,29 @@ export class VentaComponent implements OnInit {
     });
   }
 
-  private cancelarFactura(ventaFacturaId: number, motivo: any, uuidSustitucion?: string, cfdi_uid?: string) {
+  openPagarFacturaModal(facturaData?: any) {
+    const dialogRef = this.dialog.open(PagarFacturaComponent, {
+      width: '1100px',
+      height: '600px',
+      disableClose: true,
+      data: {
+        venta_factura_id: facturaData.venta_factura_id,
+        total: facturaData.total,
+        moneda_venta_id: facturaData.moneda_venta_id,
+        metodo_pago_key: this.editData?.metodo_pago?.key
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.totalPagado) {
+        facturaData.total_pagado = result.totalPagado;
+        this.getEstatusVenta();
+        console.log('Total pagado:', result.totalPagado);
+      }
+    });
+  }
+
+   private cancelarFactura(ventaFacturaId: number, motivo: any, uuidSustitucion?: string, cfdi_uid?: string) {
     const cancelData = {
       motivo: motivo.clave,
       uuid_sustitucion: uuidSustitucion,
@@ -1353,6 +1356,7 @@ export class VentaComponent implements OnInit {
       }
     });
   }
+
 }
 
 
@@ -1408,67 +1412,6 @@ export class ArticuloVentaModalComponent {
       this.dialogRef.close(ventaArticuloModel);
     } catch (error) {
       console.error('An error occurred in onAgregarArticulo:', error);
-    }
-  }
-}
-
-@Component({
-  selector: 'dialog-component-agregar-pago-venta',
-  template: `<span mat-dialog-title>Agregar pago - abono</span>
-            <mat-dialog-content class="mat-typography">
-              <app-venta-pago [ventaPagoModel]="ventaPagoModel" [importeTotal]="importeTotal" [moneda]="moneda" [saldo]="saldo" [ventaId]="ventaId" (cancel)="onCancelar()" (add)="onAgregarPago()" #appVentaPagoComponent></app-venta-pago>
-            </mat-dialog-content>`,
-  styles: [
-  ]
-})
-export class PagoVentaModalComponent {
-  @ViewChild('appVentaPagoComponent') appVentaPagoComponent: any;
-  ventaPagoModel!: VentaPagoModel;
-  ventaId = 0;
-  importeTotal: number = 0;
-  saldo: number = 0;
-  clienteId = 0;
-  isDespachar = false;
-  moneda: string = 'MXN';
-
-  constructor(
-    public dialogRef: MatDialogRef<PagoVentaModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
-    dialogRef.disableClose = true;
-
-    if (Object.keys(data).length > 0) {
-      if (data.ventaPagoModel != undefined) {
-        this.ventaPagoModel = data.ventaPagoModel;
-      }
-      if (data.ventaId != undefined) {
-        this.ventaId = data.ventaId;
-      }
-      if (data.importeTotal != undefined) {
-        this.importeTotal = data.importeTotal;
-      }
-      if (data.saldo != undefined) {
-        this.saldo = data.saldo;
-      }
-      if (data.moneda != undefined) {
-        this.moneda = data.moneda;
-      }
-    }
-  }
-
-  onCancelar() {
-    try {
-      this.dialogRef.close();
-    } catch (error) {
-      console.error('An error occurred in onAgregarArticulo:', error);
-    }
-  }
-
-  onAgregarPago() {
-    try {
-      this.dialogRef.close();
-    } catch (error) {
-      console.error('An error occurred in onAgregarPago:', error);
     }
   }
 }

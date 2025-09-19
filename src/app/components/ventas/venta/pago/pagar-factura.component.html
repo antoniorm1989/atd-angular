@@ -1,0 +1,224 @@
+<div class="pagar-factura-modal">
+    <!-- Header with question mark icon -->
+    <div class="modal-header" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 24px 8px 24px;">
+      <div style="display: flex; align-items: center;">
+        <mat-icon color="primary" style="margin-right: 8px;">payment</mat-icon>
+        <span class="text-1" style="font-size: 1.25rem; font-weight: 600;">Pagar factura</span>
+      </div>
+      <button mat-icon-button class="close-button" (click)="onCancel()" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <!-- Modal Content -->
+    <div class="modal-content" style="display: grid; grid-template-columns: 1fr; row-gap: 24px;">
+        <div style="display: grid; grid-template-columns: 250px 250px 1fr 180px; column-gap: 24px; margin-top: 12px;">
+            <div class="total">
+                <mat-label class="text-1">Total</mat-label>
+                <mat-label class="text-1-regular">{{ formatearComoMoneda(total) }} MXN</mat-label>
+            </div>
+            <div class="pendiente">
+                <mat-label class="text-1">Pendiente</mat-label>
+                <mat-label class="text-1-regular">{{ formatearComoMoneda(pendiente) }} MXN</mat-label>
+            </div>
+            <div></div>
+            <div>
+                <button *ngIf="wizardStep === 1 && pendiente > 0" mat-flat-button class="btn" (click)="wizardStep = 2" style="height: 100%;">
+                    <mat-icon>add</mat-icon> Agregar pago
+                </button>
+                <div *ngIf="wizardStep === 1 && pendiente <= 0" class="pagado-msg">
+                    <mat-icon color="primary">check_circle</mat-icon>
+                    <span>¡Factura pagada!</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 1: Tabla de pagos -->
+        <ng-container *ngIf="wizardStep === 1">
+            <table mat-table [dataSource]="dataSourcePagos" class="mat-elevation-z1 tabla-pagos" style="width:100%; margin-top:16px;">
+                <ng-container matColumnDef="fecha">
+                    <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                    <td mat-cell *matCellDef="let pago">{{ pago.created_at | date:'dd-MM-yyyy' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="monto">
+                    <th mat-header-cell *matHeaderCellDef>Monto</th>
+                    <td mat-cell *matCellDef="let pago">{{ pago.deposito | currency:pago.moneda:'symbol':'1.2-2' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="forma_pago">
+                    <th mat-header-cell *matHeaderCellDef>Método</th>
+                    <td mat-cell *matCellDef="let pago">{{ pago.metodoPago?.key }}</td>
+                </ng-container>
+                <ng-container matColumnDef="referencia">
+                    <th mat-header-cell *matHeaderCellDef>Referencia</th>
+                    <td mat-cell *matCellDef="let pago">{{ pago.referencia }}</td>
+                </ng-container>
+                <ng-container matColumnDef="cuenta">
+                    <th mat-header-cell *matHeaderCellDef>Cuenta de pago</th>
+                    <td mat-cell *matCellDef="let pago">{{ pago.cuentaBancaria?.banco }}</td>
+                </ng-container>
+                <ng-container matColumnDef="numero_cuenta">
+                    <th mat-header-cell *matHeaderCellDef>Número de cuenta</th>
+                    <td mat-cell *matCellDef="let pago">{{ pago.cuentaBancaria?.numero_cuenta }}</td>
+                </ng-container>
+                <ng-container matColumnDef="estatus" *ngIf="metodo_pago_key === 'PPD'">
+                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Estatus</th>
+                    <td mat-cell *matCellDef="let element" style="text-align: center;">
+                        <span class="status-badge" [ngClass]="{
+                            'status-cancelada': element.complementoPago.estatus === 'CANCELADA',
+                            'status-facturada': element.complementoPago.estatus === 'FACTURADA',
+                            'status-fallida': element.complementoPago.estatus === null
+                            }">
+                            {{ element.complementoPago.estatus || 'FALLIDA' }}
+                        </span>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="acciones">
+                    <th mat-header-cell *matHeaderCellDef style="width: 110px; text-align: center;"></th>
+                    <td mat-cell *matCellDef="let element" style="text-align: center;">
+                        <button mat-icon-button [matMenuTriggerFor]="menu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="onSelectPago(element)" *ngIf="!element.complementoPago.cfdi_uid">
+                                <mat-icon>edit</mat-icon>
+                                <span>Editar</span>
+                            </button>
+                            <button mat-menu-item (click)="onDeletePago(element)" *ngIf="!element.complementoPago.cfdi_uid">
+                                <mat-icon>delete</mat-icon>
+                                <span>Eliminar</span>
+                            </button>
+                            <button mat-menu-item (click)="descargarFacturaPDF(element.complementoPago.cfdi_uid)" *ngIf="element.complementoPago.cfdi_uid">
+                                <mat-icon>file_download</mat-icon>
+                                <span>Descargar PDF</span>
+                            </button>
+                            <button mat-menu-item (click)="descargarFacturaXML(element.complementoPago.cfdi_uid)" *ngIf="element.complementoPago.cfdi_uid">
+                                <mat-icon>file_download</mat-icon>
+                                <span>Descargar XML</span>
+                            </button>
+                            <button mat-menu-item (click)="generarComplemento(element.id)" *ngIf="!element.complementoPago.cfdi_uid && metodo_pago_key === 'PPD' && element.complementoPago.estatus == null">
+                                <mat-icon>sync</mat-icon>
+                                <span>Generar Complemento</span>
+                            </button>
+                            <!-- <button mat-menu-item (click)="openCancelarFacturaModal(element)" [disabled]="element.estatus === 'CANCELADA'">
+                                <mat-icon>cancel</mat-icon>
+                                <span>Cancelar</span>
+                            </button> -->
+                        </mat-menu>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsPagos"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsPagos;">
+                </tr>
+            </table>
+            <div *ngIf="dataSourcePagos.data.length === 0" class="empty-state">
+              <mat-icon class="empty-payment-icon" style="font-size:48px; color:#BA9400; margin-bottom:8px;">receipt_long</mat-icon>
+              <div class="empty-title">No hay pagos registrados</div>
+              <div class="empty-desc">Cuando registres un pago aparecerá aquí el historial.</div>
+            </div>
+        </ng-container>
+
+         <!-- Paso 2: Formulario de pago -->
+        <ng-container *ngIf="wizardStep === 2">
+            <form [formGroup]="form" (ngSubmit)="onAdd()">
+                
+                <div class="form-row" style="margin-top:24px; display: grid; grid-template-columns: .6fr .8fr 1fr; column-gap: 24px;">
+                    <div class="form-field" style="display: grid;">
+                        <mat-label class="text-1">Monto*</mat-label>
+                        <mat-form-field floatLabel="always">
+                            <input matInput type="text" formControlName="monto" min="0" step="0.01"
+                                (keypress)="validarDecimal($event)" (blur)="validarFinal('monto')" placeholder="0.00" required>
+                            <span matTextPrefix>$&nbsp;</span>
+                        </mat-form-field>
+                    </div>
+                    <div class="form-field">
+                        <mat-label class="text-1">Cuenta bancaria*</mat-label>
+                        <mat-form-field>
+                            <mat-select [(value)]="selectedCuentaBancaria" formControlName="cuenta_bancaria">
+                                <mat-option *ngFor="let cuenta of cuentasBancarias" [value]="cuenta">{{cuenta.banco}}-{{cuenta.numero_cuenta}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px;">
+                        <div class="form-field" style="display: grid;">
+                            <mat-label class="text-1">Moneda</mat-label>
+                            <mat-form-field>
+                                <mat-select formControlName="moneda">
+                                    <mat-option *ngFor="let moneda of monedas" [value]="moneda">
+                                        {{ moneda.moneda === 'MXN' ? 'Pesos' : 'Dólares' }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="form-field" style="display: grid;">
+                            <mat-label class="text-1">Tipo de cambio</mat-label>
+                            <mat-form-field floatLabel="always">
+                                <input matInput type="number" class="example-right-align" placeholder="0"
+                                    formControlName="tipo_cambio" min="0" step="0.01" (keypress)="validarDecimal($event)">
+                                <span matTextPrefix>$&nbsp;</span>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row" style="display: grid; grid-template-columns: .6fr .8fr 1fr; column-gap: 24px;">
+                    <div class="form-field" style="display: grid;">
+                        <mat-label class="text-1">Referencia</mat-label>
+                        <mat-form-field>
+                            <input matInput placeholder="Escribir la referencia" formControlName="referencia"
+                                [ngClass]="{ 'is-invalid': submitted && f['referencia'].errors }" required>
+                        </mat-form-field>
+                    </div>
+                    <div class="form-field"  style="display: grid;">
+                        <mat-label class="text-1">Forma de pago físcal*</mat-label>
+                        <mat-form-field>
+                            <mat-select [(value)]="selectedFormaPago" formControlName="forma_pago">
+                                <mat-option *ngFor="let forma_pago of formaPagoList" [value]="forma_pago">{{forma_pago.key}}-{{ forma_pago.name }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="form-field" style="display: grid;">
+                        <mat-label class="text-1">Método de pago*</mat-label>
+                        <mat-form-field>
+                            <mat-select [(value)]="selectedMetodoPago" formControlName="metodo_pago" [disabled]="true">
+                                <mat-option *ngFor="let metodo_pago of metodoPagoList" [value]="metodo_pago">
+                                    {{ metodo_pago.key }} - {{ metodo_pago.name }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <!-- Validation Errors Section -->
+                <div *ngIf="submitted && form.invalid" class="invalid-feedback-group">
+                    <div *ngIf="f['monto'].errors">
+                        <div *ngIf="f['monto'].errors['required']">El monto a depositar es requerido</div>
+                        <div *ngIf="f['monto'].errors['pattern']">El monto debe ser un número válido</div>
+                        <div *ngIf="f['monto'].errors['maxMonto']">El monto no puede ser mayor al saldo pendiente</div>
+                    </div>
+                    <div *ngIf="f['cuenta_bancaria'].errors">
+                        <div *ngIf="f['cuenta_bancaria'].errors['required']">La cuenta bancaria es requerida</div>
+                    </div>
+                    <div *ngIf="f['referencia'].errors">
+                        <div *ngIf="f['referencia'].errors['required']">La referencia es requerida</div>
+                    </div>
+                    <div *ngIf="f['forma_pago'].errors">
+                        <div *ngIf="f['forma_pago'].errors['required']">La forma de pago es requerida</div>
+                    </div>
+                    <div *ngIf="f['metodo_pago'].errors">
+                        <div *ngIf="f['metodo_pago'].errors['required']">El método de pago es requerido</div>
+                    </div>
+                    <div *ngIf="f['moneda'].errors">
+                        <div *ngIf="f['moneda'].errors['required']">La moneda es requerida</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 180px 690px 180px; position: absolute; bottom: 24px;">
+                    <button mat-flat-button class="btn secundary" type="button" (click)="cancelarWizard()">Cancelar</button>
+                    <div></div>
+                    <button mat-flat-button class="btn" type="submit">{{ isEditing ? 'Actualizar' : 'Pagar' }}</button>
+                </div>
+            </form>
+        </ng-container>
+    </div>
+</div>

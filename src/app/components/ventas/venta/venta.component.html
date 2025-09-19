@@ -309,8 +309,18 @@
                                         </ng-container>
 
                                         <ng-container matColumnDef="pagado">
-                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">Pagado</th>
-                                            <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.total_pagado}}</td>
+                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">Pendiente</th>
+                                            <td mat-cell *matCellDef="let element" style="text-align: center;">
+                                                <ng-container *ngIf="(element.total - element.total_pagado) === 0; else pendiente">
+                                                    <span style="color: #388e3c; font-weight: bold; display: flex; align-items: center; justify-content: center;">
+                                                        <mat-icon color="primary" style="margin-right: 4px;">check_circle</mat-icon>
+                                                        Pagado
+                                                    </span>
+                                                </ng-container>
+                                                <ng-template #pendiente>
+                                                    {{ formatearComoMoneda(element.total - element.total_pagado) }}
+                                                </ng-template>
+                                            </td>
                                         </ng-container>
 
                                         <ng-container matColumnDef="estatus">
@@ -344,6 +354,10 @@
                                                     <button mat-menu-item (click)="openCancelarFacturaModal(element)" [disabled]="element.estatus === 'CANCELADA'">
                                                         <mat-icon>cancel</mat-icon>
                                                         <span>Cancelar</span>
+                                                    </button>
+                                                    <button mat-menu-item (click)="openPagarFacturaModal(element)">
+                                                        <mat-icon>payment</mat-icon>
+                                                        <span>Pagos</span>
                                                     </button>
                                                 </mat-menu>
                                             </td>

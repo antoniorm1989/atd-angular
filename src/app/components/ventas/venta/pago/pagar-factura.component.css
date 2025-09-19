@@ -1,0 +1,504 @@
+.modal-header {
+  border-bottom: 3px solid #BA9400; /* Línea amarilla más notoria */
+  background: #fff;
+}
+
+.close-button {
+  margin-left: 16px;
+}
+
+.pagar-factura-modal {
+    width: 100%;
+    height: 100%;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.pagar-factura-modal .modal-content {
+    padding: 8px 24px;
+}
+
+.pagar-factura-modal .container .form-row {
+    justify-content: space-between;
+    display: grid;
+    gap: 20px;
+}
+
+.pagar-factura-modal .container .form-row.one-col {
+    grid-template-columns: repeat(1, 1fr);
+}
+
+.pagar-factura-modal .container .form-row.two-col {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.pagar-factura-modal .container .form-row.three-col {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.pagar-factura-modal .container .form-row.three-col .mat-mdc-form-field-infix {
+    width: auto;
+}
+
+.pagar-factura-modal .mat-mdc-card-subtitle {
+    font-size: 20px;
+}
+
+.pagar-factura-modal .container .form-row.four-col {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.accordion-address {
+    margin-bottom: 24px;
+}
+
+
+mat-panel-title {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 36px;
+    letter-spacing: 0em;
+}
+
+mat-panel-description {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 36px;
+}
+
+.mat-expansion-panel-header-description {
+    font-size: 20px;
+    flex-grow: unset !important;
+}
+
+.mat-mdc-tab:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label,
+.mat-mdc-tab-link:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label {
+    color: #BA9400;
+}
+
+.mat-mdc-tab:not(.mat-mdc-tab-disabled) .mdc-tab-indicator__content--underline,
+.mat-mdc-tab-link:not(.mat-mdc-tab-disabled) .mdc-tab-indicator__content--underline {
+    border-color: #BA9400;
+}
+
+.rights mat-panel-title {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 36px;
+    letter-spacing: 0em;
+}
+
+.pagar-factura-modal .rights .mat-grid-tile-content {
+    justify-content: flex-start;
+}
+
+.pagar-factura-modal .rights .gray {
+    background-color: #FAFAFA;
+}
+
+.pagar-factura-modal .column {
+    flex: 6;
+    padding: 0px 24px;
+}
+
+/* photo */
+.pagar-factura-modal .photo {
+    width: 138px;
+    height: 141px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.pagar-factura-modal .column-photo {
+    align-content: center;
+    margin: auto;
+}
+
+.pagar-factura-modal .empty-image-container {
+    width: 138px;
+    height: 141px;
+    background-color: #C5C6C7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.pagar-factura-modal .empty-image-container .empty-image {
+    width: 51px;
+    height: 51px;
+}
+
+.pagar-factura-modal .stock_indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 60px;
+    border-radius: 8px;
+    background-color: #C5C6C7;
+}
+
+.pagar-factura-modal .stock_indicator .title-stock {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.pagar-factura-modal .stock_indicator .stock {
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.pagar-factura-modal .mat-badge-content {
+    background-color: green;
+}
+
+.pagar-factura-modal .stock_indicator-neg .mat-badge-content {
+    background-color: red !important;
+}
+
+.pagar-factura-modal .stock_indicator-hide .mat-badge-content {
+    display: none;
+}
+
+.option-img {
+    vertical-align: middle;
+    margin-right: 8px;
+    border-radius: 4px;
+    height: 35px;
+    width: 35px;
+}
+
+.option-img.no-image {
+    background-color: black;
+    padding: 5px;
+    height: 25px;
+    width: 25px;
+}
+
+.pagar-factura-modal .container-datos-pago {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin: auto auto auto 0;
+}
+
+.pagar-factura-modal .container-datos-pago .row {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.row:nth-child(3) {
+    grid-column: span 2;
+    /* Make the third and fourth items span 2 columns */
+}
+
+.pagar-factura-modal .container-agregar-retirar {
+    display: flex;
+}
+
+.pagar-factura-modal .container-agregar-retirar button {
+    margin: 8px 3px;
+}
+
+.pagar-factura-modal .container-agregar-retirar button.mat-mdc-mini-fab {
+    --mdc-fab-container-color: #BA9400;
+}
+
+.pagar-factura-modal mat-form-field{
+    height: 70px;
+}
+
+.pagar-factura-modal .autocomplete-pago-container{
+    display: flex;
+    padding: 0px 24px 0px 0px;
+}
+.pagar-factura-modal .autocomplete-pago-container mat-form-field{
+    flex: 1;
+}
+.mdc-list-item__primary-text{
+    font-weight: 500;
+}
+
+
+
+
+
+.pagar-factura-modal {
+    padding: 0px 8px 16px 8px;
+}
+
+.pagar-factura-modal .container .container-datos-pago {
+    margin: auto 0 auto 0;
+}
+
+.pagar-factura-modal .container .form-row.three-col.add-stock {
+    grid-template-columns: 3fr 3fr 3fr;
+    margin-top: 8px;
+}
+
+.pagar-factura-modal .mat-mdc-card.mdc-card {
+    margin-top: 12px;
+}
+
+.pagar-factura-modal .container .form-row {
+    gap: 0px;
+}
+
+.pagar-factura-modal .container-datos-pago {
+    gap: 4px;
+}
+
+.pagar-factura-modal .container .row-cantidades {
+    gap: 18px;
+}
+
+.pagar-factura-modal .invalid-feedback,
+.pagar-factura-modal .invalid-feedback-warning {
+    text-align: center;
+}
+
+.pagar-factura-modal .mat-mdc-card-header {
+    padding: 8px 16px 0;
+}
+
+.pagar-factura-modal .mat-mdc-card-content:last-child {
+    padding-bottom: 8px;
+}
+
+.pagar-factura-modal .form-field.comment {
+    grid-column: span 3;
+}
+
+.pagar-factura-modal .form-field.comment{
+    margin-top: 12px;
+}
+.pagar-factura-modal .container-agregar-retirar .mdc-fab--mini {
+    width: 29px;
+    height: 29px;
+}
+.dialog-component-agregar-pago-venta{
+    width: 3000px;
+}
+
+
+
+
+
+.pagar-factura-modal .separator{
+    height: 2px;
+    width: 100%;
+    background-color: #BA9400;
+}
+
+.pagar-factura-modal .resumen-label{
+    padding: 8px 0px;
+    text-align: end;
+    height: 22px;
+}
+.pagar-factura-modal .resumen-value{
+    background-color: #D9D9D9;
+    padding: 8px 0px;
+    height: 22px;
+    border-radius: 4px;
+    text-align: center;
+    width: 175px;
+}
+
+.pagar-factura-modal .separator-title{
+    display: grid;
+    grid-template-columns: max-content 4fr;
+    gap: 8px;
+}
+
+
+.mat-mdc-header-row{
+    background-color: #eadfb2;
+}
+
+.pagar-factura-modal .back-order-info{
+    position: absolute;
+    line-height: 1px;
+    top: 240px;
+    right: 24px;
+    padding: 0px 0px 0px 60px;
+    text-align: end;
+}
+.pagar-factura-modal .back-order-info i{
+    color: #BA9400;
+}
+.pagar-factura-modal .back-order-info span{
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 12px;
+    text-align: left;
+}
+
+.pagar-factura-modal .total,
+.pagar-factura-modal .pendiente{
+    background-color: lightgray;
+    border-radius: 4px;
+    padding: 11px;
+    display: flex;
+}
+.pagar-factura-modal .pendiente{
+    background-color: #ffa59f;
+}
+.pagar-factura-modal .total .text-1-regular,
+.pagar-factura-modal .pendiente .text-1-regular{
+    margin-left: auto;
+    font-size: 18px;
+}
+
+
+/* new style for CFDI status */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 0 32px 0;
+  margin-top: 24px;
+}
+
+.empty-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #BA9400;
+  margin-bottom: 4px;
+}
+
+.empty-desc {
+  color: #888;
+  font-size: 1rem;
+}
+
+.mat-icon.empty-payment-icon {
+  height: unset;
+  width: unset;
+}
+
+.invalid-feedback-group {
+  padding: 12px 16px;
+  background: #fff3cd;
+  color: #856404;
+  border-radius: 8px;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tabla-pagos .mat-icon{
+    color: #ba9400;
+}
+
+.pagado-msg {
+  display: flex;
+  align-items: center;
+  color: #27ae60;
+  font-weight: 600;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* Status Badge Base */
+.status-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 80px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
+}
+
+/* Status Cancelada - Red */
+.status-badge.status-cancelada {
+    background-color: #dc3545;
+    color: white;
+    border: 1px solid #dc3545;
+}
+
+.status-badge.status-cancelada:hover {
+    background-color: #c82333;
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+/* Status Facturada/Timbrada - Green */
+.status-badge.status-facturada {
+    background-color: #28a745;
+    color: white;
+    border: 1px solid #28a745;
+}
+
+.status-badge.status-facturada:hover {
+    background-color: #218838;
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+/* Status Fallida - Gray */
+.status-badge.status-fallida {
+    background-color: #6c757d;
+    color: white;
+    border: 1px solid #6c757d;
+}
+
+.status-badge.status-fallida:hover {
+    background-color: #5a6268;
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+}
+
+
+@media only screen and (max-width: 1500px) {
+
+}
+
+@media only screen and (max-width: 1250px) {
+    .pagar-factura-modal .container .form-row.three-col.add-stock {
+        grid-template-columns: 3fr 2fr 3fr;
+    }
+}
+
+@media only screen and (max-width: 1084px) {
+    .pagar-factura-modal .container .form-row.four-col {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .pagar-factura-modal .container .form-row.three-col.add-stock {
+        grid-template-columns: 3fr 1fr 3fr;
+    }
+}
+
+@media only screen and (max-width: 835px) {
+    .pagar-factura-modal .container .form-row.three-col.add-stock {
+        grid-template-columns: 3fr 0fr 3fr;
+    }
+    
+}
+
+@media only screen and (max-width: 587px) {
+    .pagar-factura-modal .mat-mdc-card-title {
+        line-height: 20px;
+        font-size: 16px;
+    }
+
+    .pagar-factura-modal .container .form-container .title {
+        font-size: 20px;
+    }
+}

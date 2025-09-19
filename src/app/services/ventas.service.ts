@@ -103,27 +103,34 @@ export class VentaService {
   }
 
   // Pagos y abonos
-  getPagos(ventaId: number): Observable<Array<VentaPagoModel>> {
-    return this.http.get<Array<VentaPagoModel>>(`${environment.apiUrl}/api/ventas/getPagos/${ventaId}`);
+  getPagos(venta_factura_id: number): Observable<Array<VentaPagoModel>> {
+    return this.http.get<Array<VentaPagoModel>>(`${environment.apiUrl}/api/ventas/getPagos/${venta_factura_id}`);
   }
-
-  createPago(ventaId: number, pago: VentaPagoModel): Observable<any> {
+  createPago(ventaFacturaId: number, pago: VentaPagoModel): Observable<any> {
     let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
     if (pago && pago.usuario) {
       pago.usuario.id = userData.id;
     }
 
-    return this.http.post<void>(`${environment.apiUrl}/api/ventas/createPago/${ventaId}`, pago, this.getHeaders());
+    return this.http.post<void>(`${environment.apiUrl}/api/ventas/createPago/${ventaFacturaId}`, pago, this.getHeaders());
   }
-
-  updatePago(ventaId: number, pago: VentaPagoModel): Observable<any> {
+  updatePago(pagoId: number, pago: VentaPagoModel): Observable<any> {
     let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
     if (pago && pago.usuario) {
       pago.usuario.id = userData.id;
     }
 
-    return this.http.put<void>(`${environment.apiUrl}/api/ventas/updatePago/${ventaId}/${pago.id}`, pago, this.getHeaders());
+    return this.http.put<void>(`${environment.apiUrl}/api/ventas/updatePago/${pagoId}`, pago, this.getHeaders());
   }
+  deletePago(pagoId: number): Observable<any> {
+    return this.http.delete<void>(`${environment.apiUrl}/api/ventas/deletePago/${pagoId}`);
+  }
+  generarComplementoPago(pagoId: number): Observable<any> {
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
+    return this.http.post<void>(`${environment.apiUrl}/api/ventas/generarComplementoPago/${pagoId}`, {userId: userData.id}, this.getHeaders());
+  }
+
+  // Estatus
 
   getEstatusVenta(id: number): Observable<VentaEstatusModel> {
     return this.http.get<VentaEstatusModel>(`${environment.apiUrl}/api/ventas/getEstatusVenta/${id}`);
