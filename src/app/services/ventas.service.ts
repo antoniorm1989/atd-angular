@@ -76,6 +76,16 @@ export class VentaService {
     }, this.getHeaders());
   }
 
+  cancelarFacturaComplementoPago(complementoPagoId: number, cancelData: { motivo: any, uuid_sustitucion?: string, cfdi_uid?: string }): Observable<any> {
+    let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
+
+    return this.http.post<void>(`${environment.apiUrl}/api/ventas/cancelarFacturaComplementoPago/${complementoPagoId}`, {
+      ...cancelData,
+      userId: userData.id
+    }, this.getHeaders());
+  }
+
+  // comentarios
   updateComentario(ventaId: number, comentarios: string): Observable<any> {
     return this.http.post<void>(`${environment.apiUrl}/api/ventas/updateComentario/${ventaId}`, { comentarios }, this.getHeaders());
   }

@@ -48,17 +48,9 @@
                     <th mat-header-cell *matHeaderCellDef>Método</th>
                     <td mat-cell *matCellDef="let pago">{{ pago.metodoPago?.key }}</td>
                 </ng-container>
-                <ng-container matColumnDef="referencia">
-                    <th mat-header-cell *matHeaderCellDef>Referencia</th>
-                    <td mat-cell *matCellDef="let pago">{{ pago.referencia }}</td>
-                </ng-container>
                 <ng-container matColumnDef="cuenta">
                     <th mat-header-cell *matHeaderCellDef>Cuenta de pago</th>
                     <td mat-cell *matCellDef="let pago">{{ pago.cuentaBancaria?.banco }}</td>
-                </ng-container>
-                <ng-container matColumnDef="numero_cuenta">
-                    <th mat-header-cell *matHeaderCellDef>Número de cuenta</th>
-                    <td mat-cell *matCellDef="let pago">{{ pago.cuentaBancaria?.numero_cuenta }}</td>
                 </ng-container>
                 <ng-container matColumnDef="estatus" *ngIf="metodo_pago_key === 'PPD'">
                     <th mat-header-cell *matHeaderCellDef style="text-align: center;">Estatus</th>
@@ -71,6 +63,10 @@
                             {{ element.complementoPago.estatus || 'FALLIDA' }}
                         </span>
                     </td>
+                </ng-container>
+                <ng-container matColumnDef="cfdi">
+                    <th mat-header-cell *matHeaderCellDef>CFDI</th>
+                    <td mat-cell *matCellDef="let pago">{{ pago.complementoPago?.cfdi_uid }}</td>
                 </ng-container>
                 <ng-container matColumnDef="acciones">
                     <th mat-header-cell *matHeaderCellDef style="width: 110px; text-align: center;"></th>
@@ -99,10 +95,10 @@
                                 <mat-icon>sync</mat-icon>
                                 <span>Generar Complemento</span>
                             </button>
-                            <!-- <button mat-menu-item (click)="openCancelarFacturaModal(element)" [disabled]="element.estatus === 'CANCELADA'">
+                            <button mat-menu-item (click)="openCancelarFacturaModal(element.complementoPago)" [disabled]="element.complementoPago.estatus === 'CANCELADA'">
                                 <mat-icon>cancel</mat-icon>
                                 <span>Cancelar</span>
-                            </button> -->
+                            </button>
                         </mat-menu>
                     </td>
                 </ng-container>

@@ -7,12 +7,13 @@ import { VentaPagoModel } from 'src/app/models/ventas.model';
 import { User } from 'src/app/models/user';
 import { CatalogoArticuloService } from 'src/app/services/catalogo-articulos.service';
 import { CatalogoCuentaBancariaService } from 'src/app/services/catalogo-cuenta-bancaria.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { VentaService } from 'src/app/services/ventas.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LoadingService } from 'src/app/components/genericos/loading/loading.service';
+import { CancelarFacturaComponent } from '../cancelar/cancelar-factura.component';
 
 @Component({
   selector: 'app-pagar-factura',
@@ -38,7 +39,7 @@ export class PagarFacturaComponent implements OnInit {
 
   // Pagos y abonos
   hasRecordsPagos = false;
-  displayedColumnsPagos: string[] = ['fecha', 'monto', 'forma_pago', 'referencia', 'cuenta', 'numero_cuenta', 'estatus', 'acciones'];
+  displayedColumnsPagos: string[] = ['fecha', 'monto', 'forma_pago', 'cuenta', 'cfdi', 'estatus', 'acciones'];
   dataSourcePagos = new MatTableDataSource<VentaPagoModel>([]);
   @ViewChild(MatPaginator) paginatorPagos!: MatPaginator;
 
@@ -62,7 +63,8 @@ export class PagarFacturaComponent implements OnInit {
     private ventaService: VentaService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private snackBar: MatSnackBar,
-    private loadingService: LoadingService) {
+    private loadingService: LoadingService,
+    private dialog: MatDialog) {
 
     this.venta_factura_id = data.venta_factura_id || 0;
     this.total = data.total || 0;
@@ -352,14 +354,14 @@ export class PagarFacturaComponent implements OnInit {
       // Update existing payment
       this.ventaService.updatePago(this.selectedPago?.id, ventaPagoModel).subscribe({
         next: (data) => {
-           this.loadingService.hide();
+          this.loadingService.hide();
           this.openSnackBarSuccess('¡Pago acta exitosamente!');
           this.resetFormAndReturn();
           this.obtenerPagos();
 
         },
         error: (error) => {
-           this.loadingService.hide();
+          this.loadingService.hide();
           this.openSnackBarError('Error al registrar el pago. Inténtalo de nuevo.');
           this.resetFormAndReturn();
           this.obtenerPagos();
@@ -589,6 +591,50 @@ export class PagarFacturaComponent implements OnInit {
         }
       });
     }
+  }
+
+  openCancelarFacturaModal(facturaData?: any) {
+    const dialogRef = this.dialog.open(CancelarFacturaComponent, {
+      width: '650px',
+      maxWidth: '90vw',
+      disableClose: true,
+      data: {
+        folio: facturaData?.cfdi_uid || '',
+        facturaId: facturaData?.id,
+      }
+    });
+
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.canceled) {
+        console.log('Factura cancelada con motivo:', result.motivo);
+        console.log('UUID de sustitución:', result.uuid_sustitucion);
+        this.cancelarFactura(facturaData?.id, result.motivo, result.uuid_sustitucion, facturaData?.cfdi_uid);
+      }
+    });
+  }
+
+  private cancelarFactura(complementoPagoId: number, motivo: any, uuidSustitucion?: string, cfdi_uid?: string) {
+    const cancelData = {
+      motivo: motivo.clave,
+      uuid_sustitucion: uuidSustitucion,
+      uuid_cancelar: cfdi_uid
+    };
+
+    this.loadingService.show();
+    this.ventaService.cancelarFacturaComplementoPago(complementoPagoId, cancelData).subscribe({
+      next: (response: any) => {
+        console.log('Factura cancelada exitosamente:', response);
+        this.obtenerPagos();
+        //this.openSnackBarSuccess('Factura cancelada correctamente');
+        this.loadingService.hide();
+      },
+      error: (e: any) => {
+        console.error('Error al cancelar factura:', e.error.detalles);
+        //this.openDialogError('Error al cancelar la factura: ' + e.error.detalles);
+        this.loadingService.hide();
+      }
+    });
   }
 
 }
