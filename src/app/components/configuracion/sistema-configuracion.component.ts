@@ -90,4 +90,9 @@ export class SistemaConfiguracionComponent implements OnInit {
       duration: 5000,
     });
   }
+
+  consultarDOF() {
+    window.open('https://dof.gob.mx/indicadores.php#gsc.tab=0', '_blank');
+  }
+
 }

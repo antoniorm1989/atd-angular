@@ -7,7 +7,18 @@
 
       <div class="form-row one-col" *ngFor="let config of configuraciones">
         <div class="form-field">
-          <mat-label class="text-1">{{ config.name.replace('_', ' ') }}</mat-label>
+          <div class="label-container">
+            <mat-label class="text-1">{{ config.name.replace('_', ' ') }}</mat-label>
+            <button *ngIf="config.name === 'tipo_cambio'" 
+                    mat-stroked-button 
+                    class="dof-button"
+                    type="button"
+                    (click)="consultarDOF()"
+                    matTooltip="Consultar tipo de cambio oficial en el DOF">
+              <mat-icon>launch</mat-icon>
+              Consultar DOF
+            </button>
+          </div>
           <mat-form-field appearance="outline" class="full-width">
             <input matInput [formControlName]="config.name" placeholder="Valor de {{ config.name }}">
           </mat-form-field>

@@ -40,6 +40,7 @@ import { PagarFacturaComponent } from './pago/pagar-factura.component';
 })
 export class VentaComponent implements OnInit {
 
+  wasCotizacion = false;
   isVenta = true;
 
   action: string = 'view';
@@ -50,6 +51,7 @@ export class VentaComponent implements OnInit {
   submitted = false;
   submittedCancelacion = false;
   id = 0;
+
 
   clientes: CatalogoClienteModel[] = [];
   selectedCliente!: CatalogoClienteModel;
@@ -158,6 +160,7 @@ export class VentaComponent implements OnInit {
     const currentRoute = this.router.url;
     if (currentRoute.includes('cotizaciones')) {
       this.isVenta = false;
+      this.wasCotizacion = true;
     } else if (currentRoute.includes('ventas')) {
       this.isVenta = true;
     }
@@ -350,14 +353,14 @@ export class VentaComponent implements OnInit {
     // Datos generales
     venta.id = this.id;
     venta.fecha_compra_cliente = this.f['fecha_compra_cliente'].value;
-    
+
     if (this.isVenta) {
       venta.cliente = this.f['cliente'].value;
       if (venta.cliente) {
         venta.cliente.regimen_fiscal = this.f['regimen_fiscal'].value;
       }
       venta.uso_cfdi = this.f['usoCfdi'].value;
-    }else{
+    } else {
       venta.rfc = this.f['rfc'].value;
       venta.razon_social = this.f['razon_social'].value;
     }
@@ -457,13 +460,13 @@ export class VentaComponent implements OnInit {
     venta.id = this.id;
     venta.fecha_compra_cliente = this.f['fecha_compra_cliente'].value;
 
-    if(this.isVenta) {
+    if (this.isVenta) {
       venta.cliente = this.f['cliente'].value;
       if (venta.cliente) {
         venta.cliente.regimen_fiscal = this.f['regimen_fiscal'].value;
       }
       venta.uso_cfdi = this.f['usoCfdi'].value;
-    }else{
+    } else {
       venta.cliente = new CatalogoClienteModel();
       venta.cliente.rfc = this.f['rfc'].value;
       venta.cliente.nombre_fiscal = this.f['razon_social'].value;
@@ -617,8 +620,14 @@ export class VentaComponent implements OnInit {
 
   makeEditMode() {
     this.action = 'edit';
-    this.title = this.isVenta ? 'Editar articulo' : 'Editar cotización';
+    this.title = 'Guardar cambios';
     this.form.enable();
+  }
+
+  makeViewMode(){
+    this.action = 'view';
+    this.title = this.isVenta ? 'Consultar venta' : 'Consultar cotización';
+    this.form.disable();
   }
 
   validarDecimal(event: any) {
@@ -1260,7 +1269,7 @@ export class VentaComponent implements OnInit {
   }
 
   // Pagos
-  
+
 
   // openPagoVentaModalComponent() {
   //   const dialogRef = this.dialog.open(PagoVentaModalComponent, {
@@ -1334,7 +1343,7 @@ export class VentaComponent implements OnInit {
     });
   }
 
-   private cancelarFactura(ventaFacturaId: number, motivo: any, uuidSustitucion?: string, cfdi_uid?: string) {
+  private cancelarFactura(ventaFacturaId: number, motivo: any, uuidSustitucion?: string, cfdi_uid?: string) {
     const cancelData = {
       motivo: motivo.clave,
       uuid_sustitucion: uuidSustitucion,
@@ -1357,8 +1366,41 @@ export class VentaComponent implements OnInit {
     });
   }
 
-}
+  convertirAVenta() {
+    // 1️⃣ agrega los controles ANTES de cambiar isVenta
+    if (!this.form.get('usoCfdi')) {
+      this.form.addControl('usoCfdi', this.formBuilder.control(null, Validators.required));
+    }
+    if (!this.form.get('cliente')) {
+      this.form.addControl('cliente', this.formBuilder.control(null, Validators.required));
+    }
 
+    // 2️⃣ ahora sí cambia la bandera para que Angular renderice la vista
+    this.isVenta = true;
+
+    // 3️⃣ modo edición o lo que necesites
+    this.makeEditMode();
+  }
+
+  regresarACotizacion() {
+    // 1️⃣ elimina los controles ANTES de cambiar isVenta
+    if (this.form.get('usoCfdi')) {
+      this.form.removeControl('usoCfdi');
+    }
+    if (this.form.get('cliente')) {
+      this.form.removeControl('cliente');
+    }
+
+
+    // 2️⃣ ahora sí cambia la bandera para que Angular renderice la vista
+    this.isVenta = false;
+
+    // 3️⃣ modo vista o lo que necesites
+    this.makeViewMode();
+  }
+
+
+}
 
 @Component({
   selector: 'dialog-component-agregar-articulo-venta',

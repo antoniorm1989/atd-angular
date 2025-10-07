@@ -3,6 +3,7 @@
         <div class="toolbar-title">
             <i class="icon fa-solid" [ngClass]="{'fa-money-bill': isVenta, 'fa-file-invoice': !isVenta}"></i>
             <span class="title">{{ isVenta ? 'Ventas' : 'Cotizaciones' }}</span>
+            
             <div *ngIf="isReadOnly && isVenta" style="margin-left: auto; margin-bottom: auto; margin-top: auto; display: flex;">
                 <mat-card class="status-card" appearance="outlined" style="width: 150px;">
                     <mat-card-content>
@@ -58,6 +59,10 @@
                     </mat-card-content>
                 </mat-card>
             </div>
+             <div *ngIf="isReadOnly && !isVenta" style="margin-left: auto; margin-bottom: auto; margin-top: auto; display: flex;">
+                <button type="button" mat-flat-button class="btn" (click)="onDescargarCotizacion()" style="margin-left: 12px;"><mat-icon>download</mat-icon>Cotización</button>
+                <button type="button" mat-flat-button class="btn" (click)="convertirAVenta()" style="margin-left: 12px;"><mat-icon>attach_money</mat-icon> Convertir a Venta</button>
+            </div>
         </div>
 
         <div class="toolbar-breadcrumb">
@@ -103,7 +108,8 @@
                         </div>
                         <div class="form-field">
                             <mat-label class="text-1">Cliente</mat-label>
-                            <mat-label class="text-1-regular">{{isVenta ? editData?.cliente?.id : editData?.cliente?.rfc}} - {{editData?.cliente?.nombre_fiscal}}</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="isVenta">{{ editData?.cliente?.id }} - {{ editData?.cliente?.nombre_fiscal }}</mat-label>
+                            <mat-label class="text-1-regular" *ngIf="!isVenta">{{ editData?.cliente?.nombre_fiscal }}</mat-label>
                          </div>
                         <div class="form-field">
                             <mat-label class="text-1">Vendedor</mat-label>
@@ -165,8 +171,6 @@
                                         <div>
                                         </div>
                                         <button *ngIf="isVenta" type="button" mat-flat-button class="btn" (click)="onSubmit()" style="margin-left: 12px;"><mat-icon>add</mat-icon>Facturar</button>
-                                        <button *ngIf="!isVenta" type="button" mat-flat-button class="btn" (click)="onDescargarCotizacion()" style="margin-left: 12px;"><mat-icon>download</mat-icon>Cotización</button>
-
                                     </div>
                                     <table class="table" mat-table [dataSource]="dataSourceArticulos" style="margin-top: 24px; margin-bottom: 24px;">
         
@@ -858,6 +862,15 @@
                     </div>
                 </mat-expansion-panel>
             </mat-accordion>
+
+            <div class="toolbar-bottom">
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('ventas')" *ngIf="isReadOnly && isVenta">
+                    Regresar
+                </button>
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('cotizaciones')" *ngIf="isReadOnly && !isVenta">
+                    Regresar
+                </button>
+            </div>
         </div>
 
         <div *ngIf="!isReadOnly">
@@ -1274,14 +1287,19 @@
                 </div>
     
                 <div class="toolbar-bottom">
-                    <button mat-flat-button class="btn secundary" type="button" (click)="navigate('ventas')"
-                        *ngIf="isReadOnly">Regresar</button>
-                    <button mat-flat-button class="btn secundary" type="button" (click)="navigate('ventas')"
-                        *ngIf="!isReadOnly">Cancelar</button>
-                    <button mat-flat-button class="btn" type="submit" *ngIf="!isReadOnly">{{title}}</button>
+                    <button mat-flat-button class="btn secundary" type="button" (click)="navigate('ventas')" *ngIf="!isReadOnly && !wasCotizacion">
+                        Cancelar
+                    </button>
+                    <button mat-flat-button class="btn secundary" type="button" (click)="regresarACotizacion()" *ngIf="!isReadOnly && wasCotizacion">
+                        Cancelar
+                    </button>
+                    <button mat-flat-button class="btn" type="submit" *ngIf="!isReadOnly">
+                        {{title}}
+                    </button>
                 </div>
             </form>
         </div>
+
 
     </div>
 </div>

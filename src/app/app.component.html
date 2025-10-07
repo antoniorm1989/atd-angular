@@ -12,11 +12,7 @@
 
             <i class="toolbar-calendar fa-regular fa-calendar"></i>
 
-            <span class="toolbar-calendar date-label">{{ getFormattedDate() }}</span>
-
-            <button class="btn-notification" mat-mini-fab>
-                <mat-icon>notifications</mat-icon>
-            </button>
+            <span class="toolbar-calendar date-label" style="margin-right: 12px;">{{ getFormattedDate() }}</span>
 
             <button *ngIf="!hasPhoto" class="btn-user" mat-mini-fab color="primary">{{userInitials}}</button>
 
