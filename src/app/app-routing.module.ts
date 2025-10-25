@@ -25,16 +25,17 @@ import { CatalogoProveedoresComponent } from './components/catalogos/proveedores
 import { CatalogoUsuariosListComponent } from './components/catalogos/usuarios/catalogo-usuarios-list.component';
 import { CatalogoUsuariosComponent } from './components/catalogos/usuarios/usuario/catalogo-usuarios.component';
 import { ChangePasswordComponent } from './components/login/changepassword/changepassword.component';
-import { OrdenesCompraListComponent } from './components/ordenes-compra/orden-compra-list.component';
+import { OrdenCompraListComponent } from './components/orden-compra/orden-compra-list.component';
 import { SistemaConfiguracionComponent } from './components/configuracion/sistema-configuracion.component';
 import { CatalogoCuentaBancariaListComponent } from './components/catalogos/cuenta_bancaria/catalogo-cuenta-bancaria-list.component';
 import { CatalogoCuentaBancariaComponent } from './components/catalogos/cuenta_bancaria/cuenta_bancaria_detail/catalogo-cuenta-bancaria-detail..component';
+import { OrdenCompraComponent } from './components/orden-compra/orden-compra/orden-compra.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/inventario-almacen', pathMatch: 'full' }, // Redirect to login by default
-  { path: 'login', component: LoginComponent, canActivate: [AuthGuard]}, // Login route
-  { path: 'login/change-password', component: ChangePasswordComponent, canActivate: [AuthGuard]},
-  
+  { path: 'login', component: LoginComponent, canActivate: [AuthGuard] }, // Login route
+  { path: 'login/change-password', component: ChangePasswordComponent, canActivate: [AuthGuard] },
+
   //{ path: 'inventario-sucursal', component: InventorySucursalListComponent, canActivate: [AuthGuard] },
   //{ path: 'inventario-sucursal/entrada/:sucursalId', component: EntradaSucursalComponent, canActivate: [AuthGuard] },
   //{ path: 'inventario-sucursal/entrada/:sucursalId/:articuloId', component: EntradaSucursalComponent, canActivate: [AuthGuard] },
@@ -43,7 +44,7 @@ const routes: Routes = [
 
   // Alamacenes
   { path: 'inventario-almacen', component: InventoryAlmacenListComponent, canActivate: [AuthGuard] },
-  { path: 'inventario-almacen/entrada/:almacenId', component: EntradaAlmacenComponent, canActivate: [AuthGuard]},
+  { path: 'inventario-almacen/entrada/:almacenId', component: EntradaAlmacenComponent, canActivate: [AuthGuard] },
   { path: 'inventario-almacen/entrada/:almacenId/:articuloId', component: EntradaAlmacenComponent, canActivate: [AuthGuard] },
   { path: 'inventario-almacen/historial-almacen/:id', component: HistorialAlmacenComponent, canActivate: [AuthGuard] },
   // Alamecens Catalogos
@@ -60,12 +61,12 @@ const routes: Routes = [
 
   // Ventas
   { path: 'ventas', component: VentasListComponent, canActivate: [AuthGuard] },
-  { path: 'ventas/detail', component: VentaComponent, canActivate: [AuthGuard]},
-  { path: 'ventas/detail/:ventaId', component: VentaComponent, canActivate: [AuthGuard]},
+  { path: 'ventas/detail', component: VentaComponent, canActivate: [AuthGuard] },
+  { path: 'ventas/detail/:ventaId', component: VentaComponent, canActivate: [AuthGuard] },
 
   { path: 'cotizaciones', component: VentasListComponent, canActivate: [AuthGuard] },
-  { path: 'cotizaciones/detail', component: VentaComponent, canActivate: [AuthGuard]},
-  { path: 'cotizaciones/detail/:cotizacionId', component: VentaComponent, canActivate: [AuthGuard]},
+  { path: 'cotizaciones/detail', component: VentaComponent, canActivate: [AuthGuard] },
+  { path: 'cotizaciones/detail/:cotizacionId', component: VentaComponent, canActivate: [AuthGuard] },
 
   // Ventas Catalogos
   { path: 'venta/catalogos', component: CatalogosComponent, canActivate: [AuthGuard] },
@@ -78,9 +79,9 @@ const routes: Routes = [
   { path: 'venta/catalogos/cuenta-bancaria/detail/:id', component: CatalogoCuentaBancariaComponent, canActivate: [AuthGuard] },
 
   // Ordens de compra
-  { path: 'orden-compra', component: OrdenesCompraListComponent, canActivate: [AuthGuard] },
-  { path: 'orden-compra/detail', component: VentaComponent, canActivate: [AuthGuard]},
-  { path: 'orden-compra/detail/:ordenesCompraId', component: VentaComponent, canActivate: [AuthGuard]},
+  { path: 'orden-compra', component: OrdenCompraListComponent, canActivate: [AuthGuard] },
+  { path: 'orden-compra/detail', component: OrdenCompraComponent, canActivate: [AuthGuard] },
+  { path: 'orden-compra/detail/:ordenCompraId', component: OrdenCompraComponent, canActivate: [AuthGuard] },
 
   // Catalogos compras
   { path: 'compras/catalogos', component: CatalogosComponent, canActivate: [AuthGuard] },
@@ -108,6 +109,6 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { 
-  
+export class AppRoutingModule {
+
 }

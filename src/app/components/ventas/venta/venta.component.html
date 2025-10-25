@@ -85,7 +85,7 @@
                 <mat-expansion-panel [expanded]="true">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
-                            Datos Factura
+                            {{ isVenta ? 'Datos Generales' : 'Datos Cotización' }}
                         </mat-panel-title>
                         <mat-panel-description>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; width: 600px;" *ngIf="isVenta">
@@ -145,11 +145,11 @@
                         </div>
                         <div class="form-field">
                             <mat-label class="text-1">Traslada IVA</mat-label>
-                            <mat-label class="text-1-regular">{{ editData?.translada_iva_porcentaje }}</mat-label>
+                            <mat-label class="text-1-regular">{{ editData?.translada_iva_porcentaje }}%</mat-label>
                         </div>
                         <div class="form-field">
                             <mat-label class="text-1">Retiene IVA</mat-label>
-                            <mat-label class="text-1-regular">{{ editData?.retiene_iva_porcentaje }}</mat-label>
+                            <mat-label class="text-1-regular">{{ editData?.retiene_iva_porcentaje }}%</mat-label>
                         </div>
                     </div>
                 </mat-expansion-panel>
@@ -197,23 +197,6 @@
                                             </td>
                                         </ng-container>
         
-                                        <!-- <ng-container matColumnDef="backorder">
-                                            <th mat-header-cell *matHeaderCellDef style="text-align: center;">Back order</th>
-                                            <td mat-cell *matCellDef="let element" style="text-align: center;">
-                                                <button *ngIf="element.backorder > 0 && isCancelada() == false" [disabled]="id == undefined"
-                                                        mat-stroked-button
-                                                        type="button"
-                                                        title="Despachar artículo"
-                                                        (click)="despacharArticuloVentaModalComponent(element)">
-                                                    <mat-icon>local_mall</mat-icon>
-                                                    {{element.backorder}}
-                                                </button>
-                                                <div *ngIf="element.backorder > 0 && isCancelada() == true">
-                                                    <span class="backorder">{{element.backorder}}</span>
-                                                </div>
-                                            </td>
-                                        </ng-container> -->
-            
                                         <ng-container matColumnDef="total">
                                             <th mat-header-cell *matHeaderCellDef style="text-align: center;">Cantidad</th>
                                             <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.cantidad}}</td>
@@ -258,9 +241,6 @@
                                                 <button *ngIf="!isReadOnly" type="button" mat-icon-button aria-label="elimianr articulo" (click)="removeArticulo(element)">
                                                     <mat-icon>delete</mat-icon>
                                                 </button>
-                                                <!-- <button *ngIf="isReadOnly" type="button" mat-icon-button aria-label="Facturar" (click)="removeArticulo(element)">
-                                                    <mat-icon>delete</mat-icon>
-                                                </button> -->
                                             </td>
                                         </ng-container>
             
@@ -378,12 +358,12 @@
                                                                 <h3 style="margin-top: 12px; margin-bottom: 16px;">Artículos</h3>
                                                                 <table style="margin-bottom: 16px;" class="table sub-table" mat-table [dataSource]="element.articulos">
                                                                     <ng-container matColumnDef="part_number">
-                                                                        <th mat-header-cell *matHeaderCellDef>Número de parte</th>
-                                                                        <td mat-cell *matCellDef="let art">{{ art.part_number }}</td>
+                                                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Número de parte</th>
+                                                                        <td mat-cell *matCellDef="let art" style="text-align: center;">{{ art.part_number }}</td>
                                                                     </ng-container>
                                                                     <ng-container matColumnDef="description">
-                                                                        <th mat-header-cell *matHeaderCellDef>Descripción</th>
-                                                                        <td mat-cell *matCellDef="let art">
+                                                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Descripción</th>
+                                                                        <td mat-cell *matCellDef="let art" style="text-align: center;">
                                                                             <div class="description-wrapper">
                                                                                 <div *ngIf="!art.photo" class="empty-image-container">
                                                                                     <img src="../../assets/images/empty-image.png" class="empty-image">
@@ -394,20 +374,20 @@
                                                                         </td>
                                                                     </ng-container>
                                                                     <ng-container matColumnDef="unidad_medida">
-                                                                        <th mat-header-cell *matHeaderCellDef>Unidad Medida</th>
-                                                                        <td mat-cell *matCellDef="let art">{{ art.unidad_medida_name }}</td>
+                                                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Unidad Medida</th>
+                                                                        <td mat-cell *matCellDef="let art" style="text-align: center;">{{ art.unidad_medida_name }}</td>
                                                                     </ng-container>
                                                                     <ng-container matColumnDef="cantidad">
-                                                                        <th mat-header-cell *matHeaderCellDef>Cantidad</th>
-                                                                        <td mat-cell *matCellDef="let art">{{ art.cantidad_articulos }}</td>
+                                                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Cantidad</th>
+                                                                        <td mat-cell *matCellDef="let art" style="text-align: center;">{{ art.cantidad_articulos }}</td>
                                                                     </ng-container>
                                                                     <ng-container matColumnDef="precio">
-                                                                        <th mat-header-cell *matHeaderCellDef>Precio</th>
-                                                                        <td mat-cell *matCellDef="let art">{{ formatearComoMoneda(art.total / art.cantidad_articulos) }}</td>
+                                                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Precio</th>
+                                                                        <td mat-cell *matCellDef="let art" style="text-align: center;">{{ formatearComoMoneda(art.total / art.cantidad_articulos) }}</td>
                                                                     </ng-container>
                                                                     <ng-container matColumnDef="total">
-                                                                        <th mat-header-cell *matHeaderCellDef>Total</th>
-                                                                        <td mat-cell *matCellDef="let art">{{ formatearComoMoneda(art.total) }}</td>
+                                                                        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Total</th>
+                                                                        <td mat-cell *matCellDef="let art" style="text-align: center;">{{ formatearComoMoneda(art.total) }}</td>
                                                                     </ng-container>
 
                                                                     <tr mat-header-row *matHeaderRowDef="['part_number', 'description', 'unidad_medida', 'cantidad', 'precio', 'total']"></tr>
@@ -1299,7 +1279,5 @@
                 </div>
             </form>
         </div>
-
-
     </div>
 </div>

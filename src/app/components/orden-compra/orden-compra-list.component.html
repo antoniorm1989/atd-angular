@@ -1,0 +1,169 @@
+<div class="orden-compra-list">
+    <div class="toolbar">
+        <div class="toolbar-title">
+            <i class="icon fa-solid fa-file-invoice"></i>
+            <span class="title">Ordenes de compra</span>
+        </div>
+        <div>
+            <span class="breadcrumb-item">Listado de ordenes de compra</span>
+        </div>
+    </div>
+    <div class="container">
+        <div *ngIf="!hasRecords" class="container-empty">
+            <img src="../../assets/images/empty-list.png" alt="empty logo" class="img">
+            <span class="text">
+                Aún no tienes ordenes de compra registradas, para poder ver información favor de agregar una orden de compra.
+            </span>
+            <button mat-flat-button class="btn" (click)="onNew()">
+                <mat-icon>add</mat-icon>
+                Nueva Orden de Compra
+            </button>
+        </div>
+        <div *ngIf="hasRecords" class="container-list">
+
+            <div class="toolbar">
+                <form [formGroup]="form" class="filters">
+                    <i class="icon-filter fa-solid fa-filter"></i>
+                    <div class="form-field">
+                        <mat-label class="text-1">Estatus</mat-label>
+                        <mat-form-field style="width: 100%;" class="mini">
+                            <mat-select formControlName="estatus" (selectionChange)="onSelectChangeEstatus($event)">
+                                <mat-select-trigger>
+                                    <span>{{ estatusLabels[this.f['estatus'].value] || '' }}</span>
+                                    <mat-icon style="position: absolute; right: 16px;" matSuffix *ngIf="this.f['estatus'].value" (click)="clearSelectionOrdenCompraEstatus()">clear</mat-icon>
+                                </mat-select-trigger>
+                                <mat-option value="EN_PROCESO">{{ estatusLabels['EN_PROCESO'] }}</mat-option>
+                                <mat-option value="PARCIALMENTE_SURTIDA">{{ estatusLabels['PARCIALMENTE_SURTIDA'] }}</mat-option>
+                                <mat-option value="COMPLETA">{{ estatusLabels['COMPLETA'] }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="form-field">
+                        <mat-label class="text-1">Proveedor</mat-label>
+                        <mat-form-field style="width: 100%;" class="mini">
+                            <input type="text" matInput [matAutocomplete]="auto" formControlName="proveedor" [value]="selectedProveedor ? selectedProveedor.nombreContacto : null">
+                            <button type="button" matSuffix mat-icon-button aria-label="Clear" *ngIf="this.f['proveedor'].value != undefined" (click)="clearAutocompleteInput()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                            <mat-autocomplete requireSelection autoActiveFirstOption #auto="matAutocomplete">
+                               <ng-container *ngFor="let proveedor of filteredProveedores | async; track: proveedor">
+                                    <mat-option [value]="proveedor" (onSelectionChange)="onProveedorSelectionChange($event)">{{proveedor.nombreContacto}}</mat-option>
+                                </ng-container>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                    </div>
+                    <div ordenCompraclass="form-field">
+                        <mat-label class="text-1">Desde</mat-label>
+                        <mat-form-field style="width: 100%;" class="mini">
+                            <input matInput [matDatepicker]="picker" formControlName="fechaDesde" (dateChange)="onDateChange($event)">
+                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                    <div ordenCompraclass="form-field">
+                        <mat-label class="text-1">Hasta</mat-label>
+                        <mat-form-field style="width: 100%;" class="mini">
+                            <input matInput [matDatepicker]="picker2" formControlName="fechaHasta" (dateChange)="onDateChange($event)">
+                            <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+                            <mat-datepicker #picker2></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                </form>
+
+                <button mat-flat-button class="btn btn-agregar" (click)="onNew()" type="button">
+                    <mat-icon>add</mat-icon>
+                    Nueva Orden de Compra
+                </button>
+            </div>
+
+            <table class="table" mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortChange($event)">
+                <ng-container matColumnDef="estatus">
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Estatus</th>
+                    <td mat-cell *matCellDef="let element" class="center-column">
+                        <div>
+                            <span class="estatus-icon"
+                            [ngClass]="{
+                                'o-en-proceso': element.estatus === 'EN_PROCESO',
+                                'o-parcialmente-surtida': element.estatus === 'PARCIALMENTE_SURTIDA',
+                                'o-completa': element.estatus === 'COMPLETA'
+                            }">
+                            </span>
+                            <span style="margin-left: 12px;">{{element.estatus}}</span>
+                        </div>
+                    </td>
+                </ng-container>
+
+                 <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>#Compra</th>
+                    <td mat-cell *matCellDef="let element" class="center-column">
+                        <span (click)="onView(element.id)" class="title-grid">
+                            {{formatNumber(element.id)}}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="venta_id">
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>#Venta</th>
+                    <td mat-cell *matCellDef="let element" class="center-column">{{element.venta_id ? formatNumber(element.venta_id) : '--'}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="articulos">
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Artículos</th>
+                    <td mat-cell *matCellDef="let element" class="center-column">{{element.articulos}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="proveedor">
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Proveedor</th>
+                    <td mat-cell *matCellDef="let element" class="center-column">{{element.proveedor.proveedor}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="importe">
+                    <th mat-header-cell *matHeaderCellDef class="center-column">Importe</th>
+                    <td mat-cell *matCellDef="let element" class="center-column"><span>{{formatearComoMoneda(1) }} {{element.moneda}}</span></td>
+                </ng-container>
+
+                <ng-container matColumnDef="fecha_creacion">
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Fecha Creación</th>
+                    <td mat-cell *matCellDef="let element" class="center-column">{{formatDate(element.fecha_registro)}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="responsable">
+                    <th mat-header-cell *matHeaderCellDef class="center-column" mat-sort-header>Responsable</th>
+                    <td mat-cell *matCellDef="let element">
+                        <div *ngIf="element.responsable.id" class="user-wrapper">
+                            <div class="circle-initials" mat-mini-fab color="primary" *ngIf="element.responsable.photo == null">
+                                {{getUserName(element.responsable.nombre, element.responsable.apellido)}}
+                            </div>
+                            <div *ngIf="element.responsable.photo != null" class="container-photo-user">
+                                <img class="photo" [src]="getUrlPhoto(element.responsable.photo)">
+                            </div>
+                            <span class="text">{{element.responsable.nombre}} {{element.responsable.apellido}}</span>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="deleteOrdenCompra(element.id)">
+                                <mat-icon>delete</mat-icon>
+                                <span>Eliminar</span>
+                            </button>
+                        </mat-menu>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <mat-paginator [pageSizeOptions]="[20, 50, 100]" [length]="totalItems" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                (page)="onPageChange($event)" showFirstLastButtons>
+            </mat-paginator>
+        </div>
+    </div>
+</div>

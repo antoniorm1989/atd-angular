@@ -52,7 +52,6 @@ export class VentaComponent implements OnInit {
   submittedCancelacion = false;
   id = 0;
 
-
   clientes: CatalogoClienteModel[] = [];
   selectedCliente!: CatalogoClienteModel;
   filteredClientes!: Observable<CatalogoClienteModel[]>;
@@ -313,7 +312,7 @@ export class VentaComponent implements OnInit {
         this.loadSelectData();
       }
 
-      this.ventaService.getMonedas().subscribe({
+      this.catalogosService.getMonedas().subscribe({
         next: (data) => {
           this.monedas = data;
           this.form.controls['moneda'].setValue(this.monedas[0]);

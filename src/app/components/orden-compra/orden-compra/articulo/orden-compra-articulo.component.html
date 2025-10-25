@@ -1,0 +1,183 @@
+<!-- Encabezado del modal -->
+<div mat-dialog-title class="dialog-header">
+    <span>{{ title }}</span>
+    <button mat-icon-button mat-dialog-close class="close-button">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<!-- Contenido del modal -->
+<mat-dialog-content>
+    <div class="orden-compra-articulo">
+        <div class="separator"></div>
+
+        <div class="container">
+            <form [formGroup]="form" (ngSubmit)="onAdd()">
+                <div class="form-row" style="grid-template-columns: 1fr 150px 150px;">
+                    <div class="form-row one-col">
+                        <div class="form-row" style="grid-template-columns: 1fr;">
+                            <div style="padding: 0px 32px 0px 0px;">
+                                <mat-label class="text-1">Almacen</mat-label><br />
+                                <mat-form-field style="width: 100%;">
+                                    <mat-select [(value)]="selectedAlmacen" (selectionChange)="onAlmacenChange($event)"
+                                        formControlName="almacen">
+                                        <mat-option *ngFor="let almacen of almacenes" [value]="almacen">{{ almacen.name
+                                            }}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="autocomplete-articulo-container">
+                            <mat-form-field>
+                                <input type="text" matInput required [matAutocomplete]="autoGroup"
+                                    formControlName="selectedArticle">
+                                <button type="button" *ngIf="(isEditing == false) && selectedArticle != null" matSuffix
+                                    mat-icon-button aria-label="Clear" (click)="clearAutocompleteInput()">
+                                    <mat-icon>close</mat-icon>
+                                </button>
+                                <mat-autocomplete autoActiveFirstOption #autoGroup="matAutocomplete">
+                                    <ng-container
+                                        *ngFor="let group of articuloGroupOptions | async; trackBy: trackGroupFn">
+                                        <mat-optgroup [label]="group.categoria!.name ?? ''">
+                                            <ng-container
+                                                *ngFor="let articulo of group.articulos; trackBy: trackArticuloFn">
+                                                <mat-option [value]="articulo.part_number">
+                                                    <img class="option-img"
+                                                        [ngClass]="{ 'no-image': articulo.photo == '' }"
+                                                        [src]="getUrlPhoto(articulo)">
+                                                    <span>{{articulo.part_number}}</span>
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-optgroup>
+                                    </ng-container>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                            <button *ngIf="(isEditing == false)" type="button" mat-icon-button
+                                matTooltip="escanear codigo de barras" (click)="openDialogEscanner()">
+                                <mat-icon>photo_camera</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="column-photo">
+                        <div *ngIf="!imageUrl" class="empty-image-container">
+                            <img src="../../assets/images/empty-image.png" class="empty-image">
+                        </div>
+                        <img class="photo" *ngIf="imageUrl" [src]="imageUrl">
+                    </div>
+                    <div
+                        style="display: grid; grid-template-columns: 1fr; align-items: center; margin: auto; width: 100%; height: 100%; align-content: center; grid-row-gap: 20px;">
+                        <div class="stock_indicator">
+                            <span class="title-stock">Stock</span>
+                            <span class="stock">{{ordenCompraArticuloModel?.stock}}</span>
+                        </div>
+                        <div class="stock_indicator">
+                            <span class="title-stock">Back Order</span>
+                            <span class="stock">{{ordenCompraArticuloModel?.backOrder}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="height: 24px;"></div>
+
+                <div class="form-row"
+                    style="grid-template-columns: 200px 250px 250px 200px; grid-column-gap: 25px; align-items: end;">
+                    <!-- Precio compra -->
+                    <div class="form-field">
+                        <mat-label class="text-1">Precio compra*</mat-label>
+                        <mat-form-field floatLabel="always">
+                            <input matInput type="number" class="example-right-align" placeholder="0"
+                                formControlName="precio_compra" min="0" step="0.01" (keypress)="validarDecimal($event)"
+                                (change)="calcularSubTotal()">
+                            <span matTextPrefix>$</span>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Cantidad (modo normal) -->
+                    <div class="form-field" *ngIf="!esSurtir">
+                        <mat-label class="text-1">Cantidad</mat-label>
+                        <div class="container-agregar-retirar">
+                            <button type="button" color="primary" mat-mini-fab (click)="restarQty()">
+                                <mat-icon>remove</mat-icon>
+                            </button>
+                            <mat-form-field>
+                                <input type="number" matInput formControlName="cantidad"
+                                    [ngClass]="{ 'is-invalid': submitted && f['cantidad'].errors }" required
+                                    (change)="calcularSubTotal()">
+                            </mat-form-field>
+                            <button type="button" color="primary" mat-mini-fab (click)="agregarQty()">
+                                <mat-icon>add</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cantidad (modo surtir - solo lectura) -->
+                    <div class="form-field" *ngIf="esSurtir">
+                        <mat-label class="text-1">Cantidad</mat-label>
+                        <mat-form-field>
+                            <input type="number" matInput formControlName="cantidad"
+                                [ngClass]="{ 'is-invalid': submitted && f['cantidad'].errors }" required readonly
+                                (change)="calcularSubTotal()">
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Cantidad a surtir (solo cuando esSurtir = true) -->
+                    <div class="form-field" *ngIf="esSurtir">
+                        <mat-label class="text-1">Cantidad surtida</mat-label>
+                        <div class="container-agregar-retirar">
+                            <button type="button" color="primary" mat-mini-fab (click)="restarQty()">
+                                <mat-icon>remove</mat-icon>
+                            </button>
+                            <mat-form-field>
+                                <input type="number" matInput formControlName="cantidad_surtido"
+                                    [ngClass]="{ 'is-invalid': submitted && f['cantidad_surtido'].errors }" required
+                                    (change)="calcularSubTotal()">
+                            </mat-form-field>
+                            <button type="button" color="primary" mat-mini-fab (click)="agregarQty()">
+                                <mat-icon>add</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Subtotal -->
+                    <div class="form-field">
+                        <mat-label class="text-1">Subtotal</mat-label>
+                        <mat-form-field floatLabel="always">
+                            <input matInput type="text" [value]="(form.get('moneda_nombre')?.value === 'USD' ? 'USD ' : 'MXN ') + formatearComoMoneda(subtotal)" readonly class="example-right-align" disabled="true">
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div style="position: absolute; bottom: 55px;" *ngIf="submitted && f['precio_compra'].errors"
+                    class="invalid-feedback">
+                    <div *ngIf="f['precio_compra'].errors['min']">Precio de orden de compra debe ser mayor a 0</div>
+                </div>
+                <div style="position: absolute; bottom: 35px;" *ngIf="submitted && f['selectedArticle'].errors"
+                    class="invalid-feedback">
+                    <div *ngIf="f['selectedArticle'].errors['required']">Debe seleccionar un articulo</div>
+                </div>
+                <div style="position: absolute; bottom: 15px;" *ngIf="submitted && f['cantidad'].errors"
+                    class="invalid-feedback">
+                    <div *ngIf="f['cantidad'].errors['min']">Debe seleccionar por lo menos 1 articulo</div>
+                </div>
+                <div style="position: absolute; bottom: 15px;" *ngIf="submitted && f['cantidad'].errors"
+                    class="invalid-feedback">
+                    <div *ngIf="f['cantidad'].errors['min']">Debe seleccionar por lo menos 1 articulo</div>
+                </div>
+                <div style="position: absolute; bottom: 15px;" *ngIf="submitted && esSurtir && f['cantidad_surtido'].errors"
+                    class="invalid-feedback">
+                    <div *ngIf="f['cantidad_surtido'].errors['min']">
+                        No puede seleccionar un número menor a: {{ f['cantidad_surtido'].errors['min']['min'] }}
+                    </div>
+                </div>
+                <div style="position: absolute; bottom: 15px;" *ngIf="submitted && esSurtir && f['cantidad_surtido'].errors"
+                    class="invalid-feedback">
+                    <div *ngIf="f['cantidad_surtido'].errors['max']">Cantidad surtida no puede ser mayor a la cantidad ordenada</div>
+                </div>
+            </form>
+        </div>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" style="padding: 0px 24px;">
+    <button mat-flat-button class="btn secundary" type="button" (click)="onCancel()">Cancelar</button>
+    <button mat-flat-button class="btn" type="button" (click)="onAdd()">{{action}}</button>
+</mat-dialog-actions>

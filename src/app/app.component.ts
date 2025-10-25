@@ -77,11 +77,6 @@ export class AppComponent implements OnDestroy {
           href: 'configuracion/catalogos'
         },
         {
-          text: 'Plantillas',
-          icon: 'fa-regular fa-file-lines',
-          href: 'xx',
-        },
-        {
           text: 'Sistema',
           icon: 'fa-solid fa-cogs',
           href: 'configuracion/sistema',

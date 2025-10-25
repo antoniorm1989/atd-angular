@@ -1,0 +1,588 @@
+<div class="orden-compra">
+    <div class="toolbar">
+        <div class="toolbar-title">
+            <i class="icon fa-solid fa-money-bill"></i>
+            <span class="title">Ordenes de compra</span>
+            
+            <div *ngIf="isReadOnly" style="margin-left: auto; margin-bottom: auto; margin-top: auto; display: flex;">
+                <mat-card class="status-card" appearance="outlined" style="width: 250px;">
+                    <mat-card-content>
+                        <div style="display: grid; grid-template-columns: 1fr; column-gap: 12px; row-gap: 0px;">
+                            <span style="font-size: small;">Estatus</span>
+                            <div style="display: grid; grid-template-columns: 16px 1fr; column-gap: 8px">
+                                <span class="estatus-icon"
+                                    [ngClass]="{
+                                        'o-en-proceso': ordenCompraModel.estatus === 'EN_PROCESO',
+                                        'o-parcialmente-surtida': ordenCompraModel.estatus === 'PARCIALMENTE_SURTIDA',
+                                        'o-completa': ordenCompraModel.estatus === 'COMPLETA'
+                                    }">
+                                </span>
+                                <span style="font-size: larger; font-weight: 700;">{{ ordenCompraModel.estatus?.replace('_', ' ') || '--'}}</span>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+
+        <div class="toolbar-breadcrumb">
+            <span class="link-breadcrumb" (click)="navigate('orden-compra')">Ordens de compra</span>
+            <span> / </span>
+            <span class="breadcrumb-item" style="margin-right: auto;">{{title}}</span>
+
+            <button *ngIf="isReadOnly" mat-button class="btn" (click)="onEdit()"><mat-icon>edit</mat-icon>Editar orden de compra</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div *ngIf="isReadOnly">
+            <!-- Datos Generales -->
+            <mat-accordion>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Datos Generaless
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 300px; column-gap: 50px; width: 100%; margin: 24px 0px;">
+                        <div class="form-field">
+                            <mat-label class="text-1">Proveedor</mat-label>
+                            <mat-label class="text-1-regular">{{ ordenCompraModel.proveedor?.proveedor || 'No disponible' }}</mat-label>
+                        </div>
+                        <div class="form-field">
+                            <mat-label class="text-1">Folio interno orden de compra</mat-label>
+                            <mat-label class="text-1-regular">{{ ordenCompraModel.folio_interno || 'No asignado' }}</mat-label>
+                        </div>
+                        <div class="form-field">
+                            <mat-label class="text-1">Id venta</mat-label>
+                            <mat-label class="text-1-regular">{{ ordenCompraModel.venta_id || 'No asignado' }}</mat-label>
+                        </div>
+                        <div class="form-field">
+                            <mat-label class="text-1">Fecha de registro</mat-label>
+                            <mat-label class="text-1-regular">{{ ordenCompraModel.created_at ? formatDate(ordenCompraModel.created_at) : 'No disponible' }}</mat-label>
+                        </div>
+                    </div>
+                    
+                    <div class="separator"></div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; column-gap: 50px; width: 100%;">
+                        <div class="form-field">
+                            <mat-label class="text-1">Nombre del contacto</mat-label>
+                            <mat-label class="text-1-regular">{{ ordenCompraModel.proveedor?.nombreContacto && ordenCompraModel.proveedor?.apellidoContacto ? (ordenCompraModel.proveedor?.nombreContacto + ' ' + ordenCompraModel.proveedor?.apellidoContacto) : 'No disponible' }}</mat-label>
+                        </div>
+                        <div class="form-field">
+                            <mat-label class="text-1">RFC</mat-label>
+                            <mat-label class="text-1-regular">{{ ordenCompraModel.proveedor?.rfc || 'No disponible' }}</mat-label>
+                        </div>
+                        <div class="form-field">
+                            <mat-label class="text-1">Tiempo estimado de entrega</mat-label>
+                            <mat-label class="text-1-regular">{{ ordenCompraModel.proveedor?.tiempoEstimadoEntrega ? (ordenCompraModel.proveedor?.tiempoEstimadoEntrega + ' ' + (ordenCompraModel.proveedor?.unidadTiempo || '')) : 'No disponible' }}</mat-label>
+                        </div>
+                        <div class="form-field">
+                            <mat-label class="text-1">Celular</mat-label>
+                            <mat-label class="text-1-regular">{{ ordenCompraModel.proveedor?.celular || 'No disponible' }}</mat-label>
+                        </div>
+                        <div class="form-field">
+                            <mat-label class="text-1">Teléfono</mat-label>
+                            <mat-label class="text-1-regular">{{ ordenCompraModel.proveedor?.telefono || 'No disponible' }}</mat-label>
+                        </div>
+                        <div class="form-field">
+                            <mat-label class="text-1">Correo electrónico</mat-label>
+                            <mat-label class="text-1-regular">{{ ordenCompraModel.proveedor?.correo || 'No disponible' }}</mat-label>
+                        </div>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div class="separator"></div>
+
+            <!-- Forma de Pago -->
+            <mat-accordion>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Forma de pago
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <div class="form-row three-col">
+                        <div class="form-field">
+                            <mat-label class="text-1">Condición de pago</mat-label>
+                            <mat-label class="text-1-regular">{{ ordenCompraModel.condicion_pago || 'No especificada' }}</mat-label>
+                        </div>
+                        <div class="form-row two-col">
+                            <div class="form-field">
+                                <mat-label class="text-1">Tiene días de crédito</mat-label>
+                                <mat-label class="text-1-regular">{{ ordenCompraModel.tiene_dias_credito ? 'Sí' : 'No' }}</mat-label>
+                            </div>
+                            <div class="form-field">
+                                <mat-label class="text-1">Días de crédito</mat-label>
+                                <mat-label class="text-1-regular">{{ ordenCompraModel.cantidad_dias_credito || 0 }}</mat-label>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <mat-label class="text-1">Moneda</mat-label>
+                            <mat-label class="text-1-regular">{{ ordenCompraModel.moneda?.moneda === 'MXN' ? 'Pesos' : 'Dólares' }}</mat-label>
+                        </div>
+                        <div class="form-field">
+                            <mat-label class="text-1">Forma de pago</mat-label>
+                            <mat-label class="text-1-regular">{{ ordenCompraModel.forma_pago?.key ? ordenCompraModel.forma_pago?.key : 'No especificada' }}</mat-label>
+                        </div>
+                        <div class="form-field">
+                            <mat-label class="text-1">Método de pago</mat-label>
+                            <mat-label class="text-1-regular">{{ ordenCompraModel.metodo_pago?.key ? (ordenCompraModel.metodo_pago?.key + ' - ' + ordenCompraModel.metodo_pago?.name) : 'No especificado' }}</mat-label>
+                        </div>
+                        <div class="form-field">
+                            <mat-label class="text-1">Tipo de cambio</mat-label>
+                            <mat-label class="text-1-regular">{{ formatearComoMoneda(ordenCompraModel.tipo_cambio) }}</mat-label>
+                        </div>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div class="separator"></div>
+
+            <!-- Artículos -->
+            <mat-accordion>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Artículos
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <div class="form-row seccion-articulos-header" style="grid-column-gap: 50px; grid-template-columns: 200px 200px 1fr">
+                        <div class="form-field" style="margin-top: 20px; min-width: 80px;">
+                            <mat-label class="text-1">Traslada IVA</mat-label>
+                            <mat-label class="text-1-regular">{{ ordenCompraModel && ordenCompraModel.translada_iva != null ? (ordenCompraModel.translada_iva * 100) : 0 }}%</mat-label>
+                        </div>
+                        <div class="form-field" style="margin-top: 20px; min-width: 80px;">
+                            <mat-label class="text-1">Retiene IVA</mat-label>
+                            <mat-label class="text-1-regular">{{ ordenCompraModel && ordenCompraModel.retiene_iva != null ? (ordenCompraModel.retiene_iva * 100) : 0 }}%</mat-label>
+                        </div>
+                        <div></div>
+                    </div>
+
+                    <div class="form-row one-col">
+                        <div *ngIf="!hasRecords" class="container-empty">
+                            <img src="../../assets/images/empty-sucursales-alamcen.png" alt="empty logo" class="img">
+                            <span class="text">
+                                No hay artículos agregados a esta orden de compra.
+                            </span>
+                        </div>
+
+                        <table *ngIf="hasRecords" class="table" mat-table [dataSource]="dataSourceArticulos" style="margin-top: 24px;">
+
+                            <ng-container matColumnDef="numero_parte">
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Número de parte</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.inventario?.articulo?.part_number || 'N/A'}}</td>
+                            </ng-container>
+
+                             <ng-container matColumnDef="descripcion">
+                                <th mat-header-cell *matHeaderCellDef>Descripción</th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div class="description-wrapper">
+                                        <div *ngIf="!element.inventario?.articulo?.photo" class="empty-image-container">
+                                            <img src="../../assets/images/empty-image.png" class="empty-image">
+                                        </div>
+                                        <img *ngIf="element.inventario?.articulo?.photo" class="photo" [src]="getPathPhoto(element.inventario.articulo.photo)">
+                                        <span class="dos-renglones">{{element.inventario?.articulo?.description || 'Sin descripción'}}</span>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="cantidad">
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Cantidad</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.cantidad || 0}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="almacen">
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Almacén</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.inventario?.almacen?.name || 'N/A'}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="precio_compra">
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Precio compra</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">{{ordenCompraModel.moneda?.moneda || ''}} {{formatearComoMoneda(element.precio_compra)}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="importe">
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">Importe</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">{{ formatearComoMoneda((element.cantidad || 0) * (element.precio_compra || 0)) }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="actions">
+                                <th mat-header-cell *matHeaderCellDef style="width: 110px; text-align: center;">Surtir</th>
+                                <td mat-cell *matCellDef="let element" style="text-align: center;">
+                                    <div *ngIf="element.cantidad_surtido >= element.cantidad" class="surtido-badge">
+                                        <mat-icon>check</mat-icon>
+                                        Surtido
+                                    </div>
+                                    <button *ngIf="element.cantidad_surtido < element.cantidad" mat-stroked-button class="surtir-btn" (click)="surtirArticulo(element)">
+                                        {{ element.cantidad_surtido || 0 }}/{{ element.cantidad }}
+                                    </button>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <!-- Comentarios y Totales -->
+            <div class="form-container form-row two-col" style="grid-template-columns: auto 1fr auto; box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);">
+                <div class="form-field" style="width: 600px;">
+                    <mat-label class="text-1">Comentarios</mat-label>
+                    <mat-label class="text-1-regular">{{ ordenCompraModel.comentarios || 'Sin comentarios' }}</mat-label>
+                </div>
+
+                <div class="form-row two-col" style="width: 300px; grid-column-gap: 8px; grid-row-gap: 10px; margin-left: auto;">
+                    <span class="resumen-label">Subtotal</span>
+                    <div class="resumen-value">{{ ordenCompraModel.moneda?.moneda || '' }} {{ formatearComoMoneda(subTotal) }}</div>
+
+                    <span class="resumen-label">IVA</span>
+                    <div class="resumen-value">{{ ordenCompraModel.moneda?.moneda || '' }} {{ formatearComoMoneda(iva) }}</div>
+
+                    <span class="resumen-label">Retención</span>
+                    <div class="resumen-value">{{ ordenCompraModel.moneda?.moneda || '' }} {{ formatearComoMoneda(retencion) }}</div>
+
+                    <span class="resumen-label"><b>Total</b></span>
+                    <div class="resumen-value"><b>{{ ordenCompraModel.moneda?.moneda || '' }} {{ formatearComoMoneda(total) }}</b></div>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="toolbar-bottom">
+                <button mat-flat-button class="btn secundary" type="button" (click)="navigate('orden-compra')">
+                    Regresar
+                </button>
+            </div>
+        </div>
+
+        <!-- Formulario de edición -->
+        <div *ngIf="!isReadOnly">
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                <mat-accordion>
+                    <mat-expansion-panel [expanded]="true">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Datos Generales
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+    
+                        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 300px; column-gap: 50px; width: 100%; margin: 24px 0px;">
+                            <div class="form-field">
+                                <mat-label class="text-1">Proveedor*</mat-label>
+                                <mat-form-field>
+                                    <mat-select formControlName="proveedor">
+                                        <mat-option *ngFor="let proveedor of proveedores" [value]="proveedor">{{ proveedor.proveedor }}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <div *ngIf="submitted && f['proveedor'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['proveedor'].errors['required']">Este campo requerido</div>
+                                </div>
+                            </div>
+                            <div class="form-field">
+                                <mat-label class="text-1">Folio interno orden de compra</mat-label>
+                                <mat-form-field>
+                                    <input matInput type="number" min="1" step="1" placeholder="Folio interno orden de compra" formControlName="folio_interno" (keypress)="validarEntero($event)">
+                                </mat-form-field>
+                            </div>
+                            <div class="form-field">
+                                <mat-label class="text-1">Id venta</mat-label>
+                                <mat-form-field>
+                                    <input matInput type="number" min="1" step="1" placeholder="Id venta" formControlName="venta_id" (keypress)="validarEntero($event)">
+                                </mat-form-field>
+                            </div>
+                            <div class="form-field">
+                                <mat-label class="text-1">Fecha de registro</mat-label>
+                                <mat-form-field>
+                                    <input matInput [matDatepicker]="pickerFechaRegistro" placeholder="Selecciona una fecha" formControlName="fecha_registro">
+                                    <mat-datepicker-toggle matSuffix [for]="pickerFechaRegistro"></mat-datepicker-toggle>
+                                    <mat-datepicker #pickerFechaRegistro></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                        </div>      
+
+                        <div class="separator"></div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; column-gap: 50px; width: 100%;">
+                            <div class="form-field">
+                                <mat-label class="text-1">Nombre del contacto</mat-label>
+                                <mat-label class="text-1-regular">{{ selectedProveedor?.nombreContacto && selectedProveedor?.apellidoContacto ? (selectedProveedor?.nombreContacto + ' ' + selectedProveedor?.apellidoContacto) : 'No disponible' }}</mat-label>
+                            </div>
+                            <div class="form-field">
+                                <mat-label class="text-1">RFC</mat-label>
+                                <mat-label class="text-1-regular">{{ selectedProveedor?.rfc || 'No disponible' }}</mat-label>
+                            </div>
+                            <div class="form-field">
+                                <mat-label class="text-1">Tiempo estimado de entrega</mat-label>
+                                <mat-label class="text-1-regular">{{ selectedProveedor?.tiempoEstimadoEntrega ? (selectedProveedor?.tiempoEstimadoEntrega + ' ' + (selectedProveedor?.unidadTiempo || '')) : 'No disponible' }}</mat-label>
+                            </div>
+                            <div class="form-field">
+                                <mat-label class="text-1">Celular</mat-label>
+                                <mat-label class="text-1-regular">{{ selectedProveedor?.celular || 'No disponible' }}</mat-label>
+                            </div>
+                            <div class="form-field">
+                                <mat-label class="text-1">Teléfono</mat-label>
+                                <mat-label class="text-1-regular">{{ selectedProveedor?.telefono || 'No disponible' }}</mat-label>
+                            </div>
+                            <div class="form-field">
+                                <mat-label class="text-1">Correo electrónico</mat-label>
+                                <mat-label class="text-1-regular">{{ selectedProveedor?.correo || 'No disponible' }}</mat-label>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+
+                 <div class="separator"></div>
+                
+                 <mat-accordion>
+                    <mat-expansion-panel [expanded]="true">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Forma de pago
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+
+                        <div class="form-row three-col">
+                            <div class="form-field">
+                                <mat-label class="text-1" *ngIf="isReadOnly">Condición de pago</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['condicion_pago'].value}}</mat-label>
+                                <mat-label class="text-1" *ngIf="!isReadOnly">Condición de pago*</mat-label>
+                                <mat-form-field *ngIf="!isReadOnly">
+                                    <mat-select formControlName="condicion_pago" (selectionChange)="onCondicionPagoChange($event)">
+                                      <mat-option value="credito">Crédito</mat-option>
+                                      <mat-option value="contado">Contado</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <div *ngIf="submitted && f['condicion_pago'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['condicion_pago'].errors['required']">Este campo requerido</div>
+                                </div>
+                            </div>
+                            <div class="form-row two-col">
+                                <div class="form-field" >
+                                    <mat-label class="text-1" *ngIf="isReadOnly">Tiene días de crédito</mat-label>
+                                    <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['tiene_dias_credito'].value == true ? 'Sí' : 'No'}}</mat-label>
+                                    <mat-slide-toggle *ngIf="!isReadOnly" formControlName="tiene_dias_credito" color="primary" style="margin: auto;" (toggleChange)="onTieneDiasCreditoChange()">Días de crédito</mat-slide-toggle>
+                                </div>
+                                <div class="form-field">
+                                    <mat-label class="text-1"  *ngIf="isReadOnly">Días de crédito</mat-label>
+                                    <mat-label class="text-1-regular" *ngIf="isReadOnly">{{this.f['cantidad_dias_credito'].value}}</mat-label>
+            
+                                    <mat-label class="text-1"  *ngIf="!isReadOnly">Días de crédito*</mat-label>
+                                    <mat-form-field *ngIf="!isReadOnly">
+                                        <input matInput type="number" placeholder="Días de crédito" formControlName="cantidad_dias_credito" required>
+                                    </mat-form-field>
+                                    <div *ngIf="submitted && f['cantidad_dias_credito'].errors" class="invalid-feedback">
+                                        <div *ngIf="f['cantidad_dias_credito'].errors['required']">Este campo requerido</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-field">
+                                <mat-label class="text-1" *ngIf="isReadOnly">Moneda</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">
+                                    {{ this.f['moneda'].value.nombre }}
+                                </mat-label>
+                                <mat-label class="text-1" *ngIf="!isReadOnly">Moneda*</mat-label>
+                                <mat-form-field *ngIf="!isReadOnly">
+                                    <mat-select formControlName="moneda">
+                                        <mat-option *ngFor="let moneda of monedas" [value]="moneda">
+                                            {{ moneda.moneda === 'MXN' ? 'Pesos' : 'Dólares' }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <div *ngIf="submitted && f['moneda'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['moneda'].errors['required']">Este campo requerido</div>
+                                </div>
+                            </div>
+                            <div class="form-field">
+                                <mat-label class="text-1" *ngIf="isReadOnly">Forma de pago</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{ this.f['forma_pago'].value?.key }} - {{ this.f['forma_pago'].value?.name }}</mat-label>
+                                <mat-label class="text-1" *ngIf="!isReadOnly">Forma de pago*</mat-label>
+                                <mat-form-field  *ngIf="!isReadOnly">
+                                    <mat-select [(value)]="selectedFormaPago" formControlName="forma_pago" >
+                                        <mat-option *ngFor="let forma_pago of formaPagoList" [value]="forma_pago">{{ forma_pago.key }} - {{ forma_pago.name }}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <div *ngIf="submitted && f['forma_pago'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['forma_pago'].errors['required']">Este campo requerido</div>
+                                </div>
+                            </div>
+                            <div class="form-field">
+                                <mat-label class="text-1" *ngIf="isReadOnly">Método de pago</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{ this.f['metodo_pago'].value?.key }} - {{ this.f['metodo_pago'].value?.name }}</mat-label>
+                                <mat-label class="text-1" *ngIf="!isReadOnly">Método de pago*</mat-label>
+                                <mat-form-field *ngIf="!isReadOnly">
+                                    <mat-select [(value)]="selectedMetodoPago" formControlName="metodo_pago" >
+                                        <mat-option *ngFor="let metodo_pago of metodoPagoList" [value]="metodo_pago">{{ metodo_pago.key }} - {{ metodo_pago.name }}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <div *ngIf="submitted && f['metodo_pago'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['metodo_pago'].errors['required']">Este campo requerido</div>
+                                </div>
+                            </div>
+                            <div class="form-field">
+                                <mat-label class="text-1">Tipo de cambio</mat-label>
+                                <mat-label class="text-1-regular" *ngIf="isReadOnly">{{ formatearComoMoneda(this.f['tipo_cambio'].value) }}</mat-label>
+                                <mat-form-field floatLabel="always" *ngIf="!isReadOnly">
+                                    <input matInput type="number" class="example-right-align" placeholder="0" formControlName="tipo_cambio" min="0" step="0.01" (keypress)="validarDecimal($event)">
+                                    <span matTextPrefix>$&nbsp;</span>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+                
+                <div class="separator"></div>
+    
+                <mat-accordion>
+                    <mat-expansion-panel [expanded]="true">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Articulos
+                            </mat-panel-title>
+                            <mat-panel-description>
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+    
+                        <div class="form-row seccion-articulos-header" style="grid-column-gap: 50px; grid-template-columns: 200px 200px 1fr 210px">
+                            <div class="form-field" style="margin-top: 20px; min-width: 80px;">
+                                <mat-label class="text-1">Traslada IVA</mat-label>
+                                <mat-form-field>
+                                    <mat-select formControlName="translada_iva">
+                                        <mat-option value="0">0%</mat-option>
+                                        <mat-option value="0.08">8%</mat-option>
+                                        <mat-option value="0.16">16%</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="form-field" style="margin-top: 20px; min-width: 80px;">
+                                <mat-label class="text-1">Retiene IVA</mat-label>
+                                <mat-form-field>
+                                    <mat-select formControlName="retiene_iva">
+                                        <mat-option value="0">0%</mat-option>
+                                        <mat-option value="0.04">4%</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div></div>
+                            <button type="button" style="width: auto; margin: 50px auto;" mat-flat-button class="btn" (click)="openArticuloOrdenCompraModalComponent()" ><mat-icon>add</mat-icon>Agregar artículo</button>
+                        </div>
+    
+                        <div class="form-row one-col">
+                            <div *ngIf="!hasRecords" class="container-empty">
+                                <img src="../../assets/images/empty-sucursales-alamcen.png" alt="empty logo" class="img">
+                                <span class="text">
+                                    Al parecer aún no tienes información para leer, cuando tengas aparecerán en está sección.
+                                </span>
+                            </div>
+    
+                            <table *ngIf="hasRecords" class="table" mat-table [dataSource]="dataSourceArticulos" style="margin-top: 24px;">
+                                
+                                <ng-container matColumnDef="numero_parte">
+                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Número de parte</th>
+                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.inventario.articulo.part_number}}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="descripcion">
+                                    <th mat-header-cell *matHeaderCellDef>Descripción</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <div class="description-wrapper">
+                                            <div *ngIf="!element.inventario.articulo.photo" class="empty-image-container">
+                                                <img src="../../assets/images/empty-image.png" class="empty-image">
+                                            </div>
+                                            <img *ngIf="element.inventario.articulo.photo" class="photo" [src]="getPathPhoto(element.inventario.articulo.photo)">
+                                            <span class="dos-renglones">{{element.inventario.articulo.description}}</span>
+                                        </div>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="cantidad">
+                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Cantidad</th>
+                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.cantidad}}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="surtido">
+                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Surtido</th>
+                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.cantidad_surtido || 0}}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="almacen">
+                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Almacén</th>
+                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.inventario.almacen.name}}</td>
+                                </ng-container>
+
+
+                                <ng-container matColumnDef="precio_compra">
+                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Precio compra</th>
+                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.moneda_nombre}} ${{element.precio_compra}}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="importe">
+                                    <th mat-header-cell *matHeaderCellDef style="text-align: center;">Importe</th>
+                                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{ formatearComoMoneda(element.cantidad * element.precio_compra) }}</td>
+                                </ng-container>
+    
+                                <ng-container matColumnDef="actions">
+                                    <th mat-header-cell *matHeaderCellDef style="width: 110px; text-align: center;"></th>
+                                    <td mat-cell *matCellDef="let element" style="text-align: center;">
+                                        <button *ngIf="!isReadOnly" type="button" mat-icon-button aria-label="editar articulo" (click)="editArticuloOrdenCompraModalComponent(element)">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                        <button *ngIf="!isReadOnly" type="button" mat-icon-button aria-label="elimianr articulo" (click)="removeArticulo(element)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </td>
+                                </ng-container>
+    
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            </table>
+    
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+    
+                <div class="form-container form-row two-col" style="grid-template-columns: auto 1fr auto; box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);">
+                    <div class="form-field" style="width: 600px;">
+                        <mat-label class="text-1">Comentarios</mat-label>
+                        <mat-form-field>
+                            <mat-label>Comentarios</mat-label>
+                            <textarea matInput formControlName="comentarios" rows="5"></textarea>
+                        </mat-form-field>    
+                    </div>
+
+                    <div class="form-row two-col" style="width: 300px; grid-column-gap: 8px; grid-row-gap: 10px; margin-left: auto;">
+                        <span class="resumen-label">Subtotal</span>
+                        <div class="resumen-value">{{ this.f['moneda'].value?.moneda }} {{ formatearComoMoneda(subTotal) }}</div>
+    
+                        <span class="resumen-label">IVA</span>
+                        <div class="resumen-value">{{ this.f['moneda'].value?.moneda }} {{ formatearComoMoneda(iva) }}</div>
+
+                        <span class="resumen-label">Retención</span>
+                        <div class="resumen-value">{{ this.f['moneda'].value?.moneda }} {{ formatearComoMoneda(retencion) }}</div>
+
+                        <span class="resumen-label"><b>Total</b></span>
+                        <div class="resumen-value"><b>{{ this.f['moneda'].value?.moneda }} {{ formatearComoMoneda(total) }}</b></div>
+                    </div>
+                </div>
+    
+                <div class="toolbar-bottom">
+                    <button mat-flat-button class="btn secundary" type="button" (click)="navigate('orden-compra')" *ngIf="!isReadOnly">
+                        Cancelar
+                    </button>
+                    <button mat-flat-button class="btn" type="submit" *ngIf="!isReadOnly">
+                        {{title}}
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+</div>

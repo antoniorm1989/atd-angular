@@ -35,7 +35,7 @@ export class VentaService {
     if (backOrder) {
       params = params.set('backOrder', backOrder.toString());
     }
-    params = params.set('page', clienteId ? clienteId.toString() : '')
+    // params = params.set('page', clienteId ? clienteId.toString() : '')
     
     return this.http.get<{ data: Array<VentaModel>, total: number }>(
       `${environment.apiUrl}/api/${tipo == 1 ? 'ventas' : 'cotizaciones'}/getAll`,
@@ -148,10 +148,6 @@ export class VentaService {
 
   getFacturaArticulos(ventaId: number): Observable<Array<FacturaArticuloModel>> {
     return this.http.get<Array<FacturaArticuloModel>>(`${environment.apiUrl}/api/ventas/getFacturaArticulos/${ventaId}`);
-  }
-
-  getMonedas(): Observable<CatalogoMonedaModel[]> {
-    return this.http.get<CatalogoMonedaModel[]>(`${environment.apiUrl}/api/catalogs/getMonedas`);
   }
 
   private getHeaders() {

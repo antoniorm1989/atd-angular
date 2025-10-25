@@ -67,9 +67,9 @@ import { CatalogoUsuariosListComponent } from './components/catalogos/usuarios/c
 import { CatalogoUsuariosComponent, EditarPasswordModalComponent } from './components/catalogos/usuarios/usuario/catalogo-usuarios.component';
 import { UpdatePasswordComponent } from './components/catalogos/usuarios/usuario/password/update-password.component';
 import { ChangePasswordComponent } from './components/login/changepassword/changepassword.component';
-import { OrdenesCompraListComponent } from './components/ordenes-compra/orden-compra-list.component';
-import { ArticuloOrdenCompraModalComponent, OrdenCompraComponent } from './components/ordenes-compra/orden-compra/orden-compra.component';
-import { OrdenCompraArticuloComponent } from './components/ordenes-compra/orden-compra/articulo/orden-compra-articulo.component';
+import { OrdenCompraListComponent } from './components/orden-compra/orden-compra-list.component';
+import { OrdenCompraComponent } from './components/orden-compra/orden-compra/orden-compra.component';
+import { OrdenCompraArticuloComponent } from './components/orden-compra/orden-compra/articulo/orden-compra-articulo.component';
 import { PreviewFacturaComponent } from './components/ventas/venta/preview-factura/preview-factura.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoadingOverlayComponent } from './components/genericos/loading/loading-overlay.component';
@@ -125,9 +125,9 @@ export function tokenGetter() {
     UpdatePasswordComponent,
     EditarPasswordModalComponent,
     ChangePasswordComponent,
-    OrdenesCompraListComponent,
+    OrdenCompraListComponent,
     OrdenCompraComponent,
-    ArticuloOrdenCompraModalComponent,
+    OrdenCompraArticuloComponent,
     OrdenCompraArticuloComponent,
     PreviewFacturaModalComponent,
     PreviewFacturaComponent,

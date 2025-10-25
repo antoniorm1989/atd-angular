@@ -53,7 +53,7 @@
 }
 
 .orden-compra-list .container .container-empty .btn {
-    width: 170px;
+    width: auto;
     height: 40px;
     border-radius: 8px;
     background-color: #BA9400;
@@ -80,7 +80,7 @@
 }
 
 .orden-compra-list .container .container-list .toolbar .btn {
-    width: 170px;
+    width: auto;
     height: 40px;
     border-radius: 8px;
     background-color: #BA9400;
@@ -163,7 +163,7 @@
     background-color: #ffffff;
     padding: 0px 24px;
     display: grid;
-    grid-template-columns: 30px 200px 1fr 180px 180px 120px;
+    grid-template-columns: 30px 1fr 1fr 150px 150px;
     column-gap: 12px;
 }
 
@@ -178,27 +178,78 @@
 }
 
 .orden-compra-list .table .center-column{
-    text-align: center;
+    text-align: center !important;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle !important;
 }
 
 .orden-compra-list .container-list .table .estatus-icon{
+    margin: auto;
     border-radius: 9px;
     display: inline-block;
     vertical-align: middle;
-    height: 9px;
-    margin-right: 8px;
-    width: 9px;
-    margin-bottom: 3px;
+    height: 12px;
+    width: 12px;
 }
-.orden-compra-list .container-list .table .estatus-icon.timbrada{
+
+
+/*estilos de estatus venta*/
+.orden-compra-list .estatus-icon.v-creada{
+    background-color: #3f51b5;
+}
+.orden-compra-list .estatus-icon.v-abierta{
+    background-color: #3B82F6;
+}
+.orden-compra-list .estatus-icon.v-cerrada{
     background-color: #5BD26E;
 }
-.orden-compra-list .container-list .table .estatus-icon.parcialmente-despachada{
-    background-color: #BA9400;
+
+/*estilos de estatus factura*/
+.orden-compra-list .estatus-icon.f-pendiente{
+    background-color: #3f51b5;
 }
-.orden-compra-list .container-list .table .estatus-icon.cancelada{
-    background-color: #FF0000;
+.orden-compra-list .estatus-icon.f-facturada{
+    background-color: #5BD26E;
 }
-.orden-compra-list .container-list .table .estatus-icon.despachada{
-    background-color: #71A8F8;
+.orden-compra-list .estatus-icon.f-cancelada{
+    background-color: #FF8B38;
+}
+
+/*estilos de estatus pago*/
+.orden-compra-list .estatus-icon.p-sin-adeudo{
+    background-color: #FF8B38;
+}
+.orden-compra-list .estatus-icon.p-pendiente{
+    background-color: #3f51b5;
+}
+.orden-compra-list .estatus-icon.p-pagado{
+    background-color: #5BD26E;
+}
+
+/*estilos de estatus*/
+.orden-compra-list .estatus-icon{
+    border-radius: 9px;
+    display: inline-block;
+    vertical-align: middle;
+    height: 16px;
+    width: 16px;
+}
+
+.orden-compra-list .estatus-icon {
+    border-radius: 12px;
+    height: 23px;
+    width: 23px;
+    margin: auto;
+}
+
+/*estilos de estatus venta*/
+.orden-compra-list .estatus-icon.o-en-proceso{
+    background-color: #FF8B38;
+}
+.orden-compra-list .estatus-icon.o-parcialmente-surtida{
+    background-color: #FF8B38;
+}
+.orden-compra-list .estatus-icon.o-completa{
+    background-color: #5BD26E;
 }

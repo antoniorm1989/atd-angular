@@ -113,8 +113,6 @@ body {
     border-radius: 7px;
     box-shadow: 0 2px 8px rgba(169, 68, 66, 0.08);
     margin: 10px;
-    padding-left: 16px !important;
-    padding-right: 16px !important;
     display: flex;
     align-items: center;
 }
@@ -302,10 +300,6 @@ input[formControlName="password"] {
     top: 22px;
 }
 
-.mat-sort-header-container {
-    display: inline-flex;
-}
-
 /* Center all table headers globally */
 .table .mat-mdc-header-cell {
     text-align: center !important;
@@ -322,4 +316,8 @@ input[formControlName="password"] {
 .table .mat-mdc-cell.center-column {
     text-align: center !important;
     justify-content: center !important;
+}
+
+.mat-sort-header-container{
+    display: inline-flex !important;
 }

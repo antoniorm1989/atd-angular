@@ -67,7 +67,6 @@ export class CatalogoProveedoresComponent {
           if (this.id != undefined) {
             this.catalogoProveedoresService.getById(this.id).subscribe({
               next: (data) => {
-
                 this.form.patchValue({
                   proveedor: data.proveedor,
                   nombreContacto: data.nombreContacto,
@@ -188,6 +187,15 @@ export class CatalogoProveedoresComponent {
     });
   }
 
+  openSnackBarError(message: string) {
+    this._snackBar.open(message, 'cerrar', {
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: ['snackbar-error'],
+      duration: 5000,
+    });
+  }
+
   onSubmit() {
     this.submitted = true;
     this.isRfcDuplicate = false;
@@ -199,6 +207,11 @@ export class CatalogoProveedoresComponent {
     let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
     let user = new User();
     user.id = userData.id;
+
+    if(user.id === undefined){
+      this.openSnackBarError('No se encontró información del usuario, por favor inicia sesión nuevamente.');
+      return;
+    }
 
     let proveedor = new CatalogoProveedorModel();
     proveedor.id = this.id;

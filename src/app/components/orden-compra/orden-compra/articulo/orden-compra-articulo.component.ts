@@ -11,17 +11,10 @@ import { Observable, map, startWith } from 'rxjs';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { BarcodeScannerComponent } from 'src/app/components/genericos/barcodesScanner.component';
-import { MatRadioChange } from '@angular/material/radio';
-import { CatalogoSucursalModel } from 'src/app/models/catalogo-sucursal.model';
-import { CatalogoSucursalesService } from 'src/app/services/catalogo-sucursales.service';
-import { CatalogoProductoServicioModel } from 'src/app/models/catalogos.model';
 import { CatalogosService } from 'src/app/services/catalogos.service';
 import { CatalogoArticuloService } from 'src/app/services/catalogo-articulos.service';
-import { InventorySucursalModel } from 'src/app/models/inventory-sucursal.model';
-import { User } from 'src/app/models/user';
-import { OrdenCompraArticuloModel } from 'src/app/models/orden-compa.model';
-import { OrdenCompraService } from 'src/app/services/orden-compra.service';
-
+import { VentaService } from 'src/app/services/ventas.service';
+import { OrdenCompraArticuloModel } from 'src/app/models/orden-compra.model';
 
 export const _filter = (opt: CatalogoArticuloModel[], value: string): CatalogoArticuloModel[] => {
   const filterValue = value.toLowerCase();
@@ -34,24 +27,15 @@ export const _filter = (opt: CatalogoArticuloModel[], value: string): CatalogoAr
   templateUrl: './orden-compra-articulo.component.html',
   styleUrls: ['./orden-compra-articulo.component.css']
 })
-
 export class OrdenCompraArticuloComponent implements OnInit, OnDestroy {
 
   action: string = 'Agregar';
+  title: string = 'Agregar artículos orden de compra';
   form: FormGroup;
   submitted = false;
-  stock: number | undefined = 0;
-
-  isAlmacen: boolean = true;
 
   selectedAlmacen: CatalogoAlmacenModel | null = null;
   almacenes: CatalogoAlmacenModel[] = [];
-
-  selectedSucursal: CatalogoSucursalModel | null = null;
-  sucursales: CatalogoSucursalModel[] = [];
-
-  selectedProductoServicio: CatalogoProductoServicioModel | null = null;
-  productoServicioList: CatalogoProductoServicioModel[] = [];
 
   imageUrl: string | null = null;
 
@@ -64,47 +48,59 @@ export class OrdenCompraArticuloComponent implements OnInit, OnDestroy {
   @Output() cancel = new EventEmitter();
   @Output() add = new EventEmitter<OrdenCompraArticuloModel>();
 
-  @Input() ordenCompraArticuloModel: OrdenCompraArticuloModel | undefined;
-  @Input() ordenCompraArticulosModel: OrdenCompraArticuloModel[] | undefined;
-  @Input() clienteId: number = 0;
-  @Input() isDespachar: boolean = false;
+  ordenCompraArticuloModel: OrdenCompraArticuloModel | undefined;
+  ordenCompraArticuloModelArray: OrdenCompraArticuloModel[] | undefined;
+  esSurtir: boolean = false;
 
   isEditing: boolean = false;
-  hasBackOrder: boolean = false;
-
   inventory_almacen_id = 0;
 
-  constructor(public route: ActivatedRoute,
+  constructor(
+    public route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private inventoryAlmacenService: InventoryAlmacenService,
     private catalogoAlmacenesService: CatalogoAlmacenesService,
-    private catalogoSucursalesService: CatalogoSucursalesService,
     private router: Router,
     private catalogosService: CatalogosService,
     private catalogoArticuloService: CatalogoArticuloService,
     private dialog: MatDialog,
-    private ordenCompraService: OrdenCompraService,) {
+    private ventaService: VentaService,
+    public dialogRef: MatDialogRef<OrdenCompraArticuloComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
 
     this.form = this.formBuilder.group({
-      tipoAlmacen: ['almacen'],
       almacen: [null],
-      sucursal: [null],
       selectedArticle: [null, Validators.required],
-      qty: [1, [Validators.min(1)]],
-      precio_ordenCompra: [0, [Validators.required, Validators.min(0.01)]],
-      descuento: 0,
-      comentarios: '',
-      unidad_medida: ['producto'],
-      articulosCliente: false,
-      backorder: 0
+      cantidad: [1, [Validators.min(1)]],
+      precio_compra: [0, [Validators.required, Validators.min(0.01)]],
     });
 
-    this.form.controls['precio_ordenCompra'].disable();
-    this.form.controls['descuento'].disable();
+    this.form.controls['precio_compra'].disable();
   }
 
   ngOnInit() {
     try {
+
+      if (this.data) {
+        this.ordenCompraArticuloModel = this.data.ordenCompraArticuloModel;
+        this.ordenCompraArticuloModelArray = this.data.ordenCompraArticuloModelArray;
+        this.esSurtir = this.data.esSurtir ?? false;
+      }
+
+      if (this.esSurtir) {
+        this.form.addControl(
+          'cantidad_surtido',
+          this.formBuilder.control(
+            this.ordenCompraArticuloModel?.cantidad_surtido ?? 0,
+            [
+              Validators.min(this.ordenCompraArticuloModel?.cantidad_surtido ? (this.ordenCompraArticuloModel?.cantidad_surtido + 1) : 1),
+              Validators.max(this.ordenCompraArticuloModel?.cantidad ?? 1)
+            ]
+          )
+        );
+      }
+
       this.catalogoAlmacenesService.getAll().subscribe({
         next: (data) => {
           this.almacenes = data;
@@ -117,38 +113,24 @@ export class OrdenCompraArticuloComponent implements OnInit, OnDestroy {
         }
       });
 
-      this.catalogoSucursalesService.getAll().subscribe({
-        next: (data) => {
-          this.sucursales = data;
-          if (data.length > 0)
-            this.selectedSucursal = data[0];
-        },
-        error: (e) => {
-        }
-      });
-
-      // this.catalogosService.getProductoServicio('').subscribe({
-      //   next: (data) => {
-      //     this.productoServicioList = data;
-      //     if (data.length > 0)
-      //       this.selectedProductoServicio = data[0];
-      //   },
-      //   error: (e) => {
-      //   }
-      // });
-
       this.form.controls['selectedArticle'].valueChanges.subscribe((newValue) => {
         this.onOptionSelected(newValue);
       });
 
       if (this.ordenCompraArticuloModel != null) {
         this.isEditing = true;
-        this.action = 'Editar';
+        this.action = this.esSurtir ? 'Surtir' : 'Editar';
+        this.title = this.esSurtir ? 'Surtir artículo orden de compra' : 'Editar artículo orden de compra';
         this.f['selectedArticle'].disable();
-        this.f['tipoAlmacen'].disable();
         this.f['almacen'].disable();
-        this.f['sucursal'].disable();
+        this.form.controls['precio_compra'].disable();
+
+        if (this.esSurtir) {
+          this.form.controls['cantidad'].disable();
+          this.form.controls['precio_compra'].disable();
+        }
       }
+
     } catch (error) {
       console.error('An error occurred in ngOnInit:', error);
     }
@@ -159,19 +141,13 @@ export class OrdenCompraArticuloComponent implements OnInit, OnDestroy {
   }
 
   loadEdit(ordenCompraArticuloModel: OrdenCompraArticuloModel) {
-    if (this.isAlmacen)
-      if (ordenCompraArticuloModel.almacen?.articulo?.part_number) {
-        this.form.patchValue({
-          selectedArticle: ordenCompraArticuloModel.almacen?.articulo?.part_number,
-          qty: this.isDespachar ? 0 : ordenCompraArticuloModel.cantidad,
-          //descuento: ordenCompraArticuloModel.descuento,
-          comentarios: ordenCompraArticuloModel.comentarios,
-          //unidad_medida: ordenCompraArticuloModel.unidad_medida,
-          backorder: 0
-        });
-        this.onOptionSelected(ordenCompraArticuloModel.almacen?.articulo?.part_number);
-        this.calcularBackOrder();
-      }
+    if (ordenCompraArticuloModel.inventario?.articulo?.part_number) {
+      this.form.patchValue({
+        selectedArticle: ordenCompraArticuloModel.inventario?.articulo?.part_number,
+        cantidad: ordenCompraArticuloModel.cantidad,
+        precio_compra: ordenCompraArticuloModel.precio_compra,
+      });
+    }
   }
 
   get f() { return this.form!.controls; }
@@ -222,6 +198,10 @@ export class OrdenCompraArticuloComponent implements OnInit, OnDestroy {
   clearAutocompleteInput() {
     try {
       this.f['selectedArticle'].reset();
+      this.imageUrl = null;
+      this.form.controls['precio_compra'].reset();
+      this.form.controls['cantidad'].reset();
+      this.subtotal = 0;
     } catch (error) {
       console.error('An error occurred in clearAutocompleteInput:', error);
     }
@@ -240,23 +220,21 @@ export class OrdenCompraArticuloComponent implements OnInit, OnDestroy {
   }
 
   formatearComoMoneda(valor: number | undefined): string {
-    if (!valor && valor != 0)
+    if (valor === undefined || valor === null)
       return 'n/a';
 
-    return new Intl.NumberFormat('en-US', {
+    const moneda = this.form.get('moneda')?.value === 'USD' ? 'USD' : 'MXN';
+
+    return new Intl.NumberFormat('es-MX', {
       style: 'currency',
-      currency: 'USD',
+      currency: moneda,
       minimumFractionDigits: 2,
       maximumFractionDigits: 4
     }).format(valor);
   }
 
   calcularSubTotal() {
-    this.subtotal = ((this.f['precio_ordenCompra'].value * this.f['qty'].value) - this.f['descuento'].value);
-  }
-
-  onRadioChange(event: MatRadioChange) {
-    this.isAlmacen = event.value == 'almacen';
+    this.subtotal = (this.f['precio_compra'].value * this.f['cantidad'].value);
   }
 
   onAlmacenChange(event: any) {
@@ -282,18 +260,18 @@ export class OrdenCompraArticuloComponent implements OnInit, OnDestroy {
   }
 
   loadArticulos() {
-    if (this.isAlmacen && this.selectedAlmacen && this.selectedAlmacen.id) {
-      this.catalogoArticuloService.getAllGroupedByCategoryByAlmacen(this.selectedAlmacen.id, this.f['articulosCliente'].value ? 0 : this.clienteId).subscribe({
+    if (this.selectedAlmacen && this.selectedAlmacen.id) {
+      this.catalogoArticuloService.getAllGroupedByCategoryByAlmacen(this.selectedAlmacen.id, 0).subscribe({
         next: (data) => {
           this.articuloGroups = data;
 
-          if (this.ordenCompraArticulosModel?.length ?? 0 > 0)
+          if (this.ordenCompraArticuloModelArray?.length ?? 0 > 0)
             this.articuloGroups.forEach(articuloGroup => {
               articuloGroup.articulos = articuloGroup.articulos?.filter((articulo) => {
                 let exist = false;
 
-                this.ordenCompraArticulosModel?.forEach(ordenCompraArticulo => {
-                  if (this.selectedAlmacen?.id == ordenCompraArticulo?.almacen?.almacen?.id && ordenCompraArticulo?.almacen?.articulo?.id == articulo.id) {
+                this.ordenCompraArticuloModelArray?.forEach(ordenCompraArticulo => {
+                  if (this.selectedAlmacen?.id == ordenCompraArticulo?.inventario?.almacen?.id && ordenCompraArticulo?.inventario?.articulo?.id == articulo.id) {
                     exist = true;
                   }
                 });
@@ -324,40 +302,25 @@ export class OrdenCompraArticuloComponent implements OnInit, OnDestroy {
   onOptionSelected(partNumber: string) {
     try {
       this.selectedArticle = this.getArticuloByPartNumber(partNumber);
-      if (this.selectedArticle != undefined) {
-        if (!this.isDespachar) {
-          this.form.controls['precio_ordenCompra'].enable();
-          this.form.controls['descuento'].enable();
-        }
 
-        if (this.selectedArticle.photo)
-          this.imageUrl = `${environment.apiUrl}/images/articulos/${this.selectedArticle.photo}`;
-
-        this.form.patchValue({
-          //precio_ordenCompra: this.isEditing ? this.ordenCompraArticuloModel?.precio_ordenCompra : this.selectedArticle.precio_ordenCompra
-        });
-
-        this.calcularSubTotal();
-        this.inventoryAlmacenService.getInventoryByAlmacenByArticulo(this.selectedAlmacen?.id, this.selectedArticle.id).subscribe({
-          next: (data) => {
-            if (data && data.id) {
-              this.inventory_almacen_id = data.id;
-              if (data.inventory_transaction && data.inventory_transaction.length > 0) {
-                this.stock = data.inventory_transaction[0]?.stock;
-              } else
-                this.stock = 0;
-            } else {
-              this.stock = 0;
-            }
-            this.calcularBackOrder();
-          }
-        });
+      if (!this.selectedArticle) {
+        this.form.controls['precio_compra'].disable();
+        return;
       } else {
-        this.form.controls['precio_ordenCompra'].disable();
-        this.form.controls['descuento'].disable();
+        if (!this.esSurtir)
+          this.form.controls['precio_compra'].enable();
       }
+
+      this.imageUrl = null;
+
+      if (this.selectedArticle.photo) {
+        this.imageUrl = `${environment.apiUrl}/images/articulos/${this.selectedArticle.photo}`;
+      }
+
+      this.actualizarDatosArticulo();
+      this.calcularSubTotal();
     } catch (error) {
-      console.error('An error occurred in onOptionSelected:', error);
+      console.error('Error en onOptionSelected:', error);
     }
   }
 
@@ -378,14 +341,17 @@ export class OrdenCompraArticuloComponent implements OnInit, OnDestroy {
 
   agregarQty() {
     try {
-      if (this.selectedArticle == undefined || (this.isDespachar && ((this.stock != undefined && this.f['qty'].value >= this.stock) || this.f['backorder'].value <= 0)))
+      if (this.selectedArticle == undefined)
         return;
 
-      if (this.stock != undefined && ((this.isDespachar && this.f['qty'].value <= this.stock) || !this.isDespachar))
-        this.f['qty'].setValue(this.f['qty'].value + 1);
-
+      if (this.esSurtir) {
+        const currentValueSurtir = this.f['cantidad_surtido'].value || 0;
+        this.f['cantidad_surtido'].setValue(currentValueSurtir + 1);
+      } else {
+        const currentValue = this.f['cantidad'].value || 0;
+        this.f['cantidad'].setValue(currentValue + 1);
+      }
       this.calcularSubTotal();
-      this.calcularBackOrder();
     } catch (error) {
       console.error('An error occurred in agregarQty:', error);
     }
@@ -393,28 +359,75 @@ export class OrdenCompraArticuloComponent implements OnInit, OnDestroy {
 
   restarQty() {
     try {
-      if (this.f['qty'].value > 1)
-        this.f['qty'].setValue(this.f['qty'].value - 1);
+      if (this.selectedArticle == undefined)
+        return;
 
-      this.calcularSubTotal();
-      this.calcularBackOrder();
+      if (this.esSurtir) {
+        const currentValueSurtir = this.f['cantidad_surtido'].value || 0;
+        if (currentValueSurtir > 1) {
+          this.f['cantidad_surtido'].setValue(currentValueSurtir - 1);
+          this.calcularSubTotal();
+        }
+      } else {
+        const currentValue = this.f['cantidad'].value || 0;
+        if (currentValue > 1) {
+          this.f['cantidad'].setValue(currentValue - 1);
+          this.calcularSubTotal();
+        }
+      }
     } catch (error) {
       console.error('An error occurred in restarQty:', error);
     }
   }
 
-  private calcularBackOrder() {
-    if (!this.isDespachar)
-      this.form.patchValue({
-        backorder: this.f['qty'].value > (this.stock || 0) ? (((this.stock || 0) - this.f['qty'].value) * -1) : 0
-      });
-    else
-      //if (this.ordenCompraArticuloModel != undefined && this.ordenCompraArticuloModel.backorder != undefined)
-        this.form.patchValue({
-        //  backorder: this.ordenCompraArticuloModel.backorder - this.f['qty'].value
-        });
+  onAdd() {
+    try {
+      this.submitted = true;
+      if (this.form!.invalid == false) {
+        let ordenCompraArticuloModel = new OrdenCompraArticuloModel();
+        ordenCompraArticuloModel.inventory_almacen_id = this.inventory_almacen_id;
+        ordenCompraArticuloModel.precio_compra = this.f['precio_compra'].value;
+        ordenCompraArticuloModel.cantidad = this.f['cantidad'].value;
+        ordenCompraArticuloModel.id = this.ordenCompraArticuloModel?.id ?? 0;
 
-    this.hasBackOrder = this.f['backorder'].value > 0
+        if (this.esSurtir) {
+          ordenCompraArticuloModel.cantidad_surtido = (this.f['cantidad_surtido'].value - (this.ordenCompraArticuloModel?.cantidad_surtido ?? 0));
+        }
+
+        if (this.selectedAlmacen) {
+          let inventoryAlmacenModel = new InventoryAlmacenModel();
+          inventoryAlmacenModel.almacen = this.selectedAlmacen;
+          inventoryAlmacenModel.articulo = this.selectedArticle;
+          ordenCompraArticuloModel.inventario = inventoryAlmacenModel;
+        }
+
+        this.dialogRef.close(ordenCompraArticuloModel);
+      }
+    } catch (error) {
+      console.error('An error occurred in onSubmit:', error);
+    }
+  }
+
+  onCancel() {
+    try {
+      this.dialogRef.close();
+    } catch (error) {
+      console.error('An error occurred in onCancel:', error);
+    }
+  }
+
+  private actualizarDatosArticulo() {
+    this.form.patchValue({
+      precio_compra: this.isEditing ? this.ordenCompraArticuloModel?.precio_compra : this.selectedArticle?.costo_proveedor,
+      cantidad: this.isEditing ? this.ordenCompraArticuloModel?.cantidad : 1,
+    });
+
+    this.inventoryAlmacenService.getInventoryByAlmacenByArticulo(this.selectedAlmacen?.id, this.selectedArticle?.id).subscribe({
+      next: (data) => {
+        this.inventory_almacen_id = data?.id ?? 0;
+      },
+      error: (error) => console.error('Error obteniendo inventario:', error)
+    });
   }
 
   private _filterGroup(value: string): ArticuloGroup[] {
@@ -431,80 +444,10 @@ export class OrdenCompraArticuloComponent implements OnInit, OnDestroy {
       return [];
     }
   }
-
-  onAdd() {
-    try {
-      this.submitted = true;
-      if (this.form!.invalid == false && this.isDespachar == false) {
-        let ordenCompraArticuloModel = new OrdenCompraArticuloModel();
-        // ordenCompraArticuloModel.inventory_almacen_id = this.inventory_almacen_id;
-        // ordenCompraArticuloModel.precio_ordenCompra = this.f['precio_ordenCompra'].value;
-        // ordenCompraArticuloModel.descuento = this.f['descuento'].value;
-        // ordenCompraArticuloModel.cantidad = this.f['qty'].value;
-        // ordenCompraArticuloModel.unidad_medida = this.f['unidad_medida'].value;
-        // ordenCompraArticuloModel.comentarios = this.f['comentarios'].value;
-        // ordenCompraArticuloModel.backorder = this.f['backorder'].value;
-
-        if (this.selectedProductoServicio)
-          ordenCompraArticuloModel.producto_servicio = this.selectedProductoServicio;
-
-        if (this.selectedAlmacen) {
-          let inventoryAlmacenModel = new InventoryAlmacenModel();
-          inventoryAlmacenModel.almacen = this.selectedAlmacen;
-          inventoryAlmacenModel.articulo = this.selectedArticle;
-          ordenCompraArticuloModel.almacen = inventoryAlmacenModel;
-        }
-
-        if (this.selectedSucursal) {
-          let inventorySucursalModel = new InventorySucursalModel();
-          inventorySucursalModel.sucursal = this.selectedSucursal;
-          inventorySucursalModel.articulo = this.selectedArticle;
-          ordenCompraArticuloModel.sucursal = inventorySucursalModel;
-        }
-
-        this.add.emit(ordenCompraArticuloModel);
-      } else if (this.isDespachar == true) {
-        // stop here if form is invalid
-        if (this.form!.invalid)
-          return;
-
-        let userData = JSON.parse(localStorage.getItem('user_data') || '{"name":"","last_name":""}');
-        let user = new User();
-        user.id = userData.id;
-
-        let ordenCompraArticuloModel = new OrdenCompraArticuloModel();
-        ordenCompraArticuloModel.id = this.ordenCompraArticuloModel?.id;
-        ordenCompraArticuloModel.cantidad = this.f['qty'].value;
-        ordenCompraArticuloModel.comentarios = this.f['comentarios'].value;
-        //ordenCompraArticuloModel.user = user;
-        //ordenCompraArticuloModel.inventory_almacen_id = this.inventory_almacen_id;
-        //ordenCompraArticuloModel.ordenCompraId = this.ordenCompraArticuloModel?.ordenCompraId;
-
-        // this.ordenCompraService.despachar(ordenCompraArticuloModel).subscribe({
-        //   next: (data) => {
-        //     this.add.emit(ordenCompraArticuloModel);
-        //   },
-        //   error: (e) => {
-        //     console.log(e);
-        //   }
-        // });
-      }
-    } catch (error) {
-      console.error('An error occurred in onSubmit:', error);
-    }
-  }
-
-  onCancel() {
-    try {
-      this.cancel.emit();
-    } catch (error) {
-      console.error('An error occurred in onSubmit:', error);
-    }
-  }
 }
 
 @Component({
-  selector: 'dialog-component-escaner-orden-compra',
+  selector: 'dialog-component-escaner-orden-compra-articulo',
   template: `<h2 mat-dialog-title>Escanear codigo de barras</h2>
             <mat-dialog-content class="mat-typography">
               <app-barcode-scanner #appBarcodeScanner (scannedValue)="handleScannedValue($event)"></app-barcode-scanner>

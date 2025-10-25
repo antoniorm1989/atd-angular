@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { CatalogoCityModel, CatalogoCountryModel, CatalogoFormaPagoModel, CatalogoMetodoPagoModel, CatalogoObjetoImpuestoModel, CatalogoProductoServicioModel, CatalogoRegimenFiscalModel, CatalogoStateModel, CatalogoUnidadMedidaModel, CatalogoUsoCfdiModel } from '../models/catalogos.model';
+import { CatalogoCityModel, CatalogoCountryModel, CatalogoFormaPagoModel, CatalogoMetodoPagoModel, CatalogoMonedaModel, CatalogoObjetoImpuestoModel, CatalogoProductoServicioModel, CatalogoRegimenFiscalModel, CatalogoStateModel, CatalogoUnidadMedidaModel, CatalogoUsoCfdiModel } from '../models/catalogos.model';
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +50,10 @@ export class CatalogosService {
 
   getUnidadMedida(): Observable<Array<CatalogoUnidadMedidaModel>> {
     return this.http.get<Array<CatalogoUnidadMedidaModel>>(`${environment.apiUrl}/api/catalogs/getUnidadMedida`);
+  }
+
+  getMonedas(): Observable<CatalogoMonedaModel[]> {
+    return this.http.get<CatalogoMonedaModel[]>(`${environment.apiUrl}/api/catalogs/getMonedas`);
   }
 
 }
