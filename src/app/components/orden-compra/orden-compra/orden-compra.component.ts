@@ -262,7 +262,7 @@ export class OrdenCompraComponent {
     this.catalogosService.getFormaPagoById(0).subscribe({
       next: (data) => {
         if (data.length > 0) {
-          this.formaPagoList = data.filter(fp => fp.key !== undefined && ['01', '02', '03', '04', '28', '99'].includes(fp.key));
+          this.formaPagoList = data;
           if (this.ordenCompraModel != undefined) {
             let selectedFormaPago = data.find(x => x.id == this.ordenCompraModel.forma_pago?.id);
             if (selectedFormaPago != undefined)
@@ -296,7 +296,7 @@ export class OrdenCompraComponent {
     this.catalogosService.getFormaPagoById(0).subscribe({
       next: (data) => {
         if (data.length > 0) {
-          this.formaPagoList = data.filter(fp => fp.key !== undefined && ['01', '02', '03', '04', '28', '99'].includes(fp.key));
+          this.formaPagoList = data;
           if (this.ordenCompraModel != undefined) {
             let selectedFormaPago = data.find(x => x.id == this.ordenCompraModel?.forma_pago?.id);
             if (selectedFormaPago != undefined)

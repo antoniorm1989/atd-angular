@@ -168,10 +168,10 @@
                             <mat-icon>more_vert</mat-icon>
                         </button>
                         <mat-menu #menu="matMenu">
-                            <!-- <button mat-menu-item (click)="descargarFacturaPDF(element.factura_cfdi_uid, element.id)">
-                                <mat-icon>file_download</mat-icon>
-                                <span>Descargar PDF</span>
-                            </button> -->
+                            <button mat-menu-item (click)="deleteCotizacion(element.id)">
+                                <mat-icon>delete</mat-icon>
+                                <span>Eliminar</span>
+                            </button>
                         </mat-menu>
                     </td>
                 </ng-container>

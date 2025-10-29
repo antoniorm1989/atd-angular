@@ -141,13 +141,16 @@ export class VentaService {
   }
 
   // Estatus
-
   getEstatusVenta(id: number): Observable<VentaEstatusModel> {
     return this.http.get<VentaEstatusModel>(`${environment.apiUrl}/api/ventas/getEstatusVenta/${id}`);
   }
 
   getFacturaArticulos(ventaId: number): Observable<Array<FacturaArticuloModel>> {
     return this.http.get<Array<FacturaArticuloModel>>(`${environment.apiUrl}/api/ventas/getFacturaArticulos/${ventaId}`);
+  }
+
+  deleteCotizacion(cotizacionId: number): Observable<any> {
+    return this.http.delete<void>(`${environment.apiUrl}/api/cotizaciones/delete/${cotizacionId}`);
   }
 
   private getHeaders() {

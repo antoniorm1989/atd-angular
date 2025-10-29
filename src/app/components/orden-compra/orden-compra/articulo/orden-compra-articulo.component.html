@@ -95,7 +95,7 @@
                     <div class="form-field" *ngIf="!esSurtir">
                         <mat-label class="text-1">Cantidad</mat-label>
                         <div class="container-agregar-retirar">
-                            <button type="button" color="primary" mat-mini-fab (click)="restarQty()">
+                            <button type="button" color="primary" mat-mini-fab (click)="restarQty()" disabled="true">
                                 <mat-icon>remove</mat-icon>
                             </button>
                             <mat-form-field>
@@ -111,7 +111,7 @@
 
                     <!-- Cantidad (modo surtir - solo lectura) -->
                     <div class="form-field" *ngIf="esSurtir">
-                        <mat-label class="text-1">Cantidad</mat-label>
+                        <mat-label class="text-1">Cantidad total</mat-label>
                         <mat-form-field>
                             <input type="number" matInput formControlName="cantidad"
                                 [ngClass]="{ 'is-invalid': submitted && f['cantidad'].errors }" required readonly
@@ -123,7 +123,7 @@
                     <div class="form-field" *ngIf="esSurtir">
                         <mat-label class="text-1">Cantidad surtida</mat-label>
                         <div class="container-agregar-retirar">
-                            <button type="button" color="primary" mat-mini-fab (click)="restarQty()">
+                            <button type="button" color="primary" mat-mini-fab (click)="restarQty()" [disabled]="(f['cantidad_surtido'].value || 0) <= (ordenCompraArticuloModel?.cantidad_surtido ?? 0)">
                                 <mat-icon>remove</mat-icon>
                             </button>
                             <mat-form-field>
@@ -165,7 +165,7 @@
                 <div style="position: absolute; bottom: 15px;" *ngIf="submitted && esSurtir && f['cantidad_surtido'].errors"
                     class="invalid-feedback">
                     <div *ngIf="f['cantidad_surtido'].errors['min']">
-                        No puede seleccionar un número menor a: {{ f['cantidad_surtido'].errors['min']['min'] }}
+                        Cantidad actualmente surtida es {{ this.ordenCompraArticuloModel?.cantidad_surtido ?? 0 }}, Debes aumentar por lo menos 1.
                     </div>
                 </div>
                 <div style="position: absolute; bottom: 15px;" *ngIf="submitted && esSurtir && f['cantidad_surtido'].errors"

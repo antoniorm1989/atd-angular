@@ -30,7 +30,7 @@ export class VentasListComponent implements OnInit {
   private baseDisplayedColumns: string[] = ['id', 'estatus', 'estatusFactura', 'estatus_pago', 'creacion', 'cliente', 'importe', 'responsable', 'actions'];
   get displayedColumns(): string[] {
     if (this.isVenta) {
-      return this.baseDisplayedColumns;
+      return this.baseDisplayedColumns.filter(col => col !== 'actions');
     } else {
       return this.baseDisplayedColumns.filter(col => col !== 'estatusFactura' && col !== 'estatus_pago');
     }
@@ -272,6 +272,17 @@ export class VentasListComponent implements OnInit {
 
   formatNumber(input: number): string {
     return input.toString().padStart(4, '0');
+  }
+
+  deleteCotizacion(id: number) {
+    this.ventaService.deleteCotizacion(id).subscribe({
+      next: (res) => {
+        this.openDialogSuccess('La cotización ha sido eliminada exitosamente.');
+      },
+      error: (e) => {
+        this.openSnackBarError('Ocurrió un error al eliminar la cotización. Por favor, inténtelo de nuevo.');
+      }
+    });
   }
 
 }

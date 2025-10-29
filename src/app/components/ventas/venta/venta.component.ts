@@ -872,7 +872,8 @@ export class VentaComponent implements OnInit {
       width: '1100px',
       data: {
         articulos: this.dataSourceArticulos.data,
-        clienteId: this.f['cliente'] && this.f['cliente'].value ? this.f['cliente'].value.id : 0
+        clienteId: this.f['cliente'] && this.f['cliente'].value ? this.f['cliente'].value.id : 0,
+        isVenta: this.isVenta
       },
     });
 
@@ -893,7 +894,8 @@ export class VentaComponent implements OnInit {
       width: '1100px',
       data: {
         articulo: ventaArticuloModel,
-        clienteId: 0 // voy a editar, buscar en todos los articulos por si selecciono articulos no relacionados al cliente
+        clienteId: 0, // voy a editar, buscar en todos los articulos por si selecciono articulos no relacionados al cliente
+        isVenta: this.isVenta
       }
     });
 
@@ -913,24 +915,24 @@ export class VentaComponent implements OnInit {
     });
   }
 
-  despacharArticuloVentaModalComponent(ventaArticuloModel: VentaArticuloModel) {
-    ventaArticuloModel.ventaId = this.id;
-    const dialogRef = this.dialog.open(ArticuloVentaModalComponent, {
-      height: '600px',
-      data: {
-        articulo: ventaArticuloModel,
-        isDespachar: true
-      }
-    });
+  // despacharArticuloVentaModalComponent(ventaArticuloModel: VentaArticuloModel) {
+  //   ventaArticuloModel.ventaId = this.id;
+  //   const dialogRef = this.dialog.open(ArticuloVentaModalComponent, {
+  //     height: '600px',
+  //     data: {
+  //       articulo: ventaArticuloModel,
+  //       isDespachar: true
+  //     }
+  //   });
 
-    dialogRef.afterClosed().subscribe(ventaArticuloModel => {
-      if (ventaArticuloModel != undefined && ventaArticuloModel != "") {
-        this.openDialogSuccess(`Se ha despachado el artículo con éxito.`, () => {
-          document.location.reload();
-        });
-      }
-    });
-  }
+  //   dialogRef.afterClosed().subscribe(ventaArticuloModel => {
+  //     if (ventaArticuloModel != undefined && ventaArticuloModel != "") {
+  //       this.openDialogSuccess(`Se ha despachado el artículo con éxito.`, () => {
+  //         document.location.reload();
+  //       });
+  //     }
+  //   });
+  // }
 
   calcularTotales() {
     this.calcularSubTotal();
@@ -1403,7 +1405,7 @@ export class VentaComponent implements OnInit {
 
 @Component({
   selector: 'dialog-component-agregar-articulo-venta',
-  template: `<span mat-dialog-title>Agregar artículos venta </span>
+  template: `<span mat-dialog-title>{{title}}</span>
             <mat-dialog-content class="mat-typography">
               <app-venta-articulo [ventaArticulosModel]="ventaArticulosModel" [ventaArticuloModel]="ventaArticuloModel" [clienteId]="clienteId" [isDespachar]="isDespachar" (cancel)="onCancelar()" (add)="onAgregarArticulo($event)" #appVentaArticuloComponent></app-venta-articulo>
             </mat-dialog-content>`,
@@ -1416,6 +1418,7 @@ export class ArticuloVentaModalComponent {
   ventaArticulosModel!: VentaArticuloModel[];
   clienteId = 0;
   isDespachar = false;
+  title = 'Agregar artículos';
 
   constructor(
     public dialogRef: MatDialogRef<ArticuloVentaModalComponent>,
@@ -1423,6 +1426,7 @@ export class ArticuloVentaModalComponent {
   ) {
     dialogRef.disableClose = true;
 
+     this.title = this.data.isVenta ? 'Agregar artículos venta' : 'Agregar artículos cotización';
     if (Object.keys(data).length > 0) {
       if (data.articulo != undefined) {
         this.ventaArticuloModel = data.articulo;
