@@ -258,8 +258,7 @@ export class OrdenCompraComponent {
       }
     });
 
-
-    this.catalogosService.getFormaPagoById(0).subscribe({
+    this.catalogosService.getFormaPagoById(this.f['condicion_pago'].value == 'contado' ? 0 : 1).subscribe({
       next: (data) => {
         if (data.length > 0) {
           this.formaPagoList = data;
@@ -293,7 +292,7 @@ export class OrdenCompraComponent {
   }
 
   loadFormaPagoSelect() {
-    this.catalogosService.getFormaPagoById(0).subscribe({
+    this.catalogosService.getFormaPagoById(this.f['condicion_pago'].value == 'contado' ? 0 : 1).subscribe({
       next: (data) => {
         if (data.length > 0) {
           this.formaPagoList = data;
