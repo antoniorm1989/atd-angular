@@ -21,7 +21,7 @@ import { DialogSuccessComponent } from "../genericos/dialogSuccess.component";
 })
 export class OrdenCompraListComponent {
   hasRecords = false;
-  displayedColumns: string[] = ['estatus', 'id', 'venta_id', 'articulos', 'proveedor', 'importe', 'fecha_creacion', 'responsable', 'actions'];
+  displayedColumns: string[] = ['estatus', 'id', 'venta_id', 'articulos', 'proveedor', 'importe', 'created_at', 'responsable', 'actions'];
   dataSource = new MatTableDataSource<OrdenCompraModel>([]);
 
   totalItems = 0;
@@ -41,8 +41,8 @@ export class OrdenCompraListComponent {
 
   estatusLabels: { [key: string]: string } = {
     'EN_PROCESO': 'En Proceso',
-    'PARCIALMENTE_SURTIDA': 'Parcialmente Surtida',
-    'COMPLETA': 'Completa',
+    'PARCIALMENTE_SURTIDA': 'Parcialmente',
+    'COMPLETA': 'Surtida',
   };
 
   constructor(

@@ -127,7 +127,7 @@
                         </div>
                         <div class="form-field">
                             <mat-label class="text-1">Forma de pago</mat-label>
-                            <mat-label class="text-1-regular">{{ ordenCompraModel.forma_pago?.key ? ordenCompraModel.forma_pago?.key : 'No especificada' }}</mat-label>
+                            <mat-label class="text-1-regular">{{ ordenCompraModel.forma_pago?.key ? (ordenCompraModel.forma_pago?.key + ' - ' + ordenCompraModel.forma_pago?.name) : 'No especificada' }}</mat-label>
                         </div>
                         <div class="form-field">
                             <mat-label class="text-1">Método de pago</mat-label>
