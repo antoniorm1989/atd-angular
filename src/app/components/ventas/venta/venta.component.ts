@@ -1043,6 +1043,10 @@ export class VentaComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(facturar => {
+      if(this.isVenta == false) {
+        return;
+      }
+      
       if (facturar) {
         this.loadingService.show();
 

@@ -38,6 +38,10 @@ export class CatalogoArticuloModel {
 
   moneda_nombre: string | undefined;
 
+  // para orden de compra
+  stock: number | undefined;
+  backorder: number | undefined;
+
   constructor(id?: number) {
     this.id = id;
   }

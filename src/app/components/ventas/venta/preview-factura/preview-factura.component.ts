@@ -5,6 +5,9 @@ import { FacturaPreviewModel, ReceptorModel } from 'src/app/models/factura.model
 import { VentaModel, VentaArticuloModel } from 'src/app/models/ventas.model';
 import { VentaService } from 'src/app/services/ventas.service';
 import { environment } from 'src/environments/environment';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
 
 @Component({
   selector: 'app-preview-factura',
@@ -230,5 +233,63 @@ export class PreviewFacturaComponent implements OnInit, OnDestroy {
 
   getEnvEmisorRegimenFiscal(): string {
     return environment.emisorFactura.regimenFiscal;
+  }
+
+  onDescargar() {
+    const element = document.querySelector('.pdf-content') as HTMLElement;
+
+    if (!element) {
+      console.error('No se encontró el contenido del PDF.');
+      return;
+    }
+
+    setTimeout(() => {
+      html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight
+      }).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const margin = 10; // margen en mm
+
+        // Tamaño disponible dentro del margen
+        const usableWidth = pageWidth - margin * 2;
+        const imgHeight = (canvas.height * usableWidth) / canvas.width;
+
+        let position = margin;
+        let heightLeft = imgHeight;
+
+        // Página 1
+        pdf.addImage(imgData, 'PNG', margin, position, usableWidth, imgHeight, '', 'FAST');
+        heightLeft -= pageHeight - margin * 2;
+
+        // Paginación si es necesario
+        while (heightLeft > 0) {
+          position = heightLeft - imgHeight + margin;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', margin, position, usableWidth, imgHeight, '', 'FAST');
+          heightLeft -= pageHeight - margin * 2;
+        }
+
+        pdf.save(this.generateFileName());
+      });
+    }, 500);
+  }
+
+  private generateFileName(): string {
+    const tipoDoc = this.tipo === 1 ? 'Factura' : 'Cotizacion';
+    const clienteNombre = this.venta?.cliente?.nombre_fiscal?.replace(/\s+/g, '_') || 'Cliente';
+    const fecha = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const ventaId = this.venta?.id || 'SN';
+
+    return `${tipoDoc}_${clienteNombre}_${ventaId}_${fecha}.pdf`;
   }
 }
