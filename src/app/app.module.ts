@@ -82,6 +82,7 @@ import { PagarFacturaComponent } from './components/ventas/venta/pago/pagar-fact
 import { CatalogoCuentaBancariaListComponent } from './components/catalogos/cuenta_bancaria/catalogo-cuenta-bancaria-list.component';
 import { CatalogoCuentaBancariaComponent } from './components/catalogos/cuenta_bancaria/cuenta_bancaria_detail/catalogo-cuenta-bancaria-detail..component';
 import { CancelarFacturaComponent } from './components/ventas/venta/cancelar/cancelar-factura.component';
+import { ReporteFacturasListadoComponent } from './components/reportes/reporte-facturas-listado.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -136,7 +137,8 @@ export function tokenGetter() {
     CatalogoCuentaBancariaListComponent,
     CatalogoCuentaBancariaComponent,
     CancelarFacturaComponent,
-    PagarFacturaComponent
+    PagarFacturaComponent,
+    ReporteFacturasListadoComponent
   ],
   imports: [
     BrowserModule,

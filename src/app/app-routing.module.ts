@@ -30,6 +30,7 @@ import { SistemaConfiguracionComponent } from './components/configuracion/sistem
 import { CatalogoCuentaBancariaListComponent } from './components/catalogos/cuenta_bancaria/catalogo-cuenta-bancaria-list.component';
 import { CatalogoCuentaBancariaComponent } from './components/catalogos/cuenta_bancaria/cuenta_bancaria_detail/catalogo-cuenta-bancaria-detail..component';
 import { OrdenCompraComponent } from './components/orden-compra/orden-compra/orden-compra.component';
+import { ReporteFacturasListadoComponent } from './components/reportes/reporte-facturas-listado.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/inventario-almacen', pathMatch: 'full' }, // Redirect to login by default
@@ -103,6 +104,9 @@ const routes: Routes = [
 
   // Configuracion
   { path: 'configuracion/sistema', component: SistemaConfiguracionComponent, canActivate: [AuthGuard] },
+
+  // Reportes
+  { path: 'reportes/facturas', component: ReporteFacturasListadoComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({

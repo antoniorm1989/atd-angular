@@ -82,6 +82,17 @@ export class AppComponent implements OnDestroy {
           href: 'configuracion/sistema',
         }
       ]
+    },
+    {
+      text: 'Reportes',
+      icon: 'fa-solid fa-chart-column',
+      subItems: [
+        {
+          text: 'Facturas',
+          icon: 'fa-solid fa-file-invoice-dollar',
+          href: 'reportes/facturas',
+        },
+      ],
     }
   ];
   userInitials: string = "";

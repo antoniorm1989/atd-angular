@@ -1,0 +1,204 @@
+.reporte-facturas {
+    padding: 24px;
+    background-color: #F7F7F7;
+    height: 100%;
+}
+
+.reporte-facturas .toolbar .icon {
+    font-size: 23px;
+}
+
+.reporte-facturas .toolbar .toolbar-title {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.reporte-facturas .toolbar .title {
+    font-size: 36px;
+    font-weight: 500;
+    line-height: 54px;
+    letter-spacing: 0.01em;
+    margin-left: 12px;
+}
+
+.reporte-facturas .toolbar .breadcrumb-item {
+    font-size: 16px;
+    line-height: 19px;
+    letter-spacing: 0.01em;
+    color: #BA9400;
+}
+
+.reporte-facturas .container .container-empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 600px;
+    margin: auto;
+}
+
+.reporte-facturas .container .container-empty .img {
+    height: 238px;
+    width: 237px;
+}
+
+.reporte-facturas .container .container-empty .text {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 32px;
+    letter-spacing: 0.01em;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.reporte-facturas .container .container-empty .btn {
+    width: auto;
+    height: 40px;
+    border-radius: 8px;
+    background-color: #BA9400;
+    color: #fff;
+    margin-top: 50px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.reporte-facturas mat-accordion{
+    border-radius: 8px;
+    background-color: #ffffff;
+    padding: 0;
+    margin-top: 8px;
+}
+
+.filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 12px;
+    align-items: end;
+    padding-top: 12px;
+}
+
+.filters .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.icon-filter {
+    font-size: 24px;
+    text-align: center;
+    color: #ba9400;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.form-row .actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tabla-container {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.tabla-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.tabla-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+}
+
+.table {
+  width: 100%;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-1 {
+  background: #e8f5e8;
+  color: #2e7d32;
+}
+
+.status-2 {
+  background: #fbe9e7;
+  color: #d84315;
+}
+
+.tabla-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px 0;
+  text-align: center;
+}
+
+.tabla-empty img {
+  max-width: 200px;
+}
+
+.title-empty {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ba9400;
+}
+
+.subtitle-empty {
+  font-size: 14px;
+  color: #666;
+}
+
+.tabla-loading {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.reporte-facturas .table .mat-mdc-header-cell,
+.reporte-facturas .table .mat-mdc-cell {
+    justify-content: center;
+    text-align: center;
+}
+
+.mat-mdc-header-row{
+    background-color: #eadfb2;
+}
+
+@media (max-width: 960px) {
+  .form-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
